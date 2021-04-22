@@ -79,18 +79,27 @@
 
 
 
-<meta name="description" content="my blog">
+<meta name="description" content="1.STP协议概述生成树协议产生背景生成树协议STP（Spanning Tree Protocol)可以在提高可靠性的同时又能避免环路带来的各种问题。 现网中越来越多的交换机与主机之间互联，如果交换机之间仅使用一条链路进行连接，链路出现故障时，可能导致业务中断。因此使用冗余链路来防止单点故障产生导致网络中断，但引入冗余链路的时候，也引入环路。当然，环路的产生也有可能是人为误操作造成的（如将链路连到">
 <meta property="og:type" content="article">
-<meta property="og:title" content="stp">
+<meta property="og:title" content="STP">
 <meta property="og:url" content="http://example.com/2021/04/21/stp/index.html">
 <meta property="og:site_name" content="zsy&#39;s blog">
-<meta property="og:description" content="my blog">
+<meta property="og:description" content="1.STP协议概述生成树协议产生背景生成树协议STP（Spanning Tree Protocol)可以在提高可靠性的同时又能避免环路带来的各种问题。 现网中越来越多的交换机与主机之间互联，如果交换机之间仅使用一条链路进行连接，链路出现故障时，可能导致业务中断。因此使用冗余链路来防止单点故障产生导致网络中断，但引入冗余链路的时候，也引入环路。当然，环路的产生也有可能是人为误操作造成的（如将链路连到">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/%E7%BD%91%E7%BB%9C%E9%A3%8E%E6%9A%B4.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/MAC地址偏移.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/RPC计算方法.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/Cost计算方法.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/配置BPDU报文格式.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/配置BPDU转发过程.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/接口状态迁移图.png">
+<meta property="og:image" content="http://example.com/2021/04/21/stp/blogpng/根桥故障.png">
 <meta property="article:published_time" content="2021-04-21T13:00:22.000Z">
-<meta property="article:modified_time" content="2021-04-21T13:03:55.038Z">
+<meta property="article:modified_time" content="2021-04-22T15:20:22.529Z">
 <meta property="article:author" content="张思宇">
 <meta property="article:tag" content="STP">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/21/stp/%E7%BD%91%E7%BB%9C%E9%A3%8E%E6%9A%B4.png">
 
 
 
@@ -126,7 +135,7 @@
 
 
 
-  <title>stp | zsy's blog</title>
+  <title>STP | zsy's blog</title>
   
 
 
@@ -260,7 +269,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">stp</h1>
+          <h1 class="post-title" itemprop="name headline">STP</h1>
         
 
         <div class="post-meta">
@@ -310,7 +319,219 @@
       
 
       
-        
+        <h3 id="1-STP协议概述"><a href="#1-STP协议概述" class="headerlink" title="1.STP协议概述"></a>1.STP协议概述</h3><h5 id="生成树协议产生背景"><a href="#生成树协议产生背景" class="headerlink" title="生成树协议产生背景"></a>生成树协议产生背景</h5><p>生成树协议STP（Spanning Tree Protocol)可以在提高可靠性的同时又能避免环路带来的各种问题。</p>
+<p>现网中越来越多的交换机与主机之间互联，如果交换机之间仅使用一条链路进行连接，链路出现故障时，可能导致业务中断。因此使用冗余链路来防止单点故障产生导致网络中断，但引入冗余链路的时候，也引入环路。当然，环路的产生也有可能是人为误操作造成的（如将链路连到本交换机上），因此提出了STP协议用于破除交换机之间的环路，来保证交换机设备的安全和网络可靠性。</p>
+<h5 id="环路带来的问题"><a href="#环路带来的问题" class="headerlink" title="环路带来的问题"></a>环路带来的问题</h5><ol>
+<li><p>网络风暴</p>
+<p>根据交换机的转发原则，如果交换机从一个端口上接收到的是一个广播帧，或者是一个目的MAC地址未知的单播帧，则会将这个帧向除源端口之外的所有其他端口转发。如果交换网络中有环路，则这个帧会被无限转发，此时便会形成广播风暴，网络中也会充斥着重复的数据帧。如下图主机A给主机B发送单播帧，SWB的MAC表上没有目的MAC地址为主机B的地址，因此将从其它两个端口发出，结果将造成两个方向的环路第一条为B-A-C-B，第二条为B-C-A-B，SWB将收到两个相同的单播帧，若MAC表不改变，则循环将一次循环，将造成网络风暴，导致网络带宽占用或设备损坏。若主机A发送广播帧同理。</p>
+<p><img src="/2021/04/21/stp/%E7%BD%91%E7%BB%9C%E9%A3%8E%E6%9A%B4.png" alt="网络风暴"></p>
+</li>
+<li><p>MAC地址表震荡</p>
+<p>交换机是根据所接收到的数据帧的源地址和接收端口生成MAC地址表项的。 主机A向外发送一个单播帧，假设此单播帧的目的MAC地址在网络中所有交换机的MAC地址表中都暂时不存在。SWB收到此数据帧之后，在MAC地址表中生成一个MAC地址表项，00-01-02-03-04-AA，对应端口为G0/0/3，并将其从G0/0/1和G0/0/2端口转发。此例仅以SWB从G0/0/1端口转发此帧为例进行说明。 SWA接收到此帧后，由于MAC地址表中没有对应此帧目的MAC地址的表项，所以SWA会将此帧从G0/0/2转发出去。 SWC接收到此帧后，由于MAC地址表中也没有对应此帧目的MAC地址的表项，所以SWC会将此帧从G0/0/2端口发送回SWB，也会发给主机B。 SWB从G0/0/2接口接收到此数据帧之后，会在MAC地址表中删除原有的相关表项，生成一个新的表项，00-01-02-03-04-AA，对应端口为G0/0/2。此过程会不断重复，从而导致MAC地址表震荡。        </p>
+<p><img src="/2021/04/21/stp/blogpng\MAC地址偏移.png" alt="MAC地址表震荡"></p>
+</li>
+</ol>
+<h3 id="2-STP协议BUPD报文"><a href="#2-STP协议BUPD报文" class="headerlink" title="2.STP协议BUPD报文"></a>2.STP协议BUPD报文</h3><p>为了计算生成树，交换机之间需要交换相关的信息和参数，这些信息和参数被封装在BPDU（Bridge Protocol Data Unit，网桥协议数据单元）中。 </p>
+<ul>
+<li><p>BPDU有两种类型：</p>
+<ul>
+<li><p>配置BPDU (Configuration BPDU)</p>
+<p>配置BPDU包含了桥ID、路径开销和端口ID等参数。STP协议通过在交换机之间传递配置BPDU来选举根交换机，以及确定每个交换机端口的角色和状态。在初始化过程中，每个桥都主动发送配置BPDU。</p>
+<p>在网络拓扑稳定以后，只有根桥主动发送配置BPDU，其他交换机在收到上游传来的配置BPDU后，才会发送自己的配置BPDU。</p>
+</li>
+<li><p>TCN BUPD (Topology Change Notification BUPD)    </p>
+<p>TCN BPDU是指下游交换机感知到拓扑发生变化时向上游发送的拓扑变化通知。 </p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="BPDU报文字段相关概念"><a href="#BPDU报文字段相关概念" class="headerlink" title="BPDU报文字段相关概念"></a>BPDU报文字段相关概念</h5><ol>
+<li><p>BID(Bridge ID,桥ID)</p>
+<ul>
+<li><p>IEEE 802.1D标准中规定BID由16位的桥优先级（ Bridge Priority )与桥MAC地址构成。</p>
+<p>桥优先级（取值范围0～65535），默认值为32768，步长为4096。</p>
+<ul>
+<li>每一台运行STP的交换机都拥有一个唯一的BID。</li>
+<li>BID桥优先级占据高16bit，其余的低48bit是桥MAC地址。在STP网络中，BID最小的设备会被选举为根桥。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>RPC(Root Path cost,根路径开销)</p>
+<p>一台设备从某个接口到达根桥的RPC等于从根桥到该设备沿途所有<strong>入方向</strong>接口的Cost累加。</p>
+<p>或者是从该设备到根桥沿途所有<strong>出方向</strong>接口的Cost累加。</p>
+<p><img src="/2021/04/21/stp/blogpng\RPC计算方法.png" alt="RPC计算方法"></p>
+<p>​                                                                                                     <em>RPC计算示例</em></p>
+<p>cost(开销):交换机上每个接口都有对应的cost值</p>
+<ul>
+<li><p>接口的Cost主要用于计算根路径开销，也就是到达根的开销。</p>
+</li>
+<li><p>接口的缺省Cost除了与其速率、工作模式有关，还与交换机使用的STP Cost计算方法有关。</p>
+</li>
+<li><p>接口带宽越大，则Cost值越小。</p>
+</li>
+<li><p>用户也可以根据需要通过命令调整接口的Cost。</p>
+</li>
+</ul>
+<p><img src="/2021/04/21/stp/blogpng\Cost计算方法.png" alt="cost计算方法" title="cost计算方法"></p>
+<p>​                                                                                                      <em>cost计算方法</em></p>
+<p>​                                                                                                        </p>
+</li>
+<li><p>PID(Port ID,接口ID)</p>
+<ul>
+<li>接口ID由两部分构成的，高4 bit是接口优先级，低12 bit是接口编号。</li>
+<li>激活STP的接口会维护一个缺省的接口优先级（取值范围0到240），在华为交换机上，该值为128，步长为16。</li>
+</ul>
+</li>
+<li><p>Message Age</p>
+</li>
+<li><p>Max Age</p>
+</li>
+<li><p>Hello Time</p>
+</li>
+<li><p>Forward Delay</p>
+</li>
+</ol>
+<h5 id="配置BPDU报文格式"><a href="#配置BPDU报文格式" class="headerlink" title="配置BPDU报文格式"></a>配置BPDU报文格式</h5><p><img src="/2021/04/21/stp/blogpng\配置BPDU报文格式.png"></p>
+<h5 id="配置BPDU转发过程"><a href="#配置BPDU转发过程" class="headerlink" title="配置BPDU转发过程"></a>配置BPDU转发过程</h5><p><img src="/2021/04/21/stp/blogpng\配置BPDU转发过程.png" alt="配置BPDU转发过程"></p>
+<p>​                                                                                                        <em>配置BPDU转发示例</em></p>
+<h3 id="3-STP根桥和端口角色"><a href="#3-STP根桥和端口角色" class="headerlink" title="3.STP根桥和端口角色"></a>3.STP根桥和端口角色</h3><h5 id="根桥"><a href="#根桥" class="headerlink" title="根桥"></a>根桥</h5><ul>
+<li>在一个广播域中有且只有一个根桥（Root Bridge）</li>
+<li>STP的主要作用之一是在整个交换网络中计算出一棵无环的“树”( STP树)</li>
+<li>根桥是一个STP交换网络中的“树根”</li>
+<li>STP开始工作后，会在交换网络中选举一个根桥，作为无环拓扑的“树根”</li>
+</ul>
+<h5 id="端口角色"><a href="#端口角色" class="headerlink" title="端口角色"></a>端口角色</h5><p>STP中定义了三种端口角色：指定端口，根端口和预备端口。 </p>
+<ul>
+<li><p>指定端口(Designated port,DP)</p>
+<p>非根桥去往根桥开销最小的接口，接收BPDU，转发数据，学习MAC</p>
+<p>指定端口是交换机向所连网段转发配置BPDU的端口，每个网段有且只能有一个指定端口。</p>
+<p>一般情况下(除非根桥在物理上存在环路)，根桥的每个端口总是指定端口。</p>
+</li>
+<li><p>根端口(Root port,RP)</p>
+<p>链路上去往根桥开销最小的接口，发送BPDU，转发数据，学习MAC</p>
+<p>在一个运行STP协议的交换机上最多只有一个根端口，但根桥上没有根端口。</p>
+</li>
+<li><p>非指定端口(Non-designated port,N-DP)</p>
+<p>非根桥去往根桥开销次优的接口，接收BPDU，不转发数据，不学习MAC，RP的备份接口</p>
+<p>如果一个端口既不是指定端口也不是根端口，则此端口为预备端口。预备端口将被阻塞。                                                                                                     </p>
+</li>
+</ul>
+<h3 id="4-STP工作过程"><a href="#4-STP工作过程" class="headerlink" title="4.STP工作过程"></a>4.STP工作过程</h3><ol>
+<li><p>在交换网络中选举一个根桥</p>
+<ul>
+<li><p>STP在交换网络中开始工作后，每个交换机都会向网络中发送配置BPDU。配置BPDU中包含交换机自己的桥ID。</p>
+<p>交换机启动后就自动开始进行生成树收敛计算。默认情况下，所有交换机启动时都认为自己是根桥，自己的所有端口都为指定端口，这样BPDU报文就可以通过所有端口转发。对端交换机收到BPDU报文后，会比较BPDU中的根桥ID和自己的桥ID。如果收到的BPDU报文中的桥ID优先级低，接收交换机会继续通告自己的配置BPDU报文给邻居交换机。如果收到的BPDU报文中的桥ID优先级高，则交换机会修改自己的BPDU报文的根桥ID字段，宣告新的根桥。</p>
+</li>
+<li><p>网络中拥有最小桥ID的交换机成为根桥。</p>
+<p>桥ID由16位的桥优先级（Bridge  Priority）和48位的MAC地址构成。在STP网络中，桥优先级是可以配置的，取值范围是0～65535，默认值为32768。优先级最高的设备（数值越小越优先）会被选举为根桥。如果优先级相同，则会比较MAC地址，MAC地址越小则越优先。</p>
+</li>
+<li><p>在一个连续的STP交换网络中只会存在一个根桥。·</p>
+</li>
+<li><p>根桥的角色是可抢占的。</p>
+</li>
+<li><p>为了确保交换网络的稳定，建议提前规划STP组网，并将规划为根桥的交换机的桥优先级设置为最小值0。</p>
+</li>
+</ul>
+</li>
+<li><p>在每台非根桥上选举一个根接口</p>
+<ul>
+<li><p>每一台非根桥交换机都会在自己的接口中选举出一个接口。</p>
+<p>非根交换机在选举根端口时分别依据该端口的根路径开销、对端BID（Bridge ID）、对端PID（Port ID）和本端PID。</p>
+<ol>
+<li><p>比较根路径开销</p>
+<p>根端口的确定需要比较RPC。当网桥从一个端口接收到配置BPDU后，首先获取其中的RPC，和接收端口的链路开销相加，得到此端口的RPC，每个收到配置BPDU的端口都进行同样的计算。然后比较各端口的RPC，拥有最小RPC值的端口即为本网桥的根端口。</p>
+</li>
+<li><p>RPC相同，比较对端BID</p>
+<p>如果有两个或两个以上的端口计算得到的累计路径开销相同，那么选择收到发送者BID最小的那个端口作为根端口。</p>
+</li>
+<li><p>对端BID相同，比较对端PID</p>
+<p> 如果两个或两个以上的端口连接到同一台交换机上，则选择发送者PID最小的那个端口作为根端口。</p>
+</li>
+<li><p>对端PID相同，比较本段PID</p>
+<p>如果两个或两个以上的端口通过Hub连接到同一台交换机的同一个接口上，则选择本交换机的这些端口中的PID最小的作为根端口。</p>
+</li>
+</ol>
+</li>
+<li><p>非根桥交换机上有且只会有一个根接口。</p>
+</li>
+<li><p>当非根桥交换机有多个接口接入网络中时，根接口是其收到最优配置BPDU的接口。</p>
+</li>
+<li><p>可以形象地理解为，根接口是每台非根桥上“朝向”根桥的接口。</p>
+</li>
+</ul>
+</li>
+<li><p>在每条链路上选举一个指定接口</p>
+<ul>
+<li><p>每条链路只有一个指定端口</p>
+<p>在网段上抑制其他端口（无论是自己的还是其他设备的）发送BPDU报文的端口，就是该网段的指定端口。</p>
+</li>
+<li><p>在每条链路上选举一个指定接口时分别依据该端口的累计路径开销、本端BID（Bridge ID）、本端PID（Port ID）</p>
+<p>（比较端口发送的配置BPDU和接收的配置BPDU，如果发送的配置BPDU优于接收到的配置BPDU，表明端口在本Physical Segment上拥有最优的配置BPDU，则该端口为指定端口。）</p>
+<ol>
+<li><p>比较累计路径开销</p>
+<p>累计路径开销最小的端口就是指定端口。</p>
+</li>
+<li><p>累计路径开销相同，比较本端BID</p>
+<p>如果累计路径开销相同，则比较端口所在交换机的桥ID，所在桥ID小的端口被选举为指定端口。</p>
+</li>
+<li><p>前两者选举不出来比较本端PID</p>
+<p>如果通过累计路径开销和所在桥ID选举不出来，则比较端口ID，端口ID最小的被选举为指定端口。</p>
+</li>
+</ol>
+</li>
+<li><p>一般情况下，根桥的所有接口都是指定接口。</p>
+</li>
+</ul>
+</li>
+<li><p>非指定接口被阻塞</p>
+<ul>
+<li>一台交换机上，既不是根接口，又不是指定接口的接口被称为非指定接口。</li>
+<li>STP操作的最后一步是阻塞网络中的非指定接口。这一步完成后，网络中的二层环路就此消除。</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-STP接口状态及转换"><a href="#5-STP接口状态及转换" class="headerlink" title="5.STP接口状态及转换"></a>5.STP接口状态及转换</h3><h5 id="STP接口状态"><a href="#STP接口状态" class="headerlink" title="STP接口状态"></a>STP接口状态</h5><table>
+<thead>
+<tr>
+<th>状态名称</th>
+<th>状态描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>禁用(Disable)</td>
+<td>该接口不能收发BPDU，也不能收发业务数据帧，例如接口为down</td>
+</tr>
+<tr>
+<td>阻塞(Blocking)</td>
+<td>该接口被STP阻塞。处于阻塞状态的接口不能发送BPDU，但是会持续侦听BPDU，而且不能收发业务数据帧，也不会进行MAC地址学习</td>
+</tr>
+<tr>
+<td>侦听(Listening)</td>
+<td>当接口处于该状态时，表明STP初步认定该接口为根接口或指定接口，但接口依当接口处于该状态时，会侦听业务数据帧（但是不能转发业务数据帧），并且在收到业务数据帧后进行MAC地址学习</td>
+</tr>
+<tr>
+<td>学习(Learning)</td>
+<td>当接口处于该状态时，会侦听业务数据帧（但是不能转发业务数据帧），并且在收到业务数据帧后进行MAC地址学习</td>
+</tr>
+<tr>
+<td>转发(Forwarding)</td>
+<td>处于该状态的接口可以正常地收发业务数据帧，也会进行BPDU处理。接口的角色需是根接口或指定接口才能进入转发状态</td>
+</tr>
+</tbody></table>
+<h5 id="STP接口状态转换"><a href="#STP接口状态转换" class="headerlink" title="STP接口状态转换"></a>STP接口状态转换</h5><p><img src="/2021/04/21/stp/blogpng\接口状态迁移图.png" alt="接口状态转换图"></p>
+<h3 id="6-拓扑变化及其收敛时间"><a href="#6-拓扑变化及其收敛时间" class="headerlink" title="6.拓扑变化及其收敛时间"></a>6.拓扑变化及其收敛时间</h3><h5 id="拓扑变化-根桥故障"><a href="#拓扑变化-根桥故障" class="headerlink" title="拓扑变化-根桥故障"></a>拓扑变化-根桥故障</h5><ol>
+<li>SW1根桥发生故障，停止发送BPDU报文。</li>
+<li>SW2等待Max Age计时器( 20 s)超时，从而导致已经收到的BPDU报文失效，又接收不到根桥发送的新的BPDU报文，从而得知上游出现故障。</li>
+<li>非根桥会互相发送配置BPDU，重新选举新的根桥。</li>
+<li>经过重新选举后，SW3的A端口经过两个Forward Delay( 15 s )时间恢复转发状态。</li>
+</ol>
+<ul>
+<li>非根桥会在BPDU老化之后开始根桥的重新选举。</li>
+<li>根桥故障会导致50 s左右的恢复时间。</li>
+</ul>
+<p><img src="/2021/04/21/stp/blogpng\根桥故障.png" alt="根桥故障"></p>
+<h5 id="拓扑变化-直连链路故障"><a href="#拓扑变化-直连链路故障" class="headerlink" title="拓扑变化-直连链路故障"></a>拓扑变化-直连链路故障</h5><h5 id="拓扑变化-非直连链路故障"><a href="#拓扑变化-非直连链路故障" class="headerlink" title="拓扑变化-非直连链路故障"></a>拓扑变化-非直连链路故障</h5><h5 id="拓扑变化导致MAC地址故障"><a href="#拓扑变化导致MAC地址故障" class="headerlink" title="拓扑变化导致MAC地址故障"></a>拓扑变化导致MAC地址故障</h5>
       
     </div>
     
@@ -400,8 +621,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -472,6 +702,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-STP%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1.STP协议概述</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%A0%91%E5%8D%8F%E8%AE%AE%E4%BA%A7%E7%94%9F%E8%83%8C%E6%99%AF"><span class="nav-number">1.0.1.</span> <span class="nav-text">生成树协议产生背景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%8E%AF%E8%B7%AF%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.2.</span> <span class="nav-text">环路带来的问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-STP%E5%8D%8F%E8%AE%AEBUPD%E6%8A%A5%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">2.STP协议BUPD报文</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#BPDU%E6%8A%A5%E6%96%87%E5%AD%97%E6%AE%B5%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">2.0.1.</span> <span class="nav-text">BPDU报文字段相关概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEBPDU%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.0.2.</span> <span class="nav-text">配置BPDU报文格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEBPDU%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">2.0.3.</span> <span class="nav-text">配置BPDU转发过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-STP%E6%A0%B9%E6%A1%A5%E5%92%8C%E7%AB%AF%E5%8F%A3%E8%A7%92%E8%89%B2"><span class="nav-number">3.</span> <span class="nav-text">3.STP根桥和端口角色</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%B9%E6%A1%A5"><span class="nav-number">3.0.1.</span> <span class="nav-text">根桥</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E8%A7%92%E8%89%B2"><span class="nav-number">3.0.2.</span> <span class="nav-text">端口角色</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-STP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">4.STP工作过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-STP%E6%8E%A5%E5%8F%A3%E7%8A%B6%E6%80%81%E5%8F%8A%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.</span> <span class="nav-text">5.STP接口状态及转换</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#STP%E6%8E%A5%E5%8F%A3%E7%8A%B6%E6%80%81"><span class="nav-number">5.0.1.</span> <span class="nav-text">STP接口状态</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STP%E6%8E%A5%E5%8F%A3%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.0.2.</span> <span class="nav-text">STP接口状态转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%8B%93%E6%89%91%E5%8F%98%E5%8C%96%E5%8F%8A%E5%85%B6%E6%94%B6%E6%95%9B%E6%97%B6%E9%97%B4"><span class="nav-number">6.</span> <span class="nav-text">6.拓扑变化及其收敛时间</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E5%8F%98%E5%8C%96-%E6%A0%B9%E6%A1%A5%E6%95%85%E9%9A%9C"><span class="nav-number">6.0.1.</span> <span class="nav-text">拓扑变化-根桥故障</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E5%8F%98%E5%8C%96-%E7%9B%B4%E8%BF%9E%E9%93%BE%E8%B7%AF%E6%95%85%E9%9A%9C"><span class="nav-number">6.0.2.</span> <span class="nav-text">拓扑变化-直连链路故障</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E5%8F%98%E5%8C%96-%E9%9D%9E%E7%9B%B4%E8%BF%9E%E9%93%BE%E8%B7%AF%E6%95%85%E9%9A%9C"><span class="nav-number">6.0.3.</span> <span class="nav-text">拓扑变化-非直连链路故障</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E5%8F%98%E5%8C%96%E5%AF%BC%E8%87%B4MAC%E5%9C%B0%E5%9D%80%E6%95%85%E9%9A%9C"><span class="nav-number">6.0.4.</span> <span class="nav-text">拓扑变化导致MAC地址故障</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
