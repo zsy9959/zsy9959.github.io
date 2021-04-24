@@ -94,8 +94,10 @@
 <meta property="og:image" content="http://example.com/2021/04/24/AAA/RADIUS%E6%B5%81%E7%A8%8B.png">
 <meta property="og:image" content="http://example.com/2021/04/24/AAA/HWTACACS%E8%BF%87%E7%A8%8B.png">
 <meta property="og:image" content="http://example.com/2021/04/24/AAA/AAA%E5%9F%9F.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png">
 <meta property="article:published_time" content="2021-04-24T11:11:49.000Z">
-<meta property="article:modified_time" content="2021-04-24T13:32:12.924Z">
+<meta property="article:modified_time" content="2021-04-24T13:54:40.140Z">
 <meta property="article:author" content="张思宇">
 <meta property="article:tag" content="AAA">
 <meta name="twitter:card" content="summary">
@@ -428,6 +430,77 @@
 <p>设置本地用户的接入类型。缺省情况下，本地用户关闭所有的接入类型。<br>6. 配置用户级别</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name privilege level level</span><br></pre></td></tr></table></figure>
 <p>指定本地用户的权限级别。</p>
+<ol start="7">
+<li>显示历史用户登录记录</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]display aaa offline-record all</span><br></pre></td></tr></table></figure>
+
+<h2 id="AAA配置案例"><a href="#AAA配置案例" class="headerlink" title="AAA配置案例"></a>AAA配置案例</h2><h3 id="AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）"><a href="#AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）" class="headerlink" title="AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）"></a>AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）</h3><p>下述拓扑中用户处于huawei域中，通过出口设备LSW1去访问Internet，LSW2作为运营商边界设备负责对用户访问internet的权限进行控制，执行AAA认证，认证模式采用Radius服务器认证和计费，现在需要实现ISP对huawei域内的企业用户进行Radius认证，必须在LSW2上配置AAA认证和Radius模板来完成对接入用户的控制。</p>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
+<p>在LSW2上的配置如下：</p>
+<p>一、配置AAA认证方案</p>
+<p>[Huawei]aaa</p>
+<p>[Huawei-aaa]authentication-scheme ren_zheng                          配置AAA认证方案名为ren_zheng</p>
+<p>[Huawei-aaa-authen-aaa]authentication-mode radius local        配置AAA认证模式为先Radius，如无响应则本地认证</p>
+<p>[Huawei-aaa-authen-aaa]quit</p>
+<p>[Huawei-aaa]accounting-scheme ji_fei                                       配置AAA计费方案名为ji_fei</p>
+<p>[Huawei-aaa-accounting-ji_fei]accounting-mode radius             配置AAA计费模式为Radius服务器计费</p>
+<p>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline         配置当开始计费失败时，将用户离线</p>
+<p>[Huawei-aaa-accounting-ji_fei]quit</p>
+<p>二、配置Radius模板</p>
+<p>[Huawei]radius-server template huawei_use                              配置Raduis模板名为huawei_use</p>
+<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.254 1812    主radius认证服务地址和端口</p>
+<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.253 1812 secondary  备用认证服务器</p>
+<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1812         主radius计费服务地址和端口</p>
+<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1813 secondary       备用计费服务器</p>
+<p>[Huawei-radius-huawei_use]radius-server shared-key cipher hello      配置设备与Radius通信的共享秘钥为hello</p>
+<p>[Huawei-radius-huawei_use]radius-server retransmit 2 timeout 5       配置设备向Radius服务器发送请求报文的超时重传次数为2s，间隔为5s</p>
+<p>[Huawei-radius-huawei_use]quit</p>
+<p>三、在AAA用户域绑定要使用的AAA认证和Radius模板</p>
+<p>[Huawei]aaa</p>
+<p>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei</p>
+<p>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng     在域中绑定AAA认证方案</p>
+<p>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案</p>
+<p>[Huawei-aaa-domain-huawei]radius-server huawei_use                   在域中绑定Radius模板</p>
+<p>[Huawei-aaa-domain-huawei]quit</p>
+<p>四、检查命令：</p>
+<p><strong>[Huawei]display radius-server configuration template huawei_use</strong></p>
+<hr>
+<p>  Server-template-name             :  huawei_use<br>  Protocol-version                 :  standard<br>  Traffic-unit                     :  B<br>  Shared-secret-key                :  aaYOZ$V^P35NZPO3JBXBHA!!<br>  Timeout-interval(in second)      :  5<br>  Primary-authentication-server    :  192.168.1.254  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Primary-accounting-server        :  192.168.1.254  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-authentication-server  :  192.168.1.253  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-accounting-server      :  192.168.1.253  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Retransmission                   :  2<br>  Domain-included                  :  YES<br>  NAS-IP-Address                   :  0.0.0.0</p>
+<p>Calling-station-id MAC-format    :  xxxx-xxxx-xxxx</p>
+<hr>
+<p>[Huawei]</p>
+<p><strong>[Huawei]display domain name huawei</strong></p>
+<hr>
+<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name      : ren_zheng<br>  Accounting-scheme-name           : ji_fei<br>  Authorization-scheme-name       : -<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : huawei_use<br>  HWTACACS-server-template        : -</p>
+<hr>
+<p>[Huawei]</p>
+<h3 id="AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"><a href="#AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）" class="headerlink" title="AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"></a>AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）</h3><p>拓扑图如下:</p>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
+<p>在LSW2上的配置如下：</p>
+<p>一、配置AAA认证方案</p>
+<p>[Huawei]aaa<br>[Huawei-aaa]authentication-scheme ren_zheng                              配置AAA认证方案名为ren_zheng<br>[Huawei-aaa-authen-aaa]authentication-mode hwtacacs local        配置AAA认证模式为先hwtacacs，如无响应则本地认证<br>[Huawei-aaa-authen-aaa]authentication-super hwtacacs super       接入用户进行提权时，先进行hwtacacs认证，如无响应再本地认证<br>[Huawei-aaa-authen-aaa]quit<br>[Huawei]aaa<br>[Huawei-aaa]authorization-scheme shou_quan                             配置AAA授权方案名为ren_zheng<br>[Huawei-aaa-author-aaa]authorization-mode hwtacacs local        配置AAA授权模式为先hwtacacs，如无响应则本地授权</p>
+<p>[Huawei-aaa-author-aaa]quit</p>
+<p>[Huawei-aaa]accounting-scheme ji_fei                                    配置AAA计费方案名为ji_fei<br>[Huawei-aaa-accounting-ji_fei]accounting-mode hwtacacs     配置AAA计费模式为hwtacacs服务器计费<br>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline      配置当开始计费失败时，将用户离线<br>[Huawei-aaa-accounting-ji_fei]accounting relaltime 3              配置对用户进行实时计费，计费间隔为3min<br>[Huawei-aaa-accounting-ji_fei]quit</p>
+<p>二、配置hwtacacs模板</p>
+<p>[Huawei]hwtacacs-server template huawei_use                       配置hwtacacs模板名为huawei_use<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.254 49    主hwtacacs认证服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.253 49 secondary     备用认证服务器<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49      主hwtacacs授权服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49 secondary       备用授权服务器</p>
+<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49         主hwtacacs计费服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49 secondary          备用计费服务器</p>
+<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server shared-key cipher hello      配置设备与hwtacacs通信的共享秘钥为hello</p>
+<p>[Huawei-hwtacacs-huawei_use]quit<br>三、在AAA用户域绑定要使用的AAA认证和hwtacacs模板</p>
+<p>[Huawei]aaa<br>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei<br>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng    在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]authorization-scheme shou_quan     在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案<br>[Huawei-aaa-domain-huawei]hwtacacs-server huawei_use              在域中绑定hwtacacs模板</p>
+<p>[Huawei-aaa-domain-huawei]quit</p>
+<p>四、检查命令：</p>
+<p><strong>[Huawei]display hwtacacs-server template huawei_use</strong></p>
+<hr>
+<p> HWTACACS-server template name   : huawei_use<br>  Primary-authentication-server  : 192.168.1.254:49:-<br>  Primary-authorization-server    : 192.168.1.254:49-<br>  Primary-accounting-server       : 192.168.1.254:49:-<br>  Secondary-authentication-server : 192.168.1.253:49:-<br>  Secondary-authorization-server   : 192.168.1.253:49:-<br>  Secondary-accounting-server      : 192.168.1.253:49:-<br>  Current-authentication-server   : 192.168.1.254:49:-<br>  Current-authorization-server     : 192.168.1.254:49:-<br>  Current-accounting-server        : 192.168.1.254:49:-<br>  Source-IP-address               : 0.0.0.0<br>  Shared-key                      : hello<br>  Quiet-interval(min)             : 5<br>  Response-timeout-Interval(sec)  : 5<br>  Domain-included                 : Yes<br>  Traffic-unit                    : B</p>
+<p>  Total 1,1 printed</p>
+<hr>
+<p>[Huawei]</p>
+<p><strong>[Huawei]display domain name huawei</strong></p>
+<hr>
+<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name     : ren_zheng<br>  Accounting-scheme-name          : ji_fei<br>  Authorization-scheme-name       : shou_quan<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : -<br>  HWTACACS-server-template        : huawei_use</p>
+<hr>
+<p>[Huawei]</p>
 
       
     </div>
@@ -609,7 +682,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">AAA概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">AAA基本架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authentication-%E8%AE%A4%E8%AF%81"><span class="nav-number">3.</span> <span class="nav-text">Authentication (认证)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authorization-%E6%8E%88%E6%9D%83%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">Authorization(授权）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Accounting-%E8%AE%A1%E8%B4%B9%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">Accounting(计费）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%AE%9E%E7%8E%B0-RADIUS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.</span> <span class="nav-text">AAA实现-RADIUS 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">6.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RADIUS%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">6.2.</span> <span class="nav-text">RADIUS服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RADIUS%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">6.3.</span> <span class="nav-text">RADIUS客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6"><span class="nav-number">6.4.</span> <span class="nav-text">安全机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%92%8C%E8%AE%A1%E8%B4%B9%E6%B6%88%E6%81%AF%E6%B5%81%E7%A8%8B"><span class="nav-number">6.5.</span> <span class="nav-text">认证和计费消息流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%AE%9E%E7%8E%B0-HWTACACS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.</span> <span class="nav-text">AAA实现-HWTACACS 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="nav-number">7.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HWTACACS-%E5%8D%8F%E8%AE%AE%E5%92%8C-RADIUS-%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">7.2.</span> <span class="nav-text">HWTACACS 协议和 RADIUS 协议的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HWTACACS-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B6%88%E6%81%AF%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B"><span class="nav-number">7.3.</span> <span class="nav-text">HWTACACS 的基本消息交互流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%9F%BA%E4%BA%8E%E5%9F%9F%E7%9A%84%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">AAA基于域的用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">9.</span> <span class="nav-text">AAA配置命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">AAA概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">AAA基本架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authentication-%E8%AE%A4%E8%AF%81"><span class="nav-number">3.</span> <span class="nav-text">Authentication (认证)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authorization-%E6%8E%88%E6%9D%83%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">Authorization(授权）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Accounting-%E8%AE%A1%E8%B4%B9%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">Accounting(计费）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%AE%9E%E7%8E%B0-RADIUS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.</span> <span class="nav-text">AAA实现-RADIUS 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">6.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RADIUS%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">6.2.</span> <span class="nav-text">RADIUS服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RADIUS%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">6.3.</span> <span class="nav-text">RADIUS客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6"><span class="nav-number">6.4.</span> <span class="nav-text">安全机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%92%8C%E8%AE%A1%E8%B4%B9%E6%B6%88%E6%81%AF%E6%B5%81%E7%A8%8B"><span class="nav-number">6.5.</span> <span class="nav-text">认证和计费消息流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%AE%9E%E7%8E%B0-HWTACACS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.</span> <span class="nav-text">AAA实现-HWTACACS 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="nav-number">7.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HWTACACS-%E5%8D%8F%E8%AE%AE%E5%92%8C-RADIUS-%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">7.2.</span> <span class="nav-text">HWTACACS 协议和 RADIUS 协议的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HWTACACS-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B6%88%E6%81%AF%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B"><span class="nav-number">7.3.</span> <span class="nav-text">HWTACACS 的基本消息交互流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%9F%BA%E4%BA%8E%E5%9F%9F%E7%9A%84%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">AAA基于域的用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">9.</span> <span class="nav-text">AAA配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B"><span class="nav-number">10.</span> <span class="nav-text">AAA配置案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AAA-Radius%E8%BF%9B%E8%A1%8C%E8%AE%A4%E8%AF%81%E3%80%81%E6%8E%88%E6%9D%83%E3%80%81%E8%AE%A1%E8%B4%B9%EF%BC%88%E4%BD%BF%E7%94%A8UDP%E7%AB%AF%E5%8F%A31812%E5%92%8C1813%EF%BC%89"><span class="nav-number">10.1.</span> <span class="nav-text">AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AAA-HWTACACS%E8%BF%9B%E8%A1%8C%E8%AE%A4%E8%AF%81%E3%80%81%E6%8E%88%E6%9D%83%E3%80%81%E8%AE%A1%E8%B4%B9%EF%BC%88%E9%BB%98%E8%AE%A4%E6%89%80%E6%9C%89%E4%BD%BF%E7%94%A8TCP%E7%AB%AF%E5%8F%A349%EF%BC%89"><span class="nav-number">10.2.</span> <span class="nav-text">AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）</span></a></li></ol></li></ol></div>
             
 
           </div>
