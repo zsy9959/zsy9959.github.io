@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="OSPF," />
 
 
 
@@ -79,15 +79,35 @@
 
 
 
-<meta name="description" content="my blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="zsy&#39;s blog">
-<meta property="og:url" content="http://example.com/index.html">
+<meta name="description" content="概述路由协议OSPF全称为Open Shortest Path First，也就开放的最短路径优先协议，因为OSPF是由IETF开发的，它的使用不受任何厂商限制，所有人都可以使用，所以称为开放的，而最短路径优先（SPF）只是OSPF的核心思想，其使用的算法是Dijkstra算法，最短路径优先并没有太多特殊的含义，并没有任何一个路由协议是最长路径优先的，所有协议，都会选最短的。  OSPF的流量使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSPF">
+<meta property="og:url" content="http://example.com/2021/04/23/ospf/index.html">
 <meta property="og:site_name" content="zsy&#39;s blog">
-<meta property="og:description" content="my blog">
+<meta property="og:description" content="概述路由协议OSPF全称为Open Shortest Path First，也就开放的最短路径优先协议，因为OSPF是由IETF开发的，它的使用不受任何厂商限制，所有人都可以使用，所以称为开放的，而最短路径优先（SPF）只是OSPF的核心思想，其使用的算法是Dijkstra算法，最短路径优先并没有太多特殊的含义，并没有任何一个路由协议是最长路径优先的，所有协议，都会选最短的。  OSPF的流量使用">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/cost%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/OSPF%E5%8C%BA%E5%9F%9F.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/%E8%B7%AF%E7%94%B1%E5%99%A8%E8%A7%92%E8%89%B2.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/DR%E5%92%8CBDR.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/ospf%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%81%E8%A3%85.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/%E9%82%BB%E5%B1%85%E7%9A%84%E5%BB%BA%E7%AB%8B.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/DBD%E6%8A%A5%E6%96%87%E4%BA%A4%E4%BA%92.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8C%E6%AD%A5.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/StubArea.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/TotallyStubArea.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/Not-so-StubbyArea.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/TotallyNot-so-StubbyArea.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/VirtualLink1.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/VirtualLink2.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/VirtualLink3.png">
+<meta property="og:image" content="http://example.com/2021/04/23/ospf/VirtualLink4.png">
+<meta property="article:published_time" content="2021-04-23T11:37:08.000Z">
+<meta property="article:modified_time" content="2021-04-24T04:39:21.272Z">
 <meta property="article:author" content="张思宇">
+<meta property="article:tag" content="OSPF">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/23/ospf/cost%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png">
 
 
 
@@ -117,13 +137,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/"/>
+  <link rel="canonical" href="http://example.com/2021/04/23/ospf/"/>
 
 
 
 
 
-  <title>zsy's blog</title>
+  <title>OSPF | zsy's blog</title>
   
 
 
@@ -142,8 +162,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -226,9 +245,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -258,9 +277,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/23/ospf/" itemprop="url">OSPF</a></h1>
+          <h1 class="post-title" itemprop="name headline">OSPF</h1>
         
 
         <div class="post-meta">
@@ -310,9 +327,7 @@
       
 
       
-        
-          
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>路由协议OSPF全称为Open Shortest Path First，也就开放的最短路径优先协议，因为OSPF是由IETF开发的，它的使用不受任何厂商限制，所有人都可以使用，所以称为开放的，而最短路径优先（SPF）只是OSPF的核心思想，其使用的算法是Dijkstra算法，最短路径优先并没有太多特殊的含义，并没有任何一个路由协议是最长路径优先的，所有协议，都会选最短的。</p>
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>路由协议OSPF全称为Open Shortest Path First，也就开放的最短路径优先协议，因为OSPF是由IETF开发的，它的使用不受任何厂商限制，所有人都可以使用，所以称为开放的，而最短路径优先（SPF）只是OSPF的核心思想，其使用的算法是Dijkstra算法，最短路径优先并没有太多特殊的含义，并没有任何一个路由协议是最长路径优先的，所有协议，都会选最短的。</p>
 <ul>
 <li>OSPF的流量使用IP协议号89。</li>
 <li>OSPF工作在单个AS，是个绝对的内部网关路由协议（Interior Gateway Protocol，即IGP）。</li>
@@ -666,8 +681,6 @@
 </li>
 </ol>
 
-          
-        
       
     </div>
     
@@ -682,426 +695,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/21/stp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/21/stp/" itemprop="url">STP</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-21T21:00:22+08:00">
-                2021-04-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/OSPF/" rel="tag"># OSPF</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-STP协议概述"><a href="#1-STP协议概述" class="headerlink" title="1.STP协议概述"></a>1.STP协议概述</h3><h5 id="生成树协议产生背景"><a href="#生成树协议产生背景" class="headerlink" title="生成树协议产生背景"></a>生成树协议产生背景</h5><p>生成树协议STP（Spanning Tree Protocol)可以在提高可靠性的同时又能避免环路带来的各种问题。</p>
-<p>现网中越来越多的交换机与主机之间互联，如果交换机之间仅使用一条链路进行连接，链路出现故障时，可能导致业务中断。因此使用冗余链路来防止单点故障产生导致网络中断，但引入冗余链路的时候，也引入环路。当然，环路的产生也有可能是人为误操作造成的（如将链路连到本交换机上），因此提出了STP协议用于破除交换机之间的环路，来保证交换机设备的安全和网络可靠性。</p>
-<h5 id="环路带来的问题"><a href="#环路带来的问题" class="headerlink" title="环路带来的问题"></a>环路带来的问题</h5><ol>
-<li><p>网络风暴</p>
-<p>根据交换机的转发原则，如果交换机从一个端口上接收到的是一个广播帧，或者是一个目的MAC地址未知的单播帧，则会将这个帧向除源端口之外的所有其他端口转发。如果交换网络中有环路，则这个帧会被无限转发，此时便会形成广播风暴，网络中也会充斥着重复的数据帧。如下图主机A给主机B发送单播帧，SWB的MAC表上没有目的MAC地址为主机B的地址，因此将从其它两个端口发出，结果将造成两个方向的环路第一条为B-A-C-B，第二条为B-C-A-B，SWB将收到两个相同的单播帧，若MAC表不改变，则循环将一次循环，将造成网络风暴，导致网络带宽占用或设备损坏。若主机A发送广播帧同理。</p>
-<p><img src="/2021/04/21/stp/%E7%BD%91%E7%BB%9C%E9%A3%8E%E6%9A%B4.png" alt="网络风暴"></p>
-</li>
-<li><p>MAC地址表震荡</p>
-<p>交换机是根据所接收到的数据帧的源地址和接收端口生成MAC地址表项的。 主机A向外发送一个单播帧，假设此单播帧的目的MAC地址在网络中所有交换机的MAC地址表中都暂时不存在。SWB收到此数据帧之后，在MAC地址表中生成一个MAC地址表项，00-01-02-03-04-AA，对应端口为G0/0/3，并将其从G0/0/1和G0/0/2端口转发。此例仅以SWB从G0/0/1端口转发此帧为例进行说明。 SWA接收到此帧后，由于MAC地址表中没有对应此帧目的MAC地址的表项，所以SWA会将此帧从G0/0/2转发出去。 SWC接收到此帧后，由于MAC地址表中也没有对应此帧目的MAC地址的表项，所以SWC会将此帧从G0/0/2端口发送回SWB，也会发给主机B。 SWB从G0/0/2接口接收到此数据帧之后，会在MAC地址表中删除原有的相关表项，生成一个新的表项，00-01-02-03-04-AA，对应端口为G0/0/2。此过程会不断重复，从而导致MAC地址表震荡。        </p>
-<p><img src="/2021/04/21/stp/MAC%E5%9C%B0%E5%9D%80%E5%81%8F%E7%A7%BB.png" alt="MAC地址表震荡"></p>
-</li>
-</ol>
-<h3 id="2-STP协议BUPD报文"><a href="#2-STP协议BUPD报文" class="headerlink" title="2.STP协议BUPD报文"></a>2.STP协议BUPD报文</h3><p>为了计算生成树，交换机之间需要交换相关的信息和参数，这些信息和参数被封装在BPDU（Bridge Protocol Data Unit，网桥协议数据单元）中。 </p>
-<ul>
-<li><p>BPDU有两种类型：</p>
-<ul>
-<li><p>配置BPDU (Configuration BPDU)</p>
-<p>配置BPDU包含了桥ID、路径开销和端口ID等参数。STP协议通过在交换机之间传递配置BPDU来选举根交换机，以及确定每个交换机端口的角色和状态。在初始化过程中，每个桥都主动发送配置BPDU。</p>
-<p>在网络拓扑稳定以后，只有根桥主动发送配置BPDU，其他交换机在收到上游传来的配置BPDU后，才会发送自己的配置BPDU。</p>
-</li>
-<li><p>TCN BUPD (Topology Change Notification BUPD)    </p>
-<p>TCN BPDU是指下游交换机感知到拓扑发生变化时向上游发送的拓扑变化通知。 </p>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="BPDU报文字段相关概念"><a href="#BPDU报文字段相关概念" class="headerlink" title="BPDU报文字段相关概念"></a>BPDU报文字段相关概念</h5><ol>
-<li><p>BID(Bridge ID,桥ID)</p>
-<ul>
-<li><p>IEEE 802.1D标准中规定BID由16位的桥优先级（ Bridge Priority )与桥MAC地址构成。</p>
-<p>桥优先级（取值范围0～65535），默认值为32768，步长为4096。</p>
-</li>
-<li><p>每一台运行STP的交换机都拥有一个唯一的BID。</p>
-</li>
-<li><p>BID桥优先级占据高16bit，其余的低48bit是桥MAC地址。在STP网络中，BID最小的设备会被选举为根桥。</p>
-</li>
-</ul>
-</li>
-<li><p>RPC(Root Path cost,根路径开销)</p>
-<p>一台设备从某个接口到达根桥的RPC等于从根桥到该设备沿途所有<strong>入方向</strong>接口的Cost累加。</p>
-<p>或者是从该设备到根桥沿途所有<strong>出方向</strong>接口的Cost累加。</p>
-<p><img src="/2021/04/21/stp/RPC%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png" alt="RPC计算方法"></p>
-<p>cost(开销):交换机上每个接口都有对应的cost值</p>
-<ul>
-<li><p>接口的Cost主要用于计算根路径开销，也就是到达根的开销。</p>
-</li>
-<li><p>接口的缺省Cost除了与其速率、工作模式有关，还与交换机使用的STP Cost计算方法有关。</p>
-</li>
-<li><p>接口带宽越大，则Cost值越小。</p>
-</li>
-<li><p>用户也可以根据需要通过命令调整接口的Cost。</p>
-</li>
-</ul>
-<p><img src="/2021/04/21/stp/Cost%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png" alt="cost计算方法" title="cost计算方法"></p>
-</li>
-<li><p>PID(Port ID,接口ID)</p>
-<ul>
-<li>接口ID由两部分构成的，高4 bit是接口优先级，低12 bit是接口编号。</li>
-<li>激活STP的接口会维护一个缺省的接口优先级（取值范围0到240），在华为交换机上，该值为128，步长为16。</li>
-</ul>
-</li>
-<li><p>Flags</p>
-<p>由8位组成。最低位为TC（Topology Change）标志位，最高位位TCA（Topology Change Acknowledge）标志位；其他6位保留。</p>
-</li>
-<li><p>Message Age</p>
-<p>从根桥发送到当前交换机接收到BPDU的总时间，包括传输延时等。如果配置BPDU是根桥发出的，则Message Age为0。实际实现中，配置BPDU报文每经过一个交换机，Message Age增加1。</p>
-</li>
-<li><p>Max Age</p>
-<p>最大寿命，当一段时间未收到任何BPDU，生存期到达最大寿命时，网桥认为该接口连接的链路发生故障。默认20s。</p>
-<p>可在根桥上通过命令人为改动这个值，Max Age通过配置BPDU报文的传递，可以保证Max Age在整网中一致。非根桥设备收到配置BPDU报文后，会将报文中的Message Age和Max Age进行比较：如果Message Age小于等于Max Age，则该非根桥设备会继续转发配置BPDU报文。如果Message Age大于Max Age，则该配置BPDU报文将被老化掉。该非根桥设备将直接丢弃该配置BPDU，并认为是网络直径过大，导致了根桥连接失败。</p>
-</li>
-<li><p>Hello Time</p>
-<p>根桥生成配置BPDU的周期，默认时间为2s，指运行STP协议的设备发送配置BPDU的时间间隔，用于检测链路是否存在故障。交换机每隔Hello Time时间会向周围的交换机发送配置BPDU报文，以确认链路是否存在故障。当网络拓扑稳定后，该值只有在根桥上修改才有效。</p>
-</li>
-<li><p>Forward Delay</p>
-<p>端口状态迁移的延时。（配置BPDU传播到全网的最大时延，默认为15s）</p>
-</li>
-</ol>
-<h5 id="配置BPDU报文格式"><a href="#配置BPDU报文格式" class="headerlink" title="配置BPDU报文格式"></a>配置BPDU报文格式</h5><p><img src="/2021/04/21/stp/%E9%85%8D%E7%BD%AEBPDU%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png"></p>
-<h5 id="配置BPDU转发过程"><a href="#配置BPDU转发过程" class="headerlink" title="配置BPDU转发过程"></a>配置BPDU转发过程</h5><p><img src="/2021/04/21/stp/%E9%85%8D%E7%BD%AEBPDU%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.png" alt="配置BPDU转发过程"></p>
-<h3 id="3-STP根桥和端口角色"><a href="#3-STP根桥和端口角色" class="headerlink" title="3.STP根桥和端口角色"></a>3.STP根桥和端口角色</h3><h5 id="根桥"><a href="#根桥" class="headerlink" title="根桥"></a>根桥</h5><ul>
-<li>在一个广播域中有且只有一个根桥（Root Bridge）</li>
-<li>STP的主要作用之一是在整个交换网络中计算出一棵无环的“树”( STP树)</li>
-<li>根桥是一个STP交换网络中的“树根”</li>
-<li>STP开始工作后，会在交换网络中选举一个根桥，作为无环拓扑的“树根”</li>
-</ul>
-<h5 id="端口角色"><a href="#端口角色" class="headerlink" title="端口角色"></a>端口角色</h5><p>STP中定义了三种端口角色：指定端口，根端口和预备端口。 </p>
-<ul>
-<li><p>指定端口(Designated port,DP)</p>
-<p>非根桥去往根桥开销最小的接口，接收BPDU，转发数据，学习MAC</p>
-<p>指定端口是交换机向所连网段转发配置BPDU的端口，每个网段有且只能有一个指定端口。</p>
-<p>一般情况下(除非根桥在物理上存在环路)，根桥的每个端口总是指定端口。</p>
-</li>
-<li><p>根端口(Root port,RP)</p>
-<p>链路上去往根桥开销最小的接口，发送BPDU，转发数据，学习MAC</p>
-<p>在一个运行STP协议的交换机上最多只有一个根端口，但根桥上没有根端口。</p>
-</li>
-<li><p>非指定端口(Non-designated port,N-DP)</p>
-<p>非根桥去往根桥开销次优的接口，接收BPDU，不转发数据，不学习MAC，RP的备份接口</p>
-<p>如果一个端口既不是指定端口也不是根端口，则此端口为预备端口。预备端口将被阻塞。                                                                                                     </p>
-</li>
-</ul>
-<h3 id="4-STP工作过程"><a href="#4-STP工作过程" class="headerlink" title="4.STP工作过程"></a>4.STP工作过程</h3><ol>
-<li><p>在交换网络中选举一个根桥</p>
-<ul>
-<li><p>STP在交换网络中开始工作后，每个交换机都会向网络中发送配置BPDU。配置BPDU中包含交换机自己的桥ID。</p>
-<p>交换机启动后就自动开始进行生成树收敛计算。默认情况下，所有交换机启动时都认为自己是根桥，自己的所有端口都为指定端口，这样BPDU报文就可以通过所有端口转发。对端交换机收到BPDU报文后，会比较BPDU中的根桥ID和自己的桥ID。如果收到的BPDU报文中的桥ID优先级低，接收交换机会继续通告自己的配置BPDU报文给邻居交换机。如果收到的BPDU报文中的桥ID优先级高，则交换机会修改自己的BPDU报文的根桥ID字段，宣告新的根桥。</p>
-</li>
-<li><p>网络中拥有最小桥ID的交换机成为根桥。</p>
-<p>桥ID由16位的桥优先级（Bridge  Priority）和48位的MAC地址构成。在STP网络中，桥优先级是可以配置的，取值范围是0～65535，默认值为32768。优先级最高的设备（数值越小越优先）会被选举为根桥。如果优先级相同，则会比较MAC地址，MAC地址越小则越优先。</p>
-</li>
-<li><p>在一个连续的STP交换网络中只会存在一个根桥。·</p>
-</li>
-<li><p>根桥的角色是可抢占的。</p>
-</li>
-<li><p>为了确保交换网络的稳定，建议提前规划STP组网，并将规划为根桥的交换机的桥优先级设置为最小值0。</p>
-</li>
-</ul>
-</li>
-<li><p>在每台非根桥上选举一个根接口</p>
-<ul>
-<li><p>每一台非根桥交换机都会在自己的接口中选举出一个接口。</p>
-<p>非根交换机在选举根端口时分别依据该端口的根路径开销、对端BID（Bridge ID）、对端PID（Port ID）和本端PID。</p>
-<ol>
-<li><p>比较根路径开销</p>
-<p>根端口的确定需要比较RPC。当网桥从一个端口接收到配置BPDU后，首先获取其中的RPC，和接收端口的链路开销相加，得到此端口的RPC，每个收到配置BPDU的端口都进行同样的计算。然后比较各端口的RPC，拥有最小RPC值的端口即为本网桥的根端口。</p>
-</li>
-<li><p>RPC相同，比较对端BID</p>
-<p>如果有两个或两个以上的端口计算得到的累计路径开销相同，那么选择收到发送者BID最小的那个端口作为根端口。</p>
-</li>
-<li><p>对端BID相同，比较对端PID</p>
-<p> 如果两个或两个以上的端口连接到同一台交换机上，则选择发送者PID最小的那个端口作为根端口。</p>
-</li>
-<li><p>对端PID相同，比较本段PID</p>
-<p>如果两个或两个以上的端口通过Hub连接到同一台交换机的同一个接口上，则选择本交换机的这些端口中的PID最小的作为根端口。</p>
-</li>
-</ol>
-</li>
-<li><p>非根桥交换机上有且只会有一个根接口。</p>
-</li>
-<li><p>当非根桥交换机有多个接口接入网络中时，根接口是其收到最优配置BPDU的接口。</p>
-</li>
-<li><p>可以形象地理解为，根接口是每台非根桥上“朝向”根桥的接口。</p>
-</li>
-</ul>
-</li>
-<li><p>在每条链路上选举一个指定接口</p>
-<ul>
-<li><p>每条链路只有一个指定端口</p>
-<p>在网段上抑制其他端口（无论是自己的还是其他设备的）发送BPDU报文的端口，就是该网段的指定端口。</p>
-</li>
-<li><p>在每条链路上选举一个指定接口时分别依据该端口的累计路径开销、本端BID（Bridge ID）、本端PID（Port ID）</p>
-<p>（比较端口发送的配置BPDU和接收的配置BPDU，如果发送的配置BPDU优于接收到的配置BPDU，表明端口在本Physical Segment上拥有最优的配置BPDU，则该端口为指定端口。）</p>
-<ol>
-<li><p>比较累计路径开销</p>
-<p>累计路径开销最小的端口就是指定端口。</p>
-</li>
-<li><p>累计路径开销相同，比较本端BID</p>
-<p>如果累计路径开销相同，则比较端口所在交换机的桥ID，所在桥ID小的端口被选举为指定端口。</p>
-</li>
-<li><p>前两者选举不出来比较本端PID</p>
-<p>如果通过累计路径开销和所在桥ID选举不出来，则比较端口ID，端口ID最小的被选举为指定端口。</p>
-</li>
-</ol>
-</li>
-<li><p>一般情况下，根桥的所有接口都是指定接口。</p>
-</li>
-</ul>
-</li>
-<li><p>非指定接口被阻塞</p>
-<ul>
-<li>一台交换机上，既不是根接口，又不是指定接口的接口被称为非指定接口。</li>
-<li>STP操作的最后一步是阻塞网络中的非指定接口。这一步完成后，网络中的二层环路就此消除。</li>
-</ul>
-</li>
-</ol>
-<h3 id="5-STP接口状态及转换"><a href="#5-STP接口状态及转换" class="headerlink" title="5.STP接口状态及转换"></a>5.STP接口状态及转换</h3><h5 id="STP接口状态"><a href="#STP接口状态" class="headerlink" title="STP接口状态"></a>STP接口状态</h5><table>
-<thead>
-<tr>
-<th>状态名称</th>
-<th>状态描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>禁用(Disable)</td>
-<td>该接口不能收发BPDU，也不能收发业务数据帧，例如接口为down</td>
-</tr>
-<tr>
-<td>阻塞(Blocking)</td>
-<td>该接口被STP阻塞。处于阻塞状态的接口不能发送BPDU，但是会持续侦听BPDU，而且不能收发业务数据帧，也不会进行MAC地址学习</td>
-</tr>
-<tr>
-<td>侦听(Listening)</td>
-<td>当接口处于该状态时，表明STP初步认定该接口为根接口或指定接口，但接口依当接口处于该状态时，会侦听业务数据帧（但是不能转发业务数据帧），并且在收到业务数据帧后进行MAC地址学习</td>
-</tr>
-<tr>
-<td>学习(Learning)</td>
-<td>当接口处于该状态时，会侦听业务数据帧（但是不能转发业务数据帧），并且在收到业务数据帧后进行MAC地址学习</td>
-</tr>
-<tr>
-<td>转发(Forwarding)</td>
-<td>处于该状态的接口可以正常地收发业务数据帧，也会进行BPDU处理。接口的角色需是根接口或指定接口才能进入转发状态</td>
-</tr>
-</tbody></table>
-<h5 id="STP接口状态转换"><a href="#STP接口状态转换" class="headerlink" title="STP接口状态转换"></a>STP接口状态转换</h5><p><img src="/2021/04/21/stp/%E6%8E%A5%E5%8F%A3%E7%8A%B6%E6%80%81%E8%BF%81%E7%A7%BB%E5%9B%BE.png" alt="接口状态转换图"></p>
-<h3 id="6-拓扑变化及其收敛时间"><a href="#6-拓扑变化及其收敛时间" class="headerlink" title="6.拓扑变化及其收敛时间"></a>6.拓扑变化及其收敛时间</h3><h5 id="拓扑变化-根桥故障"><a href="#拓扑变化-根桥故障" class="headerlink" title="拓扑变化-根桥故障"></a>拓扑变化-根桥故障</h5><ol>
-<li>SW1根桥发生故障，停止发送BPDU报文。</li>
-<li>SW2等待Max Age计时器( 20 s)超时，从而导致已经收到的BPDU报文失效，又接收不到根桥发送的新的BPDU报文，从而得知上游出现故障。</li>
-<li>非根桥会互相发送配置BPDU，重新选举新的根桥。</li>
-<li>经过重新选举后，SW3的A端口经过两个Forward Delay( 15 s )时间恢复转发状态。</li>
-</ol>
-<ul>
-<li>非根桥会在BPDU老化之后开始根桥的重新选举。</li>
-<li>根桥故障会导致50 s左右的恢复时间。</li>
-</ul>
-<p><img src="/2021/04/21/stp/%E6%A0%B9%E6%A1%A5%E6%95%85%E9%9A%9C.png" alt="根桥故障"></p>
-<h5 id="拓扑变化-直连链路故障"><a href="#拓扑变化-直连链路故障" class="headerlink" title="拓扑变化-直连链路故障"></a>拓扑变化-直连链路故障</h5><p>当交换机SW2网络稳定时检测到根端口的链路发生故障，则其备用端口会经过两倍的Forward Delay ( 15s )时间进入用户流量转发状态。</p>
-<ul>
-<li>SW2检测到直连链路物理故障后，会将预备端口转换为根端口。</li>
-<li>直连链路故障，备用端口会经过30s后恢复转发状态。</li>
-</ul>
-<p><img src="/2021/04/21/stp/%E7%9B%B4%E8%BF%9E%E9%93%BE%E8%B7%AF%E6%95%85%E9%9A%9C.png" alt="直连链路故障"></p>
-<h5 id="拓扑变化-非直连链路故障"><a href="#拓扑变化-非直连链路故障" class="headerlink" title="拓扑变化-非直连链路故障"></a>拓扑变化-非直连链路故障</h5><ol>
-<li><p>SWB与SWA之间的链路发生了某种故障（非物理层故障），SWB因此一直收不到来自SWA的BPDU报文。</p>
-</li>
-<li><p>Max Age（20 s）定时器超时后，SWB、SWC几乎同时会收到对方发来的BPDU。</p>
-<p>SWB的Max Age定时器超时后，SWB会认为根桥SWA不再有效，并认为自己是根桥，于是开始发送自己的BPDU报文给SWC，通知SWC自己作为新的根桥。在此期间，由于SWC的Alternate端口再也不能收到包含原根桥ID的BPDU报文。其Max Age定时器超时后，SWC会切换Alternate端口为指定端口并且转发来自其根端口的BPDU报文给SWB。</p>
-</li>
-<li><p>经过STP重新计算后，SWB放弃宣称自己是根桥并重新确定端口角色</p>
-<ul>
-<li><p>非直连链路故障后，SWC的备用端口恢复到转发状态，需要经过两个Forward Delay( 15 s )时间恢复转发状态。</p>
-<p>SWC接口的状态转换：blocking–&gt;Listening–&gt;Learning–&gt; forwarding</p>
-</li>
-<li><p>非直连故障会导致50s左右的恢复时间（Mac Age+Forward Delay+Forward Delay）。</p>
-</li>
-</ul>
-</li>
-</ol>
-<p><img src="/2021/04/21/stp/%E9%9D%9E%E7%9B%B4%E8%BF%9E%E9%93%BE%E8%B7%AF%E6%95%85%E9%9A%9C.png" alt="非直连链路故障"></p>
-<h5 id="拓扑变化导致MAC地址表错误"><a href="#拓扑变化导致MAC地址表错误" class="headerlink" title="拓扑变化导致MAC地址表错误"></a>拓扑变化导致MAC地址表错误</h5><p>如图，SWC的根端口发生故障，导致生成树拓扑重新收敛，在生成树拓扑完成收敛之后,从主机A到主机B的帧仍然不能到达目的地。这是因为交换机依赖MAC地址表转发数据帧,缺省情况下，MAC地址表项的老化时间是300秒。若SWB的MAC地址表不及时更新将导致数据丢失。</p>
-<p><img src="/2021/04/21/stp/MAC%E5%9C%B0%E5%9D%80%E8%A1%A8%E9%94%99%E8%AF%AF.png" alt="MAC地址表错误"></p>
-<h5 id="拓扑变化导致MAC地址表错误解决过程"><a href="#拓扑变化导致MAC地址表错误解决过程" class="headerlink" title="拓扑变化导致MAC地址表错误解决过程"></a>拓扑变化导致MAC地址表错误解决过程</h5><p>拓扑变化过程中，根桥通过TCN BPDU报文获知生成树拓扑里发生了故障。根桥生成TC用来通知其他交换机加速老化现有的MAC地址表项。</p>
-<ul>
-<li><p>TCN BPDU在网络拓扑变化的时候产生。报文格式:协议标识、版本号和类型。</p>
-<p>TCN BPDU产生条件</p>
-<ul>
-<li>网桥上有端口转变为Forwarding状态，且该网桥至少包含一个指定端口。</li>
-<li>网桥上有端口从Forwarding状态或Learning状态转变为Blocking状态。</li>
-</ul>
-</li>
-<li><p>拓扑变化:会使用到配置BPDU中Flags的TCA和TC位。</p>
-</li>
-</ul>
-<p>拓扑变更以及MAC地址表项更新的具体过程如下：</p>
-<ol>
-<li><p>SWC感知到网络拓扑发生变化后，会不间断地向SWB发送TCN BPDU报文。</p>
-</li>
-<li><p>SWB收到SWC发来的TCN BPDU报文后，会把配置BPDU报文中的Flags的TCA位设置1，然后发送给SWC，告知SWC停止发送TCN BPDU报文。</p>
-<p>网桥发送TCN BPDU的周期位Hello Time，即当网桥发送TCN BPDU后，如果Hello  Time时间内没有收到TCA置位的配置BPDU，则网桥会重复发送TCN BPDU。如果网桥在Hello  Time时间内收到TCA置位的配置BPDU，则网桥停止从根端口发送TCN BPDU。</p>
-</li>
-<li><p>SWB向根桥转发TCN BPDU报文。</p>
-</li>
-<li><p>SWA给SWB发送TCA置位的BPDU，告知SWB停止发送TCN BPDU报文。</p>
-</li>
-<li><p>SWA把配置BPDU报文中的Flags的TC位设置为1后发送，通知下游设备修改MAC地址表项的老化时间。</p>
-<p>根桥在之后的Max Age+Forward Delay时间内，将发送配置的BPDU中的TC置位，当网桥收到根桥发送的TC置位的BPDU后，会将自身的MAC地址老化时间由300s缩短为Forward Delay（默认15 s）。</p>
-</li>
-<li><p>最多等待15秒之后，SWB中的错误MAC地址表项会被自动清除。此后，SWB就能重新开始MAC表项的学习及转发操作。</p>
-</li>
-</ol>
-<p><img src="/2021/04/21/stp/%E4%BF%AE%E6%94%B9MAC%E8%A1%A8%E6%B5%81%E7%A8%8B.png" alt="修改MAC表流程"></p>
-<h3 id="7-STP协议的不足"><a href="#7-STP协议的不足" class="headerlink" title="7.STP协议的不足"></a>7.STP协议的不足</h3><p>STP为了避免临时环路的产生，每一个端口在确认位根端口或指定端口后仍然需要等待30s的时间才能进入转发状态。在此30s时间内，端口不能进行数据的转发，这对于一些对时延敏感的应用是不可接受的。</p>
-<p>此外，对于拓扑不稳定的网络，经常需要重新进行STP计算，某些端口可能会长期处于阻塞状态而导致网络长时间的中断。</p>
-<p>STP定义了TCN BPDU，可以使得网络拓扑变化时，在50s之内实现收敛。</p>
-<p>TCN BPDU产生的条件之一是网桥有端口转变为Forwarding状态，且该网桥至少包含一个指定端口。</p>
-<p>当网络中有大量的用户主机时，由于用户主机位置不固定，可能会频繁地上下线，这样会使得交换机频繁发送TCN BPDU，导致网桥MAC地址老化时间长期保持为15s。MAC地址频繁的刷新会导致网络充斥大量由未知单播造成的广播报文，严重影响网络中的应用。</p>
-<h3 id="8-STP相关配置命令"><a href="#8-STP相关配置命令" class="headerlink" title="8.STP相关配置命令"></a>8.STP相关配置命令</h3><p>1．配置生成树工作模式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp mode &#123; stp | rstp | mstp &#125;</span><br></pre></td></tr></table></figure>
-<p>交换机支持STP、RSTP和MSTP (Multiple Spanning Tree Protocol)三种生成树工作模式，默认情况工作在MSTP模式。<br>2.（可选）配置根桥</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp root primary</span><br></pre></td></tr></table></figure>
-<p>配置当前设备为根桥。缺省情况下，交换机不作为任何生成树的根桥。配置后该设备优先级数值自动为0，并且不能更改设备优先级。<br>3.（可选）备份根桥</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp root secondary</span><br></pre></td></tr></table></figure>
-<p>配置当前交换机为备份根桥。缺省情况下，交换机不作为任何生成树的备份根桥。配置后该设备优先级数值为4096,并且不能更改设备优先级。<br>4.（可选）配置交换机的STP优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp priority priority</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，交换机的优先级取值是32768。<br>5.（可选）配置接口路径开销</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp pathcost-standard &#123; dot1d-1998 | dot1t | legacy &#125;</span><br></pre></td></tr></table></figure>
-<p>配置接口路径开销计算方法。缺省情况下，路径开销值的计算方法为IEEE 802.1t ( dot1t)标准方法。同一网络内所有交换机的接口路径开销应使用相同的计算方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] stp cost cost</span><br></pre></td></tr></table></figure>
-<p>设置当前接口的路径开销值。<br>6.（可选）配置接口优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-intf] stp priority priority</span><br></pre></td></tr></table></figure>
-<p>配置接口的优先级。缺省情况下，交换机接口的优先级取值是128。<br>7.启用STP/RSTP/MSTP</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp enable</span><br></pre></td></tr></table></figure>
-<p>使能交换机的STP/RSTP/MSTP功能。缺省情况下，设备的STP/RSTP/MSTP功能处于启用状态。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/21/stp/" rel="next" title="STP">
+                <i class="fa fa-chevron-left"></i> STP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -1111,10 +734,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -1122,6 +746,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -1142,8 +770,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -1214,6 +851,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AF%E8%AF%AD"><span class="nav-number">2.</span> <span class="nav-text">术语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Router-id"><span class="nav-number">2.1.</span> <span class="nav-text">Router-id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cost"><span class="nav-number">2.2.</span> <span class="nav-text">Cost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%EF%BC%88Link%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">链路（Link）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%EF%BC%88Link-State%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">链路状态（Link-State）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPF%E5%8C%BA%E5%9F%9F"><span class="nav-number">2.5.</span> <span class="nav-text">OSPF区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OSPF%E5%8C%BA%E5%9F%9F%E5%AD%98%E5%9C%A8%E4%BD%9C%E7%94%A8"><span class="nav-number">2.5.1.</span> <span class="nav-text">OSPF区域存在作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OSPF%E5%8C%BA%E5%9F%9F%E5%91%BD%E5%90%8D%E5%92%8C%E5%88%86%E7%B1%BB"><span class="nav-number">2.5.2.</span> <span class="nav-text">OSPF区域命名和分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OSPF%E5%8C%BA%E5%9F%9F%E5%88%92%E5%88%86%E8%A7%84%E5%88%99"><span class="nav-number">2.5.3.</span> <span class="nav-text">OSPF区域划分规则</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPF%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.6.</span> <span class="nav-text">OSPF路由器类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%9F%9F%E5%86%85%E9%83%A8%E8%B7%AF%E7%94%B1%E5%99%A8-Internal-Router%EF%BC%8CIR"><span class="nav-number">2.6.1.</span> <span class="nav-text">区域内部路由器(Internal Router，IR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%9F%9F%E8%BE%B9%E7%95%8C%E8%B7%AF%E7%94%B1%E5%99%A8-Area-Border-Router-%EF%BC%8CABR"><span class="nav-number">2.6.2.</span> <span class="nav-text">区域边界路由器(Area Border Router ，ABR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E6%B2%BB%E7%B3%BB%E7%BB%9F%E8%BE%B9%E7%95%8C%E8%B7%AF%E7%94%B1%E5%99%A8-Autonomous-System-Boundary-Router-%EF%BC%8CASBR"><span class="nav-number">2.6.3.</span> <span class="nav-text">自治系统边界路由器(Autonomous System Boundary Router ，ASBR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AA%A8%E5%8D%83%E8%B7%AF%E7%94%B1%E5%99%A8%EF%BC%88-Border-Router%EF%BC%8CBR"><span class="nav-number">2.6.4.</span> <span class="nav-text">骨千路由器（ Border Router，BR)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPF%E8%B7%AF%E7%94%B1%E7%B1%BB%E5%9E%8B%E5%92%8C%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="nav-number">2.7.</span> <span class="nav-text">OSPF路由类型和选择策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%9F%9F%E5%86%85%E9%83%A8%E8%B7%AF%E7%94%B1%EF%BC%88Intra-Area-Route%EF%BC%89"><span class="nav-number">2.7.1.</span> <span class="nav-text">区域内部路由（Intra-Area Route）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1%EF%BC%88Inter-Area-Route%E6%88%96Summary-Route%EF%BC%89"><span class="nav-number">2.7.2.</span> <span class="nav-text">区域间路由（Inter-Area Route或Summary Route）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B1%EF%BC%88External-Route%EF%BC%89"><span class="nav-number">2.7.3.</span> <span class="nav-text">外部路由（External Route）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="nav-number">2.7.4.</span> <span class="nav-text">路由选择策略</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E5%B1%85%EF%BC%88Neighbor%EF%BC%89"><span class="nav-number">2.8.</span> <span class="nav-text">邻居（Neighbor）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%EF%BC%88Adjacency%EF%BC%89"><span class="nav-number">2.9.</span> <span class="nav-text">邻接（Adjacency）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DR-BDR"><span class="nav-number">2.10.</span> <span class="nav-text">DR&#x2F;BDR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E6%84%8F%E4%B9%89"><span class="nav-number">2.10.1.</span> <span class="nav-text">存在意义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E4%B8%BE%E5%8E%9F%E5%88%99"><span class="nav-number">2.10.2.</span> <span class="nav-text">选举原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E5%A4%84%E7%90%86%E5%8E%9F%E5%88%99"><span class="nav-number">2.10.3.</span> <span class="nav-text">数据包处理原则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E6%95%B0%E6%8D%AE%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">OSPF数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">数据包类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF-LSDB%EF%BC%88%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%89%E5%90%8C%E6%AD%A5%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">OSPF LSDB（链路状态数据库）同步过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Down"><span class="nav-number">4.1.</span> <span class="nav-text">Down</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Attempt"><span class="nav-number">4.2.</span> <span class="nav-text">Attempt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Init"><span class="nav-number">4.3.</span> <span class="nav-text">Init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Two-way"><span class="nav-number">4.4.</span> <span class="nav-text">Two-way</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exstart"><span class="nav-number">4.5.</span> <span class="nav-text">Exstart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exchange"><span class="nav-number">4.6.</span> <span class="nav-text">Exchange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Loading"><span class="nav-number">4.7.</span> <span class="nav-text">Loading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Full"><span class="nav-number">4.8.</span> <span class="nav-text">Full</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E7%BD%91%E7%BB%9C%E7%B1%BB%E5%9E%8B%EF%BC%88Network-Type%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">OSPF网络类型（Network Type）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E9%93%BE%E8%B7%AF%E7%B1%BB%E5%9E%8B%EF%BC%88Link-Type%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">OSPF链路类型（Link Type）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stub-Network-Link"><span class="nav-number">6.1.</span> <span class="nav-text">Stub Network Link</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Point-To-Point-Link"><span class="nav-number">6.2.</span> <span class="nav-text">Point-To-Point Link</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transit-Link"><span class="nav-number">6.3.</span> <span class="nav-text">Transit Link</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Virtual-link"><span class="nav-number">6.4.</span> <span class="nav-text">Virtual link</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E6%9C%AB%E8%8A%82%E5%8C%BA%E5%9F%9F"><span class="nav-number">7.</span> <span class="nav-text">OSPF末节区域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stub-Area%EF%BC%88%E6%9C%AB%E8%8A%82%E5%8C%BA%E5%9F%9F%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">Stub Area（末节区域）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Totally-Stub-Area%EF%BC%88%E5%AE%8C%E5%85%A8%E6%9C%AB%E8%8A%82%E5%8C%BA%E5%9F%9F%EF%BC%89"><span class="nav-number">7.2.</span> <span class="nav-text">Totally Stub Area（完全末节区域）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Not-so-Stubby-Area%EF%BC%88NSSA%EF%BC%89"><span class="nav-number">7.3.</span> <span class="nav-text">Not-so-Stubby Area（NSSA）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Totally-Not-so-Stubby-Area%EF%BC%88Totally-NSSA%EF%BC%89"><span class="nav-number">7.4.</span> <span class="nav-text">Totally Not-so-Stubby Area（Totally NSSA）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF-LSA%E7%B1%BB%E5%9E%8B"><span class="nav-number">8.</span> <span class="nav-text">OSPF LSA类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B-1-%EF%BC%88Router-Link%EF%BC%89"><span class="nav-number">8.1.</span> <span class="nav-text">类型 1 （Router Link）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B-2-%EF%BC%88Network-Link%EF%BC%89"><span class="nav-number">8.2.</span> <span class="nav-text">类型 2 （Network Link）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B-3-%EF%BC%88Summary-Link%EF%BC%89"><span class="nav-number">8.3.</span> <span class="nav-text">类型 3 （Summary Link）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B-4-%EF%BC%88ASBR-Summary-Link%EF%BC%89"><span class="nav-number">8.4.</span> <span class="nav-text">类型 4 （ASBR Summary Link）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B-5-%EF%BC%88External-Link%EF%BC%89"><span class="nav-number">8.5.</span> <span class="nav-text">类型 5 （External Link）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B-7-%EF%BC%88NSSA-Link%EF%BC%89"><span class="nav-number">8.6.</span> <span class="nav-text">类型 7 （NSSA Link）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E8%99%9A%E9%93%BE%E8%B7%AF%EF%BC%88Virtual-Link%EF%BC%89"><span class="nav-number">9.</span> <span class="nav-text">OSPF虚链路（Virtual Link）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E8%AE%A4%E8%AF%81"><span class="nav-number">10.</span> <span class="nav-text">OSPF认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E6%B1%87%E6%80%BB%E8%B7%AF%E7%94%B1"><span class="nav-number">11.</span> <span class="nav-text">OSPF汇总路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E5%91%BD%E4%BB%A4%E9%85%8D%E7%BD%AE"><span class="nav-number">12.</span> <span class="nav-text">OSPF命令配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1354,6 +1007,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
