@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AAA," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="AAA概述AAA是Authentication (认证)、Authorization(授权）和Accounting(计费）的简称，是网络安全的一种管理机制，提供了认证、授权、计费三种安全功能。  AAA基本架构AAA常见网络架构中包括用户、NAS ( Network Access Server )、AAA服务器(AAA Server ) 。  NAS负责集中收集和管理用户的访问请求。 在NAS上会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AAA">
+<meta property="og:url" content="http://example.com/2021/04/24/AAA/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="AAA概述AAA是Authentication (认证)、Authorization(授权）和Accounting(计费）的简称，是网络安全的一种管理机制，提供了认证、授权、计费三种安全功能。  AAA基本架构AAA常见网络架构中包括用户、NAS ( Network Access Server )、AAA服务器(AAA Server ) 。  NAS负责集中收集和管理用户的访问请求。 在NAS上会">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/AAA%E6%A6%82%E8%BF%B0.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/%E8%AE%A4%E8%AF%81.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/%E6%8E%88%E6%9D%83.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/RADIUS%E6%95%B0%E6%8D%AE%E5%BA%93.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/RADIUS%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/HWTACACS%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/2021/04/24/AAA/AAA%E5%9F%9F.png">
+<meta property="article:published_time" content="2021-04-24T11:11:49.000Z">
+<meta property="article:modified_time" content="2021-04-24T13:32:12.924Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="AAA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/24/AAA/AAA%E6%A6%82%E8%BF%B0.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/04/24/AAA/"/>
+
+
+
+
+
+  <title>AAA | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/AAA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AAA</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:11:49+08:00">
+                2021-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="AAA概述"><a href="#AAA概述" class="headerlink" title="AAA概述"></a>AAA概述</h2><p>AAA是Authentication (认证)、Authorization(授权）和Accounting(计费）的简称，是网络安全的一种管理机制，提供了认证、授权、计费三种安全功能。</p>
+<p><img src="/2021/04/24/AAA/AAA%E6%A6%82%E8%BF%B0.png" alt="AAA概述"></p>
+<h2 id="AAA基本架构"><a href="#AAA基本架构" class="headerlink" title="AAA基本架构"></a>AAA基本架构</h2><p>AAA常见网络架构中包括用户、NAS ( Network Access Server )、AAA服务器(AAA Server ) 。</p>
+<ul>
+<li>NAS负责集中收集和管理用户的访问请求。</li>
+<li>在NAS上会创建多个域来管理用户。不同的域可以关联不同的AAA方案。AAA方案包含认证方案，授权方案，计费方案。</li>
+<li>当收到用户接入网络的请求时，NAS会根据用户名来判断用户所在的域，根据该域对应的AAA方案对用户进行管控。</li>
+</ul>
+<p><img src="/2021/04/24/AAA/AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84.png" alt="AAA基本架构"></p>
+<h2 id="Authentication-认证"><a href="#Authentication-认证" class="headerlink" title="Authentication (认证)"></a>Authentication (认证)</h2><p>AAA支持的认证方式有:不认证，本地认证，远端认证。</p>
+<ul>
+<li>不认证：对用户非常信任，不对其进行合法检查，一般情况下不采用这种方式。 </li>
+<li>本地认证：将用户信息配置在网络接入服务器上。本地认证的优点是速度快，可以为运营降低成本，缺点是存储信息量受设备硬件条件限制。 </li>
+<li>远端认证：将用户信息配置在认证服务器上。支持通过 RADIUS（Remote Authentication Dial In User Service）协议或 HWTACACS（HuaWei Terminal Access Controller Access Control System）协议进行远端认证。 </li>
+</ul>
+<p><img src="/2021/04/24/AAA/%E8%AE%A4%E8%AF%81.png" alt="认证"></p>
+<h2 id="Authorization-授权）"><a href="#Authorization-授权）" class="headerlink" title="Authorization(授权）"></a>Authorization(授权）</h2><p>AAA支持的授权方式有:不授权，本地授权，远端授权。</p>
+<ul>
+<li><p>不授权：不对用户进行授权处理。 </p>
+</li>
+<li><p>本地授权：根据网络接入服务器为本地用户账号配置的相关属性进行授权。 </p>
+</li>
+<li><p>HWTACACS 授权：由 HWTACACS 服务器对用户进行授权。 </p>
+</li>
+<li><p>if-authenticated 授权：如果用户通过了认证，而且使用的认证</p>
+<p>模式是本地或远端认证，则用户授权通过。 </p>
+</li>
+<li><p>RADIUS 认证成功后授权：RADIUS 协议的认证和授权是绑定在一起的，不能单独使用 RADIUS 进行授权。 </p>
+</li>
+</ul>
+<p>授权信息包括:所属用户组、所属VLAN、ACL编号等。</p>
+<p><img src="/2021/04/24/AAA/%E6%8E%88%E6%9D%83.png" alt="授权"></p>
+<h2 id="Accounting-计费）"><a href="#Accounting-计费）" class="headerlink" title="Accounting(计费）"></a>Accounting(计费）</h2><p>计费功能用于<strong>监控授权用户的网络行为和网络资源的使用情况</strong></p>
+<p>AAA支持的计费方式有:不计费，远端计费。</p>
+<ul>
+<li> 不计费：不对用户计费。 </li>
+<li>远端计费：支持通过 RADIUS 服务器或 HWTACACS 服务器进行远端计费。 </li>
+</ul>
+<h2 id="AAA实现-RADIUS-协议"><a href="#AAA实现-RADIUS-协议" class="headerlink" title="AAA实现-RADIUS 协议"></a>AAA实现-RADIUS 协议</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>远程认证拨号用户服务 RADIUS（Remote Authentication Dial-In User Service）是一种分布式的、客 户端/服务器结构的信息交互协议，能保护网络不受未授权访问的干扰，常应用在既要求较高安全 性、又允许远程用户访问的各种网络环境中。该协议定义了基于 UDP 的 RADIUS 帧格式及其消息 传输机制，并规定 UDP 端口 1812、1813 分别作为认证、计费端口。<br>RADIUS 最初仅是针对拨号用户的 AAA 协议，后来随着用户接入方式的多样化发展，RADIUS 也 适应多种用户接入方式，如以太网接入、ADSL 接入。它通过认证授权来提供接入服务，通过计费 来收集、记录用户对网络资源的使用。 </p>
+<h3 id="RADIUS服务器"><a href="#RADIUS服务器" class="headerlink" title="RADIUS服务器"></a>RADIUS服务器</h3><p>RADIUS 服务器一般运行在中心计算机或工作站上，维护相关的用户认证和网络服务访问信息，负 责接收用户连接请求并认证用户，然后给客户端返回所有需要的信息（如接受/拒绝认证请求）。</p>
+<p>RADIUS 服务器通常要维护三个数据库：</p>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="RADIUS数据库"></p>
+<p>“Users”：用于存储用户信息（如用户名、口令以及使用的协议、IP 地址等配置信息）。<br>“Clients”：用于存储 RADIUS 客户端的信息（如接入设备的共享密钥、IP 地址等）。<br>“Dictionary”：用于存储 RADIUS 协议中的属性和属性值含义的信息。 </p>
+<h3 id="RADIUS客户端"><a href="#RADIUS客户端" class="headerlink" title="RADIUS客户端"></a>RADIUS客户端</h3><p>RADIUS 客户端一般位于网络接入服务器 NAS（Network Access Server）设备上，可以遍布整个网 络，负责传输用户信息到指定的 RADIUS 服务器，然后根据从服务器返回的信息进行相应处理（如 接受/拒绝用户接入）。<br>网络接入服务器作为 RADIUS 协议的客户端，实现以下功能：<br>      标准 RADIUS 协议及扩充属性，包括 RFC2865、RFC2866。<br>      华为扩展的私有属性。<br>      对 RADIUS 服务器状态的主动探测功能。<br>      计费结束报文的本地缓存重传功能。</p>
+<p>​      RADIUS 服务器的自动切换功能。 </p>
+<h3 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h3><p>RADIUS 客户端和 RADIUS 服务器之间认证消息的交互是通过共享密钥的参与来完成的，并且共 享密钥不能通过网络来传输，增强了信息交互的安全性。另外，为防止用户密码在不安全的网络上 传递时被窃取，在传输过程中对密码进行了加密。 </p>
+<h3 id="认证和计费消息流程"><a href="#认证和计费消息流程" class="headerlink" title="认证和计费消息流程"></a>认证和计费消息流程</h3><ul>
+<li>用户登录网络接入服务器时，会将用户名和密码发送给该网络接入服务器； </li>
+<li>该网络接入服务器中的 RADIUS 客户端接收用户名和密码，并向 RADIUS 服务器发送认证请求； </li>
+<li>RADIUS 服务器接收到合法的请求后，完成认证，并把所需的用户授权信息返回给客户端； 对于非法的请求，RADIUS 服务器返回认证失败的信息给客户端。 </li>
+<li>计费的消息流程和认证/授权的消息流程类似。 </li>
+</ul>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%B5%81%E7%A8%8B.png" alt="RADIUS流程"></p>
+<h2 id="AAA实现-HWTACACS-协议"><a href="#AAA实现-HWTACACS-协议" class="headerlink" title="AAA实现-HWTACACS 协议"></a>AAA实现-HWTACACS 协议</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>HW 终端访问控制器控制系统协议 HWTACACS（Huawei Terminal Access Controller Access Control System）是在 TACACS（RFC 1492）基础上进行了功能增强的安全协议。该协议与 RADIUS 协议 类似，采用客户端/服务器模式实现 NAS 与 HWTACACS 服务器之间的通信。<br>HWTACACS 协议主要用于点对点协议 PPP（Point-to-Point Protocol）和虚拟私有拨号网络 VPDN （Virtual Private Dial-up Network）接入用户及终端用户的认证、授权和计费。其典型应用是对需要 登录到设备上进行操作的终端用户进行认证、授权、计费。设备作为 HWTACACS 的客户端，将 用户名和密码发给 HWTACACS 服务器进行验证。用户验证通过并得到授权之后可以登录到设备 上进行操作。 </p>
+<h3 id="HWTACACS-协议和-RADIUS-协议的比较"><a href="#HWTACACS-协议和-RADIUS-协议的比较" class="headerlink" title="HWTACACS 协议和 RADIUS 协议的比较"></a>HWTACACS 协议和 RADIUS 协议的比较</h3><table>
+<thead>
+<tr>
+<th>HWTACACS</th>
+<th>RADIUS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>使用TCP，网络传输更可靠</td>
+<td>使用UDP</td>
+</tr>
+<tr>
+<td>除了标准的HWTACACS报文头,对报文主体全部进行加密</td>
+<td>只是对认证报文中的密码字段进行加密</td>
+</tr>
+<tr>
+<td>认证与授权分离</td>
+<td>认证与授权一起处理</td>
+</tr>
+<tr>
+<td>适于进行安全控制</td>
+<td>适于进行计费</td>
+</tr>
+<tr>
+<td>支持对设备上的配置命令进行授权使用</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<h3 id="HWTACACS-的基本消息交互流程"><a href="#HWTACACS-的基本消息交互流程" class="headerlink" title="HWTACACS 的基本消息交互流程"></a>HWTACACS 的基本消息交互流程</h3><p>下面以 Telnet 用户为例，说明使用 HWTACACS 对用户进行认证、授权和计费的过程。</p>
+<p><img src="/2021/04/24/AAA/HWTACACS%E8%BF%87%E7%A8%8B.png" alt="HWTACACS过程"></p>
+<blockquote>
+<p>HWTACACS 协议与其他厂商支持的 TACACS+协议都实现了认证、授权、计费的功能。HWTACACS 和 TACACS+的认证流程与实现方式是一致的，HWTACACS 协议能够完全兼容 TACACS+协议。 </p>
+</blockquote>
+<h2 id="AAA基于域的用户管理"><a href="#AAA基于域的用户管理" class="headerlink" title="AAA基于域的用户管理"></a>AAA基于域的用户管理</h2><p>一个域是由属于同一个域的用户构成的群体。<br>NAS 设备对用户的管理是基于域的，每个接入用户都属于一个域。用户所属的域是由用户登录时提供的用户名决定的。</p>
+<p><img src="/2021/04/24/AAA/AAA%E5%9F%9F.png" alt="AAA域"></p>
+<blockquote>
+<p>用户的认证、授权、计费都是在相应的域视图下应用预先配置的认证、授权、计费方案来实现的。 AAA 有缺省的认证、授权、计费方案，分别为本地认证、本地授权、本地计费。如果用户所属的 域下未应用任何认证、授权、计费方案，系统将使用缺省的认证、授权、计费方案。 </p>
+</blockquote>
+<h2 id="AAA配置命令"><a href="#AAA配置命令" class="headerlink" title="AAA配置命令"></a>AAA配置命令</h2><p>1．进入AAA视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] aaa</span><br></pre></td></tr></table></figure>
+<p>从系统视图进入AAA视图进行配置<br>2. 创建认证方案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
+<p>创建认证方案并进入相应的认证方案视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-authentication-scheme-name] authentication-mode &#123; hwtacacs &#x2F; local | radius &#125;</span><br></pre></td></tr></table></figure>
+<p>配置认证方式，local指定认证方式为本地认证。缺省情况下，认证方式为本地认证。<br>3. 创建domain并绑定认证方案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] domain domain-name</span><br></pre></td></tr></table></figure>
+<p>创建domain并进入相应的domain视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-domain-name] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
+<p>在相应的domain视图下绑定认证方案<br>4. 创建用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password cipher password</span><br></pre></td></tr></table></figure>
+<p>创建本地用户，并配置本地用户的密码:<br>如果用户名中带域名分隔符，如@，则认为@前面的部分是用户名，后面部分是域名·如果没有@，则整个字符串为用户名，域为默认域。<br>5. 配置用户接入类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name service-type &#123; &#123; terminal | telnet | ftp | ssh &#x2F; snmp | http ]&#x2F; ppp | none &#125;</span><br></pre></td></tr></table></figure>
+<p>设置本地用户的接入类型。缺省情况下，本地用户关闭所有的接入类型。<br>6. 配置用户级别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name privilege level level</span><br></pre></td></tr></table></figure>
+<p>指定本地用户的权限级别。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AAA/" rel="tag"># AAA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/23/ospf/" rel="next" title="OSPF">
+                <i class="fa fa-chevron-left"></i> OSPF
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">AAA概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">AAA基本架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authentication-%E8%AE%A4%E8%AF%81"><span class="nav-number">3.</span> <span class="nav-text">Authentication (认证)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authorization-%E6%8E%88%E6%9D%83%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">Authorization(授权）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Accounting-%E8%AE%A1%E8%B4%B9%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">Accounting(计费）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%AE%9E%E7%8E%B0-RADIUS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.</span> <span class="nav-text">AAA实现-RADIUS 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">6.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RADIUS%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">6.2.</span> <span class="nav-text">RADIUS服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RADIUS%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">6.3.</span> <span class="nav-text">RADIUS客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6"><span class="nav-number">6.4.</span> <span class="nav-text">安全机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A4%E8%AF%81%E5%92%8C%E8%AE%A1%E8%B4%B9%E6%B6%88%E6%81%AF%E6%B5%81%E7%A8%8B"><span class="nav-number">6.5.</span> <span class="nav-text">认证和计费消息流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%AE%9E%E7%8E%B0-HWTACACS-%E5%8D%8F%E8%AE%AE"><span class="nav-number">7.</span> <span class="nav-text">AAA实现-HWTACACS 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="nav-number">7.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HWTACACS-%E5%8D%8F%E8%AE%AE%E5%92%8C-RADIUS-%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">7.2.</span> <span class="nav-text">HWTACACS 协议和 RADIUS 协议的比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HWTACACS-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B6%88%E6%81%AF%E4%BA%A4%E4%BA%92%E6%B5%81%E7%A8%8B"><span class="nav-number">7.3.</span> <span class="nav-text">HWTACACS 的基本消息交互流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E5%9F%BA%E4%BA%8E%E5%9F%9F%E7%9A%84%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">AAA基于域的用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AAA%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">9.</span> <span class="nav-text">AAA配置命令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
