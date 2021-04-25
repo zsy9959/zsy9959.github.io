@@ -241,6 +241,291 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/ACL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/25/ACL/" itemprop="url">ACL</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-25T12:18:52+08:00">
+                2021-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="ACL产生背景"><a href="#ACL产生背景" class="headerlink" title="ACL产生背景"></a>ACL产生背景</h2><p>提供一个工具，实现浏览的过滤。</p>
+<p><img src="/2021/04/25/ACL/ACL%E4%BA%A7%E7%94%9F%E8%83%8C%E6%99%AF.png" alt="ACL产生背景"></p>
+<h2 id="ACL概述"><a href="#ACL概述" class="headerlink" title="ACL概述"></a>ACL概述</h2><p>访问控制列表ACL（Access Control List）是由一条或多条规则组成的集合。所谓规则，是指描述报文匹配条件的判断语句，这些条件可以是报文的源地址、目的地址、端口号等。</p>
+<p> ACL本质上是一种报文过滤器，规则是过滤器的滤芯。设备基于这些规则进行报文匹配，可以过滤出特定的报文，并根据应用ACL的业务模块的处理策略来允许或阻止该报文通过。</p>
+<p>ACL技术总是与防火墙、路由策略、QoS、流量过滤、NAT等其他技术结合使用。</p>
+<h2 id="ACL的基本概念及其工作原理"><a href="#ACL的基本概念及其工作原理" class="headerlink" title="ACL的基本概念及其工作原理"></a>ACL的基本概念及其工作原理</h2><h3 id="ACL组成"><a href="#ACL组成" class="headerlink" title="ACL组成"></a>ACL组成</h3><p>ACL由若千条permit或deny语句组成。每条语句就是该ACL的一条规则，每条语句中的permit或deny就是与这条规则相对应的处理动作。</p>
+<p><img src="/2021/04/25/ACL/ACL%E7%BB%84%E6%88%90.png" alt="ACL组成"></p>
+<h3 id="规则编号"><a href="#规则编号" class="headerlink" title="规则编号"></a>规则编号</h3><ul>
+<li>规则编号(Rule ID ) :<br>一个ACL中的每一条规则都有一个相应的编号。</li>
+<li>步长( Step ) :<br>步长是系统自动为ACL规则分配编号时，每个相邻规则编号之间的差值，缺省值为5。步长的作用是为了方便后续在旧规则之间，插入新的规则。</li>
+<li>Rule ID分配规则:<br>系统为ACL中首条未手工指定编号的规则分配编号时，使用步长值（例如步长=5，首条规则编号为5)作为该规则的起始编号;为后续规则分配编号时(若无指定规则编号)，则使用大于当前ACL内最大规则编号且是步长整数倍的最小整数作为规则编号。</li>
+</ul>
+<p><img src="/2021/04/25/ACL/ACL%E8%A7%84%E5%88%99%E7%BC%96%E5%8F%B7.png" alt="ACL规则编号"></p>
+<h3 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h3><ul>
+<li><p>通配符（Wildcard）是一个32比特长度的数值，用于指示IP地址中，哪些比特位需要严格匹配，哪些比特位无需匹配。</p>
+</li>
+<li><p>匹配规则为：“0”表示“匹配”；“1”表示“随机分配”</p>
+<p>特殊的通配符</p>
+<ul>
+<li><p>精确匹配192.168.1.1这个IP地址</p>
+<p>192.168.1.1 0.0.0.0 = 192.168.1.1 0</p>
+</li>
+<li><p>匹配所有IP地址<br>0.0.0.0 255.255.255 = any</p>
+</li>
+</ul>
+</li>
+<li><p>通配符通常采用类似网络掩码的点分十进制形式表示，但是含义却与网络掩码完全不同。</p>
+</li>
+</ul>
+<p><img src="/2021/04/25/ACL/ACL%E9%80%9A%E9%85%8D%E7%AC%A6.png" alt="ACL通配符"></p>
+<h3 id="ACL分类与标识"><a href="#ACL分类与标识" class="headerlink" title="ACL分类与标识"></a>ACL分类与标识</h3><ul>
+<li>基于ACL规则定义方式的分类</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>编号范围</th>
+<th>规则定义描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基本ACL</td>
+<td>2000~2999</td>
+<td>仅使用报文的源IP地址、分片信息和生效时间段信息来定义规则。</td>
+</tr>
+<tr>
+<td>高级ACL</td>
+<td>3000~3999</td>
+<td>可使用IPv4报文的源IP地址、目的IP地址、IP协议类型、ICMP类型、TCP源/目的端口号、UDP源/目的端口号、生效时间段等来定义规则。</td>
+</tr>
+<tr>
+<td>二层ACL</td>
+<td>4000~4999</td>
+<td>使用报文的以太网帧头信息来定义规则，如根据源MAC地址、目的MAC地址、二层协议类型等。</td>
+</tr>
+<tr>
+<td>用户自定义ACL</td>
+<td>5000~5999</td>
+<td>使用报文头、偏移位置、字符串掩码和用户自定义字符串来定义规则。</td>
+</tr>
+<tr>
+<td>用户ACL</td>
+<td>6000~6999</td>
+<td>既可使用IPv4报文的源IP地址或源UCL ( User Control List )组，也可使用目的IP地址或目的UCL组、IP协议类型、ICMP类型、TCP源端口/目的端口、UDP源端口/目的端口号等来定义规则。</td>
+</tr>
+</tbody></table>
+<ul>
+<li>基于ACL标识方法的分类</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>规则定义描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数字型ACL</td>
+<td>传统的ACL标识方法。创建ACL时，指定一个唯一的数字标识该ACL。</td>
+</tr>
+<tr>
+<td>命名型ACL</td>
+<td>通过名称代替编号来标识ACL。</td>
+</tr>
+</tbody></table>
+<h3 id="基本ACL与高级ACL"><a href="#基本ACL与高级ACL" class="headerlink" title="基本ACL与高级ACL"></a>基本ACL与高级ACL</h3><ul>
+<li>基本ACL</li>
+</ul>
+<p><img src="/2021/04/25/ACL/%E5%9F%BA%E6%9C%ACACL.png" alt="基本ACL"></p>
+<ul>
+<li>高级ACL</li>
+</ul>
+<p><img src="/2021/04/25/ACL/%E9%AB%98%E7%BA%A7ACL.png" alt="高级ACL"></p>
+<h3 id="ACL的匹配机制"><a href="#ACL的匹配机制" class="headerlink" title="ACL的匹配机制"></a>ACL的匹配机制</h3><p><img src="/2021/04/25/ACL/ACL%E5%8C%B9%E9%85%8D%E6%9C%BA%E5%88%B6.png" alt="ACL匹配机制"></p>
+<h3 id="ACL匹配位置"><a href="#ACL匹配位置" class="headerlink" title="ACL匹配位置"></a>ACL匹配位置</h3><p>入站(Inbound)及出站(Outbound)方向</p>
+<p><img src="/2021/04/25/ACL/ACL%E5%8C%B9%E9%85%8D%E6%96%B9%E5%90%91.png" alt="ACL匹配方向"></p>
+<h2 id="ACL应用规则"><a href="#ACL应用规则" class="headerlink" title="ACL应用规则"></a>ACL应用规则</h2><ol>
+<li><p>“3P”原则</p>
+<p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）</p>
+<p>和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
+<p>（1）一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</p>
+<p>（2）经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</p>
+<p>（3）一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</p>
+</li>
+<li><p>语句顺序决定了对数据的控制顺序</p>
+<p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
+</li>
+<li><p>至少有一条允许（Permit）语句</p>
+<p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
+</li>
+<li><p>最有限制性的语句应该放在ACL的靠前位置</p>
+<p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。 </p>
+</li>
+</ol>
+<h2 id="ACL基础配置命名"><a href="#ACL基础配置命名" class="headerlink" title="ACL基础配置命名"></a>ACL基础配置命名</h2><p>1.创建基本ACL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl [ number ] acl-number [ match-order config ]</span><br></pre></td></tr></table></figure>
+<p>使用编号(2000~2999）创建一个数字型的基本ACL，并进入基本ACL视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl name acl-name &#123; basic | acl-number &#125; [ match-order config]</span><br></pre></td></tr></table></figure>
+<p>使用名称创建一个命名型的基本ACL，并进入基本ACL视图。</p>
+<p>2.配置基本ACL的规则</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-acl-basic-2000] rule [ rule-id ] &#123; deny | permit &#125; [ source &#123; source-address source-wildcard| any &#125; time-range time-name ]</span><br></pre></td></tr></table></figure>
+<p>在基本ACL视图下，通过此命令来配置基本ACL的规则。</p>
+<p>3.创建高级ACL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl [ number ] acl-number [ match-order config ]</span><br></pre></td></tr></table></figure>
+<p>使用编号（ 3000~3999 )创建一个数字型的高级ACL，并进入高级ACL视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl name acl-name &#123; advance | acl-number &#125; [ match-order config ]</span><br></pre></td></tr></table></figure>
+<p>使用名称创建一个命名型的高级ACL，进入高级ACL视图。</p>
+<p>4.配置高级ACL的规则</p>
+<p>根据IP承载的协议类型不同，在设备上配置不同的高级ACL规则。对于不同的协议类型，有不同的参数组合。<br>当参数protocol为lP时，高级ACL的命令格式为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rule [ rule-id ] &#123; deny | permit &#125; ip [ destination &#123; destination-address destination-wildcard| any &#125; &#x2F; source &#123; source-addresssource-wildcard | any &#125; &#x2F; time-range time-name| [ dscp dscp | [ tos tos | precedence precedence]]]</span><br></pre></td></tr></table></figure>
+<p>在高级ACL视图下，通过此命令来配置高级ACL的规则。<br>当参数protocol为TCP时，高级ACL的命令格式为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rule [ rule-id] &#123; deny | permit &#125; &#123; protocol-number| tcp &#125; [ destination &#123; destination-address destination-wildcard l any &#125;ldestination-port &#123; eq port | gt port | t port | range port-start port-end &#125; | source &#123; source-address source-wildcard| any &#125; lsource-port &#123; eq port | gt port | lt port | range port-start port-end &#125; | tcp-flag &#123; ack l fin &#x2F; syn &#125; * &#x2F; time-range time-name ]*</span><br></pre></td></tr></table></figure>
+<p>在高级ACL视图下，通过此命令来配置高级ACL的规则。</p>
+<p>5.接口视图下应用ACL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] traffic-filter &#123; inbound | outbound &#125; acl acl-number</span><br></pre></td></tr></table></figure>
+
+<p>在设备接口的入方向或出方向配置ACL</p>
+<h2 id="ACL配置案例"><a href="#ACL配置案例" class="headerlink" title="ACL配置案例"></a>ACL配置案例</h2><p>案例1——-拒绝某台机器访问<br>按照下图所示拓扑结构，禁止主机pc2与pc1通信，而允许所有其他流量</p>
+<p> <img src="/2021/04/25/ACL/ACL%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B.png" alt="ACL配置案例"></p>
+<p>配置思路:<br>    ①在路由器上配置两个端口,设置好ip地址<br>    ②配置好主机的ip/子网掩码/网关<br>    ③在路由器上添加一条访问控制权限,基本acl 2000<br>    ④把这条acl限制规则应用到g0/0/1的端口上(可以称作监听端口)</p>
+<p>R1配置:</p>
+<p>[Huawei]interface GigabitEthernet 0/0/0                      //为0端口配置ip<br>[Huawei-GigabitEthernet0/0/0] ip address 192.168.1.254 24<br>[Huawei]acl 2000               //进入acl 2000 列表<br>[Huawei-acl-basic-2000]rule deny source 192.168.2.1 0      //定义一条规则 deny代表拒绝 source代表来源 0代表仅此一台<br>[Huawei]interface GigabitEthernet 0/0/1<br>[Huawei-GigabitEthernet0/0/1]ip address 192.168.2.254 24<br>[Huawei-GigabitEthernet0/0/1]traffic-filter inbound acl 2000               //用端口1来监听这条规则</p>
+<p>测试:</p>
+<ol>
+<li>pc1 ping pc3 ,    通信成功</li>
+<li>pc1 ping pc2,     通信失败</li>
+<li>pc2 ping pc3,     通信成功</li>
+</ol>
+<hr>
+<p>案例2——拒绝所有机器访问<br>还是刚才的案例,将</p>
+<p>[Huawei-acl-basic-2000]rule deny source 192.168.2.1 0</p>
+<p>更改为</p>
+<p>[Huawei-acl-basic-2000]rule deny any 即可</p>
+<hr>
+<p>案例3——-仅允许某台机器访问<br>实验要求:仅允许pc2访问pc1</p>
+<blockquote>
+<p>根据acl规则4:最有限制性的语句应该放在ACL的靠前位置 和规则3: 至少有一条允许（Permit）语句</p>
+</blockquote>
+<p>配置如下:<br>[Huawei]interface GigabitEthernet 0/0/0                      //为0端口配置ip<br>[Huawei-GigabitEthernet0/0/0] ip address 192.168.1.254 24<br>[Huawei]acl 2000               //进入acl 2000 列表<br>[Huawei-acl-basic-2000]rule permit source 192.168.2.1 0      //定义一条规则 permit代表拒绝 source代表来源 0代表仅此一台<br>[Huawei-acl-basic-2000]rule deny any             // 拒绝所有访问<br>[Huawei]interface GigabitEthernet 0/0/1<br>[Huawei-GigabitEthernet0/0/1]ip address 192.168.2.254 24<br>[Huawei-GigabitEthernet0/0/1]traffic-filter inbound acl 2000               //用端口1来监听这条规则</p>
+<hr>
+<p>案例4———-拒绝访问ftp或者http服务<br>实验要求: 禁止pc2访问pc1的ftp服务，禁止pc3访问pc1的www服务，所有主机的其他服务不受限制</p>
+<blockquote>
+<p>ftp与http都是基于tcp协议的,所以我们可以拒绝tcp协议来限制</p>
+</blockquote>
+<p>R1配置:<br>[Huawei]acl 3000            //拒绝tcp为高级控制,所以3000起<br>[Huawei-acl-adv-3000]rule deny tcp source 192.168.2.1 0 destination 192.168.1.1     //destination代表目的地地址<br>[Huawei-acl-adv-3000]rule deny tcp source 192.168.2.2 0 destination 192.168.1.1<br>[Huawei]interface g0/0/1<br>[Huawei-GigabitEthernet0/0/1]traffic-filter inbound acl 3000 //在接口中应用acl</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/AAA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1473,7 +1758,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1486,7 +1771,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
