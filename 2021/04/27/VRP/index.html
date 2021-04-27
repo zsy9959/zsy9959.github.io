@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="VRP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="VRP什么是VRP？VRP是华为公司具有完全自主知识产权的网络操作系统，可以运行在多种硬件平台之上。 VRP拥有一致的网络界面、用户界面和管理界面，熟悉VRP命令行并且熟练掌握VRP配置是高效管理华为网络设备的必备基础。 VRP的功能 实现统一的用户界面和管理界面 实现控制平面功能，并定义转发平面接口规范。 实现各产品转发平面与VRP控制平面之间的交互 屏蔽各产品链路层对于网络层的差异  VRP发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华为VRP系统">
+<meta property="og:url" content="http://example.com/2021/04/27/VRP/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="VRP什么是VRP？VRP是华为公司具有完全自主知识产权的网络操作系统，可以运行在多种硬件平台之上。 VRP拥有一致的网络界面、用户界面和管理界面，熟悉VRP命令行并且熟练掌握VRP配置是高效管理华为网络设备的必备基础。 VRP的功能 实现统一的用户界面和管理界面 实现控制平面功能，并定义转发平面接口规范。 实现各产品转发平面与VRP控制平面之间的交互 屏蔽各产品链路层对于网络层的差异  VRP发">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/VRP%E5%8F%91%E5%B1%95%E5%8F%B2.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/VRP%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E8%AE%BE%E5%A4%87%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/CLI.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E6%9C%AC%E5%9C%B0%E7%99%BB%E5%BD%95.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/PuTTY.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/WEB.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE2.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E4%B8%8D%E5%AE%8C%E6%95%B4%E5%85%B3%E9%94%AE%E5%AD%97%E8%BE%93%E5%85%A5.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A81.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A82.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A83.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E5%B8%AE%E5%8A%A91.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E5%B8%AE%E5%8A%A92.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E9%94%99%E8%AF%AF.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/UNDO1.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/UNDO2.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/UNDO3.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/%E8%87%AA%E5%AE%9A%E4%B9%89.png">
+<meta property="og:image" content="http://example.com/2021/04/27/VRP/VRP8.png">
+<meta property="article:published_time" content="2021-04-27T09:14:57.000Z">
+<meta property="article:modified_time" content="2021-04-27T10:22:23.035Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="VRP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/27/VRP/VRP%E5%8F%91%E5%B1%95%E5%8F%B2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/04/27/VRP/"/>
+
+
+
+
+
+  <title>华为VRP系统 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/27/VRP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">华为VRP系统</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-27T17:14:57+08:00">
+                2021-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="VRP"><a href="#VRP" class="headerlink" title="VRP"></a>VRP</h2><h3 id="什么是VRP？"><a href="#什么是VRP？" class="headerlink" title="什么是VRP？"></a>什么是VRP？</h3><p>VRP是华为公司具有完全自主知识产权的网络操作系统，可以运行在多种硬件平台之上。</p>
+<p>VRP拥有一致的网络界面、用户界面和管理界面，熟悉VRP命令行并且熟练掌握VRP配置是高效管理华为网络设备的必备基础。</p>
+<h3 id="VRP的功能"><a href="#VRP的功能" class="headerlink" title="VRP的功能"></a>VRP的功能</h3><ul>
+<li>实现统一的用户界面和管理界面</li>
+<li>实现控制平面功能，并定义转发平面接口规范。</li>
+<li>实现各产品转发平面与VRP控制平面之间的交互</li>
+<li>屏蔽各产品链路层对于网络层的差异</li>
+</ul>
+<h3 id="VRP发展史"><a href="#VRP发展史" class="headerlink" title="VRP发展史"></a>VRP发展史</h3><p><img src="/2021/04/27/VRP/VRP%E5%8F%91%E5%B1%95%E5%8F%B2.png" alt="VRP发展史"></p>
+<h3 id="VRP文件系统"><a href="#VRP文件系统" class="headerlink" title="VRP文件系统"></a>VRP文件系统</h3><p>文件系统是指对存储器中文件、目录的管理。</p>
+<ul>
+<li>系统软件是设备启动、运行的必备软件。常见文件后缀名为: ( .cc )。</li>
+<li>配置文件是用户将配置命令保存的文件。常见文件后缀名为:(.cfg, .zip , .dat)。</li>
+<li>补丁是一种与设备系统软件兼容的软件。常见文件后缀名为:(.pat).</li>
+<li>PAF文件是根据用户对产品需要提供了一个简单有效的方式来裁剪产品的资源占用和功能特性。常见文件后缀名为:(.bin)。</li>
+</ul>
+<p><img src="/2021/04/27/VRP/VRP%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.png" alt="VRP文件系统"></p>
+<h3 id="VRP存储设备"><a href="#VRP存储设备" class="headerlink" title="VRP存储设备"></a>VRP存储设备</h3><ul>
+<li><p>Flash：属于非易失存储布。</p>
+</li>
+<li><p>SDRAM：同步动态随机存储器。</p>
+</li>
+<li><p>NVRAM：非易失随机读写存储布。</p>
+</li>
+<li><p>SD Card：断电后，不会丢失数据。存储容量较大，—般出现在主控板上。</p>
+</li>
+<li><p>USB：接口，用于外接大容量存储设备。</p>
+</li>
+</ul>
+<h3 id="设备初始化过程"><a href="#设备初始化过程" class="headerlink" title="设备初始化过程"></a>设备初始化过程</h3><p>设备上电后，首先运行BootROM软件，初始化硬件并显示设备的硬件参数，然后运行系统软件，最后从默认存储路径中读取配置文件进行设备的初始化操作。</p>
+<p><img src="/2021/04/27/VRP/%E8%AE%BE%E5%A4%87%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B.png" alt="设备初始化过程"></p>
+<h3 id="设备管理方式"><a href="#设备管理方式" class="headerlink" title="设备管理方式"></a>设备管理方式</h3><p>命令行和Web网管是常见管理方式。</p>
+<h4 id="命名行"><a href="#命名行" class="headerlink" title="命名行"></a>命名行</h4><p>命令行方式需要用户使用设备提供的命令行对设备进行管理与维护，此方式可实现对设备的精细化管理，但是要求用户熟悉命令行。命令行方式可以通过Console口、Telnet或SSH方式登录设备。</p>
+<p>登录成功后即进入命令行界面CLl ( Command Line Interface ) 。命令行界面是工程师与网络设备进行交互的常用工具。</p>
+<p><img src="/2021/04/27/VRP/CLI.png" alt="CLI"></p>
+<p>设备登录的两种方式分为两种:本地登录(Console)和远程登录(Telnet或SSH)。</p>
+<h5 id="本地登录"><a href="#本地登录" class="headerlink" title="本地登录"></a>本地登录</h5><ul>
+<li>当用户需为第一次上电的设备进行配置时,可通过Console口本地登录设备。</li>
+<li>控制口( Console Port )是一种通信串行端口，由设备的主控板提供。</li>
+<li>用户终端的串行端口可以与设备Console口直接连接，然后通过PuTTY工具本地登录实现对设备的本地配置。</li>
+</ul>
+<p><img src="/2021/04/27/VRP/%E6%9C%AC%E5%9C%B0%E7%99%BB%E5%BD%95.png" alt="本地登录"></p>
+<ul>
+<li>PuTTY工具是一个Telnet、sSH、串行接口等的连接软件。<br>本地登录时，终端设备采用串口与华为设备Console口连接，所以采用“Serial”连接类型，COM端口根据终端设备实际端口选取，速率固定为9600。</li>
+</ul>
+<p><img src="/2021/04/27/VRP/PuTTY.png" alt="PuTTY"></p>
+<h5 id="远程登录"><a href="#远程登录" class="headerlink" title="远程登录"></a>远程登录</h5><p>远程登录指终端远程登录到网络设备上，并且可以集中管理维护网络设备。<br>远程登录包括SSH和Telnet两种方式。</p>
+<p><img src="/2021/04/27/VRP/%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95.png" alt="远程登录"></p>
+<h4 id="Web网管"><a href="#Web网管" class="headerlink" title="Web网管"></a>Web网管</h4><p>Web网管方式通过图形化的操作界面，实现对设备直观方便地管理与维护，但是此方式仅可实现对设备部分功能的管理与维护。Web网管方式可以通过HTTP和HTTPS方式登录设备。</p>
+<ul>
+<li>以华为AR系列路由器为例，PC终端打开浏览昌软件，在地址栏中输入“<a target="_blank" rel="noopener" href="https://192.168.1.1”按下回车键,显示ar/">https://192.168.1.1”按下回车键，显示AR</a> Web管理平台登录界面。</li>
+</ul>
+<p><img src="/2021/04/27/VRP/WEB.png" alt="WEB"></p>
+<h3 id="VRP用户界面"><a href="#VRP用户界面" class="headerlink" title="VRP用户界面"></a>VRP用户界面</h3><p>系统通过用户界面用来管理、监控设备和用户间的当前会话。</p>
+<h4 id="Console用户界面"><a href="#Console用户界面" class="headerlink" title="Console用户界面"></a>Console用户界面</h4><p>Console用户界面用来管理和监控通过Console口登录的用户。<br>用户终端的串行口可以与设备Console口直接连接，实现对设备的本地访问。</p>
+<h4 id="VTY-用户界面"><a href="#VTY-用户界面" class="headerlink" title="VTY 用户界面"></a>VTY 用户界面</h4><p>VTY用户界面用来管理和监控通过VTY方式登录的用户。<br>用户通过终端与设备建立Telnet或STelnet连接后，即建立了一条VTY通道，通过VTY通道实现对设备的远程访问。</p>
+<h3 id="VRP用户级别"><a href="#VRP用户级别" class="headerlink" title="VRP用户级别"></a>VRP用户级别</h3><p>VRP可以实现不同级别的用户能够执行不同级别的命令，限制不同用户对设备的操作。</p>
+<table>
+<thead>
+<tr>
+<th>用户等级</th>
+<th>命令等级</th>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>参观级</td>
+<td>可使用网络诊断工具命令( ping、tracert ) 、从本设备出发访问外部设备的命令( Telnet客户端命令)、部分display命令等。</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0 and 1</td>
+<td>监控级</td>
+<td>用于系统维护，可使用display等命令。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0,1 and 2</td>
+<td>配置级</td>
+<td>可使用业务配置命令，包括路由、各个网络层次的命令，向用户提供直接网络服务。</td>
+</tr>
+<tr>
+<td>3-15</td>
+<td>0,1,2 and 3</td>
+<td>管理级</td>
+<td>可使用用于系统基本运行的命令，对业务提供支撑作用，包括文件系统、FTP、TFTP下载、命令级别设置命令以及用于业务故障诊断的debugging命令等。</td>
+</tr>
+</tbody></table>
+<h2 id="命令行基础"><a href="#命令行基础" class="headerlink" title="命令行基础"></a>命令行基础</h2><h3 id="基础命名结构"><a href="#基础命名结构" class="headerlink" title="基础命名结构"></a>基础命名结构</h3><p><img src="/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E7%BB%93%E6%9E%84.png" alt="命令结构"></p>
+<h3 id="命令行视图"><a href="#命令行视图" class="headerlink" title="命令行视图"></a>命令行视图</h3><p>设备提供了多样的配置和查询命令，为便于用户使用这些命令，VRP系统按功能分类将命令分别注册在不同的命令行视图下。</p>
+<p><img src="/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE.png" alt="命令行视图"></p>
+<p><img src="/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE2.png" alt="命令行视图"></p>
+<h3 id="编辑命名行"><a href="#编辑命名行" class="headerlink" title="编辑命名行"></a>编辑命名行</h3><p>设备的命令行界面提供基本的命令行编辑功能，以下为常用的编辑功能:</p>
+<ol>
+<li>功能键</li>
+</ol>
+<ul>
+<li>退格键Backspace</li>
+<li>左光标键←或&lt;Ctrl+B&gt;</li>
+<li>右光标键→或&lt;Ctrl+F&gt;</li>
+</ul>
+<ol start="2">
+<li>不完整关键字输入</li>
+</ol>
+<p><img src="/2021/04/27/VRP/%E4%B8%8D%E5%AE%8C%E6%95%B4%E5%85%B3%E9%94%AE%E5%AD%97%E8%BE%93%E5%85%A5.png" alt="不完整关键字输入"></p>
+<ol start="3">
+<li>Tab键的使用:</li>
+</ol>
+<ul>
+<li>如果与之匹配的关键字唯一，按下<Tab>键，系统自动补全关键字，补全后，反复按<Tab>关键字不变。</Tab></Tab></li>
+</ul>
+<p><img src="/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A81.png" alt="Tab键的使用"></p>
+<ul>
+<li>如果与之匹配的关键字不唯一，反复按<Tab>键可循环显示所有以输入字符串开头的关键字。</Tab></li>
+</ul>
+<p><img src="/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A82.png" alt="Tab键的使用"></p>
+<ul>
+<li>如果没有与之匹配的关键字，按Tab键后，关键字不变。</li>
+</ul>
+<p><img src="/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A83.png" alt="Tab键的使用"></p>
+<h3 id="使用命令行在线帮助"><a href="#使用命令行在线帮助" class="headerlink" title="使用命令行在线帮助"></a>使用命令行在线帮助</h3><h4 id="完全帮助"><a href="#完全帮助" class="headerlink" title="完全帮助"></a>完全帮助</h4><p>当用户输入命令时，可以使用命令行的完全帮助获取全部关键字和参数的提示。</p>
+<p><img src="/2021/04/27/VRP/%E5%B8%AE%E5%8A%A91.png" alt="帮助"></p>
+<h4 id="部分帮助"><a href="#部分帮助" class="headerlink" title="部分帮助"></a>部分帮助</h4><p>当用户输入命令时，如果只记得此命令关键字的开头一个或几个字符，可以使用命令行的部分帮助获取以该字符串开头的所有关键字的提示。</p>
+<p><img src="/2021/04/27/VRP/%E5%B8%AE%E5%8A%A92.png" alt="帮助"></p>
+<h4 id="解读命令行的错误信息"><a href="#解读命令行的错误信息" class="headerlink" title="解读命令行的错误信息"></a>解读命令行的错误信息</h4><p>用户键入的命令，如果通过语法检查，则正确执行，否则系统将会向用户报告错误信息。</p>
+<p><img src="/2021/04/27/VRP/%E9%94%99%E8%AF%AF.png" alt="错误"></p>
+<h3 id="使用undo命令行"><a href="#使用undo命令行" class="headerlink" title="使用undo命令行"></a>使用undo命令行</h3><p>在命令前加undo关键字，即为undo命令行。undo命令行一般用来恢复缺省情况、禁用某个功能或者删除某项配置。以下为参考案例:</p>
+<ul>
+<li>使用undo命令行恢复缺省情况</li>
+</ul>
+<p><img src="/2021/04/27/VRP/UNDO1.png" alt="UNDO"></p>
+<ul>
+<li>使用undo命令禁用某个功能</li>
+</ul>
+<p><img src="/2021/04/27/VRP/UNDO2.png" alt="UNDO"></p>
+<ul>
+<li>使用undo命令删除某项设置</li>
+</ul>
+<p><img src="/2021/04/27/VRP/UNDO3.png" alt="UNDO"></p>
+<h3 id="使用命令行的快捷键"><a href="#使用命令行的快捷键" class="headerlink" title="使用命令行的快捷键"></a>使用命令行的快捷键</h3><p>用户可以使用设备中的快捷键，完成对命令的快速输入，从而简化操作。</p>
+<p>系统中的快捷键分类：自定义快捷键和系统快捷键。</p>
+<h4 id="自定义快捷键"><a href="#自定义快捷键" class="headerlink" title="自定义快捷键"></a>自定义快捷键</h4><ul>
+<li>自定义快捷键∶共有4个，&lt;Ctrl+G&gt;、&lt;Ctrl+L&gt;、&lt;Ctrl+O&gt;和&lt;Ctrl+U&gt;。</li>
+<li>用户可以根据自己的需要将这4个快捷键与任意命令进行关联，当使用快捷键时，系统自动执行它所对应的命令。</li>
+</ul>
+<p><img src="/2021/04/27/VRP/%E8%87%AA%E5%AE%9A%E4%B9%89.png" alt="自定义"></p>
+<h4 id="系统快捷键"><a href="#系统快捷键" class="headerlink" title="系统快捷键"></a>系统快捷键</h4><ul>
+<li>CTRL_A:将光标移动到当前行的开头</li>
+<li>CTRL_B:将光标向左移动一个字符</li>
+<li>CTRL_C:停止当前命令的运行</li>
+<li>CTRL_E:将光标移动到当前行的末尾</li>
+<li>CTRL_X:删除光标左侧所有的字符</li>
+<li>CTRL_Y:删除光标所在位置及其右侧所有的字符</li>
+<li>CTRL_Z:返回到用户视图</li>
+<li>CTRL+]∶终止当前连接或切换连接</li>
+</ul>
+<h2 id="常见文件系统配置命令"><a href="#常见文件系统配置命令" class="headerlink" title="常见文件系统配置命令"></a>常见文件系统配置命令</h2><p>1.查看当前目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;pwd</span><br></pre></td></tr></table></figure>
+
+<p>2.显示当前目录下的文件信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;dir</span><br></pre></td></tr></table></figure>
+
+<p>3.查看文本文件的具体内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;more</span><br></pre></td></tr></table></figure>
+<p>4.修改用户当前界面的工作目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;cd</span><br></pre></td></tr></table></figure>
+<p>5.创建新的目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;mkdir</span><br></pre></td></tr></table></figure>
+<p>6.删除目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;rmdir</span><br></pre></td></tr></table></figure>
+<p>7.复制文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;copy</span><br></pre></td></tr></table></figure>
+<p>8.移动文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;move</span><br></pre></td></tr></table></figure>
+<p>9.重命名文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;rename</span><br></pre></td></tr></table></figure>
+<p>10.删除文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;delete</span><br></pre></td></tr></table></figure>
+<p>11.恢复删除的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;undelete</span><br></pre></td></tr></table></figure>
+<p>12.彻底删除回收站中的文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;reset recycle-bin</span><br></pre></td></tr></table></figure>
+<h2 id="基本配置命令"><a href="#基本配置命令" class="headerlink" title="基本配置命令"></a>基本配置命令</h2><p>1 .配置设备名称</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] sysname name</span><br></pre></td></tr></table></figure>
+
+<p>⒉设置系统时钟</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; clock timezone time-zone-name &#123; add | minus &#125; offset</span><br></pre></td></tr></table></figure>
+<p>用来对本地时区信息进行设置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; clock datetime [ utc ] HH.:MM:Ss YYYY-MM-DD</span><br></pre></td></tr></table></figure>
+<p>用来设置设备当前或UTC日期和时间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; clock daylight-saving-time</span><br></pre></td></tr></table></figure>
+<p>用来设置设备的夏令时。</p>
+<p>3.配置命令等级</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] command-privilege level level view view-name command-key</span><br></pre></td></tr></table></figure>
+<p>用来设置指定视图内的命令的级别。命令级别分为参观、监控、配置、管理4个级别，分别对应标识0、1、2、3。</p>
+<p>4.配置用户通过Password方式登录设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]user-interface vty 0 4</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ui-vty0-4]set authentication password cipher information</span><br></pre></td></tr></table></figure>
+<p>用来进入指定的用户视图并配置用户认证方式为password。系统支持的用户界面包括Console用户界面和VTY用户界面，Console界面用于本地登录，VTY界面用于远程登录。默认情况下，设备一般最多支持15个用户同时通过VTY方式访问。</p>
+<p>5.配置用户界面参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] idle-timeout minutes [ seconds ]</span><br></pre></td></tr></table></figure>
+<p>用来设置用户界面断开连接的超时时间。如果用户在一段时间内没有输入命令，系统将断开连接。缺省情况下，超时时间是10分钟。</p>
+<p>6.配置接口IP地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]interface interface-number</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-interface-number]ip address ip address</span><br></pre></td></tr></table></figure>
+<p>用来给设备上的物理或逻辑接口配置IP地址。</p>
+<p>7.查看当前运行的配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;display current-configuration</span><br></pre></td></tr></table></figure>
+<p>8.配置文件保存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;save</span><br></pre></td></tr></table></figure>
+<p>9.查看保存的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;display saved-configuration</span><br></pre></td></tr></table></figure>
+<p>10.清除已保存的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;reset saved-configuration</span><br></pre></td></tr></table></figure>
+<p>11.查看系统启动配置参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; display startup</span><br></pre></td></tr></table></figure>
+<p>用来查看设备本次及下次启动相关的系统软件、备份系统软件、配置文件、License文件、补丁文件以及语音文件。</p>
+<p>12.配置系统下次启动时使用的配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;startup saved-configuration configuration-file</span><br></pre></td></tr></table></figure>
+<p>设备升级时，可以通过此命令让设备下次启动时加载指定的配置文件</p>
+<p>13.配置设备重启</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;reboot</span><br></pre></td></tr></table></figure>
+
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p><img src="/2021/04/27/VRP/VRP8.png" alt="VRP8"></p>
+<p>VRP5操作系统只有运行配置库和启动配置库，配置命令后直接生效无需提交，而VRP8操作系统配置命令后需要提交才能生效。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/VRP/" rel="tag"># VRP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/26/IPv6/" rel="next" title="IPv6">
+                <i class="fa fa-chevron-left"></i> IPv6
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#VRP"><span class="nav-number">1.</span> <span class="nav-text">VRP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFVRP%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">什么是VRP？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRP%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.</span> <span class="nav-text">VRP的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRP%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="nav-number">1.3.</span> <span class="nav-text">VRP发展史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRP%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.4.</span> <span class="nav-text">VRP文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRP%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87"><span class="nav-number">1.5.</span> <span class="nav-text">VRP存储设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">1.6.</span> <span class="nav-text">设备初始化过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-number">1.7.</span> <span class="nav-text">设备管理方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E8%A1%8C"><span class="nav-number">1.7.1.</span> <span class="nav-text">命名行</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E7%99%BB%E5%BD%95"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">本地登录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">远程登录</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Web%E7%BD%91%E7%AE%A1"><span class="nav-number">1.7.2.</span> <span class="nav-text">Web网管</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRP%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="nav-number">1.8.</span> <span class="nav-text">VRP用户界面</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Console%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="nav-number">1.8.1.</span> <span class="nav-text">Console用户界面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VTY-%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="nav-number">1.8.2.</span> <span class="nav-text">VTY 用户界面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRP%E7%94%A8%E6%88%B7%E7%BA%A7%E5%88%AB"><span class="nav-number">1.9.</span> <span class="nav-text">VRP用户级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">命令行基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E5%91%BD%E5%90%8D%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">基础命名结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE"><span class="nav-number">2.2.</span> <span class="nav-text">命令行视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%BE%91%E5%91%BD%E5%90%8D%E8%A1%8C"><span class="nav-number">2.3.</span> <span class="nav-text">编辑命名行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%9C%A8%E7%BA%BF%E5%B8%AE%E5%8A%A9"><span class="nav-number">2.4.</span> <span class="nav-text">使用命令行在线帮助</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E5%85%A8%E5%B8%AE%E5%8A%A9"><span class="nav-number">2.4.1.</span> <span class="nav-text">完全帮助</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%83%A8%E5%88%86%E5%B8%AE%E5%8A%A9"><span class="nav-number">2.4.2.</span> <span class="nav-text">部分帮助</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E8%AF%BB%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF"><span class="nav-number">2.4.3.</span> <span class="nav-text">解读命令行的错误信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8undo%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">2.5.</span> <span class="nav-text">使用undo命令行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">2.6.</span> <span class="nav-text">使用命令行的快捷键</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">2.6.1.</span> <span class="nav-text">自定义快捷键</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">2.6.2.</span> <span class="nav-text">系统快捷键</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">常见文件系统配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">基本配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-number">5.</span> <span class="nav-text">扩展</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
