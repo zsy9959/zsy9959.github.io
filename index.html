@@ -241,6 +241,272 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/" itemprop="url">网络参考模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-28T08:47:04+08:00">
+                2021-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="应用和数据"><a href="#应用和数据" class="headerlink" title="应用和数据"></a>应用和数据</h2><h3 id="故事的起源-应用"><a href="#故事的起源-应用" class="headerlink" title="故事的起源 - 应用"></a>故事的起源 - 应用</h3><p>应用的存在，是为了满足人们的各种需求，比如访问网页，在线游戏，在线视频等。伴随着应用会有信息的产生。比如文本，图片，视频等都是信息的不同呈现方式。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%BA%94%E7%94%A8.png" alt="应用"></p>
+<h3 id="应用的实现-数据"><a href="#应用的实现-数据" class="headerlink" title="应用的实现 - 数据"></a>应用的实现 - 数据</h3><p><strong>数据的产生</strong>：在计算机领域，数据是各种信息的载体。</p>
+<p><strong>数据传输</strong>：大部分应用程序所产生的数据需要在不同的设备之间传递。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%95%B0%E6%8D%AE.png" alt="数据"></p>
+<h2 id="网络参考模型与标准协议"><a href="#网络参考模型与标准协议" class="headerlink" title="网络参考模型与标准协议"></a>网络参考模型与标准协议</h2><h3 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7.应用层</td>
+<td>对应用程序提供接口。</td>
+</tr>
+<tr>
+<td>6.表示层</td>
+<td>进行数据格式的转换，以确保一个系统生成的应用层数据能够被另外一个系统的应用层所识别和理解。</td>
+</tr>
+<tr>
+<td>5.会话层</td>
+<td>在通信双方之间建立、管理和终止会话。</td>
+</tr>
+<tr>
+<td>4.传输层</td>
+<td>建立、维护和取消一次端到端的数据传输过程。控制传输节奏的快慢，调整数据的排序等等。</td>
+</tr>
+<tr>
+<td>3.网络层</td>
+<td>定义逻辑地址;实现数据从源到目的地的转发。</td>
+</tr>
+<tr>
+<td>2.数据链路层</td>
+<td>将分组数据封装成帧;在数据链路上实现数据的点到点、或点到多点方式的直接通信;差错检测。</td>
+</tr>
+<tr>
+<td>1.物理层</td>
+<td>在媒介上传输比特流;提供机械的和电气的规约。</td>
+</tr>
+</tbody></table>
+<h3 id="TCP-IP参考模型"><a href="#TCP-IP参考模型" class="headerlink" title="TCP/IP参考模型"></a>TCP/IP参考模型</h3><p>因为OSI协议栈比较复杂，且TCP和IP两大协议在业界被广泛使用，所以TCP/IP参考模型成为了互联网的主流参考模型。</p>
+<p>![TCP IP](网络参考模型/TCP IP.png)</p>
+<h3 id="TCP-IP常见协议"><a href="#TCP-IP常见协议" class="headerlink" title="TCP/IP常见协议"></a>TCP/IP常见协议</h3><p>TCP/IP协议栈定义了一系列的标准协议。</p>
+<p>![TCP IP常见协议](网络参考模型/TCP IP常见协议.png)</p>
+<h3 id="常见协议标准化组织"><a href="#常见协议标准化组织" class="headerlink" title="常见协议标准化组织"></a>常见协议标准化组织</h3><h4 id="IETF"><a href="#IETF" class="headerlink" title="IETF"></a>IETF</h4><p>Internet Engineering Task Force，负责开发和推广互联网协议（特别是构成TCP/IP协议族的协议）的志愿组织，通过RFC发布新的或者取代老的协议标准。</p>
+<h4 id="IEEE"><a href="#IEEE" class="headerlink" title="IEEE"></a>IEEE</h4><p>Institute of Electrical and Electronics Engineers，IEEE制定了全世界电子、电气和计算机科学领域30%左右的标准，比较知名的有IEEE802.3(Ethernet)、IEEE802.11 (WIFI)等。</p>
+<h4 id="ISO"><a href="#ISO" class="headerlink" title="ISO"></a>ISO</h4><p>International Organization for Standardization，在制定计算机网络标准方面，ISO是起着重大作用的国际组织，如OSI模型，定义于ISO/IEC 7498-1。</p>
+<h2 id="TCP-IP对等模型5层"><a href="#TCP-IP对等模型5层" class="headerlink" title="TCP/IP对等模型5层"></a>TCP/IP对等模型5层</h2><h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>应用层为应用软件提供接口，使应用程序能够使用网络服务。应用层协议会指定使用相应的传输层协议，以及传输层所使用的端口等。</p>
+<p>应用层的PDU被称为Data（数据）。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%BA%94%E7%94%A8%E5%B1%82.png" alt="应用层"></p>
+<h4 id="常见的应用层协议-FTP"><a href="#常见的应用层协议-FTP" class="headerlink" title="常见的应用层协议 - FTP"></a>常见的应用层协议 - FTP</h4><p>FTP File Transfer Protocol<br>一个用于从一台主机传送文件到另一台主机的协议，用于文件的“下载”和“上传”，它采用C/S( Client/Server)结构。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/FTP.png" alt="应用层"></p>
+<h4 id="常见的应用层协议-Telnet"><a href="#常见的应用层协议-Telnet" class="headerlink" title="常见的应用层协议 - Telnet"></a>常见的应用层协议 - Telnet</h4><p>Telnet数据网络中提供远程登录服务的标准协议。<br>Telnet为用户提供了在本地计算机上完成远程设备工作的能力</p>
+<p>用户通过Telnet客户端程序连接到Telnet服务器。用户在Telnet客户端中输入命令这些命令会在服务器端运行，就像直接在服务端的控制台上输入一样。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/Telnet.png" alt="应用层"></p>
+<h4 id="常见的应用层协议-HTTP"><a href="#常见的应用层协议-HTTP" class="headerlink" title="常见的应用层协议 - HTTP"></a>常见的应用层协议 - HTTP</h4><p>HTTP HyperText Transfer Protocol<br>互联网上应用最为广泛的一种网络协议。设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/HTTP.png" alt="应用层"></p>
+<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><p>传输层协议接收来自应用层协议的数据，封装上相应的传输层头部，帮助其建立“端到端”( Port to Port)的连接。</p>
+<p>传输层的PDU被称为Segment(（段）。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BC%A0%E8%BE%93%E5%B1%82.png" alt="传输层"></p>
+<h4 id="TCP和UDP报文格式"><a href="#TCP和UDP报文格式" class="headerlink" title="TCP和UDP报文格式"></a>TCP和UDP报文格式</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCP%E5%92%8CUDP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png" alt="TCP和UDP报文格式"></p>
+<h4 id="TCP和UDP-端口号"><a href="#TCP和UDP-端口号" class="headerlink" title="TCP和UDP - 端口号"></a>TCP和UDP - 端口号</h4><p>客户端使用的源端口一般随机分配，目标端口则由服务器的应用指定;源端口号一般为系统中未使用的，且大于1023;<br>目的端口号为服务端开启的应用（服务）所侦听的端口，如HTTP缺省使用80。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%AB%AF%E5%8F%A3%E5%8F%B7.png" alt="端口号"></p>
+<h4 id="TCP的建立-三次握手"><a href="#TCP的建立-三次握手" class="headerlink" title="TCP的建立-三次握手"></a>TCP的建立-三次握手</h4><p>任何基于TCP的应用，在发送数据之前，都需要由TCP进行“三次握手”建立连接。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="三次握手"></p>
+<h4 id="TCP的序列号与确认序列号"><a href="#TCP的序列号与确认序列号" class="headerlink" title="TCP的序列号与确认序列号"></a>TCP的序列号与确认序列号</h4><p>TCP使用序列号和确认序列号字段实现数据的可靠和有序传输。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B.png" alt="传输过程"></p>
+<h4 id="TCP的窗口滑动机制"><a href="#TCP的窗口滑动机制" class="headerlink" title="TCP的窗口滑动机制"></a>TCP的窗口滑动机制</h4><p>TCP通过滑动窗口机制来控制数据的传输速率。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png" alt="滑动窗口"></p>
+<h4 id="TCP的关闭-四次挥手"><a href="#TCP的关闭-四次挥手" class="headerlink" title="TCP的关闭-四次挥手"></a>TCP的关闭-四次挥手</h4><p>当数据传输完成，TCP需要通过“四次挥手”机制断开TCP连接，释放系统资源。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
+<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><p>传输层负责建立主机之间进程与进程之间的连接，而网络层则负责数据从一台主机到另外一台主机之间的传递。</p>
+<p>网络层的PDU被称为Packet(包)。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%B1%82.png" alt="网络层"></p>
+<h4 id="数据包的封装过程"><a href="#数据包的封装过程" class="headerlink" title="数据包的封装过程"></a>数据包的封装过程</h4><p>将上层提交的数据加上网络层头部。</p>
+<h3 id><a href="#" class="headerlink" title></a></h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%8C%85%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B.png" alt="网络包封装过程"></p>
+<h4 id="基于网络层地址的报文转发过程"><a href="#基于网络层地址的报文转发过程" class="headerlink" title="基于网络层地址的报文转发过程"></a>基于网络层地址的报文转发过程</h4><ul>
+<li>源设备发出的报文会在其网络层头部携带该报文的源及目的设备的网络层地址;</li>
+<li>具备路由功能的网络设备（例如路由器等）会维护路由表（相当于它的地图) ;</li>
+<li>当这些网络设备收到报文时，会读取其网络层携带的目的地址，并在其路由表中查询该地址，找到匹配项后，按照该表项的指示转发数据。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%B1%82%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.png" alt="网络层转发过程"></p>
+<blockquote>
+<p>Router1路由表中指导报文从G0/0/1转发出去，没有出接口为G0/0/0的路由</p>
+</blockquote>
+<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><p>数据链路层位于网络层和物理层之间，负责**“段内通信”**，可以向网络层的IP、IPv6等协议提供服务。</p>
+<p>数据链路层的PDU被称为Frame (帧)。<br>以太网(Ethernet)是最常见的数据链路层协议。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82.png" alt="数据链路层"></p>
+<h4 id="以太网与MAC地址"><a href="#以太网与MAC地址" class="headerlink" title="以太网与MAC地址"></a>以太网与MAC地址</h4><h5 id="以太网定义"><a href="#以太网定义" class="headerlink" title="以太网定义"></a>以太网定义</h5><ul>
+<li>以太网是一种广播式数据链路层协议，支持多点接入。</li>
+<li>个人电脑的网络接口遵循的就是以太网标准。</li>
+<li>一般情况下，一个广播域对应着一个IP网段。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BB%A5%E5%A4%AA%E7%BD%91.png" alt="以太网"></p>
+<h5 id="以太网MAC地址"><a href="#以太网MAC地址" class="headerlink" title="以太网MAC地址"></a>以太网MAC地址</h5><ul>
+<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡，每个网卡都需要且会有唯一的一个MAC地址。</li>
+<li><strong>MAC用于在一个IP网段内，寻址找到具体的物理设备</strong>。</li>
+<li>工作在<strong>数据链路层的设备</strong>。例如以太网交换机，会维护一张MAC地址表，用于指导数据帧转发。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/MAC%E5%9C%B0%E5%9D%80.png" alt="MAC地址"></p>
+<h4 id="地址解析协议（ARP）"><a href="#地址解析协议（ARP）" class="headerlink" title="地址解析协议（ARP）"></a>地址解析协议（ARP）</h4><p>ARP （Address Resolution Protocol）地址解析协议</p>
+<p>根据已知的IP地址解析获得其对应的MAC地址。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP.png" alt="ARP"></p>
+<h5 id="ARP工作原理"><a href="#ARP工作原理" class="headerlink" title="ARP工作原理"></a>ARP工作原理</h5><p>工作过程分为5步，如下示例展示工作原理。</p>
+<h6 id="发送方查看自己ARP缓存表"><a href="#发送方查看自己ARP缓存表" class="headerlink" title="发送方查看自己ARP缓存表"></a>发送方查看自己ARP缓存表</h6><ul>
+<li>在发送数据前，设备会先查找ARP缓存表。</li>
+<li>如果缓存表中存在对方设备的MAC地址，则直接采用该MAC地址来封装帧，然后将帧发送出去。如果缓存表中不存在相应信息，则通过ARP来获取。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP1.png" alt="ARP"></p>
+<h6 id="发送方发送ARP请求"><a href="#发送方发送ARP请求" class="headerlink" title="发送方发送ARP请求"></a>发送方发送ARP请求</h6><ul>
+<li><p>主机1通过发送ARP Request报文来获取主机2的MAC地址。</p>
+</li>
+<li><p>由于不知道目的MAC地址，因此ARP Request报文内的目的端MAC地址为0。</p>
+</li>
+<li><p>ARP Request是广播数据帧，因此交换机收到后，会对该帧执行泛洪操作。</p>
+</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP2.png" alt="ARP"></p>
+<h6 id="接受方更新ARP缓存表"><a href="#接受方更新ARP缓存表" class="headerlink" title="接受方更新ARP缓存表"></a>接受方更新ARP缓存表</h6><ul>
+<li>所有的主机接收到该ARP Request报文后，都会检查它的目的端IP地址字段与自身的IP地址是否匹配</li>
+<li>主机2发现IP地址匹配，则会将ARP报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中。</li>
+<li>收到ARP Request报文的主机都会更新自己ARP缓存表，将发送来的IP地址和其对应MAC地址加入ARP缓存表中。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP3.png" alt="ARP"></p>
+<h6 id="接收方接受ARP请求并且发送ARP响应"><a href="#接收方接受ARP请求并且发送ARP响应" class="headerlink" title="接收方接受ARP请求并且发送ARP响应"></a>接收方接受ARP请求并且发送ARP响应</h6><ul>
+<li><p>主机2通过发送ARP Reply报文来响应主机1的请求。</p>
+</li>
+<li><p>此时主机2已知主机1的MAC地址，因此ARP Reply是单播数据帧。</p>
+</li>
+<li><p>交换机收到该单播数据帧后，会对该帧执行转发操作。</p>
+</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP4.png" alt="ARP"></p>
+<h6 id="接收方接受ARP响应并更新ARP缓存表"><a href="#接收方接受ARP响应并更新ARP缓存表" class="headerlink" title="接收方接受ARP响应并更新ARP缓存表"></a>接收方接受ARP响应并更新ARP缓存表</h6><ul>
+<li>主机1收到ARP Reply以后，会检查ARP报文中目的端lP地址字段是否与自己的IP地址匹配。</li>
+<li>如果匹配，会将ARP报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP5.png" alt="ARP"></p>
+<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><p>数据到达物理层之后，物理层会根据物理介质的不同，将数字信号转换成光信号、电信号或者是电磁波信号。</p>
+<p>物理层的PDU被称为比特流(Bitstream ) 。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%89%A9%E7%90%86%E5%B1%82.png" alt="物理层"></p>
+<h4 id="常见的传输介质"><a href="#常见的传输介质" class="headerlink" title="常见的传输介质"></a>常见的传输介质</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8.png" alt="常见的传输介质"></p>
+<h2 id="数据的封装过程"><a href="#数据的封装过程" class="headerlink" title="数据的封装过程"></a>数据的封装过程</h2><h3 id="发送方数据封装"><a href="#发送方数据封装" class="headerlink" title="发送方数据封装"></a>发送方数据封装</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%851.png" alt="封装"></p>
+<h3 id="中间网络数据传输"><a href="#中间网络数据传输" class="headerlink" title="中间网络数据传输"></a>中间网络数据传输</h3><p>封装好的完整数据，将会在网络中被传递。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%852.png" alt="封装"></p>
+<h3 id="接收方数据解封装"><a href="#接收方数据解封装" class="headerlink" title="接收方数据解封装"></a>接收方数据解封装</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%853.png" alt="封装"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/27/VRP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -330,11 +596,11 @@
 </ul>
 <p><img src="/2021/04/27/VRP/VRP%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.png" alt="VRP文件系统"></p>
 <h3 id="VRP存储设备"><a href="#VRP存储设备" class="headerlink" title="VRP存储设备"></a>VRP存储设备</h3><ul>
-<li><p>Flash：属于非易失存储布。</p>
+<li><p>Flash：属于非易失存储器。</p>
 </li>
 <li><p>SDRAM：同步动态随机存储器。</p>
 </li>
-<li><p>NVRAM：非易失随机读写存储布。</p>
+<li><p>NVRAM：非易失随机读写存储器。</p>
 </li>
 <li><p>SD Card：断电后，不会丢失数据。存储容量较大，—般出现在主控板上。</p>
 </li>
@@ -825,17 +1091,17 @@ Group ID:组播组ID。
 <p>默认情况下，华为路由器接口不发送ICMPv6 RA报文，则该接口所连链路上的其他设备无法进行无状态地址自动配置。若想进行IPv6无状态地址配置，需要手工开启发送RA报文。</p>
 <h2 id="IPv6配置案例-配置一个小型IPv6网络"><a href="#IPv6配置案例-配置一个小型IPv6网络" class="headerlink" title="IPv6配置案例-配置一个小型IPv6网络"></a>IPv6配置案例-配置一个小型IPv6网络</h2><p><img src="/2021/04/26/IPv6/IPv6%E6%8B%93%E6%89%91.png" alt="IPv6拓扑"></p>
 <h3 id="R1和R2之间使用静态IPv6地址互联。"><a href="#R1和R2之间使用静态IPv6地址互联。" class="headerlink" title="R1和R2之间使用静态IPv6地址互联。"></a>R1和R2之间使用静态IPv6地址互联。</h3><p>1.在R1、R2、R3、R4全局和相关接口使能IPv6功能，同时自动生成链路本地地址（以R1配置为例)</p>
-<p>[R1]ipv6<br>[R1]interface GigabitEthernet 0/0/0                                                [R1-GigabitEthernet0/0/0]ipv6 enable<br>[R1-GigabitEthernet0/0/0]ipv6 address auto link-local</p>
+<p>[R1]ipv6<br>[R1]interface GigabitEthernet 0/0/0                                              [R1-GigabitEthernet0/0/0]ipv6 enable<br>[R1-GigabitEthernet0/0/0]ipv6 address auto link-local</p>
 <p>2.在R1、R2相应接口配置静态IPv6全球单播地址</p>
-<p>[R1]interface GigabitEthernet o/o/o<br>[R1-GigabitEthernet0/0/0]ipv6 address 2001::1 64            [R2]interface GigabitEthernet 1/0/0<br>[R2-GigabitEthernet1/0/0]ipv6 address 2001:2 64<br>[R2-GigabitEthernet1/0/0]interface GigabitEthernet 0/0/0            [R2-GigabitEtherneto/0/0]ipv6 address 2002::1 64<br>[R2-GigabitEtherneto/0/0]interface GigabitEthernet 0/0/1            [R2-GigabitEtherneto/0/1]ipv6 address 2003:1 64</p>
+<p>[R1]interface GigabitEthernet o/o/o<br>[R1-GigabitEthernet0/0/0]ipv6 address 2001::1 64                                                           [R2]interface GigabitEthernet 1/0/0<br>[R2-GigabitEthernet1/0/0]ipv6 address 2001:2 64<br>[R2-GigabitEthernet1/0/0]interface GigabitEthernet 0/0/0                                                  [R2-GigabitEtherneto/0/0]ipv6 address 2002::1 64<br>[R2-GigabitEtherneto/0/0]interface GigabitEthernet 0/0/1                                                  [R2-GigabitEtherneto/0/1]ipv6 address 2003:1 64</p>
 <h3 id="R2作为DHCPv6服务器给R3的GE0-0-0分配全球单播地址。"><a href="#R2作为DHCPv6服务器给R3的GE0-0-0分配全球单播地址。" class="headerlink" title="R2作为DHCPv6服务器给R3的GE0/0/0分配全球单播地址。"></a>R2作为DHCPv6服务器给R3的GE0/0/0分配全球单播地址。</h3><p>3.在R2上配置DHCPv6服务器功能，R3接口通过DHCPv6方式获取全球单播地址</p>
-<p>[R2]dhcp enable[R2]dhcpv6 pool pool1<br>[R2-dhcpv6-pool-pool1]address prefix 2002::/64                [R2]interface GigabitEthernet 0/0/0<br>[R2-GigabitEtherneto/0/0]dhcpv6 server pool1</p>
+<p>[R2]dhcp enable[R2]dhcpv6 pool pool1<br>[R2-dhcpv6-pool-pool1]address prefix 2002::/64                                                       [R2]interface GigabitEthernet 0/0/0<br>[R2-GigabitEtherneto/0/0]dhcpv6 server pool1</p>
 <p>[R3]dhcp enable<br>[R3]interface GigabitEthernet 0/0/0<br>[R3-GigabitEthernetO/0/0]ipv6 address auto dhcp</p>
 <h3 id="R4的GE0-0-0接口通过R2的RA进行无状态地址自动配置。"><a href="#R4的GE0-0-0接口通过R2的RA进行无状态地址自动配置。" class="headerlink" title="R4的GE0/0/0接口通过R2的RA进行无状态地址自动配置。"></a>R4的GE0/0/0接口通过R2的RA进行无状态地址自动配置。</h3><p>4.在R2使能发布RA报文的功能，R4通过无状态地址配置的方式获取地址</p>
 <p>[R2]interface GigabitEthernet 0/0/1<br>[R2-GigabitEthernet0/0/1]undo ipv6 nd ra halt</p>
 <p>[R4]interface GigabitEthernet 0/0/0<br>[R4-GigabitEtherneto/0/0]ipv6 address auto global</p>
 <h3 id="配置静态路由-实现各设备之间互访。"><a href="#配置静态路由-实现各设备之间互访。" class="headerlink" title="配置静态路由,实现各设备之间互访。"></a>配置静态路由,实现各设备之间互访。</h3><p>5.在R4上配置静态路由</p>
-<p>[R4]ipv6 route-static 2001:: 64 2003::1                                    [R4]ipv6 route-static 2002:: 64 2003::1</p>
+<p>[R4]ipv6 route-static 2001:: 64 2003::1                                                                                                [R4]ipv6 route-static 2002:: 64 2003::1</p>
 <p>6.在R1上配置聚合后的静态路由</p>
 <p>[R1]ipv6 route-static 2002:: 15 2001::2</p>
 <p>7.在R3上配置默认路由</p>
@@ -2680,7 +2946,7 @@ Group ID:组播组ID。
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2693,7 +2959,7 @@ Group ID:组播组ID。
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
