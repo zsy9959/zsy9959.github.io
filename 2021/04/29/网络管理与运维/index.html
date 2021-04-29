@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="网络管理与运维," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="网络管理与运维什么是网络管理？网络管理是通过对网络中设备的管理，保证设备工作正常，使通信网络正常地运行，以提供高效、可靠和安全的通信服务，是通信网络生命周期中的重要一环。  网络管理基本功能 OSI定义了网络管理的五大功能模型:  配置管理(Configuration Management )∶配置管理负责监控网络的配置信息，使网络管理人员可以生成、查询和修改硬件、软件的运行参数和条件，并可以进行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络管理与运维">
+<meta property="og:url" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="网络管理与运维什么是网络管理？网络管理是通过对网络中设备的管理，保证设备工作正常，使通信网络正常地运行，以提供高效、可靠和安全的通信服务，是通信网络生命周期中的重要一环。  网络管理基本功能 OSI定义了网络管理的五大功能模型:  配置管理(Configuration Management )∶配置管理负责监控网络的配置信息，使网络管理人员可以生成、查询和修改硬件、软件的运行参数和条件，并可以进行">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%B8%80%E5%AF%B9%E4%B8%80.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%B8%80%E5%AF%B9%E5%A4%9A.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E4%BF%A1%E6%81%AF%E4%BA%A4%E4%BA%92.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E6%9F%A5%E8%AF%A2.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E5%91%8A%E8%AD%A6.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E7%AE%A1%E7%90%86%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v1.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v2.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v3.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E9%85%8D%E7%BD%AE1.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E9%85%8D%E7%BD%AE2.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E8%B0%83%E6%95%B4.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/NCE.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/NETCONF.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BA%A4%E4%BA%92.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG%E4%B8%8EXML.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG%E4%B8%8EXML1.png">
+<meta property="og:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/Telemetry.png">
+<meta property="article:published_time" content="2021-04-29T10:24:58.000Z">
+<meta property="article:modified_time" content="2021-04-29T11:07:11.401Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="网络管理与运维">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/04/29/网络管理与运维/"/>
+
+
+
+
+
+  <title>网络管理与运维 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">网络管理与运维</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-29T18:24:58+08:00">
+                2021-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="网络管理与运维"><a href="#网络管理与运维" class="headerlink" title="网络管理与运维"></a>网络管理与运维</h2><h3 id="什么是网络管理？"><a href="#什么是网络管理？" class="headerlink" title="什么是网络管理？"></a>什么是网络管理？</h3><p>网络管理是通过对网络中设备的管理，保证设备工作正常，使通信网络正常地运行，以提供高效、可靠和安全的通信服务，是通信网络生命周期中的重要一环。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86.png"></p>
+<h3 id="网络管理基本功能"><a href="#网络管理基本功能" class="headerlink" title="网络管理基本功能"></a>网络管理基本功能</h3><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD.png"></p>
+<p>OSI定义了网络管理的五大功能模型:</p>
+<ul>
+<li><p>配置管理(Configuration Management )∶配置管理负责监控网络的配置信息，使网络管理人员可以生成、查询和修改硬件、软件的运行参数和条件，并可以进行相关业务的配置。</p>
+</li>
+<li><p>性能管理（ Performance Management )︰性能管理以网络性能为准则，保证在使用较少网络资源和具有较小<br>时延的前提下，网络能够提供可靠、连续的通信能力。</p>
+</li>
+<li><p>故障管理(（ Fault Management)︰故障管理的主要目标是确保网络始终可用，并在发生故障时尽快将其修复。</p>
+</li>
+<li><p>安全管理( Security Management ):安全管理可以保护网络和系统免受未经授权的访问和安全攻击。</p>
+</li>
+<li><p>计费管理(Accounting Management):记录用户使用网络资源的情况并核收费用，同时也统计网络的利用率。</p>
+</li>
+</ul>
+<h3 id="网络管理方式"><a href="#网络管理方式" class="headerlink" title="网络管理方式"></a>网络管理方式</h3><p>网络管理方式分为传统网络管理与和基于iMaster NCE的网络管理。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F.png"></p>
+<h2 id="传统网络管理"><a href="#传统网络管理" class="headerlink" title="传统网络管理"></a>传统网络管理</h2><h3 id="通过CLI或Web进行管理"><a href="#通过CLI或Web进行管理" class="headerlink" title="通过CLI或Web进行管理"></a>通过CLI或Web进行管理</h3><p>当网络规模较小时，CLI和Web方式是常见的网络管理方式。</p>
+<ul>
+<li>网络管理员可以通过HTTPS、Telnet、Console等方式登录设备后，对设备逐一进行管理。</li>
+<li>这种管理方式不需要在网络中安装任何程序或部署服务器，成本较低。</li>
+<li>网络管理员自身需要熟练掌握网络理论知识、各设备厂商网络配置命令。</li>
+<li>当网络规模较大，网络拓扑较为复杂时，这种方式的局限性较大。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%B8%80%E5%AF%B9%E4%B8%80.png"></p>
+<h3 id="基于SNMP的集中式管理"><a href="#基于SNMP的集中式管理" class="headerlink" title="基于SNMP的集中式管理"></a>基于SNMP的集中式管理</h3><p>SNMP ( Simple Network Management Protocol，简单网络管理协议）是广泛用于TCP/IP网络的网络管理标准协议，传输层使用UDP协议，提供了一种通过运行网络管理软件的中心计算机，即NMS ( Network Management Station，网络管理工作站）来管理网元的方法。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%B8%80%E5%AF%B9%E5%A4%9A.png"></p>
+<h3 id="SNMP典型架构"><a href="#SNMP典型架构" class="headerlink" title="SNMP典型架构"></a>SNMP典型架构</h3><ul>
+<li>在基于SNMP进行管理的网络中，NMS是整个网络的网管中心，在它之上运行管理进程。每个被管理设备需要运行代理(Agent )进程。管理进程和代理进程利用SNMP报文进行通信。</li>
+<li>NMS是一个采用SNMP协议对网络设备进行管理/监控的系统，运行在NMS服务器上。</li>
+<li>被管理设备是网络中接受NMS管理的设备。</li>
+<li>代理进程运行于被管理设备上，用于维护被管理设备的信息数据并响应来自NMS的请求，把管理数据汇报给发送请求的NMS。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84.png"></p>
+<h3 id="SNMP的信息交互"><a href="#SNMP的信息交互" class="headerlink" title="SNMP的信息交互"></a>SNMP的信息交互</h3><ul>
+<li>NMS和被管理设备的信息交互分为两种:<ol>
+<li>NMS通过SNMP协议给被管理设备发送修改配置信息请求或<br>查询配置信息请求。被管理设备上运行的代理进程根据NMS的请求消息做出响应。</li>
+<li>被管理设备可以主动向NMS上报告警信息( Trap )以便网络管理员及时发现故障。</li>
+</ol>
+</li>
+<li>被管理对象(Managed object ) :每一个设备可能包含多个被管理对象，被管理对象可以是设备中的某个硬件，也可以是在硬件、软件（如路由选择协议）上配置的参数集合。</li>
+<li>SNMP规定通过MIB ( Management Information Base,管理信息库）去描述可管理实体的一组对象。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E4%BF%A1%E6%81%AF%E4%BA%A4%E4%BA%92.png"></p>
+<h3 id="MIB"><a href="#MIB" class="headerlink" title="MIB"></a>MIB</h3><ul>
+<li>MIB是一个数据库，指明了被管理设备所维护的变量（即能够被代理进程查询和设置的信息）。MIB在数据库中定义了被管理设备的一系列属性:<ul>
+<li>对象标识符(Object IDentifier，OID )</li>
+<li>对象的状态</li>
+<li>对象的访问权限</li>
+<li>对象的数据类型等</li>
+</ul>
+</li>
+<li>MIB给出了一个数据结构，包含了网络中所有可能的被管理对象的集合。因为数据结构与树相似，MIB又被称为对象命名树。</li>
+</ul>
+<h3 id="常见MIB节点"><a href="#常见MIB节点" class="headerlink" title="常见MIB节点"></a>常见MIB节点</h3><ul>
+<li>用于查询或修改的节点:</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E6%9F%A5%E8%AF%A2.png"></p>
+<ul>
+<li>用于告警通知的节点：</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E5%91%8A%E8%AD%A6.png"></p>
+<h3 id="SNMP管理模型"><a href="#SNMP管理模型" class="headerlink" title="SNMP管理模型"></a>SNMP管理模型</h3><p>查询/修改操作:</p>
+<ul>
+<li>NMS作为管理者，向代理进程发送SNMP请求报文。</li>
+<li>代理进程通过设备端的MIB找到所要查询或修改的信息，<br>向NMS发送SNMP响应报文。</li>
+</ul>
+<p>告警操作:</p>
+<ul>
+<li>口设备端的模块由于达到模块定义的告警触发条件，通过<br>代理进程向NMS发送消息，告知设备侧出现的情况，这样便于网络管理人员及时对网络中出现的情况进行处理。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E7%AE%A1%E7%90%86%E6%A8%A1%E5%9E%8B.png"></p>
+<h3 id="SNMP版本"><a href="#SNMP版本" class="headerlink" title="SNMP版本"></a>SNMP版本</h3><h4 id="SNMPv1"><a href="#SNMPv1" class="headerlink" title="SNMPv1"></a>SNMPv1</h4><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v1.png"></p>
+<h4 id="SNMPv2"><a href="#SNMPv2" class="headerlink" title="SNMPv2"></a>SNMPv2</h4><ul>
+<li><p>对SNMPv1版本报文类型进行优化，GetBulk报文进行打包操作。</p>
+</li>
+<li><p>SNMP使用UDP传输，可能造成丢包情况，因此收到告警信息后必须回复一个确认，否则一只发送告警信息。</p>
+</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v2.png"></p>
+<h4 id="SNMPv3"><a href="#SNMPv3" class="headerlink" title="SNMPv3"></a>SNMPv3</h4><ul>
+<li>SNMPv3与SNMPv1和SNMPv2c的工作机制基本一致但添加了</li>
+<li>报头数据和安全参数。SNMPv3报文具有身份验证和加密处理的功能。</li>
+<li>SNMPv3适用于各种规模的网络，安全性极高。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v3.png"></p>
+<h3 id="SNMP小结"><a href="#SNMP小结" class="headerlink" title="SNMP小结"></a>SNMP小结</h3><ul>
+<li><p>SNMP的特点如下∶<br>1.简单:SNMP采用轮询机制，提供基本的功能集，适合快速、低价格的场景使用，而且SNMP以UDP报文为承载，因而得到绝大多数设备的支持。</p>
+<p>2.强大:SNMP的目标是保证管理信息在任意两点传送，便于管理员在网络上的任何节点检索信息，进行故障排查。</p>
+</li>
+<li><p>SNMPv1版本适用于小型网络。组网简单、安全性要求不高或网络环境比较安全且比较稳定的网络，比如校园网，小型企业网。</p>
+</li>
+<li><p>SNMPv2c版本适用于大中型网络。安全性要求不高或者网络环境比较安全，但业务比较繁忙，有可能发生流量拥塞的网络。</p>
+</li>
+<li><p>SNMPv3版本作为推荐版本，适用于各种规模的网络。尤其是对安全性要求较高，只有合法的管<br>理员才能对网络设备进行管理的网络。</p>
+</li>
+</ul>
+<h3 id="SNMP基础配置"><a href="#SNMP基础配置" class="headerlink" title="SNMP基础配置"></a>SNMP基础配置</h3><p>1.使能SNMP代理功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent</span><br></pre></td></tr></table></figure>
+<p>2.配置SNMP的版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent sys-info version [v1 | v2c | v3]</span><br></pre></td></tr></table></figure>
+<p>用户可以根据自己的需求配置对应的SNMP版本，但设备侧使用的协议版本必须与网管侧一致。<br>3.创建或者更新MIB视图的信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent mib-view view-name &#123; exclude | include &#125; subtree-name [mask mask]</span><br></pre></td></tr></table></figure>
+<p>4.增加一个新的SNMP组，将该组用户映射到SNMP视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent group v3 group-name &#123; authentication | noauth | privacy ]&#125; [ read-view view-name|write-view view-name | notify-view view-name ]</span><br></pre></td></tr></table></figure>
+<p>该命令用于SNMPv3版本中创建SNMP组，指定认证加密方式、只读视图、读写视图、通知视图。是安全性需求较高的网管网络中的必需指令。<br>5.为一个SNMP组添加一个新用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent usm-user v3 user-name group group-name</span><br></pre></td></tr></table></figure>
+<p>6.配置SNMPv3用户认证密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent usm-user v3 user-name authentication-mode &#123; md5 I sha l sha2-256 &#125;</span><br></pre></td></tr></table></figure>
+<p>7.配置SNMPv3用户加密密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent usm-user v3 user-name privacy-mode &#123; aes128 | des56 &#125;</span><br></pre></td></tr></table></figure>
+<p>8.配置设备发送Trap报文的参数信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent target-host trap-paramsname paramsname v3 securityname securityname&#123; authentication | noauthnopriv \ privacy &#125;</span><br></pre></td></tr></table></figure>
+<p>9.配置Trap报文的目的主机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent target-host trap-hostname hostname address ipv4-address trap-paramsname paramsname</span><br></pre></td></tr></table></figure>
+<p>10．打开设备的所有告警开关</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent trap enable</span><br></pre></td></tr></table></figure>
+<p>注意该命令只是打开设备发送Trap告警的功能，要与snmp-agent target-host协同使用，由snmp-agent target-host指定Trap告警发送给哪台设备。<br>11．配置发送告警的源接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent trap source interface-type interface-number</span><br></pre></td></tr></table></figure>
+<p>注意Trap告警无论从哪个接口发出都必须有一个发送的源地址，因此源接口必须是已经配置了IP地址的接口。</p>
+<h3 id="SNMP配置举例（网络设备侧）"><a href="#SNMP配置举例（网络设备侧）" class="headerlink" title="SNMP配置举例（网络设备侧）"></a>SNMP配置举例（网络设备侧）</h3><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E9%85%8D%E7%BD%AE1.png"></p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E9%85%8D%E7%BD%AE2.png"></p>
+<h2 id="基于华为iMaster-NCE的网络管理"><a href="#基于华为iMaster-NCE的网络管理" class="headerlink" title="基于华为iMaster NCE的网络管理"></a>基于华为iMaster NCE的网络管理</h2><h3 id="网络产业的变革与挑战"><a href="#网络产业的变革与挑战" class="headerlink" title="网络产业的变革与挑战"></a>网络产业的变革与挑战</h3><ul>
+<li>伴随5G和云时代的到来，VR/AR、直播、无人驾驶等各类创新性业务大量涌现，整个ICT产业迸发出蓬勃生机。与此同时，整个网络的流量也呈现出爆炸式增长，华为GIV ( Global Industry Vision，全球产业展望)预计，2025年新增的数据量将达到180 ZB。业务的动态复杂性也使得整个网络复杂度不断攀升。</li>
+<li>整体来看，这些问题的源头都指向了现有的网络系统，只有通过构建自动化、智能化的以用户体验为中心的网络系统才能有效应对。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E8%B0%83%E6%95%B4.png"></p>
+<h3 id="华为iMaster-NCE"><a href="#华为iMaster-NCE" class="headerlink" title="华为iMaster NCE"></a>华为iMaster NCE</h3><p>华为iMaster NCE是一款集管理、控制、分析和Al智能功能于一体的网络自动化与智能化平台。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/NCE.png"></p>
+<h3 id="NETCONF简介"><a href="#NETCONF简介" class="headerlink" title="NETCONF简介"></a>NETCONF简介</h3><p>NETCONF ( Network Configuration Protocol，网络配置协议），提供一套管理网络设备的机制。用户可以使用这套机制增加、修改、删除网络设备的配置，获取网络设备的配置和状态信息。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/NETCONF.png"></p>
+<h3 id="NETCONF的优势"><a href="#NETCONF的优势" class="headerlink" title="NETCONF的优势"></a>NETCONF的优势</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>NETCONF</th>
+<th>SNMP</th>
+<th>CLI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>接口类型</td>
+<td>机机接口:接口定义完善、规范、标准，便于接口控制和使用。</td>
+<td>机机接口</td>
+<td>人机接口</td>
+</tr>
+<tr>
+<td>操作效率</td>
+<td>高:基于对象建模，对象操作一次交互即可，支持过滤、批量等操作。</td>
+<td>中</td>
+<td>低</td>
+</tr>
+<tr>
+<td>扩展能力</td>
+<td>可以扩展协议私有能力。</td>
+<td>弱</td>
+<td>一般</td>
+</tr>
+<tr>
+<td>事务处理</td>
+<td>支持:试运行、出错回滚、配置回退等事务处理机制。</td>
+<td>不支持</td>
+<td>部分支持</td>
+</tr>
+<tr>
+<td>安全传输</td>
+<td>多种安全协议:SSH，TLS，BEEP/TLS,SOAP/HTTP/TLS</td>
+<td>仅SNMPv3支持</td>
+<td>支持SSH</td>
+</tr>
+</tbody></table>
+<h3 id="一次典型NETCONF交互"><a href="#一次典型NETCONF交互" class="headerlink" title="一次典型NETCONF交互"></a>一次典型NETCONF交互</h3><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BA%A4%E4%BA%92.png"></p>
+<h3 id="YANG语言概述"><a href="#YANG语言概述" class="headerlink" title="YANG语言概述"></a>YANG语言概述</h3><ul>
+<li>YANG ( Yet Another Next Generation )是一种数据建模语言，实现了NETCONF数据内容的标准化。</li>
+<li>YANG模型定义了数据的层次化结构，可用于基于NETCONF的操作。建模对象包括配置、状态数据、远程过程调用和通知。它可以对NETCONF客户端和服务器端之间发送的所有数据进行一个完整的描述。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG.png"></p>
+<h3 id="YANG与XLM"><a href="#YANG与XLM" class="headerlink" title="YANG与XLM"></a>YANG与XLM</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><ul>
+<li>在NETCONF客户端（例如网管平台/SDN控制器）加载YANG文件。</li>
+<li>通过YANG文件将数据转换为XML格式的NETCONF消息发送到设备。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG%E4%B8%8EXML.png"></p>
+<h4 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h4><ul>
+<li>在NETCONF服务器（例如路由器/交换机等）加载YANG文件</li>
+<li>通过YANG文件将接收到的XML格式的NETCONF消息转换为数据并做后续处理。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG%E4%B8%8EXML1.png"></p>
+<h3 id="Telemetry基本概述"><a href="#Telemetry基本概述" class="headerlink" title="Telemetry基本概述"></a>Telemetry基本概述</h3><ul>
+<li>Telemetry也作Network Telemetry，即网络遥测技术，是一项远程地从物理设备或虚拟设备上高速采集数据的技术。</li>
+<li>设备通过推模式 ( Push Mode)周期性地主动向采集器上送设备的接口流量统计、CPU或内存数据等信息，相对传统拉模式(Pull Mode )的一问一答式交互，提供了更实时更高速的数据采集功能。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/Telemetry.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/" rel="tag"># 网络管理与运维</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/29/NAT/" rel="next" title="NAT">
+                <i class="fa fa-chevron-left"></i> NAT
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4"><span class="nav-number">1.</span> <span class="nav-text">网络管理与运维</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">什么是网络管理？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.</span> <span class="nav-text">网络管理基本功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">网络管理方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">传统网络管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87CLI%E6%88%96Web%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">通过CLI或Web进行管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ESNMP%E7%9A%84%E9%9B%86%E4%B8%AD%E5%BC%8F%E7%AE%A1%E7%90%86"><span class="nav-number">2.2.</span> <span class="nav-text">基于SNMP的集中式管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">2.3.</span> <span class="nav-text">SNMP典型架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E7%9A%84%E4%BF%A1%E6%81%AF%E4%BA%A4%E4%BA%92"><span class="nav-number">2.4.</span> <span class="nav-text">SNMP的信息交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MIB"><span class="nav-number">2.5.</span> <span class="nav-text">MIB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81MIB%E8%8A%82%E7%82%B9"><span class="nav-number">2.6.</span> <span class="nav-text">常见MIB节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E7%AE%A1%E7%90%86%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.7.</span> <span class="nav-text">SNMP管理模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E7%89%88%E6%9C%AC"><span class="nav-number">2.8.</span> <span class="nav-text">SNMP版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SNMPv1"><span class="nav-number">2.8.1.</span> <span class="nav-text">SNMPv1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SNMPv2"><span class="nav-number">2.8.2.</span> <span class="nav-text">SNMPv2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SNMPv3"><span class="nav-number">2.8.3.</span> <span class="nav-text">SNMPv3</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E5%B0%8F%E7%BB%93"><span class="nav-number">2.9.</span> <span class="nav-text">SNMP小结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">2.10.</span> <span class="nav-text">SNMP基础配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNMP%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B%EF%BC%88%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E4%BE%A7%EF%BC%89"><span class="nav-number">2.11.</span> <span class="nav-text">SNMP配置举例（网络设备侧）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%8D%8E%E4%B8%BAiMaster-NCE%E7%9A%84%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">基于华为iMaster NCE的网络管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%A7%E4%B8%9A%E7%9A%84%E5%8F%98%E9%9D%A9%E4%B8%8E%E6%8C%91%E6%88%98"><span class="nav-number">3.1.</span> <span class="nav-text">网络产业的变革与挑战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8E%E4%B8%BAiMaster-NCE"><span class="nav-number">3.2.</span> <span class="nav-text">华为iMaster NCE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NETCONF%E7%AE%80%E4%BB%8B"><span class="nav-number">3.3.</span> <span class="nav-text">NETCONF简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NETCONF%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">3.4.</span> <span class="nav-text">NETCONF的优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E6%AC%A1%E5%85%B8%E5%9E%8BNETCONF%E4%BA%A4%E4%BA%92"><span class="nav-number">3.5.</span> <span class="nav-text">一次典型NETCONF交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YANG%E8%AF%AD%E8%A8%80%E6%A6%82%E8%BF%B0"><span class="nav-number">3.6.</span> <span class="nav-text">YANG语言概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YANG%E4%B8%8EXLM"><span class="nav-number">3.7.</span> <span class="nav-text">YANG与XLM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.7.1.</span> <span class="nav-text">客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="nav-number">3.7.2.</span> <span class="nav-text">服务器端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Telemetry%E5%9F%BA%E6%9C%AC%E6%A6%82%E8%BF%B0"><span class="nav-number">3.8.</span> <span class="nav-text">Telemetry基本概述</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
