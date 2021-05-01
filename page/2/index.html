@@ -241,6 +241,305 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/AAA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/24/AAA/" itemprop="url">AAA</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:11:49+08:00">
+                2021-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="AAA概述"><a href="#AAA概述" class="headerlink" title="AAA概述"></a>AAA概述</h2><p>AAA是Authentication (认证)、Authorization(授权）和Accounting(计费）的简称，是网络安全的一种管理机制，提供了认证、授权、计费三种安全功能。</p>
+<p><img src="/2021/04/24/AAA/AAA%E6%A6%82%E8%BF%B0.png" alt="AAA概述"></p>
+<h2 id="AAA基本架构"><a href="#AAA基本架构" class="headerlink" title="AAA基本架构"></a>AAA基本架构</h2><p>AAA常见网络架构中包括用户、NAS ( Network Access Server )、AAA服务器(AAA Server ) 。</p>
+<ul>
+<li>NAS负责集中收集和管理用户的访问请求。</li>
+<li>在NAS上会创建多个域来管理用户。不同的域可以关联不同的AAA方案。AAA方案包含认证方案，授权方案，计费方案。</li>
+<li>当收到用户接入网络的请求时，NAS会根据用户名来判断用户所在的域，根据该域对应的AAA方案对用户进行管控。</li>
+</ul>
+<p><img src="/2021/04/24/AAA/AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84.png" alt="AAA基本架构"></p>
+<h2 id="Authentication-认证"><a href="#Authentication-认证" class="headerlink" title="Authentication (认证)"></a>Authentication (认证)</h2><p>AAA支持的认证方式有:不认证，本地认证，远端认证。</p>
+<ul>
+<li>不认证：对用户非常信任，不对其进行合法检查，一般情况下不采用这种方式。 </li>
+<li>本地认证：将用户信息配置在网络接入服务器上。本地认证的优点是速度快，可以为运营降低成本，缺点是存储信息量受设备硬件条件限制。 </li>
+<li>远端认证：将用户信息配置在认证服务器上。支持通过 RADIUS（Remote Authentication Dial In User Service）协议或 HWTACACS（HuaWei Terminal Access Controller Access Control System）协议进行远端认证。 </li>
+</ul>
+<p><img src="/2021/04/24/AAA/%E8%AE%A4%E8%AF%81.png" alt="认证"></p>
+<h2 id="Authorization-授权）"><a href="#Authorization-授权）" class="headerlink" title="Authorization(授权）"></a>Authorization(授权）</h2><p>AAA支持的授权方式有:不授权，本地授权，远端授权。</p>
+<ul>
+<li><p>不授权：不对用户进行授权处理。 </p>
+</li>
+<li><p>本地授权：根据网络接入服务器为本地用户账号配置的相关属性进行授权。 </p>
+</li>
+<li><p>HWTACACS 授权：由 HWTACACS 服务器对用户进行授权。 </p>
+</li>
+<li><p>if-authenticated 授权：如果用户通过了认证，而且使用的认证</p>
+<p>模式是本地或远端认证，则用户授权通过。 </p>
+</li>
+<li><p>RADIUS 认证成功后授权：RADIUS 协议的认证和授权是绑定在一起的，不能单独使用 RADIUS 进行授权。 </p>
+</li>
+</ul>
+<p>授权信息包括:所属用户组、所属VLAN、ACL编号等。</p>
+<p><img src="/2021/04/24/AAA/%E6%8E%88%E6%9D%83.png" alt="授权"></p>
+<h2 id="Accounting-计费）"><a href="#Accounting-计费）" class="headerlink" title="Accounting(计费）"></a>Accounting(计费）</h2><p>计费功能用于<strong>监控授权用户的网络行为和网络资源的使用情况</strong></p>
+<p>AAA支持的计费方式有:不计费，远端计费。</p>
+<ul>
+<li> 不计费：不对用户计费。 </li>
+<li>远端计费：支持通过 RADIUS 服务器或 HWTACACS 服务器进行远端计费。 </li>
+</ul>
+<h2 id="AAA实现-RADIUS-协议"><a href="#AAA实现-RADIUS-协议" class="headerlink" title="AAA实现-RADIUS 协议"></a>AAA实现-RADIUS 协议</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>远程认证拨号用户服务 RADIUS（Remote Authentication Dial-In User Service）是一种分布式的、客 户端/服务器结构的信息交互协议，能保护网络不受未授权访问的干扰，常应用在既要求较高安全 性、又允许远程用户访问的各种网络环境中。该协议定义了基于 UDP 的 RADIUS 帧格式及其消息 传输机制，并规定 UDP 端口 1812、1813 分别作为认证、计费端口。<br>RADIUS 最初仅是针对拨号用户的 AAA 协议，后来随着用户接入方式的多样化发展，RADIUS 也 适应多种用户接入方式，如以太网接入、ADSL 接入。它通过认证授权来提供接入服务，通过计费 来收集、记录用户对网络资源的使用。 </p>
+<h3 id="RADIUS服务器"><a href="#RADIUS服务器" class="headerlink" title="RADIUS服务器"></a>RADIUS服务器</h3><p>RADIUS 服务器一般运行在中心计算机或工作站上，维护相关的用户认证和网络服务访问信息，负 责接收用户连接请求并认证用户，然后给客户端返回所有需要的信息（如接受/拒绝认证请求）。</p>
+<p>RADIUS 服务器通常要维护三个数据库：</p>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="RADIUS数据库"></p>
+<p>“Users”：用于存储用户信息（如用户名、口令以及使用的协议、IP 地址等配置信息）。<br>“Clients”：用于存储 RADIUS 客户端的信息（如接入设备的共享密钥、IP 地址等）。<br>“Dictionary”：用于存储 RADIUS 协议中的属性和属性值含义的信息。 </p>
+<h3 id="RADIUS客户端"><a href="#RADIUS客户端" class="headerlink" title="RADIUS客户端"></a>RADIUS客户端</h3><p>RADIUS 客户端一般位于网络接入服务器 NAS（Network Access Server）设备上，可以遍布整个网 络，负责传输用户信息到指定的 RADIUS 服务器，然后根据从服务器返回的信息进行相应处理（如 接受/拒绝用户接入）。<br>网络接入服务器作为 RADIUS 协议的客户端，实现以下功能：<br>      标准 RADIUS 协议及扩充属性，包括 RFC2865、RFC2866。<br>      华为扩展的私有属性。<br>      对 RADIUS 服务器状态的主动探测功能。<br>      计费结束报文的本地缓存重传功能。</p>
+<p>​      RADIUS 服务器的自动切换功能。 </p>
+<h3 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h3><p>RADIUS 客户端和 RADIUS 服务器之间认证消息的交互是通过共享密钥的参与来完成的，并且共 享密钥不能通过网络来传输，增强了信息交互的安全性。另外，为防止用户密码在不安全的网络上 传递时被窃取，在传输过程中对密码进行了加密。 </p>
+<h3 id="认证和计费消息流程"><a href="#认证和计费消息流程" class="headerlink" title="认证和计费消息流程"></a>认证和计费消息流程</h3><ul>
+<li>用户登录网络接入服务器时，会将用户名和密码发送给该网络接入服务器； </li>
+<li>该网络接入服务器中的 RADIUS 客户端接收用户名和密码，并向 RADIUS 服务器发送认证请求； </li>
+<li>RADIUS 服务器接收到合法的请求后，完成认证，并把所需的用户授权信息返回给客户端； 对于非法的请求，RADIUS 服务器返回认证失败的信息给客户端。 </li>
+<li>计费的消息流程和认证/授权的消息流程类似。 </li>
+</ul>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%B5%81%E7%A8%8B.png" alt="RADIUS流程"></p>
+<h2 id="AAA实现-HWTACACS-协议"><a href="#AAA实现-HWTACACS-协议" class="headerlink" title="AAA实现-HWTACACS 协议"></a>AAA实现-HWTACACS 协议</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>HW 终端访问控制器控制系统协议 HWTACACS（Huawei Terminal Access Controller Access Control System）是在 TACACS（RFC 1492）基础上进行了功能增强的安全协议。该协议与 RADIUS 协议 类似，采用客户端/服务器模式实现 NAS 与 HWTACACS 服务器之间的通信。<br>HWTACACS 协议主要用于点对点协议 PPP（Point-to-Point Protocol）和虚拟私有拨号网络 VPDN （Virtual Private Dial-up Network）接入用户及终端用户的认证、授权和计费。其典型应用是对需要 登录到设备上进行操作的终端用户进行认证、授权、计费。设备作为 HWTACACS 的客户端，将 用户名和密码发给 HWTACACS 服务器进行验证。用户验证通过并得到授权之后可以登录到设备 上进行操作。 </p>
+<h3 id="HWTACACS-协议和-RADIUS-协议的比较"><a href="#HWTACACS-协议和-RADIUS-协议的比较" class="headerlink" title="HWTACACS 协议和 RADIUS 协议的比较"></a>HWTACACS 协议和 RADIUS 协议的比较</h3><table>
+<thead>
+<tr>
+<th>HWTACACS</th>
+<th>RADIUS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>使用TCP，网络传输更可靠</td>
+<td>使用UDP</td>
+</tr>
+<tr>
+<td>除了标准的HWTACACS报文头,对报文主体全部进行加密</td>
+<td>只是对认证报文中的密码字段进行加密</td>
+</tr>
+<tr>
+<td>认证与授权分离</td>
+<td>认证与授权一起处理</td>
+</tr>
+<tr>
+<td>适于进行安全控制</td>
+<td>适于进行计费</td>
+</tr>
+<tr>
+<td>支持对设备上的配置命令进行授权使用</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<h3 id="HWTACACS-的基本消息交互流程"><a href="#HWTACACS-的基本消息交互流程" class="headerlink" title="HWTACACS 的基本消息交互流程"></a>HWTACACS 的基本消息交互流程</h3><p>下面以 Telnet 用户为例，说明使用 HWTACACS 对用户进行认证、授权和计费的过程。</p>
+<p><img src="/2021/04/24/AAA/HWTACACS%E8%BF%87%E7%A8%8B.png" alt="HWTACACS过程"></p>
+<blockquote>
+<p>HWTACACS 协议与其他厂商支持的 TACACS+协议都实现了认证、授权、计费的功能。HWTACACS 和 TACACS+的认证流程与实现方式是一致的，HWTACACS 协议能够完全兼容 TACACS+协议。 </p>
+</blockquote>
+<h2 id="AAA基于域的用户管理"><a href="#AAA基于域的用户管理" class="headerlink" title="AAA基于域的用户管理"></a>AAA基于域的用户管理</h2><p>一个域是由属于同一个域的用户构成的群体。<br>NAS 设备对用户的管理是基于域的，每个接入用户都属于一个域。用户所属的域是由用户登录时提供的用户名决定的。</p>
+<p><img src="/2021/04/24/AAA/AAA%E5%9F%9F.png" alt="AAA域"></p>
+<blockquote>
+<p>用户的认证、授权、计费都是在相应的域视图下应用预先配置的认证、授权、计费方案来实现的。 AAA 有缺省的认证、授权、计费方案，分别为本地认证、本地授权、本地计费。如果用户所属的 域下未应用任何认证、授权、计费方案，系统将使用缺省的认证、授权、计费方案。 </p>
+</blockquote>
+<h2 id="AAA配置命令"><a href="#AAA配置命令" class="headerlink" title="AAA配置命令"></a>AAA配置命令</h2><p>1．进入AAA视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] aaa</span><br></pre></td></tr></table></figure>
+<p>从系统视图进入AAA视图进行配置<br>2. 创建认证方案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
+<p>创建认证方案并进入相应的认证方案视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-authentication-scheme-name] authentication-mode &#123; hwtacacs &#x2F; local | radius &#125;</span><br></pre></td></tr></table></figure>
+<p>配置认证方式，local指定认证方式为本地认证。缺省情况下，认证方式为本地认证。<br>3. 创建domain并绑定认证方案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] domain domain-name</span><br></pre></td></tr></table></figure>
+<p>创建domain并进入相应的domain视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-domain-name] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
+<p>在相应的domain视图下绑定认证方案<br>4. 创建用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password cipher password</span><br></pre></td></tr></table></figure>
+<p>创建本地用户，并配置本地用户的密码:<br>如果用户名中带域名分隔符，如@，则认为@前面的部分是用户名，后面部分是域名·如果没有@，则整个字符串为用户名，域为默认域。<br>5. 配置用户接入类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name service-type &#123; &#123; terminal | telnet | ftp | ssh &#x2F; snmp | http ]&#x2F; ppp | none &#125;</span><br></pre></td></tr></table></figure>
+<p>设置本地用户的接入类型。缺省情况下，本地用户关闭所有的接入类型。<br>6. 配置用户级别</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name privilege level level</span><br></pre></td></tr></table></figure>
+<p>指定本地用户的权限级别。</p>
+<ol start="7">
+<li>显示历史用户登录记录</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]display aaa offline-record all</span><br></pre></td></tr></table></figure>
+
+<h2 id="AAA配置案例"><a href="#AAA配置案例" class="headerlink" title="AAA配置案例"></a>AAA配置案例</h2><h3 id="AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）"><a href="#AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）" class="headerlink" title="AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）"></a>AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）</h3><p>下述拓扑中用户处于huawei域中，通过出口设备LSW1去访问Internet，LSW2作为运营商边界设备负责对用户访问internet的权限进行控制，执行AAA认证，认证模式采用Radius服务器认证和计费，现在需要实现ISP对huawei域内的企业用户进行Radius认证，必须在LSW2上配置AAA认证和Radius模板来完成对接入用户的控制。</p>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
+<p>在LSW2上的配置如下：</p>
+<p>一、配置AAA认证方案</p>
+<p>[Huawei]aaa</p>
+<p>[Huawei-aaa]authentication-scheme ren_zheng                          配置AAA认证方案名为ren_zheng</p>
+<p>[Huawei-aaa-authen-aaa]authentication-mode radius local        配置AAA认证模式为先Radius，如无响应则本地认证</p>
+<p>[Huawei-aaa-authen-aaa]quit</p>
+<p>[Huawei-aaa]accounting-scheme ji_fei                                       配置AAA计费方案名为ji_fei</p>
+<p>[Huawei-aaa-accounting-ji_fei]accounting-mode radius             配置AAA计费模式为Radius服务器计费</p>
+<p>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline         配置当开始计费失败时，将用户离线</p>
+<p>[Huawei-aaa-accounting-ji_fei]quit</p>
+<p>二、配置Radius模板</p>
+<p>[Huawei]radius-server template huawei_use                              配置Raduis模板名为huawei_use</p>
+<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.254 1812    主radius认证服务地址和端口</p>
+<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.253 1812 secondary  备用认证服务器</p>
+<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1812         主radius计费服务地址和端口</p>
+<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1813 secondary       备用计费服务器</p>
+<p>[Huawei-radius-huawei_use]radius-server shared-key cipher hello      配置设备与Radius通信的共享秘钥为hello</p>
+<p>[Huawei-radius-huawei_use]radius-server retransmit 2 timeout 5       配置设备向Radius服务器发送请求报文的超时重传次数为2s，间隔为5s</p>
+<p>[Huawei-radius-huawei_use]quit</p>
+<p>三、在AAA用户域绑定要使用的AAA认证和Radius模板</p>
+<p>[Huawei]aaa</p>
+<p>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei</p>
+<p>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng     在域中绑定AAA认证方案</p>
+<p>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案</p>
+<p>[Huawei-aaa-domain-huawei]radius-server huawei_use                   在域中绑定Radius模板</p>
+<p>[Huawei-aaa-domain-huawei]quit</p>
+<p>四、检查命令：</p>
+<p><strong>[Huawei]display radius-server configuration template huawei_use</strong></p>
+<hr>
+<p>  Server-template-name             :  huawei_use<br>  Protocol-version                 :  standard<br>  Traffic-unit                     :  B<br>  Shared-secret-key                :  aaYOZ$V^P35NZPO3JBXBHA!!<br>  Timeout-interval(in second)      :  5<br>  Primary-authentication-server    :  192.168.1.254  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Primary-accounting-server        :  192.168.1.254  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-authentication-server  :  192.168.1.253  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-accounting-server      :  192.168.1.253  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Retransmission                   :  2<br>  Domain-included                  :  YES<br>  NAS-IP-Address                   :  0.0.0.0</p>
+<p>Calling-station-id MAC-format    :  xxxx-xxxx-xxxx</p>
+<hr>
+<p>[Huawei]</p>
+<p><strong>[Huawei]display domain name huawei</strong></p>
+<hr>
+<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name      : ren_zheng<br>  Accounting-scheme-name           : ji_fei<br>  Authorization-scheme-name       : -<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : huawei_use<br>  HWTACACS-server-template        : -</p>
+<hr>
+<p>[Huawei]</p>
+<h3 id="AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"><a href="#AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）" class="headerlink" title="AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"></a>AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）</h3><p>拓扑图如下:</p>
+<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
+<p>在LSW2上的配置如下：</p>
+<p>一、配置AAA认证方案</p>
+<p>[Huawei]aaa<br>[Huawei-aaa]authentication-scheme ren_zheng                              配置AAA认证方案名为ren_zheng<br>[Huawei-aaa-authen-aaa]authentication-mode hwtacacs local        配置AAA认证模式为先hwtacacs，如无响应则本地认证<br>[Huawei-aaa-authen-aaa]authentication-super hwtacacs super       接入用户进行提权时，先进行hwtacacs认证，如无响应再本地认证<br>[Huawei-aaa-authen-aaa]quit<br>[Huawei]aaa<br>[Huawei-aaa]authorization-scheme shou_quan                             配置AAA授权方案名为ren_zheng<br>[Huawei-aaa-author-aaa]authorization-mode hwtacacs local        配置AAA授权模式为先hwtacacs，如无响应则本地授权</p>
+<p>[Huawei-aaa-author-aaa]quit</p>
+<p>[Huawei-aaa]accounting-scheme ji_fei                                    配置AAA计费方案名为ji_fei<br>[Huawei-aaa-accounting-ji_fei]accounting-mode hwtacacs     配置AAA计费模式为hwtacacs服务器计费<br>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline      配置当开始计费失败时，将用户离线<br>[Huawei-aaa-accounting-ji_fei]accounting relaltime 3              配置对用户进行实时计费，计费间隔为3min<br>[Huawei-aaa-accounting-ji_fei]quit</p>
+<p>二、配置hwtacacs模板</p>
+<p>[Huawei]hwtacacs-server template huawei_use                       配置hwtacacs模板名为huawei_use<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.254 49    主hwtacacs认证服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.253 49 secondary     备用认证服务器<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49      主hwtacacs授权服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49 secondary       备用授权服务器</p>
+<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49         主hwtacacs计费服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49 secondary          备用计费服务器</p>
+<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server shared-key cipher hello      配置设备与hwtacacs通信的共享秘钥为hello</p>
+<p>[Huawei-hwtacacs-huawei_use]quit<br>三、在AAA用户域绑定要使用的AAA认证和hwtacacs模板</p>
+<p>[Huawei]aaa<br>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei<br>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng    在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]authorization-scheme shou_quan     在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案<br>[Huawei-aaa-domain-huawei]hwtacacs-server huawei_use              在域中绑定hwtacacs模板</p>
+<p>[Huawei-aaa-domain-huawei]quit</p>
+<p>四、检查命令：</p>
+<p><strong>[Huawei]display hwtacacs-server template huawei_use</strong></p>
+<hr>
+<p> HWTACACS-server template name   : huawei_use<br>  Primary-authentication-server  : 192.168.1.254:49:-<br>  Primary-authorization-server    : 192.168.1.254:49-<br>  Primary-accounting-server       : 192.168.1.254:49:-<br>  Secondary-authentication-server : 192.168.1.253:49:-<br>  Secondary-authorization-server   : 192.168.1.253:49:-<br>  Secondary-accounting-server      : 192.168.1.253:49:-<br>  Current-authentication-server   : 192.168.1.254:49:-<br>  Current-authorization-server     : 192.168.1.254:49:-<br>  Current-accounting-server        : 192.168.1.254:49:-<br>  Source-IP-address               : 0.0.0.0<br>  Shared-key                      : hello<br>  Quiet-interval(min)             : 5<br>  Response-timeout-Interval(sec)  : 5<br>  Domain-included                 : Yes<br>  Traffic-unit                    : B</p>
+<p>  Total 1,1 printed</p>
+<hr>
+<p>[Huawei]</p>
+<p><strong>[Huawei]display domain name huawei</strong></p>
+<hr>
+<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name     : ren_zheng<br>  Accounting-scheme-name          : ji_fei<br>  Authorization-scheme-name       : shou_quan<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : -<br>  HWTACACS-server-template        : huawei_use</p>
+<hr>
+<p>[Huawei]</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/23/ospf/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1178,7 +1477,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1191,7 +1490,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

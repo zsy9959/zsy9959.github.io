@@ -241,6 +241,282 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/" itemprop="url">以太网交换</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T09:34:21+08:00">
+                2021-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="以太网是什么？"><a href="#以太网是什么？" class="headerlink" title="以太网是什么？"></a>以太网是什么？</h2><p>以太网(Ethernet)最早是由Xerox(施乐)公司创建的局域网组网规范，1980年DEC、Intel和Xeox三家公司联合开发了初版Ethernet规范—DIX 1.0，1982年这三家公司又推出了修改版本DIX 2.0，并将其提交给EEE 802工作组，经IEEEE成员修改并通过后，成为IEEE的正式标准，并编号为IEEE 802.3。虽然Ethernet规范和IEEE 802.3规范并不完全相同，但一般认为Ethernet和正IEEE 802.3是兼容的。</p>
+<p>以太网是应用最广泛的局域网技术。根据传输速率的不同，以太网分为标准以太网(10Mbit/s)、快速以太网(100Mbis)千兆以太网(1000Mbs)和万兆以太网(10Gbit/s)，这些以太网都符合IEEE 802.3是兼容的。</p>
+<h3 id="1、标准以太网"><a href="#1、标准以太网" class="headerlink" title="1、标准以太网"></a>1、标准以太网</h3><p>标准以太网是最早期的以太网，其传输速率为10Mbts，也称为传统以太网。此种以太网的组网方式非常灵活，既可以使用粗、细缆组成总线网络，也可以使用双绞线组成星状网络，还可以同时使用同轴电缆和双绞线组成混合网络。这些网络都符合EE8023标准，EEE8023中规定的一些传统以太网物理层标准如下。</p>
+<p>①10 Base-2：使用细同轴电缆，最大网段长度为185m。</p>
+<p>②10 Base-5：使用粗同轴电缆，最大网段长度为500m。</p>
+<p>③10 Base-T：使用双纹线，最大网段长度为100m。</p>
+<p>④10 Boad-36：使用同轴电缆，最大网段长度为3600m。</p>
+<p>⑤10 Base-F：使用光纤，最大网段长度为2000m，传输速率为10Mb/s。</p>
+<p>以土标准中首部的数字代表传输速率，单位为Mbis；末尾的数字代表单段网线长度(基准单位为100m)；Base表示基带传输， Broad表示宽带传输。</p>
+<h3 id="2、快速以太网"><a href="#2、快速以太网" class="headerlink" title="2、快速以太网"></a>2、快速以太网</h3><p>随着网络的发展和各项网络技术的普及，标准以太网技术已难以满足人们对网络数据流量和速率的需求。1993年10月以前，人们只能选择价格昂贵、基于100Mbs光缆的FDD技术组建高标准网络，1993年10月， Grand Junction公司推出了世界上第一台快速以太网集线器FastSwitch10/100和百兆网络接口卡 Fast NIC 100，快速以太网技术正式得到应用。</p>
+<p>随后，Intel、3COM等公司也相继推出了自己的快速以太网设备，同时EEE802工作组对100Mbi/s以太网的各种标准进行了研究，并于1995年4月发布了IEEE 802.3u 100Base-T快速以太网标准，快速以太网时代到来。</p>
+<p>IEEE 802.3U标准基本保持了标准局域网的规定，包括帧格式、接口、介质访问控制方法</p>
+<p>( CSMA/CD)等，只是将数据传输速率从10Mbts提升到了100Mbit/s，又使用了一些新的物理层标准，具体如下所示。</p>
+<p>① 100 Base-1X：使用两对5类屏蔽或非屏蔽双绞线，一对用于发送数据，一对用于传输数据；使用RJ-45或DB9接口，节点与集线器的最大距离为100m，支持全双工。</p>
+<p>② 100 Base-T4：使用4对3类、4类或5类双绞线，3对用于发送数据，1对用于检测冲突信号；使用R-45连接器，最大网段长度为100m，不支持全双工。</p>
+<p>③ 100Base-FX：使用一对单模或多模光纤，一路用于发送数据，一路用于接收数据；最大网段长度为200m(使用单模光纤时可达2000m)，支持全双工。此种网络主要用于搭建主千网，以提升主干网络传输速率。</p>
+<h3 id="3、千兆以太网"><a href="#3、千兆以太网" class="headerlink" title="3、千兆以太网"></a>3、千兆以太网</h3><p>千兆以太网(GigabitEthernet)也称为吉比特以太网。1995年11月，IEEE 802.3工作组委任一个高速研究组，以研究将快速以太网速率增至1000Mbls的可行性和方法。1996年6月，IEEE标准委员会批准了千兆以太网方案授权申请，随后IEE 802.3工作组成立了EEE 802.3z工作委员会，该委员会建立了千兆以太网标准，该标准的主要规定如下：</p>
+<p>① 速率为1000Mbit/s的以太网在通信时的全双工/伴半双工操作。</p>
+<p>② 使用8023以太网帧格式、CSMA/CD技术。</p>
+<p>③ 在一个冲突域中支持一个中继器。</p>
+<p>④ 向下兼容10Base-T和100Base-TIEEE 802.3。</p>
+<p>工作组为千兆以太网制定了一系列物理层标准，其中常用的标准如下。</p>
+<p>（1）1000 Base-SX：使用芯径为50m及625m、工作波长为850m的多模光纤，采用8B/10B编码方式，传输距离分别为260m和525m。此标准主要应用于建筑物中同一层的短距离主于网。</p>
+<p>（2）1000 Base-LX：使用芯径为50pm及625m、工作波长为850nm和芯径为5m、工作波长为1300nm的多模、单模光纤，传输距离分别为525m、550m和3000m。此标准主要应用于校园主干网。</p>
+<p>（3）1000 Base-CX：使用1500屏蔽双绞线，采用8B/10B编码方式，传输速率为1.25Gbis，传输距离为25m。此标准主要用于集群设备的连接，如一个交换机机房内的设备互联。</p>
+<p>（4）1000 Base-T：使用4对5类非屏蔽双绞线，采用PAM5编码方式，传输距离为100m。</p>
+<p>此标准主要用于同一层建筑的通信，从而可利用标准以太网或快速以太网已铺设的非屏蔽双绞线电缆。</p>
+<p>千兆以太网采用光纤作为上行链路，用于楼宇间的连接，原本被作为一种交换技术设计，之后被广泛应用于服务器的连接和主干网中。如今，千兆以太网已成为主流的网络技术，无论是大型企业还是中小型企业，在组建网络时都会把千兆以太网作为首选高速网络技术。</p>
+<h3 id="4、万兆以太网"><a href="#4、万兆以太网" class="headerlink" title="4、万兆以太网"></a>4、万兆以太网</h3><p>万兆以太网(10 Gigabit Ethernet，10GE)也称为10吉比特以太网，是继千兆以太网之后产生的高速以太网。在千兆以太网的IEEE 802.3Z规范通过后不久，IEEEE成立了高速研究组（High Speed Study Group，HssG)，该研究组主要致力于10GE的研究。</p>
+<p>10GE并非简单地将千兆以太网的速率提升了10倍，2002年6月，IEEE 802.3ae委员会制定了10GE的正式标准，该标准主要包括以下内容。</p>
+<p>① 兼容8023标准中定义的最小和最大以太网帧长度。</p>
+<p>②仅支持全双工方式。</p>
+<p>③使用点对点链路和结构化布线组建星状局域网。</p>
+<p>④在 MAC/PLS服务接口上实现10Gbs的速度。</p>
+<p>⑤定义两种物理层规范，即局域网PHY和广域网PHY。</p>
+<p>⑥定义将 MAC/PLS的数据传输速率对应到广域网PHY数据传输速率的适配机制。</p>
+<p>⑦定义支持特定物理介质相关接口(PMD)的物理层规范，包括多模光纤和单模光纤以及相应传输距离;支持ISO/C11801第二版中定义的光纤介质类型等。</p>
+<p>⑧通过WAN界面子层，10Gbi/s也能被调整为较低的传输速率。</p>
+<p>此外，10Gbis不再使用铜线，只使用光纤作为传输媒介;不再使用 CSMA/CD协议。千兆以太网仍可使用已有的光纤通道技术，但10GE使用新开发的物理层。10GE常用的物理层规范如下。</p>
+<p>①10G Base-SR：SR表示” Short Reach”(短距离)，10GBae-SR仅用于短距离连接，该规范支持编码方式为64B/66B的短波(850mm)多模光纤，有效传输距离为2m~300m。</p>
+<p>② 10G Base-LR：LR表示“Long Reach”(长距离)，10 G Base-LR主要用于长距离连接，该规范支持编码方式为64B/66B的长波(1310mm)单模光纤，有效传输距离为2m~10km，最高可达25km。</p>
+<p>④ 10 G Base-ER：ER表示“ Extended Reach”(超长距离，10G Base-ER支持超长波（1550nm)单模光纤，有效传输距离为2m~40km。</p>
+<h2 id="IEEE802-3与以太网的关系"><a href="#IEEE802-3与以太网的关系" class="headerlink" title="IEEE802.3与以太网的关系"></a>IEEE802.3与以太网的关系</h2><p>以太网从历史的角度看有两个，第一个是由三家公司开发的DIX以太网标准。这个标准有两个版本，分别是1980年9月发布的1.0版本和1982年11月发布的2.0版本，这也是DIX的最后一个版本。在其后1985年IEEE在DIX以太网标准的基础上制定了IEEE 802.3标准。</p>
+<p>DIX与IEEE 802.3从工作机制上是一致的。但实际上，DIX以太网标准与IEEE 802.3有一些区别，DIX是把定义的OSI参考模型中的物理层和数据链路层所完成的功能，包括在一起了。它把LLC SUBLAYER(子层)和MAC SUBLAYER 媒介访问控制子层划分成了数据链路层的两个子层。目的是为了数据侦传输独立与所用的物理介质和介质访问控制方法。而IEEE 802.3规定了物理层和数据链路层中媒介访问控制子层的MAC部分，它只包括了第二层的一部分功能，而IEEE 802.2定义了逻辑链路控制子层LLC的功能。MAC与介质访问控制方法密切相关，而LLC子层与所有介质访问方法无关。LLC的隔离作用，使得网络层仅针对LLC这种接口工作，不必关心下面的介质类型及介质访问方法。而IEEE 802.3是针对以太网的标准，而IEEE 802.2并不属于以太网。所以说DIX与IEEE 802.3只是包括的范围不同，相应它们两中协议的侦格式也有一些差异。我们也可以这样的理解。</p>
+<p>通俗地说就是，以太网先出来，IEEE发现这个东西很有前途，就赶紧以它为原型制定了一个有线局域网标准叫做IEEE 802.3，这个标准与原始以太网基本一样，只有些许不同，所以我们常常不加区分地将二者等同。但鉴于本篇文章的目的就是为了搞清楚这些层次之间的关系，所以我们要严格地对二者进行区分，IEEE802.3和以太网是不一样的，前者只定义了物理层和链路层的MAC子层，后者包括链路和物理两层。</p>
+<p>链路层分为LLC和MAC，其中LLC叫做802.2，MAC+PHY叫做802.3，所以有如下公式：802.3+802.2=以太网</p>
+<p>以太网协议栈在OSI模型中的位置，如下图</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/OSI%E4%BD%8D%E7%BD%AE.png"></p>
+<p>IEEE 802中定义的服务和协议限定在OSI模型的最低两层（即物理层和数据链路层）。事实上，IEEE 802将OSI的数据链路层分为两个子层，分别是逻辑链路控制（LLC， Logical Link Control）和介质访问控制（MAC， Media Access Control），如下所示：</p>
+<ul>
+<li>数据链路层<ul>
+<li>逻辑链路控制子层</li>
+<li>介质访问控制子层</li>
+</ul>
+</li>
+<li>物理层</li>
+</ul>
+<p>从上面我们可以看出，以太网占了两层（物理层+完整链路层），而IEEE802.3占了一层（物理层+链路层中的MAC子层）。</p>
+<p>了解了以太网和IEEE802.3在OSI模型中的位置以后，下面来看看以太网的层次划分</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/1.png"></p>
+<p>其实在MAC（介质访问控制子层）上面还有一个LLC（逻辑链路控制子层），这两个部分共同构成了链路层。链路层通过MII（或者其它一些升级版的接口，如GMII等）将数据传送到物理层，物理层对这些数据进行处理并以差分信号的形式发送出去，下面解释了图中物理层的一些缩略词的含义：</p>
+<p>MII（media independent interface）：MII的实例应用，就是一种协议，用来将数据从数据链路层传输到物理层。<br>PCS（physical coding sublayer）：对要通过支撑体传送的信息进行编码。实际定义的子层有 4 个：100BASE-X、100BASE-T4、100BASE-T2 和 1000BASE-X。<br>PMA（physical media attachment）：用于给定的介质类型。其功能是：数据传送、冲突侦测、时钟同步等。<br>PMD（physical medium dependent）：就在 MDI 接口之前，用于为MDI和传送支撑体提供接口。<br>MDI（media dependent device）：用于将收发器连接到发送支撑的插头的总称。它可以是 10BASE2 网络中的 BNC 插头，或者双绞线网络的 RJ-45 插头，或者光纤连接器。<br>上面看了那么多是不是有点蒙，下面我们会以网卡为例将抽象与实际关联。</p>
+<h3 id="结合网卡硬件具体分析"><a href="#结合网卡硬件具体分析" class="headerlink" title="结合网卡硬件具体分析"></a>结合网卡硬件具体分析</h3><p>网卡的主要工作原理:发送数据时，计算机把要传输的数据并行写到网卡的缓存，网卡对要传输的数据进编码(10M以太网使用曼切斯特码，100M以太网使用差分曼切斯特码)，串行发到传输介质上.接收数据时，则相反。对于网卡而言，每块网卡都有一个唯一的网络节点地址，它是网卡生产厂家在生产时烧入ROM（只读存储芯片）中的，我们把它叫做MAC地址（物理地址），且保证绝对不会重复。MAC为48bit，前24比特由IEEE分配，是需要钱买的，后24bit由网卡生产厂家自行分配。</p>
+<p>网卡的功能主要有两个:</p>
+<p>将电脑的数据封装为帧，并通过网线(对无线网络来说就是电磁波)将数据发送到网络上去。<br>是接收网络上其它设备传过来的帧，并将帧重新组合成数据，发送到所在的电脑中。<br>网卡能接收所有在网络上传输的信号，但正常情况下只接受发送到该电脑的帧和广播帧，将其余的帧丢弃。然后，传送到系统CPU做进一步处理。当电脑发送数据时，网卡等待合适的时间将分组插入到数据流中。接收系统通知电脑消息是否完整地到达，如果出现问题，将要求对方重新发送。</p>
+<p>现在的网卡大多集成在主板上面了，不过为了说明结构组成，我们还是用上古时期的独立网卡来介绍其结构</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/2.png"></p>
+<p>以最常见的PCI接口的网卡为例，一块网卡主要由PCB线路板、主芯片、数据汞、金手指(总线插槽接口)、BOOTROM、EEPROM、晶振、RJ45接口、指示灯、固定片等等，以及一些二极管、电阻电容等组成。下面我们就来分别了解一下其中主要部件。</p>
+<p>主芯片</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/3.png"></p>
+<p>主芯片有两大类，一种是集成了MAC和PHY的，另一种是只有MAC的，前者对应着数据链路层和物理层，后者只对应数据链路层，需要单独的芯片来构成物理层。在二者分离的情况下，主芯片与PHY芯片之间就需要MII来进行通信</p>
+<p>网卡的主控制芯片是网卡的核心元件，一块网卡性能的好坏和功能的强弱多寡，主要就是看这块芯片的质量。</p>
+<p>bootroom</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/4.png"></p>
+<p>BOOTROM插座也就是常说的无盘启动ROM接口，其是用来通过远程启动服务构造无盘工作站的。远程启动服务(Remoteboot，通常也叫RPL)使通过使用服务器硬盘上的软件来代替工作站硬盘引导一台网络上的工作站成为可能。网卡上必须装有一个RPL(Remote Program Load远程初始程序加载)ROM芯片才能实现无盘启动，每一种RPL ROM芯片都是为一类特定的网络接口卡而制作的，它们之间不能互换。带有RPL的网络接口卡发出引导记录请求的广播(broadcasts)，服务器自动的建立一个连接来响应它，并加载MS-DOS启动文件到工作站的内存中。</p>
+<p>此外，在BOOTROM插槽中心一般还有一颗93C46、93LC46或93c56的EEPROM芯片(93C56是128<em>16bit的EEPROM，而93C46是64</em>16bit的EEPROM)，它相当于网卡的BIOS，里面记录了网卡芯片的供应商ID、子系统供应商ID、网卡的MAC地址、网卡的一些配置，如总线上PHY的地址，BOOTROM的容量，是否启用BOOTROM引导系统等内容。主板板载网卡的EEPROM信息一般集成在主板BIOS中。</p>
+<p>LED指示灯</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/5.png"></p>
+<p>一般来讲，每块网卡都具有1个以上的LED(Light Emitting Diode发光二极管)指示灯，用来表示网卡的不同工作状态，以方便我们查看网卡是否工作正常。典型的LED指示灯有Link/Act、Full、Power等。Link/Act表示连接活动状态，Full表示是否全双工(Full Duplex)，而Power是电源指示(主要用在USB或PCMCIA网卡上)等 。</p>
+<p>数据汞</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/6.png"></p>
+<p>数据汞是消费级PCI网卡上都具备的设备，数据汞也被叫做网络变压器或可称为网络隔离变压器。它在一块网卡上所起的作用主要有两个，一是传输数据，它把PHY送出来的差分信号用差模耦合的线圈耦合滤波以增强信号，并且通过电磁场的转换耦合到不同电平的连接网线的另外一端;一是隔离网线连接的不同网络设备间的不同电平，以防止不同电压通过网线传输损坏设备。除此而外，数据汞还能对设备起到一定的防雷保护作用。</p>
+<p>晶振</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/7.png"></p>
+<p>晶振是石英振荡器的简称，英文名为Crystal，它是时钟电路中最重要的部件，它的作用是向显卡、网卡、主板等配件的各分提供基准频率，它就像个标尺，工作频率不稳定会造成相关设备工作频率不稳定，自然容易出现问题。由于制造工艺不断提高，现在晶振的频率偏差、温度稳定性、老化率、密封性等重要技术指标都很好，已不容易出现故障，但在选用时仍可留意一下晶振的质量。</p>
+<p>网线接口</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/8.png"></p>
+<p>对应着MDI</p>
+<p>网卡上还剩一些组件，PMA，PCS和PMD没有提，自己去了解一下吧，而且并不是所有以太网解决方案都会包括完整的标准内容。</p>
+<h2 id="互联网和以太网的区别"><a href="#互联网和以太网的区别" class="headerlink" title="互联网和以太网的区别"></a>互联网和以太网的区别</h2><h3 id="互联网"><a href="#互联网" class="headerlink" title="互联网"></a>互联网</h3><p>互联网（Internet）是一个网络的网络，它是由从地方到全球范围内几百万个私人的，政府的，学术界的，企业的和政府的网络所构成，通过电子，无线和光纤网络技术等等一系列广泛的技术联系在一起。</p>
+<h3 id="以太网"><a href="#以太网" class="headerlink" title="以太网"></a>以太网</h3><p>以太网（Ethernet）是为了实现局域网通信而设计的一种数据链路层技术，它规定了包括物理层的连线、电子信号和介质访问层协议的内容。以太网是目前应用最普遍的局域网技术，取代了其他局域网标准如令牌环、FDDI和ARCNET。</p>
+<h3 id="二者区别"><a href="#二者区别" class="headerlink" title="二者区别"></a>二者区别</h3><p>1、简单地说，以太网是一直为了实现局域网通信而设计的一系列技术方案，包括物理层传输媒介和 CSMA/CD 协议等内容，而互联网是计算机网络。</p>
+<p>2、以太网很普及，电脑上的以太网接口，Wi-Fi 接口，以太网交换机、路由器上的千兆，万兆以太网口，还有网线，它们都是以太网的组成部分，以太网可以用在局域网、广域网、也可以用在互联网上，现在网络有以太网化的趋势，因为简单易用，造成很普及，然后就得到很好的研究，10兆带宽，100 兆，1000 兆，万兆…这就是它的速率升级图。</p>
+<p>而互联网则是由大大小小的运营商、公司、机构、用户连接起来网络的总称，里面包含以太网、ATM网、还有其它接口，如 E1/E3等等。</p>
+<h2 id="以太网协议"><a href="#以太网协议" class="headerlink" title="以太网协议"></a>以太网协议</h2><p>以太网是当今现有局域网(Local Area Network, LAN)采用的最通用的通信协议标准,定义了局域网中采用的电缆类型和信号处理方法。<br>以太网是建立在CSMA/CD (Carrier Sense Multiple Access/Collision Detection，载波监听多路访问/冲突检测)机制上的广播型网络。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%8F%E8%AE%AE.png"></p>
+<h3 id="冲突域"><a href="#冲突域" class="headerlink" title="冲突域"></a>冲突域</h3><p>冲突域是指连接在同一共享介质上的所有节点的集合。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%86%B2%E7%AA%81%E5%9F%9F.png"></p>
+<h3 id="广播域"><a href="#广播域" class="headerlink" title="广播域"></a>广播域</h3><p>广播报文所能到达的整个访问范围称为二层广播域，简称广播域。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B9%BF%E6%92%AD%E5%9F%9F.png"></p>
+<h3 id="以太网卡"><a href="#以太网卡" class="headerlink" title="以太网卡"></a>以太网卡</h3><p>网络接口卡(Network Interface Card,NIC)也称为“网卡”</p>
+<p>网络接口</p>
+<ul>
+<li>简称“网口”或“接口”或“端口”</li>
+</ul>
+<p>网卡</p>
+<ul>
+<li>每个网口都有一块网卡与之对应。</li>
+<li>计算机或交换机通过网卡来转发数据。</li>
+</ul>
+<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><h3 id="以太网帧格式"><a href="#以太网帧格式" class="headerlink" title="以太网帧格式"></a>以太网帧格式</h3><ul>
+<li><p>以太网技术所使用的帧称为以太网帧(Ethernet Frame)，或简称以太帧。</p>
+</li>
+<li><p>以太帧的格式有两个标准:Ethernet_ll格式和IEEE 802.3格式。</p>
+</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B8%A7%E6%A0%BC%E5%BC%8F.png"></p>
+<h3 id="什么是MAC地址"><a href="#什么是MAC地址" class="headerlink" title="什么是MAC地址"></a>什么是MAC地址</h3><ul>
+<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡。</li>
+<li>一块网卡的MAC地址是具有全球唯一性的。</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80.png"></p>
+<h3 id="IP地址-vs-MAC地址"><a href="#IP地址-vs-MAC地址" class="headerlink" title="IP地址 vs MAC地址"></a>IP地址 vs MAC地址</h3><p>IP地址的特点:</p>
+<ul>
+<li>IP地址是唯一的</li>
+<li>IP地址可变</li>
+<li>基于网络拓扑进行IP地址分配</li>
+</ul>
+<p>MAC地址的特点:</p>
+<ul>
+<li>MAC地址是唯一的</li>
+<li>MAC地址不可变</li>
+<li>基于制造商进行MAC地址分配</li>
+</ul>
+<h3 id="MAC地址表示"><a href="#MAC地址表示" class="headerlink" title="MAC地址表示"></a>MAC地址表示</h3><p>一个MAC地址有48 bit，6 Byte。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E8%A1%A8%E7%A4%BA.png"></p>
+<h3 id="MAC地址构成及分类"><a href="#MAC地址构成及分类" class="headerlink" title="MAC地址构成及分类"></a>MAC地址构成及分类</h3><ul>
+<li>OUI( Organizationally Unique ldentifier ) :厂商代码，由IEEE分配，3 Byte，24 bit</li>
+<li>制造商分配:3 Byte，24 bit</li>
+</ul>
+<p><strong>MAC地址分类</strong></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB.png"></p>
+<h2 id="以太网交换机"><a href="#以太网交换机" class="headerlink" title="以太网交换机"></a>以太网交换机</h2><h3 id="MAC地址表"><a href="#MAC地址表" class="headerlink" title="MAC地址表"></a>MAC地址表</h3><ul>
+<li>每台交换机中都有一个MAC地址表，存放了MAC地址与交换机端口编号之间的映射关系。</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E8%A1%A8.png"></p>
+<h3 id="MAC地址表学习过程"><a href="#MAC地址表学习过程" class="headerlink" title="MAC地址表学习过程"></a>MAC地址表学习过程</h3><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/9.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/10.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/11.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/12.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/13.png"></p>
+<h3 id="交换机转发过程"><a href="#交换机转发过程" class="headerlink" title="交换机转发过程"></a>交换机转发过程</h3><h4 id="交换机的3种数据帧处理行为"><a href="#交换机的3种数据帧处理行为" class="headerlink" title="交换机的3种数据帧处理行为"></a>交换机的3种数据帧处理行为</h4><p>交换机对于从传输介质进入某一端口的帧的处理行为一共有3种:泛洪、转发和丢弃。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/14.png"></p>
+<h4 id="泛洪"><a href="#泛洪" class="headerlink" title="泛洪"></a>泛洪</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/15.png"></p>
+<h4 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/16.png"></p>
+<h4 id="丢弃"><a href="#丢弃" class="headerlink" title="丢弃"></a>丢弃</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/17.png"></p>
+<h2 id="数据封装过程"><a href="#数据封装过程" class="headerlink" title="数据封装过程"></a>数据封装过程</h2><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/18.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/30/VLAN/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3095,305 +3371,6 @@ Group ID:组播组ID。
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/AAA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/24/AAA/" itemprop="url">AAA</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:11:49+08:00">
-                2021-04-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AAA概述"><a href="#AAA概述" class="headerlink" title="AAA概述"></a>AAA概述</h2><p>AAA是Authentication (认证)、Authorization(授权）和Accounting(计费）的简称，是网络安全的一种管理机制，提供了认证、授权、计费三种安全功能。</p>
-<p><img src="/2021/04/24/AAA/AAA%E6%A6%82%E8%BF%B0.png" alt="AAA概述"></p>
-<h2 id="AAA基本架构"><a href="#AAA基本架构" class="headerlink" title="AAA基本架构"></a>AAA基本架构</h2><p>AAA常见网络架构中包括用户、NAS ( Network Access Server )、AAA服务器(AAA Server ) 。</p>
-<ul>
-<li>NAS负责集中收集和管理用户的访问请求。</li>
-<li>在NAS上会创建多个域来管理用户。不同的域可以关联不同的AAA方案。AAA方案包含认证方案，授权方案，计费方案。</li>
-<li>当收到用户接入网络的请求时，NAS会根据用户名来判断用户所在的域，根据该域对应的AAA方案对用户进行管控。</li>
-</ul>
-<p><img src="/2021/04/24/AAA/AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84.png" alt="AAA基本架构"></p>
-<h2 id="Authentication-认证"><a href="#Authentication-认证" class="headerlink" title="Authentication (认证)"></a>Authentication (认证)</h2><p>AAA支持的认证方式有:不认证，本地认证，远端认证。</p>
-<ul>
-<li>不认证：对用户非常信任，不对其进行合法检查，一般情况下不采用这种方式。 </li>
-<li>本地认证：将用户信息配置在网络接入服务器上。本地认证的优点是速度快，可以为运营降低成本，缺点是存储信息量受设备硬件条件限制。 </li>
-<li>远端认证：将用户信息配置在认证服务器上。支持通过 RADIUS（Remote Authentication Dial In User Service）协议或 HWTACACS（HuaWei Terminal Access Controller Access Control System）协议进行远端认证。 </li>
-</ul>
-<p><img src="/2021/04/24/AAA/%E8%AE%A4%E8%AF%81.png" alt="认证"></p>
-<h2 id="Authorization-授权）"><a href="#Authorization-授权）" class="headerlink" title="Authorization(授权）"></a>Authorization(授权）</h2><p>AAA支持的授权方式有:不授权，本地授权，远端授权。</p>
-<ul>
-<li><p>不授权：不对用户进行授权处理。 </p>
-</li>
-<li><p>本地授权：根据网络接入服务器为本地用户账号配置的相关属性进行授权。 </p>
-</li>
-<li><p>HWTACACS 授权：由 HWTACACS 服务器对用户进行授权。 </p>
-</li>
-<li><p>if-authenticated 授权：如果用户通过了认证，而且使用的认证</p>
-<p>模式是本地或远端认证，则用户授权通过。 </p>
-</li>
-<li><p>RADIUS 认证成功后授权：RADIUS 协议的认证和授权是绑定在一起的，不能单独使用 RADIUS 进行授权。 </p>
-</li>
-</ul>
-<p>授权信息包括:所属用户组、所属VLAN、ACL编号等。</p>
-<p><img src="/2021/04/24/AAA/%E6%8E%88%E6%9D%83.png" alt="授权"></p>
-<h2 id="Accounting-计费）"><a href="#Accounting-计费）" class="headerlink" title="Accounting(计费）"></a>Accounting(计费）</h2><p>计费功能用于<strong>监控授权用户的网络行为和网络资源的使用情况</strong></p>
-<p>AAA支持的计费方式有:不计费，远端计费。</p>
-<ul>
-<li> 不计费：不对用户计费。 </li>
-<li>远端计费：支持通过 RADIUS 服务器或 HWTACACS 服务器进行远端计费。 </li>
-</ul>
-<h2 id="AAA实现-RADIUS-协议"><a href="#AAA实现-RADIUS-协议" class="headerlink" title="AAA实现-RADIUS 协议"></a>AAA实现-RADIUS 协议</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>远程认证拨号用户服务 RADIUS（Remote Authentication Dial-In User Service）是一种分布式的、客 户端/服务器结构的信息交互协议，能保护网络不受未授权访问的干扰，常应用在既要求较高安全 性、又允许远程用户访问的各种网络环境中。该协议定义了基于 UDP 的 RADIUS 帧格式及其消息 传输机制，并规定 UDP 端口 1812、1813 分别作为认证、计费端口。<br>RADIUS 最初仅是针对拨号用户的 AAA 协议，后来随着用户接入方式的多样化发展，RADIUS 也 适应多种用户接入方式，如以太网接入、ADSL 接入。它通过认证授权来提供接入服务，通过计费 来收集、记录用户对网络资源的使用。 </p>
-<h3 id="RADIUS服务器"><a href="#RADIUS服务器" class="headerlink" title="RADIUS服务器"></a>RADIUS服务器</h3><p>RADIUS 服务器一般运行在中心计算机或工作站上，维护相关的用户认证和网络服务访问信息，负 责接收用户连接请求并认证用户，然后给客户端返回所有需要的信息（如接受/拒绝认证请求）。</p>
-<p>RADIUS 服务器通常要维护三个数据库：</p>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="RADIUS数据库"></p>
-<p>“Users”：用于存储用户信息（如用户名、口令以及使用的协议、IP 地址等配置信息）。<br>“Clients”：用于存储 RADIUS 客户端的信息（如接入设备的共享密钥、IP 地址等）。<br>“Dictionary”：用于存储 RADIUS 协议中的属性和属性值含义的信息。 </p>
-<h3 id="RADIUS客户端"><a href="#RADIUS客户端" class="headerlink" title="RADIUS客户端"></a>RADIUS客户端</h3><p>RADIUS 客户端一般位于网络接入服务器 NAS（Network Access Server）设备上，可以遍布整个网 络，负责传输用户信息到指定的 RADIUS 服务器，然后根据从服务器返回的信息进行相应处理（如 接受/拒绝用户接入）。<br>网络接入服务器作为 RADIUS 协议的客户端，实现以下功能：<br>      标准 RADIUS 协议及扩充属性，包括 RFC2865、RFC2866。<br>      华为扩展的私有属性。<br>      对 RADIUS 服务器状态的主动探测功能。<br>      计费结束报文的本地缓存重传功能。</p>
-<p>​      RADIUS 服务器的自动切换功能。 </p>
-<h3 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h3><p>RADIUS 客户端和 RADIUS 服务器之间认证消息的交互是通过共享密钥的参与来完成的，并且共 享密钥不能通过网络来传输，增强了信息交互的安全性。另外，为防止用户密码在不安全的网络上 传递时被窃取，在传输过程中对密码进行了加密。 </p>
-<h3 id="认证和计费消息流程"><a href="#认证和计费消息流程" class="headerlink" title="认证和计费消息流程"></a>认证和计费消息流程</h3><ul>
-<li>用户登录网络接入服务器时，会将用户名和密码发送给该网络接入服务器； </li>
-<li>该网络接入服务器中的 RADIUS 客户端接收用户名和密码，并向 RADIUS 服务器发送认证请求； </li>
-<li>RADIUS 服务器接收到合法的请求后，完成认证，并把所需的用户授权信息返回给客户端； 对于非法的请求，RADIUS 服务器返回认证失败的信息给客户端。 </li>
-<li>计费的消息流程和认证/授权的消息流程类似。 </li>
-</ul>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%B5%81%E7%A8%8B.png" alt="RADIUS流程"></p>
-<h2 id="AAA实现-HWTACACS-协议"><a href="#AAA实现-HWTACACS-协议" class="headerlink" title="AAA实现-HWTACACS 协议"></a>AAA实现-HWTACACS 协议</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>HW 终端访问控制器控制系统协议 HWTACACS（Huawei Terminal Access Controller Access Control System）是在 TACACS（RFC 1492）基础上进行了功能增强的安全协议。该协议与 RADIUS 协议 类似，采用客户端/服务器模式实现 NAS 与 HWTACACS 服务器之间的通信。<br>HWTACACS 协议主要用于点对点协议 PPP（Point-to-Point Protocol）和虚拟私有拨号网络 VPDN （Virtual Private Dial-up Network）接入用户及终端用户的认证、授权和计费。其典型应用是对需要 登录到设备上进行操作的终端用户进行认证、授权、计费。设备作为 HWTACACS 的客户端，将 用户名和密码发给 HWTACACS 服务器进行验证。用户验证通过并得到授权之后可以登录到设备 上进行操作。 </p>
-<h3 id="HWTACACS-协议和-RADIUS-协议的比较"><a href="#HWTACACS-协议和-RADIUS-协议的比较" class="headerlink" title="HWTACACS 协议和 RADIUS 协议的比较"></a>HWTACACS 协议和 RADIUS 协议的比较</h3><table>
-<thead>
-<tr>
-<th>HWTACACS</th>
-<th>RADIUS</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>使用TCP，网络传输更可靠</td>
-<td>使用UDP</td>
-</tr>
-<tr>
-<td>除了标准的HWTACACS报文头,对报文主体全部进行加密</td>
-<td>只是对认证报文中的密码字段进行加密</td>
-</tr>
-<tr>
-<td>认证与授权分离</td>
-<td>认证与授权一起处理</td>
-</tr>
-<tr>
-<td>适于进行安全控制</td>
-<td>适于进行计费</td>
-</tr>
-<tr>
-<td>支持对设备上的配置命令进行授权使用</td>
-<td>不支持</td>
-</tr>
-</tbody></table>
-<h3 id="HWTACACS-的基本消息交互流程"><a href="#HWTACACS-的基本消息交互流程" class="headerlink" title="HWTACACS 的基本消息交互流程"></a>HWTACACS 的基本消息交互流程</h3><p>下面以 Telnet 用户为例，说明使用 HWTACACS 对用户进行认证、授权和计费的过程。</p>
-<p><img src="/2021/04/24/AAA/HWTACACS%E8%BF%87%E7%A8%8B.png" alt="HWTACACS过程"></p>
-<blockquote>
-<p>HWTACACS 协议与其他厂商支持的 TACACS+协议都实现了认证、授权、计费的功能。HWTACACS 和 TACACS+的认证流程与实现方式是一致的，HWTACACS 协议能够完全兼容 TACACS+协议。 </p>
-</blockquote>
-<h2 id="AAA基于域的用户管理"><a href="#AAA基于域的用户管理" class="headerlink" title="AAA基于域的用户管理"></a>AAA基于域的用户管理</h2><p>一个域是由属于同一个域的用户构成的群体。<br>NAS 设备对用户的管理是基于域的，每个接入用户都属于一个域。用户所属的域是由用户登录时提供的用户名决定的。</p>
-<p><img src="/2021/04/24/AAA/AAA%E5%9F%9F.png" alt="AAA域"></p>
-<blockquote>
-<p>用户的认证、授权、计费都是在相应的域视图下应用预先配置的认证、授权、计费方案来实现的。 AAA 有缺省的认证、授权、计费方案，分别为本地认证、本地授权、本地计费。如果用户所属的 域下未应用任何认证、授权、计费方案，系统将使用缺省的认证、授权、计费方案。 </p>
-</blockquote>
-<h2 id="AAA配置命令"><a href="#AAA配置命令" class="headerlink" title="AAA配置命令"></a>AAA配置命令</h2><p>1．进入AAA视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] aaa</span><br></pre></td></tr></table></figure>
-<p>从系统视图进入AAA视图进行配置<br>2. 创建认证方案</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
-<p>创建认证方案并进入相应的认证方案视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-authentication-scheme-name] authentication-mode &#123; hwtacacs &#x2F; local | radius &#125;</span><br></pre></td></tr></table></figure>
-<p>配置认证方式，local指定认证方式为本地认证。缺省情况下，认证方式为本地认证。<br>3. 创建domain并绑定认证方案</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] domain domain-name</span><br></pre></td></tr></table></figure>
-<p>创建domain并进入相应的domain视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-domain-name] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
-<p>在相应的domain视图下绑定认证方案<br>4. 创建用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password cipher password</span><br></pre></td></tr></table></figure>
-<p>创建本地用户，并配置本地用户的密码:<br>如果用户名中带域名分隔符，如@，则认为@前面的部分是用户名，后面部分是域名·如果没有@，则整个字符串为用户名，域为默认域。<br>5. 配置用户接入类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name service-type &#123; &#123; terminal | telnet | ftp | ssh &#x2F; snmp | http ]&#x2F; ppp | none &#125;</span><br></pre></td></tr></table></figure>
-<p>设置本地用户的接入类型。缺省情况下，本地用户关闭所有的接入类型。<br>6. 配置用户级别</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name privilege level level</span><br></pre></td></tr></table></figure>
-<p>指定本地用户的权限级别。</p>
-<ol start="7">
-<li>显示历史用户登录记录</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]display aaa offline-record all</span><br></pre></td></tr></table></figure>
-
-<h2 id="AAA配置案例"><a href="#AAA配置案例" class="headerlink" title="AAA配置案例"></a>AAA配置案例</h2><h3 id="AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）"><a href="#AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）" class="headerlink" title="AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）"></a>AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）</h3><p>下述拓扑中用户处于huawei域中，通过出口设备LSW1去访问Internet，LSW2作为运营商边界设备负责对用户访问internet的权限进行控制，执行AAA认证，认证模式采用Radius服务器认证和计费，现在需要实现ISP对huawei域内的企业用户进行Radius认证，必须在LSW2上配置AAA认证和Radius模板来完成对接入用户的控制。</p>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
-<p>在LSW2上的配置如下：</p>
-<p>一、配置AAA认证方案</p>
-<p>[Huawei]aaa</p>
-<p>[Huawei-aaa]authentication-scheme ren_zheng                          配置AAA认证方案名为ren_zheng</p>
-<p>[Huawei-aaa-authen-aaa]authentication-mode radius local        配置AAA认证模式为先Radius，如无响应则本地认证</p>
-<p>[Huawei-aaa-authen-aaa]quit</p>
-<p>[Huawei-aaa]accounting-scheme ji_fei                                       配置AAA计费方案名为ji_fei</p>
-<p>[Huawei-aaa-accounting-ji_fei]accounting-mode radius             配置AAA计费模式为Radius服务器计费</p>
-<p>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline         配置当开始计费失败时，将用户离线</p>
-<p>[Huawei-aaa-accounting-ji_fei]quit</p>
-<p>二、配置Radius模板</p>
-<p>[Huawei]radius-server template huawei_use                              配置Raduis模板名为huawei_use</p>
-<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.254 1812    主radius认证服务地址和端口</p>
-<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.253 1812 secondary  备用认证服务器</p>
-<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1812         主radius计费服务地址和端口</p>
-<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1813 secondary       备用计费服务器</p>
-<p>[Huawei-radius-huawei_use]radius-server shared-key cipher hello      配置设备与Radius通信的共享秘钥为hello</p>
-<p>[Huawei-radius-huawei_use]radius-server retransmit 2 timeout 5       配置设备向Radius服务器发送请求报文的超时重传次数为2s，间隔为5s</p>
-<p>[Huawei-radius-huawei_use]quit</p>
-<p>三、在AAA用户域绑定要使用的AAA认证和Radius模板</p>
-<p>[Huawei]aaa</p>
-<p>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei</p>
-<p>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng     在域中绑定AAA认证方案</p>
-<p>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案</p>
-<p>[Huawei-aaa-domain-huawei]radius-server huawei_use                   在域中绑定Radius模板</p>
-<p>[Huawei-aaa-domain-huawei]quit</p>
-<p>四、检查命令：</p>
-<p><strong>[Huawei]display radius-server configuration template huawei_use</strong></p>
-<hr>
-<p>  Server-template-name             :  huawei_use<br>  Protocol-version                 :  standard<br>  Traffic-unit                     :  B<br>  Shared-secret-key                :  aaYOZ$V^P35NZPO3JBXBHA!!<br>  Timeout-interval(in second)      :  5<br>  Primary-authentication-server    :  192.168.1.254  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Primary-accounting-server        :  192.168.1.254  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-authentication-server  :  192.168.1.253  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-accounting-server      :  192.168.1.253  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Retransmission                   :  2<br>  Domain-included                  :  YES<br>  NAS-IP-Address                   :  0.0.0.0</p>
-<p>Calling-station-id MAC-format    :  xxxx-xxxx-xxxx</p>
-<hr>
-<p>[Huawei]</p>
-<p><strong>[Huawei]display domain name huawei</strong></p>
-<hr>
-<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name      : ren_zheng<br>  Accounting-scheme-name           : ji_fei<br>  Authorization-scheme-name       : -<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : huawei_use<br>  HWTACACS-server-template        : -</p>
-<hr>
-<p>[Huawei]</p>
-<h3 id="AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"><a href="#AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）" class="headerlink" title="AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"></a>AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）</h3><p>拓扑图如下:</p>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
-<p>在LSW2上的配置如下：</p>
-<p>一、配置AAA认证方案</p>
-<p>[Huawei]aaa<br>[Huawei-aaa]authentication-scheme ren_zheng                              配置AAA认证方案名为ren_zheng<br>[Huawei-aaa-authen-aaa]authentication-mode hwtacacs local        配置AAA认证模式为先hwtacacs，如无响应则本地认证<br>[Huawei-aaa-authen-aaa]authentication-super hwtacacs super       接入用户进行提权时，先进行hwtacacs认证，如无响应再本地认证<br>[Huawei-aaa-authen-aaa]quit<br>[Huawei]aaa<br>[Huawei-aaa]authorization-scheme shou_quan                             配置AAA授权方案名为ren_zheng<br>[Huawei-aaa-author-aaa]authorization-mode hwtacacs local        配置AAA授权模式为先hwtacacs，如无响应则本地授权</p>
-<p>[Huawei-aaa-author-aaa]quit</p>
-<p>[Huawei-aaa]accounting-scheme ji_fei                                    配置AAA计费方案名为ji_fei<br>[Huawei-aaa-accounting-ji_fei]accounting-mode hwtacacs     配置AAA计费模式为hwtacacs服务器计费<br>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline      配置当开始计费失败时，将用户离线<br>[Huawei-aaa-accounting-ji_fei]accounting relaltime 3              配置对用户进行实时计费，计费间隔为3min<br>[Huawei-aaa-accounting-ji_fei]quit</p>
-<p>二、配置hwtacacs模板</p>
-<p>[Huawei]hwtacacs-server template huawei_use                       配置hwtacacs模板名为huawei_use<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.254 49    主hwtacacs认证服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.253 49 secondary     备用认证服务器<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49      主hwtacacs授权服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49 secondary       备用授权服务器</p>
-<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49         主hwtacacs计费服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49 secondary          备用计费服务器</p>
-<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server shared-key cipher hello      配置设备与hwtacacs通信的共享秘钥为hello</p>
-<p>[Huawei-hwtacacs-huawei_use]quit<br>三、在AAA用户域绑定要使用的AAA认证和hwtacacs模板</p>
-<p>[Huawei]aaa<br>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei<br>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng    在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]authorization-scheme shou_quan     在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案<br>[Huawei-aaa-domain-huawei]hwtacacs-server huawei_use              在域中绑定hwtacacs模板</p>
-<p>[Huawei-aaa-domain-huawei]quit</p>
-<p>四、检查命令：</p>
-<p><strong>[Huawei]display hwtacacs-server template huawei_use</strong></p>
-<hr>
-<p> HWTACACS-server template name   : huawei_use<br>  Primary-authentication-server  : 192.168.1.254:49:-<br>  Primary-authorization-server    : 192.168.1.254:49-<br>  Primary-accounting-server       : 192.168.1.254:49:-<br>  Secondary-authentication-server : 192.168.1.253:49:-<br>  Secondary-authorization-server   : 192.168.1.253:49:-<br>  Secondary-accounting-server      : 192.168.1.253:49:-<br>  Current-authentication-server   : 192.168.1.254:49:-<br>  Current-authorization-server     : 192.168.1.254:49:-<br>  Current-accounting-server        : 192.168.1.254:49:-<br>  Source-IP-address               : 0.0.0.0<br>  Shared-key                      : hello<br>  Quiet-interval(min)             : 5<br>  Response-timeout-Interval(sec)  : 5<br>  Domain-included                 : Yes<br>  Traffic-unit                    : B</p>
-<p>  Total 1,1 printed</p>
-<hr>
-<p>[Huawei]</p>
-<p><strong>[Huawei]display domain name huawei</strong></p>
-<hr>
-<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name     : ren_zheng<br>  Accounting-scheme-name          : ji_fei<br>  Authorization-scheme-name       : shou_quan<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : -<br>  HWTACACS-server-template        : huawei_use</p>
-<hr>
-<p>[Huawei]</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3448,7 +3425,7 @@ Group ID:组播组ID。
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3461,7 +3438,7 @@ Group ID:组播组ID。
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
