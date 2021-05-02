@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="NFV," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="NFV的背景:同样来自IT行业变革的启示来自IT界的启示，给网络产业带来了网络架构和设备架构两个层面的思考。网络架构层面引入对SDN控制器的思考，设备架构层面引入对设备部署形态的思考。 IT产业的变革近年虚拟化和云计算等IT技术蓬勃发展，传统部署于硬件的应用逐渐云化。应用以软件的方式部署于私有云、公有云或者混合云上。  思考 网络产业思考:能否以软件化的方式部署网络应用呢? 这些思考引发了NFV">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NFV">
+<meta property="og:url" content="http://example.com/2021/05/02/NFV/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="NFV的背景:同样来自IT行业变革的启示来自IT界的启示，给网络产业带来了网络架构和设备架构两个层面的思考。网络架构层面引入对SDN控制器的思考，设备架构层面引入对设备部署形态的思考。 IT产业的变革近年虚拟化和云计算等IT技术蓬勃发展，传统部署于硬件的应用逐渐云化。应用以软件的方式部署于私有云、公有云或者混合云上。  思考 网络产业思考:能否以软件化的方式部署网络应用呢? 这些思考引发了NFV">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/1.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/2.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/3.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/4.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/5.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/6.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/8.png">
+<meta property="og:image" content="http://example.com/2021/05/02/NFV/7.png">
+<meta property="article:published_time" content="2021-05-02T04:03:39.000Z">
+<meta property="article:modified_time" content="2021-05-02T08:53:02.160Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="NFV">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/02/NFV/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/02/NFV/"/>
+
+
+
+
+
+  <title>NFV | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/NFV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NFV</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T12:03:39+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="NFV的背景-同样来自IT行业变革的启示"><a href="#NFV的背景-同样来自IT行业变革的启示" class="headerlink" title="NFV的背景:同样来自IT行业变革的启示"></a>NFV的背景:同样来自IT行业变革的启示</h2><p>来自IT界的启示，给网络产业带来了网络架构和设备架构两个层面的思考。网络架构层面引入对SDN控制器的思考，设备架构层面引入对设备部署形态的思考。</p>
+<h3 id="IT产业的变革"><a href="#IT产业的变革" class="headerlink" title="IT产业的变革"></a>IT产业的变革</h3><p>近年虚拟化和云计算等IT技术蓬勃发展，传统部署于硬件的应用逐渐云化。应用以软件的方式部署于私有云、公有云或者混合云上。</p>
+<p><img src="/2021/05/02/NFV/1.png"></p>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><ul>
+<li>网络产业思考:能否以软件化的方式部署网络应用呢?</li>
+<li>这些思考引发了NFV ( Network Functions Virtualization，网络功能虚拟化）。</li>
+</ul>
+<h2 id="NFV的起源"><a href="#NFV的起源" class="headerlink" title="NFV的起源"></a>NFV的起源</h2><ul>
+<li>2012年10月，13家Top运营商(AT&amp;T、Verizon、VDF、DT、T-Mobile、BT、Telefonica等）在SDN和Open Flow世界大会上发布NFV ( Network Functions Virtualization )第一版白皮书，同时成立了ISG ( Industry Specification Group )来推动网络虚拟化的需求定义和系统架构制定。</li>
+<li>2013年，ETSI下NFV ISG(行业规范工作组)进行第一阶段研究，已完成相关标准制定。主要定义网络功能虚拟化的需求和架构，并梳理不同接口的标准化进程。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/2.png"></p>
+<h2 id="NFV的价值"><a href="#NFV的价值" class="headerlink" title="NFV的价值"></a>NFV的价值</h2><p>NFV ( Network Functions Virtualization )是运营商为了解决电信网络硬件繁多、部署运维复杂、业务创新困难等问题而提出的。NFV在重构电信网络的同时，给运营商带来的价值如下:</p>
+<ul>
+<li>缩短业务上线时间</li>
+<li>降低建网成本</li>
+<li>提升网络运维效率</li>
+<li>构建开放的生态系统</li>
+</ul>
+<h2 id="NFV关键技术-虚拟化"><a href="#NFV关键技术-虚拟化" class="headerlink" title="NFV关键技术:虚拟化"></a>NFV关键技术:虚拟化</h2><ul>
+<li>在NFV的道路上，虚拟化是基础，云化是关键。</li>
+<li>传统电信网络中，各个网元都是由专用硬件实现，成本高、运维难。虚拟化具有分区、隔离、封装和相对于硬件独立的特征，能够很好匹配NFV的需求。运营商引入此模式，将网元软件化，运行在通用基础设施上。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/3.png"></p>
+<h2 id="NFV关键技术-云化"><a href="#NFV关键技术-云化" class="headerlink" title="NFV关键技术:云化"></a>NFV关键技术:云化</h2><ul>
+<li>美国国家标准与技术研究院（NIST）定义︰云计算是一种模型，它可以实现随时随地，便捷地，随需应变地从可配置计算资源共享池中获取所需的资源（例如，网络、服务器、存储、应用、及服务），资源能够快速供应并释放，使管理资源的工作量和与服务提供商的交互减小到最低限度。</li>
+<li>云计算拥有诸多好处。运营商网络中网络功能的云化更多的是利用了资源池化和快速弹性伸缩两个特征。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/4.png"></p>
+<h2 id="NFV架构间介"><a href="#NFV架构间介" class="headerlink" title="NFV架构间介"></a>NFV架构间介</h2><p>NFV架构分NFVI ( Network Functions Virtualization Infrastructure，基础设施层)、VNF ( Virtualized Network Function，虚拟化网络功能层）和MANO ( Management and Orchestration，管理编排域)，同还要支持现有的BSS/OSS ( Business support system/ Operation support system )。</p>
+<p><img src="/2021/05/02/NFV/5.png"></p>
+<h2 id="NFV的标准架构"><a href="#NFV的标准架构" class="headerlink" title="NFV的标准架构"></a>NFV的标准架构</h2><p>ETSI定义了NFV标准架构，由NFVI、VNF以及MANO主要组件组成。NFVI包括通用的硬件设施及其虚书化，VNF使用软件实现虚拟化网络功能，MANO实现NFV架构的管理和编排。</p>
+<p><img src="/2021/05/02/NFV/6.png"></p>
+<h2 id="NFV架构功能模块"><a href="#NFV架构功能模块" class="headerlink" title="NFV架构功能模块"></a>NFV架构功能模块</h2><p>NFV标准架构定义的主要功能模块:</p>
+<p>**OSS/BSS **</p>
+<p>服务提供商的管理功能，不属于NFV框架内的功能组件，但MANO和网元需要提供对OSS/BSS 的接口支持。</p>
+<p><strong>MANO</strong></p>
+<p>NFV管理和编排。包括VIM，VNFM及NFVO，提供对VNF及l层统一的管理和编排功能。</p>
+<ul>
+<li>VIM: Virtualized Infrastructure Managers，NFVI官理候坎，应市1于APP1oor0 I/ANIE笞理塔快功能包括:资源的发现、虚拟资源的管理分配、故障处理等。VNFM: VNF Managers , VNF管理模块，主要对VNF的生命周期（实例化、配置、关闭等）进行控制。</li>
+<li>NFVO: NFV Orchestration，实现对整个NFV基础架构、软件资源、网络服务的编排和管理。</li>
+</ul>
+<p><strong>VNF</strong></p>
+<p>指虚拟机及部署在虚拟机上的业务网元、网络功能软件等。</p>
+<p><strong>NFVI</strong></p>
+<p>NFV基础设施,包括所需的硬件及软件。为VNF提供运行环境. </p>
+<ul>
+<li>Hardware:硬件层，包括提供计算、网络、存储资源能力的硬件设备。</li>
+<li>Virtualization Layer:虚拟化层，主要完成对硬件资源的抽象，形成虚拟资源，如虚拟计算资源、虚拟存储资源、虚拟网络资源。其虚拟化功能由Hypervisor实现。</li>
+</ul>
+<h2 id="NFV架构接口"><a href="#NFV架构接口" class="headerlink" title="NFV架构接口"></a>NFV架构接口</h2><p>NFV标准架构的主要接口:</p>
+<p><img src="/2021/05/02/NFV/8.png"></p>
+<h2 id="华为NFV解决方案"><a href="#华为NFV解决方案" class="headerlink" title="华为NFV解决方案"></a>华为NFV解决方案</h2><ul>
+<li>华为NFV架构中，虚拟化层及VIM的功能由华为云Stack NFVI平台实现。华为云Stack可以实现计算资源、存储资源和网络资源的全面虚拟化，并能够对物理硬件虚拟化资源进行统一的管理、监控和优化。</li>
+<li>华为提供运营商无线网、承载网、传输网、接入网、核心网等全面云化的解决方案。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/7.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/NFV/" rel="tag"># NFV</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/02/SDN/" rel="next" title="SDN">
+                <i class="fa fa-chevron-left"></i> SDN
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E7%9A%84%E8%83%8C%E6%99%AF-%E5%90%8C%E6%A0%B7%E6%9D%A5%E8%87%AAIT%E8%A1%8C%E4%B8%9A%E5%8F%98%E9%9D%A9%E7%9A%84%E5%90%AF%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">NFV的背景:同样来自IT行业变革的启示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IT%E4%BA%A7%E4%B8%9A%E7%9A%84%E5%8F%98%E9%9D%A9"><span class="nav-number">1.1.</span> <span class="nav-text">IT产业的变革</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">1.2.</span> <span class="nav-text">思考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E7%9A%84%E8%B5%B7%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">NFV的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="nav-number">3.</span> <span class="nav-text">NFV的价值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF-%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">NFV关键技术:虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF-%E4%BA%91%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">NFV关键技术:云化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E6%9E%B6%E6%9E%84%E9%97%B4%E4%BB%8B"><span class="nav-number">6.</span> <span class="nav-text">NFV架构间介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E7%9A%84%E6%A0%87%E5%87%86%E6%9E%B6%E6%9E%84"><span class="nav-number">7.</span> <span class="nav-text">NFV的标准架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E6%9E%B6%E6%9E%84%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9D%97"><span class="nav-number">8.</span> <span class="nav-text">NFV架构功能模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NFV%E6%9E%B6%E6%9E%84%E6%8E%A5%E5%8F%A3"><span class="nav-number">9.</span> <span class="nav-text">NFV架构接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8E%E4%B8%BANFV%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">10.</span> <span class="nav-text">华为NFV解决方案</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP路由," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="路由概述背景:网段间通信 IP地址唯一标识了网络中的一个节点，每个IP地址都拥有自己的网段，各个网段可能分布在网络的不同区域。 为实现IP寻址，分布在不同区域的网段之间要能够相互通信。   路由 路由是指导报文转发的路径信息，通过路由可以确认转发IP报文的路径。 路由设备是依据路由转发报文到目的网段的网络设备，最常见的路由设备:路由器。 路由设备维护着一张路由表，保存着路由信息。   路由表 路由">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP路由">
+<meta property="og:url" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="路由概述背景:网段间通信 IP地址唯一标识了网络中的一个节点，每个IP地址都拥有自己的网段，各个网段可能分布在网络的不同区域。 为实现IP寻址，分布在不同区域的网段之间要能够相互通信。   路由 路由是指导报文转发的路径信息，通过路由可以确认转发IP报文的路径。 路由设备是依据路由转发报文到目的网段的网络设备，最常见的路由设备:路由器。 路由设备维护着一张路由表，保存着路由信息。   路由表 路由">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/3.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/1.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/2.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/4.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/7.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/8.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/9.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/10.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/11.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/12.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/13.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/14.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/15.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/16.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/5.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/6.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/17.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/18.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/19.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/20.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/21.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/22.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/23.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/24.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/25.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/26.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/27.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/28.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/30.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/31.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/32.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/33.png">
+<meta property="og:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/34.png">
+<meta property="article:published_time" content="2021-05-02T00:53:42.000Z">
+<meta property="article:modified_time" content="2021-05-02T02:49:02.631Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP路由">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/3.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/02/IP路由/"/>
+
+
+
+
+
+  <title>IP路由 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP路由</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T08:53:42+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="路由概述"><a href="#路由概述" class="headerlink" title="路由概述"></a>路由概述</h2><h3 id="背景-网段间通信"><a href="#背景-网段间通信" class="headerlink" title="背景:网段间通信"></a>背景:网段间通信</h3><ul>
+<li>IP地址唯一标识了网络中的一个节点，每个IP地址都拥有自己的网段，各个网段可能分布在网络的不同区域。</li>
+<li>为实现IP寻址，分布在不同区域的网段之间要能够相互通信。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/3.png"></p>
+<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><ul>
+<li>路由是指导报文转发的路径信息，通过路由可以确认转发IP报文的路径。</li>
+<li>路由设备是依据路由转发报文到目的网段的网络设备，最常见的路由设备:路由器。</li>
+<li>路由设备维护着一张路由表，保存着路由信息。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/1.png"></p>
+<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><ul>
+<li>路由器通过各种方式发现路由</li>
+<li>路由器选择最优的路由条目放入路由表中</li>
+<li>路由表指导设备对IP报文的转发</li>
+<li>路由器通过对路由表的管理实现对路径信息的管理</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/2.png"></p>
+<h3 id="路由信息获取方式"><a href="#路由信息获取方式" class="headerlink" title="路由信息获取方式"></a>路由信息获取方式</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/4.png"></p>
+<h3 id="最优路由条目优选"><a href="#最优路由条目优选" class="headerlink" title="最优路由条目优选"></a>最优路由条目优选</h3><h4 id="查看路由表"><a href="#查看路由表" class="headerlink" title="查看路由表"></a>查看路由表</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/7.png"></p>
+<h4 id="路由表中各个内容的含义"><a href="#路由表中各个内容的含义" class="headerlink" title="路由表中各个内容的含义"></a>路由表中各个内容的含义</h4><ul>
+<li>Destination/Mask:︰表示此路由的目的网络地址与网络掩码。将目的地址和子网掩码“逻辑与”后可得到目的主机或路由器所在网段的地址。例如:目的地址为1.1.1.1，掩码为255.255.255.0的主机或路由器所在网段的地址为1.1.1.0</li>
+<li>. Proto ( Protocol )∶该路由的协议类型，也即路由器是通过什么协议获知该路由的。</li>
+<li>pre ( Preference)∶表示此路由的路由协议优先级。针对同一目的地，可能存在不同下一跳、出接口等多条路由，这些不同的路由可能是由不同的路由协议发现的，也可以是手工配置的静态路由。优先级最高（数值最小)者将成为当前的最优路由。</li>
+<li>Cost:路由开销。当到达同一目的地的多条路由具有相同的路由优先级时，路由开销最小的将成为当前的最优路由。</li>
+<li>NextHop:表示对于本路由器而言，到达该路由指向的目的网络的下一跳地址。该字段指明了数据转发的下一个设备。</li>
+<li>Interface:表示此路由的出接口。指明数据将从本路由器的哪个接口转发出去。</li>
+</ul>
+<h4 id="路由优先级"><a href="#路由优先级" class="headerlink" title="路由优先级"></a>路由优先级</h4><h5 id="优先级比较"><a href="#优先级比较" class="headerlink" title="优先级比较"></a>优先级比较</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/8.png"></p>
+<h5 id="比较示例"><a href="#比较示例" class="headerlink" title="比较示例"></a>比较示例</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/9.png"></p>
+<h5 id="优先级默认数值"><a href="#优先级默认数值" class="headerlink" title="优先级默认数值"></a>优先级默认数值</h5><p>常见路由类型的默认优先级如下:</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/10.png"></p>
+<h4 id="度量值"><a href="#度量值" class="headerlink" title="度量值"></a>度量值</h4><h5 id="度量值比较"><a href="#度量值比较" class="headerlink" title="度量值比较"></a>度量值比较</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/11.png"></p>
+<h5 id="比较示例-1"><a href="#比较示例-1" class="headerlink" title="比较示例"></a>比较示例</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/12.png"></p>
+<h3 id="路由转发"><a href="#路由转发" class="headerlink" title="路由转发"></a>路由转发</h3><h4 id="最长掩码匹配原则"><a href="#最长掩码匹配原则" class="headerlink" title="最长掩码匹配原则"></a>最长掩码匹配原则</h4><ul>
+<li>当路由器收到一个IP数据包时，会将数据包的目的IP地址与自己本地路由表中的所有路由表项进行逐位（Bit-By-Bit)比对，直到找到掩码匹配度最长的条目，这就是最长前缀匹配机制。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/13.png"></p>
+<h4 id="最长匹配示例"><a href="#最长匹配示例" class="headerlink" title="最长匹配示例"></a>最长匹配示例</h4><h5 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/14.png"></p>
+<h5 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/15.png"></p>
+<h4 id="路由转发流程"><a href="#路由转发流程" class="headerlink" title="路由转发流程"></a>路由转发流程</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/16.png"></p>
+<h2 id="直连路由"><a href="#直连路由" class="headerlink" title="直连路由"></a>直连路由</h2><ul>
+<li>直连路由指向本地直连网络的路由，由设备自动生成。</li>
+<li>当路由器为路由转发的最后一跳路由器时，IP报文匹配直连路由，路由器转发IP报文到目的主机。</li>
+<li>使用直连路由进行路由转发时，报文的目的IP和路由器接口IP在一个网段之中。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/5.png"></p>
+<ul>
+<li>并不是所有接口生成的直连路由都会出现在路由表中，直连路由出现在路由表中的前提是该接口的物理状态、协议状态都为UP。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/6.png"></p>
+<h2 id="静态路由"><a href="#静态路由" class="headerlink" title="静态路由"></a>静态路由</h2><h3 id="静态路由定义"><a href="#静态路由定义" class="headerlink" title="静态路由定义"></a>静态路由定义</h3><p>通过手工配置一条路由，加入到设备路由表中，相当于人工加入一条寻址路径，帮助设备进行路由转发。</p>
+<h3 id="静态路由应用场景"><a href="#静态路由应用场景" class="headerlink" title="静态路由应用场景"></a>静态路由应用场景</h3><p>当设备中缺少路由条目时，无法进行报文的路由转发，此时就需要配置静态路由。</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/17.png"></p>
+<h3 id="静态路由配置"><a href="#静态路由配置" class="headerlink" title="静态路由配置"></a>静态路由配置</h3><p>1.关联下一跳IP的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; nexthop-address</span><br></pre></td></tr></table></figure>
+<p>2.关联出接口的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; interface-type interface-number</span><br></pre></td></tr></table></figure>
+<p>3.关联出接口和下一跳IP方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; interface-type interface-number [ nexthop-address ]</span><br></pre></td></tr></table></figure>
+<p>在创建静态路由时，可以同时指定出接口和下一跳。对于不同的出接口类型，也可以只指定出接口或只指定下一跳。</p>
+<p>对于点到点接口（如串口)，<strong>必须指定出接口</strong>。<br>对于广播接口（如以太网接口）和VT ( Virtual-template)接口，<strong>必须指定下一跳。</strong></p>
+<h3 id="静态路由配置举例"><a href="#静态路由配置举例" class="headerlink" title="静态路由配置举例"></a>静态路由配置举例</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/18.png"></p>
+<p>RTA的配置如下:<br>[RTA] ip route-static 20.1.1.0 255.255.255.0 10.0.0.2<br>RTC的配置如下:<br>[RTC] ip route-static 10.0.0.0 255.255.255.0 S1/0/0</p>
+<h3 id="缺省路由"><a href="#缺省路由" class="headerlink" title="缺省路由"></a>缺省路由</h3><ul>
+<li>缺省路由是一种特殊的路由，当报文没有在路由表中找到匹配的具体路由表项时才使用的路由。如果报文的目的地址不能与路由表的任何目的地址相匹配，那么该报文将选取缺省路由进行转发。</li>
+<li>缺省路由在路由表中的形式为0.0.0.0/0，缺省路由也被叫做<strong>默认路由</strong>。</li>
+<li>缺省路由通常用在出口路由器上，为了将报文路由到运营商路由器上，减少大量的静态路由的配置。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/19.png"></p>
+<h3 id="缺省路由应用场景"><a href="#缺省路由应用场景" class="headerlink" title="缺省路由应用场景"></a>缺省路由应用场景</h3><p>缺省路由一般用于企业网络出口，配置一条缺省路由让出口设备能够转发前往Internet上任意地址的IP报文。</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/20.png"></p>
+<h2 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h2><h3 id="动态路由和静态路由区别"><a href="#动态路由和静态路由区别" class="headerlink" title="动态路由和静态路由区别"></a>动态路由和静态路由区别</h3><p><strong>动态路由</strong></p>
+<ul>
+<li>自动发现、学习路由</li>
+<li>感知拓扑变更</li>
+</ul>
+<p><strong>静态路由</strong></p>
+<ul>
+<li>所有设备手动配置</li>
+<li>无法感知到链路变化</li>
+</ul>
+<h3 id="动态路由分类"><a href="#动态路由分类" class="headerlink" title="动态路由分类"></a>动态路由分类</h3><p><strong>按工作区域分类</strong></p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/21.png"></p>
+<p><strong>按工作机制及算法分类</strong></p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/22.png"></p>
+<h2 id="路由高级特性"><a href="#路由高级特性" class="headerlink" title="路由高级特性"></a>路由高级特性</h2><h3 id="路由递归"><a href="#路由递归" class="headerlink" title="路由递归"></a>路由递归</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/23.png"></p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/24.png"></p>
+<h3 id="等价路由"><a href="#等价路由" class="headerlink" title="等价路由"></a>等价路由</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/25.png"></p>
+<p>路由表中存在等价路由之后，前往该目的网段的IP报文路由器会通过所有有效的接口、下一跳转发，这种转发行为被称为负载分担。</p>
+<h3 id="浮动路由"><a href="#浮动路由" class="headerlink" title="浮动路由"></a>浮动路由</h3><p>确保路由的可靠性，引入浮动路由，一条路由转发路径不可达，可通过浮动路由选择另一跳路径进行转发。</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/26.png"></p>
+<h4 id="浮动路由切换使用示例"><a href="#浮动路由切换使用示例" class="headerlink" title="浮动路由切换使用示例"></a>浮动路由切换使用示例</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/27.png"></p>
+<h3 id="路由汇总"><a href="#路由汇总" class="headerlink" title="路由汇总"></a>路由汇总</h3><ul>
+<li>CIDR ( classless inter-domain routing，无类别域间路由）采用IP地址加掩码长度来标识网络和子网，而不是按照传统A、B、C等类型对网络地址进行划分。</li>
+<li>CIDR容许任意长度的掩码长度，将IP地址看成连续的地址空间，可以使用任意长度的前缀分配，多个连续的前缀可以聚合成一个网络，该特性可以有效减少路由表条目数。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/28.png"></p>
+<h3 id="路由汇总的需求"><a href="#路由汇总的需求" class="headerlink" title="路由汇总的需求"></a>路由汇总的需求</h3><ul>
+<li><p>子网划分、VLSM解决了地址空间浪费的问题，但同时也带了新的问题:路由表中的路由条目数量增加。</p>
+</li>
+<li><p>为减少路由条目数量可以使用路由汇总。</p>
+</li>
+<li><p>路由汇总将一组具有相同前缀的路由汇聚成一条路由，从而达到减小路由表规模以及优化设备资源利用率的目的。</p>
+</li>
+<li><p>路由汇总采用了CIDR的思想:将相同前缀的地址聚合成一个。</p>
+</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/30.png"></p>
+<h3 id="汇总计算"><a href="#汇总计算" class="headerlink" title="汇总计算"></a>汇总计算</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/31.png"></p>
+<p>基于一系列连续的、有规律的IP网段，如果需计算相应的汇总路由，且确保得出的汇总路由刚好“囊括”上述IP网段，则需保证汇总路由的掩码长度尽可能长。</p>
+<h3 id="汇总引发的问题"><a href="#汇总引发的问题" class="headerlink" title="汇总引发的问题"></a>汇总引发的问题</h3><h4 id="路由汇总带来的环路问题"><a href="#路由汇总带来的环路问题" class="headerlink" title="路由汇总带来的环路问题"></a>路由汇总带来的环路问题</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/32.png"></p>
+<h4 id="路由汇总带来的环路问题-解决方案"><a href="#路由汇总带来的环路问题-解决方案" class="headerlink" title="路由汇总带来的环路问题-解决方案"></a>路由汇总带来的环路问题-解决方案</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/33.png"></p>
+<h3 id="精确汇总"><a href="#精确汇总" class="headerlink" title="精确汇总"></a>精确汇总</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/34.png"></p>
+<ul>
+<li><p>为了让RTA能够到达RTB上的172.16.1.0/24-172.16.31.0/24网段，配置了一条静态的汇总路由，这条网段虽然优化了网络配置，但是汇总的范围太广，将RTC上的网段也包括在内，导致前往RTC上网段的流量到达RTA之后会被发往RTB,造成数据包的丢失，这种路由为不精确的路由。为此配置汇总路由时要尽量精确，刚好包括所有明细路由。</p>
+</li>
+<li><p>RTA-RTB的路由可汇总为172.16.0.0/19</p>
+</li>
+<li><p>RTA-RTC的路由可汇总为172.16.32.0/19</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP%E8%B7%AF%E7%94%B1/" rel="tag"># IP路由</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/01/IP/" rel="next" title="网络层">
+                <i class="fa fa-chevron-left"></i> 网络层
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="prev" title="网络编程与自动化">
+                网络编程与自动化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">路由概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF-%E7%BD%91%E6%AE%B5%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-number">1.1.</span> <span class="nav-text">背景:网段间通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1"><span class="nav-number">1.2.</span> <span class="nav-text">路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">1.3.</span> <span class="nav-text">路由表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">路由信息获取方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E8%B7%AF%E7%94%B1%E6%9D%A1%E7%9B%AE%E4%BC%98%E9%80%89"><span class="nav-number">1.5.</span> <span class="nav-text">最优路由条目优选</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">查看路由表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8%E4%B8%AD%E5%90%84%E4%B8%AA%E5%86%85%E5%AE%B9%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-number">1.5.2.</span> <span class="nav-text">路由表中各个内容的含义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.5.3.</span> <span class="nav-text">路由优先级</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E6%AF%94%E8%BE%83"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">优先级比较</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.5.3.2.</span> <span class="nav-text">比较示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E9%BB%98%E8%AE%A4%E6%95%B0%E5%80%BC"><span class="nav-number">1.5.3.3.</span> <span class="nav-text">优先级默认数值</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%A6%E9%87%8F%E5%80%BC"><span class="nav-number">1.5.4.</span> <span class="nav-text">度量值</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BA%A6%E9%87%8F%E5%80%BC%E6%AF%94%E8%BE%83"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">度量值比较</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E7%A4%BA%E4%BE%8B-1"><span class="nav-number">1.5.4.2.</span> <span class="nav-text">比较示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%8F%91"><span class="nav-number">1.6.</span> <span class="nav-text">路由转发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E9%95%BF%E6%8E%A9%E7%A0%81%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99"><span class="nav-number">1.6.1.</span> <span class="nav-text">最长掩码匹配原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E9%95%BF%E5%8C%B9%E9%85%8D%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.6.2.</span> <span class="nav-text">最长匹配示例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B1"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">示例1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B2"><span class="nav-number">1.6.2.2.</span> <span class="nav-text">示例2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%8F%91%E6%B5%81%E7%A8%8B"><span class="nav-number">1.6.3.</span> <span class="nav-text">路由转发流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E8%BF%9E%E8%B7%AF%E7%94%B1"><span class="nav-number">2.</span> <span class="nav-text">直连路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-number">3.</span> <span class="nav-text">静态路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">静态路由定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.2.</span> <span class="nav-text">静态路由应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">静态路由配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">3.4.</span> <span class="nav-text">静态路由配置举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%9C%81%E8%B7%AF%E7%94%B1"><span class="nav-number">3.5.</span> <span class="nav-text">缺省路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%9C%81%E8%B7%AF%E7%94%B1%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.6.</span> <span class="nav-text">缺省路由应用场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-number">4.</span> <span class="nav-text">动态路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%92%8C%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.</span> <span class="nav-text">动态路由和静态路由区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%88%86%E7%B1%BB"><span class="nav-number">4.2.</span> <span class="nav-text">动态路由分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7"><span class="nav-number">5.</span> <span class="nav-text">路由高级特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%80%92%E5%BD%92"><span class="nav-number">5.1.</span> <span class="nav-text">路由递归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89%E4%BB%B7%E8%B7%AF%E7%94%B1"><span class="nav-number">5.2.</span> <span class="nav-text">等价路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E5%8A%A8%E8%B7%AF%E7%94%B1"><span class="nav-number">5.3.</span> <span class="nav-text">浮动路由</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%AE%E5%8A%A8%E8%B7%AF%E7%94%B1%E5%88%87%E6%8D%A2%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.3.1.</span> <span class="nav-text">浮动路由切换使用示例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB"><span class="nav-number">5.4.</span> <span class="nav-text">路由汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB%E7%9A%84%E9%9C%80%E6%B1%82"><span class="nav-number">5.5.</span> <span class="nav-text">路由汇总的需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E6%80%BB%E8%AE%A1%E7%AE%97"><span class="nav-number">5.6.</span> <span class="nav-text">汇总计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%87%E6%80%BB%E5%BC%95%E5%8F%91%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.7.</span> <span class="nav-text">汇总引发的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB%E5%B8%A6%E6%9D%A5%E7%9A%84%E7%8E%AF%E8%B7%AF%E9%97%AE%E9%A2%98"><span class="nav-number">5.7.1.</span> <span class="nav-text">路由汇总带来的环路问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB%E5%B8%A6%E6%9D%A5%E7%9A%84%E7%8E%AF%E8%B7%AF%E9%97%AE%E9%A2%98-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">5.7.2.</span> <span class="nav-text">路由汇总带来的环路问题-解决方案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B2%BE%E7%A1%AE%E6%B1%87%E6%80%BB"><span class="nav-number">5.8.</span> <span class="nav-text">精确汇总</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

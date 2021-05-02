@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SDN," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="传统网络的缺点计算机时代的演进 网络产业发展:来自IT行业的启示 IT产业的变革引发了网络产业的思考。业界开始提出SDN (Software Defined Networking )的概念，并不断在其商用化进程上作出尝试。目的是希望网络变得更开放、灵活和简单。   网络界的现状:经典IP网络–分布式网络 经典的IP网络是一个分布式的、对等控制的网络。每台网络设备存在独立的数据平台、控制平面和管理平">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SDN">
+<meta property="og:url" content="http://example.com/2021/05/02/SDN/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="传统网络的缺点计算机时代的演进 网络产业发展:来自IT行业的启示 IT产业的变革引发了网络产业的思考。业界开始提出SDN (Software Defined Networking )的概念，并不断在其商用化进程上作出尝试。目的是希望网络变得更开放、灵活和简单。   网络界的现状:经典IP网络–分布式网络 经典的IP网络是一个分布式的、对等控制的网络。每台网络设备存在独立的数据平台、控制平面和管理平">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/1.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/2.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/3.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/4.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/5.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/6.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/7.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/8.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/9.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/10.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/12.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/13.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/14.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/15.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/16.png">
+<meta property="og:image" content="http://example.com/2021/05/02/SDN/17.png">
+<meta property="article:published_time" content="2021-05-02T04:03:32.000Z">
+<meta property="article:modified_time" content="2021-05-02T08:39:43.126Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="SDN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/02/SDN/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/02/SDN/"/>
+
+
+
+
+
+  <title>SDN | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/SDN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SDN</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T12:03:32+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="传统网络的缺点"><a href="#传统网络的缺点" class="headerlink" title="传统网络的缺点"></a>传统网络的缺点</h2><h3 id="计算机时代的演进"><a href="#计算机时代的演进" class="headerlink" title="计算机时代的演进"></a>计算机时代的演进</h3><p><img src="/2021/05/02/SDN/1.png"></p>
+<h3 id="网络产业发展-来自IT行业的启示"><a href="#网络产业发展-来自IT行业的启示" class="headerlink" title="网络产业发展:来自IT行业的启示"></a>网络产业发展:来自IT行业的启示</h3><ul>
+<li>IT产业的变革引发了网络产业的思考。业界开始提出SDN (Software Defined Networking )的概念，并不断在其商用化进程上作出尝试。目的是希望网络变得更开放、灵活和简单。</li>
+</ul>
+<p><img src="/2021/05/02/SDN/2.png"></p>
+<h3 id="网络界的现状-经典IP网络–分布式网络"><a href="#网络界的现状-经典IP网络–分布式网络" class="headerlink" title="网络界的现状:经典IP网络–分布式网络"></a>网络界的现状:经典IP网络–分布式网络</h3><ul>
+<li>经典的IP网络是一个分布式的、对等控制的网络。每台网络设备存在独立的数据平台、控制平面和管理平面.设备的控制平面对等的交互路由协议，然后独立的生成数据平面指导报文转发。</li>
+<li>经典IP网络的优势在于设备与协议解耦，厂家之间兼容性较好且故障场景下协议保证网络收敛。</li>
+</ul>
+<p><img src="/2021/05/02/SDN/3.png"></p>
+<h3 id="网络界的思考-经典网络面临的问题"><a href="#网络界的思考-经典网络面临的问题" class="headerlink" title="网络界的思考:经典网络面临的问题"></a>网络界的思考:经典网络面临的问题</h3><h4 id="网络易拥塞"><a href="#网络易拥塞" class="headerlink" title="网络易拥塞"></a>网络易拥塞</h4><p><img src="/2021/05/02/SDN/4.png"></p>
+<h4 id="网络技术太复杂"><a href="#网络技术太复杂" class="headerlink" title="网络技术太复杂"></a>网络技术太复杂</h4><p>网络协议多︰如果您准备成为一名网络技术专家，您需要阅读网络设备相关RFC 2500篇。如果一天阅读一篇，需要长达6年时间，而这只是整个RFC的 1/3，其数量还在持续增加。</p>
+<p>网络配置难:如果您准备成为某个设备商设备的百事通，您需要掌握的命令行超过10000条，而其数量还在增加。</p>
+<p><img src="/2021/05/02/SDN/5.png"></p>
+<h4 id="网络故障定位、诊断困难"><a href="#网络故障定位、诊断困难" class="headerlink" title="网络故障定位、诊断困难"></a>网络故障定位、诊断困难</h4><p><img src="/2021/05/02/SDN/6.png"></p>
+<h4 id="网络业务的部署速度太慢"><a href="#网络业务的部署速度太慢" class="headerlink" title="网络业务的部署速度太慢"></a>网络业务的部署速度太慢</h4><p><img src="/2021/05/02/SDN/7.png"></p>
+<h2 id="SDN定义"><a href="#SDN定义" class="headerlink" title="SDN定义"></a>SDN定义</h2><h3 id="SDN的起源"><a href="#SDN的起源" class="headerlink" title="SDN的起源"></a>SDN的起源</h3><ul>
+<li>SDN ( Software Defined Networking )即软件定义网络。是由斯坦福大学Clean Slate研究组提出的一种新型网络创新架构。其核心理念通过将网络设备控制平面与数据平面分离，从而实现了网络控制平面的集中控制，为网络应用的创新提供了良好的支撑。</li>
+<li>SDN起源提出了三个特征，“转控分离”、“集中控制”和“开放可编程接口”。</li>
+</ul>
+<p><img src="/2021/05/02/SDN/8.png"></p>
+<h3 id="OpenFlow基本概念"><a href="#OpenFlow基本概念" class="headerlink" title="OpenFlow基本概念"></a>OpenFlow基本概念</h3><p>OpenFlow是控制器与交换机之间的一种南向接口协议。它定义了三种类型的消息，Controller-to-Switch、Asynchronous和Symmetric。每一种消息又包含了更多的子类型。</p>
+<p><strong>Controller-to-Switch</strong><br>该消息由Controller发送。用于管理Switch和查询Switch的相关信息。<br><strong>Asynchronous</strong><br>该消息由Switch发起。当Switch状态发生改变时，发送该消息告诉Controller状态变化。<br><strong>Symmetric</strong><br>该消息没有固定发起方，可由Switch或者Controller发起。例如Hello、Echo、Error等。</p>
+<p><img src="/2021/05/02/SDN/9.png"></p>
+<h3 id="Flow-Table简介"><a href="#Flow-Table简介" class="headerlink" title="Flow Table简介"></a>Flow Table简介</h3><ul>
+<li>OpenFlow交换机基于流表(Flow Table )转发报文。</li>
+<li>每个流表项由匹配字段、优先级、计数器、指令、超时、Cookie、Flags这七部分组成。其中关于转发的关键的两个内容是匹配字段和指令。<ul>
+<li>匹配字段是匹配规则，支持自定义。</li>
+<li>指令是用来描述匹配后的处理方式。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/05/02/SDN/10.png"></p>
+<h3 id="转发方式对比"><a href="#转发方式对比" class="headerlink" title="转发方式对比"></a>转发方式对比</h3><h4 id="经典路由协议基于路由表转发"><a href="#经典路由协议基于路由表转发" class="headerlink" title="经典路由协议基于路由表转发"></a>经典路由协议基于路由表转发</h4><ul>
+<li>经典的网络转发方式是网络设备通过查询路由表指导流量转发。</li>
+<li>路由表的条目由网络设备之间运行路由协议而计算生成。</li>
+<li>路由表是定长的。路由表通过最长匹配原则执行报文转发。一台网络设备只有一张路由表。</li>
+</ul>
+<h4 id="OpenFlow基于流表转发"><a href="#OpenFlow基于流表转发" class="headerlink" title="OpenFlow基于流表转发"></a>OpenFlow基于流表转发</h4><p><img src="/2021/05/02/SDN/12.png"></p>
+<ul>
+<li>OpenFlow是一个网络协议。运行OpenFlow的交换机通过查询流表指导流量转发。</li>
+<li>流表一般是由OF控制器统一计算，然后下发到交换机。流表是</li>
+<li>变长的，拥有丰富的匹配规则和转发规则。一台网络设备有多张流表。</li>
+</ul>
+<h3 id="SDN的本质诉求"><a href="#SDN的本质诉求" class="headerlink" title="SDN的本质诉求"></a>SDN的本质诉求</h3><ul>
+<li>SDN的本质诉求是让网络更加开放、灵活和简单。它的实现方式是为网络构建一个集中的大脑，通过全局视图集中控制，实现或业务快速部署、或流量调优、或网络业务开放等目标</li>
+</ul>
+<p>SDN的价值是:</p>
+<ul>
+<li><p>集中管理，简化网络管理与运维;</p>
+</li>
+<li><p>屏蔽技术细节，降低网络复杂度，降低运维成本;。自动化调优，提高网络利用率;</p>
+</li>
+<li><p>快速业务部署，缩短业务上线时间;</p>
+</li>
+<li><p>网络开放，支撑开放可编程的第三方应用。</p>
+</li>
+</ul>
+<blockquote>
+<p>SDN带来了网络架构的变革。</p>
+</blockquote>
+<h3 id="SDN网络架构"><a href="#SDN网络架构" class="headerlink" title="SDN网络架构"></a>SDN网络架构</h3><p>SDN网络架构分为协同应用层、控制器层和设备层。不同层次之间通过开放接口连接。以控制器层为主要视角，区分面向设备层的南向接口和面向协同应用层的北向接口。OpenFlow属于南向接口协议的一种。</p>
+<p><img src="/2021/05/02/SDN/13.png"></p>
+<h3 id="华为SDN网络架构"><a href="#华为SDN网络架构" class="headerlink" title="华为SDN网络架构"></a>华为SDN网络架构</h3><p>华为SDN网络架构支持丰富的南北向接口，包括OpenFlow、OVSDB、NETCONF、PCEP、RESTful .SNMP、BGP、JsonRPC、RESTCONF等。</p>
+<p><img src="/2021/05/02/SDN/14.png"></p>
+<h3 id="华为SDN解决方案-管、控、析构建智简网络"><a href="#华为SDN解决方案-管、控、析构建智简网络" class="headerlink" title="华为SDN解决方案-管、控、析构建智简网络"></a>华为SDN解决方案-管、控、析构建智简网络</h3><p><img src="/2021/05/02/SDN/15.png"></p>
+<h2 id="iMaster-NCE解决方案"><a href="#iMaster-NCE解决方案" class="headerlink" title="iMaster NCE解决方案"></a>iMaster NCE解决方案</h2><h3 id="什么是iMaster-NCE"><a href="#什么是iMaster-NCE" class="headerlink" title="什么是iMaster NCE ?"></a>什么是iMaster NCE ?</h3><p>iMaster NCE，自动驾驶网络管理与控制系统，是华为集管理、控制、分析和Al智能功能于一体的网络自动化与智能化平台。</p>
+<p><img src="/2021/05/02/SDN/16.png"></p>
+<h3 id="iMaster-NCE种类"><a href="#iMaster-NCE种类" class="headerlink" title="iMaster NCE种类"></a>iMaster NCE种类</h3><p><img src="/2021/05/02/SDN/17.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SDN/" rel="tag"># SDN</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/" rel="next" title="网络编程与自动化">
+                <i class="fa fa-chevron-left"></i> 网络编程与自动化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/02/NFV/" rel="prev" title="NFV">
+                NFV <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">传统网络的缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%97%B6%E4%BB%A3%E7%9A%84%E6%BC%94%E8%BF%9B"><span class="nav-number">1.1.</span> <span class="nav-text">计算机时代的演进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%A7%E4%B8%9A%E5%8F%91%E5%B1%95-%E6%9D%A5%E8%87%AAIT%E8%A1%8C%E4%B8%9A%E7%9A%84%E5%90%AF%E7%A4%BA"><span class="nav-number">1.2.</span> <span class="nav-text">网络产业发展:来自IT行业的启示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%95%8C%E7%9A%84%E7%8E%B0%E7%8A%B6-%E7%BB%8F%E5%85%B8IP%E7%BD%91%E7%BB%9C%E2%80%93%E5%88%86%E5%B8%83%E5%BC%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.</span> <span class="nav-text">网络界的现状:经典IP网络–分布式网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%95%8C%E7%9A%84%E6%80%9D%E8%80%83-%E7%BB%8F%E5%85%B8%E7%BD%91%E7%BB%9C%E9%9D%A2%E4%B8%B4%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">网络界的思考:经典网络面临的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%98%93%E6%8B%A5%E5%A1%9E"><span class="nav-number">1.4.1.</span> <span class="nav-text">网络易拥塞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8A%80%E6%9C%AF%E5%A4%AA%E5%A4%8D%E6%9D%82"><span class="nav-number">1.4.2.</span> <span class="nav-text">网络技术太复杂</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E5%AE%9A%E4%BD%8D%E3%80%81%E8%AF%8A%E6%96%AD%E5%9B%B0%E9%9A%BE"><span class="nav-number">1.4.3.</span> <span class="nav-text">网络故障定位、诊断困难</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%B8%9A%E5%8A%A1%E7%9A%84%E9%83%A8%E7%BD%B2%E9%80%9F%E5%BA%A6%E5%A4%AA%E6%85%A2"><span class="nav-number">1.4.4.</span> <span class="nav-text">网络业务的部署速度太慢</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SDN%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">SDN定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SDN%E7%9A%84%E8%B5%B7%E6%BA%90"><span class="nav-number">2.1.</span> <span class="nav-text">SDN的起源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenFlow%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.2.</span> <span class="nav-text">OpenFlow基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flow-Table%E7%AE%80%E4%BB%8B"><span class="nav-number">2.3.</span> <span class="nav-text">Flow Table简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E6%96%B9%E5%BC%8F%E5%AF%B9%E6%AF%94"><span class="nav-number">2.4.</span> <span class="nav-text">转发方式对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E5%9F%BA%E4%BA%8E%E8%B7%AF%E7%94%B1%E8%A1%A8%E8%BD%AC%E5%8F%91"><span class="nav-number">2.4.1.</span> <span class="nav-text">经典路由协议基于路由表转发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OpenFlow%E5%9F%BA%E4%BA%8E%E6%B5%81%E8%A1%A8%E8%BD%AC%E5%8F%91"><span class="nav-number">2.4.2.</span> <span class="nav-text">OpenFlow基于流表转发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SDN%E7%9A%84%E6%9C%AC%E8%B4%A8%E8%AF%89%E6%B1%82"><span class="nav-number">2.5.</span> <span class="nav-text">SDN的本质诉求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SDN%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84"><span class="nav-number">2.6.</span> <span class="nav-text">SDN网络架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8E%E4%B8%BASDN%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84"><span class="nav-number">2.7.</span> <span class="nav-text">华为SDN网络架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8E%E4%B8%BASDN%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-%E7%AE%A1%E3%80%81%E6%8E%A7%E3%80%81%E6%9E%90%E6%9E%84%E5%BB%BA%E6%99%BA%E7%AE%80%E7%BD%91%E7%BB%9C"><span class="nav-number">2.8.</span> <span class="nav-text">华为SDN解决方案-管、控、析构建智简网络</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iMaster-NCE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">iMaster NCE解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFiMaster-NCE"><span class="nav-number">3.1.</span> <span class="nav-text">什么是iMaster NCE ?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iMaster-NCE%E7%A7%8D%E7%B1%BB"><span class="nav-number">3.2.</span> <span class="nav-text">iMaster NCE种类</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
