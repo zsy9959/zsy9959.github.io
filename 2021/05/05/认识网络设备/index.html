@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="认识网络设备," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="网络设备框架介绍网络设备 网络基础设施由交换机、路由器、防火墙等构成，这些设备日复一日地接收、发送数据，从一个接口收到的数据如何经过设备内部转发到另外一个接口？  设备有哪些组件构成？这些组件如何协同工作？。    框式设备硬件模块为方便理解网络设备内部的各个功能模块，以S12700E-8为例讲解典型网络设备的构架： ▫主控板(MPU，Main Processing Unit)：负责整个系统的控制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="认识网络设备">
+<meta property="og:url" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="网络设备框架介绍网络设备 网络基础设施由交换机、路由器、防火墙等构成，这些设备日复一日地接收、发送数据，从一个接口收到的数据如何经过设备内部转发到另外一个接口？  设备有哪些组件构成？这些组件如何协同工作？。    框式设备硬件模块为方便理解网络设备内部的各个功能模块，以S12700E-8为例讲解典型网络设备的构架： ▫主控板(MPU，Main Processing Unit)：负责整个系统的控制">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/1.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/2.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/3.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/4.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/5.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/6.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/7.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/8.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/9.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/10.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/11.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/12.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/13.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/14.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/15.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/16.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/17.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/18.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/19.png">
+<meta property="og:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/20.png">
+<meta property="article:published_time" content="2021-05-05T12:01:18.000Z">
+<meta property="article:modified_time" content="2021-05-05T13:04:28.167Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="认识网络设备">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/05/认识网络设备/"/>
+
+
+
+
+
+  <title>认识网络设备 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">认识网络设备</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-05T20:01:18+08:00">
+                2021-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="网络设备框架介绍"><a href="#网络设备框架介绍" class="headerlink" title="网络设备框架介绍"></a>网络设备框架介绍</h1><h2 id="网络设备"><a href="#网络设备" class="headerlink" title="网络设备"></a>网络设备</h2><ul>
+<li><p>网络基础设施由交换机、路由器、防火墙等构成，这些设备日复一日地接收、发送数据，从一个接口收到的数据如何经过设备内部转发到另外一个接口？</p>
+</li>
+<li><p>设备有哪些组件构成？这些组件如何协同工作？。</p>
+</li>
+</ul>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/1.png"></p>
+<h2 id="框式设备硬件模块"><a href="#框式设备硬件模块" class="headerlink" title="框式设备硬件模块"></a>框式设备硬件模块</h2><p>为方便理解网络设备内部的各个功能模块，以S12700E-8为例讲解典型网络设备的构架：</p>
+<p>▫主控板(MPU，Main Processing Unit)：负责整个系统的控制平面。</p>
+<p>▫交换网板(SFU，Switch Fabric Unit)：负责整个系统的数据平面。数据平面提供高速无阻塞数据通道，实现各个业务模块之间的业务交换功能。</p>
+<p>▫接口板(LPU，Line Processing Unit)：线路处理单元是物理设备上用于提供数据转发功能的模块，提供不同速率的光口、电口。</p>
+<p>▫交换网板、接口板上都有自己的管理芯片，与主控板共同组成整个设备的控制管理平面。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/2.png"></p>
+<h3 id="主控板"><a href="#主控板" class="headerlink" title="主控板"></a><strong>主控板</strong></h3><p>主控板提供了整个系统的控制平面和管理平面。</p>
+<p>▫ 控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。</p>
+<p>▫ 管理平面完成系统的运行状态监控、环境监控、日志和告警信息处理、系统加载、系统升级等功能。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/3.png"></p>
+<h3 id="交换网板"><a href="#交换网板" class="headerlink" title="交换网板"></a><strong>交换网板</strong></h3><p>交换网板提供整个系统的数据平面。接口板、主控板之间通过交换网板完成通信。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/4.png"></p>
+<h3 id="接口板"><a href="#接口板" class="headerlink" title="接口板"></a><strong>接口板</strong></h3><p>接口板提供了不同类型（光口、电口），不同速率的接入接口，通过分布式数据平面对数据进行转发。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/5.png"></p>
+<h2 id="盒式设备"><a href="#盒式设备" class="headerlink" title="盒式设备"></a><strong>盒式设备</strong></h2><p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/6.png"></p>
+<p>不同于框式设备，盒式设备的各个业务模块并不是独立的硬件模块，而是集成在一个框内。</p>
+<h2 id="模块连接逻辑图"><a href="#模块连接逻辑图" class="headerlink" title="模块连接逻辑图"></a>模块连接逻辑图</h2><p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/7.png"></p>
+<p>•框式设备各个模块分为不同的单板，单板之间通过框式设备内部的连接进行通信。</p>
+<p>•盒式设备内部集成了这些模块，各个模块之间同样也是通过内部连接进行通信。</p>
+<p>•接口板和接口板之间通过交换网板连接了起来，接口板之间的通信统一经由交换网板进行转发。</p>
+<h2 id="网络设备逻辑构架"><a href="#网络设备逻辑构架" class="headerlink" title="网络设备逻辑构架"></a><strong>网络设备逻辑构架</strong></h2><p>网络设备从逻辑上可以分为以下三个平面：数据平面、控制管理平面和监控平面。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/8.png"> </p>
+<p>以交换机为例，设备可以分为以下的三个平面（参考RFC7426中对网络设备平面划分）：</p>
+<ul>
+<li><p>交换机转发平面：转发平面提供高速无阻塞数据通道，实现各个业务模块之间的业务交换功能。交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据。L2/L3/ACL/QoS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机转发平面的任务范畴。</p>
+</li>
+<li><p>交换机控制平面：控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。交换机的控制平面用于控制和管理所有网络协议的运行。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
+</li>
+<li><p>交换机管理平面：管理平面完成系统的运行状态监控、环境监控、日志和告警信息处理、系统加载、系统升级等功能。交换机的管理平面是提供给网络管理人员使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行管理人员对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
+</li>
+</ul>
+<p>在华为产品具体的实现上，部分系列产品将功能组合区分为数据平面、管理平面和监控平面。</p>
+<h3 id="控制平面"><a href="#控制平面" class="headerlink" title="控制平面"></a><strong>控制平面</strong></h3><p>•设备的控制平面由主控板以及接口板的管理单元组成。</p>
+<p>•控制管理平面完成系统的控制管理功能，是整个系统的中枢神经系统。控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。交换机的控制平面用于控制和管理所有网络协议的运行。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/9.png"></p>
+<h3 id="转发平面"><a href="#转发平面" class="headerlink" title="转发平面"></a><strong>转发平面</strong></h3><p>•设备的转发平面由交换网板以及接口板组成。</p>
+<p>•LPU上存在FPE（转发引擎），其本质也是一个交换芯片，完成本接口板端口之间的交换。</p>
+<p>•数据平面完成数据报文的高速处理和内部无阻塞交换。包括报文的封装与解封装、IPv4/IPv6/MPLS转发处理、QoS与调度处理、内部高速交换以及各种统计。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/10.png"></p>
+<h3 id="监控平面"><a href="#监控平面" class="headerlink" title="监控平面"></a><strong>监控平面</strong></h3><p>•监控平面由主控板、接口板的监控单元构成，部分框式设备还会存在单独的集中监控板(CMU)。</p>
+<p>•监控平面独立完成系统的环境监控，包括电压检测、系统上下电控制、温度监测与风扇控制等，以保证系统的安全稳定运行，在出现单元故障的情况下及时隔离故障，保障系统其它部分的正常运行。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/11.png"></p>
+<h1 id="网络设备对报文的处理流程"><a href="#网络设备对报文的处理流程" class="headerlink" title="网络设备对报文的处理流程"></a><strong>网络设备对报文的处理流程</strong></h1><h2 id="报文转发上行、下行"><a href="#报文转发上行、下行" class="headerlink" title="报文转发上行、下行"></a><strong>报文转发上行、下行</strong></h2><p>以交换网板为中心，可将报文在设备的行程一分为二，前半程称为“上行”，下半程称为“下行”。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/12.png"></p>
+<blockquote>
+<p>•设备处理报文分类：一种是业务报文、一种是协议报文。</p>
+<p>•对于业务报文设备只会进行转发，从一个接口进入之后依据转发表项从另外一个接口发送出去。</p>
+<p>•协议报文（如ARP、OSPF、BGP等协议的报文）设备在收到之后会交由控制层面进行处理，如ARP报文交由控制层面处理、判断之后决定是否回应，是否学习ARP报文中的源MAC、源IP。</p>
+</blockquote>
+<h2 id="业务报文转发处理流程"><a href="#业务报文转发处理流程" class="headerlink" title="业务报文转发处理流程"></a><strong>业务报文转发处理流程</strong></h2><p>业务报文从接口进入上行接口板处理之后，通过框式交换机内部总线交由交换网板，交换网板交由下行接口板处理之后从接口发出去。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/13.png"></p>
+<blockquote>
+<p>•PFE（Packet Forwarding Engine）：包转发引擎。</p>
+<p>•业务报文：服务、应用在交互过程中涉及的报文。</p>
+<p>•切片：把报文送往交换网板之前，进行切片处理，也就是把报文按一定粒度进行切片，切成固定长度。</p>
+<p>•重组：将交换网板发送过来的已经切片的报文进行重新组合。</p>
+</blockquote>
+<h3 id="确定报文出口-1"><a href="#确定报文出口-1" class="headerlink" title="确定报文出口 (1)"></a><strong>确定报文出口</strong> <strong>(1)</strong></h3><p>•当报文从接口板进入时，设备需要依据转发表项（IP路由表、MAC地址表等）确定报文的出接口（对于框式设备需要确定下行接口板）。</p>
+<p>•报文到达交换网板时已经明确了出接口、下行接口板，因此表项查询需要在上行接口板的处理过程中完成。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/14.png"></p>
+<h3 id="确定报文出口-2"><a href="#确定报文出口-2" class="headerlink" title="确定报文出口 (2)"></a><strong>确定报文出口</strong> <strong>(2)</strong></h3><p>•转发表项存放在主控板上，报文进入接口板之后，接口板从主控板处查询表项。</p>
+<p>•每次转发都需要与主控板进行通信，转发效率低，报文时延增加，对高速率接口板而言转发速率严重下跌。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/15.png"></p>
+<h3 id="确定报文出口-3"><a href="#确定报文出口-3" class="headerlink" title="确定报文出口 (3)"></a><strong>确定报文出口</strong> <strong>(3)</strong></h3><p>•转发表项存放在接口板上，报文进入接口板之后直接在接口板完成报文查询，报文转发效率高。</p>
+<p>•所有接口板上都要存储转发表项，控制平面资源占用率高。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/16.png"></p>
+<blockquote>
+<p>二层转发查询MAC地址表，三层转发查询三层路由表。</p>
+</blockquote>
+<h3 id="转发信息"><a href="#转发信息" class="headerlink" title="转发信息"></a><strong>转发信息</strong></h3><p>•高端设备业务报文不经过主控板CPU处理，由接口板提供转发信息查询。</p>
+<p>•接口板上存在的转发信息并非存在于主控板上的转发表项（IP路由表、MAC地址表…）。主控板生成转发表项之后，生成对应的转发信息下发在接口板。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/17.png"></p>
+<h3 id="硬件转发"><a href="#硬件转发" class="headerlink" title="硬件转发"></a><strong>硬件转发</strong></h3><p>•接口板执行转发的部件为包转发引擎PFE（Packet Forwarding Engine），通常为NP或者ASIC芯片，报文直接由接口板独立完成转发，无需主控板参与。</p>
+<p>•高端框式设备把转发层面和控制层面分配在不同的组件，控制层面组件（主控板）负责运行转发相关协议、维护转发表项，转发平面组件（接口板）依据控制层面下发的转发信息能够独立完成转发工作，互不影响，控制层面组件高负载时并不会影响转发平面的正常工作，这种工作机制被称为转控分离。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/18.png"></p>
+<h2 id="协议报文转发处理流程"><a href="#协议报文转发处理流程" class="headerlink" title="协议报文转发处理流程"></a><strong>协议报文转发处理流程</strong></h2><p>设备收到的协议报文，如路由协议：OSPF、IS-IS、BGP报文，ARP报文，STP报文，对设备的ICMP请求报文等，需要交由设备的控制平面处理，即上送主控板由主控板的CPU进行处理。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/19.png"></p>
+<blockquote>
+<p>•主控板CPU收到协议报文之后进行相应的处理之后如果需要回应报文，则主控板会构造协议报文进行回应，如收到发往自身的ARP Request、ICMP Echo Request报文，主控板处理之后构造ARP Reply、ICMP Echo Reply进行回应。</p>
+<p>•主控板CPU处理能力有限，如果过多的协议报文上送主控板CPU处理，会造成其繁忙，无法及时对协议报文进行响应，为此设备默认限制了各种类型的协议报文上送主控板CPU的速率。</p>
+</blockquote>
+<h3 id="设备自身发送协议报文处理流程"><a href="#设备自身发送协议报文处理流程" class="headerlink" title="设备自身发送协议报文处理流程"></a><strong>设备自身发送协议报文处理流程</strong></h3><p>设备自身发送的协议报文，如路由协议报文: OSPF、IS-IS、BGP报文，ARP报文，STP报文，ICMP报文等，由主控板CPU构造之后交由接口板对外发送。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/20.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）框式设备中负责运行路由协议，生成、维护路由表的模块是？</p>
+<p>A.接口板</p>
+<p>B.交换网板</p>
+<p><strong>C.主控板</strong></p>
+<p>D.SPU</p>
+<p>2.（简答题）高端框式设备转发业务报文时是否会向主控板查询转发表项？</p>
+<p><strong>不需要，高端框式设备将转发信息下发到接口板，接口板直接转发报文，无需向主控板查询转发表项。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><p>每台网络设备存在独立的控制平面、转发平面、监控平面，控制平面负责系统的协议处理、路由运算、业务调度等，而转发平面负责转发数据，实现各个业务模块之间的报文交互。监控平面负责系统的环境监控，以保证系统的安全稳定运行。</p>
+</li>
+<li><p>高端框式设备各个平面以不同的板卡形式存在，接口板、交换网板实现转发平面的功能，主控板实现控制平面的功能，监控板实现监控平面的功能。</p>
+</li>
+<li><p>高端框式设备采用“硬转发”，报文的转发由接口板直接完成，无需控制平面参与，报文转发效率极高。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/" rel="tag"># 认识网络设备</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/03/%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5/" rel="next" title="路由策略">
+                <i class="fa fa-chevron-left"></i> 路由策略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/" rel="prev" title="以太网交换安全">
+                以太网交换安全 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E6%A1%86%E6%9E%B6%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">网络设备框架介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87"><span class="nav-number">1.1.</span> <span class="nav-text">网络设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%86%E5%BC%8F%E8%AE%BE%E5%A4%87%E7%A1%AC%E4%BB%B6%E6%A8%A1%E5%9D%97"><span class="nav-number">1.2.</span> <span class="nav-text">框式设备硬件模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E6%8E%A7%E6%9D%BF"><span class="nav-number">1.2.1.</span> <span class="nav-text">主控板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E7%BD%91%E6%9D%BF"><span class="nav-number">1.2.2.</span> <span class="nav-text">交换网板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E6%9D%BF"><span class="nav-number">1.2.3.</span> <span class="nav-text">接口板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%92%E5%BC%8F%E8%AE%BE%E5%A4%87"><span class="nav-number">1.3.</span> <span class="nav-text">盒式设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E8%BF%9E%E6%8E%A5%E9%80%BB%E8%BE%91%E5%9B%BE"><span class="nav-number">1.4.</span> <span class="nav-text">模块连接逻辑图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E9%80%BB%E8%BE%91%E6%9E%84%E6%9E%B6"><span class="nav-number">1.5.</span> <span class="nav-text">网络设备逻辑构架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2"><span class="nav-number">1.5.1.</span> <span class="nav-text">控制平面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2"><span class="nav-number">1.5.2.</span> <span class="nav-text">转发平面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7%E5%B9%B3%E9%9D%A2"><span class="nav-number">1.5.3.</span> <span class="nav-text">监控平面</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AF%B9%E6%8A%A5%E6%96%87%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">网络设备对报文的处理流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91%E4%B8%8A%E8%A1%8C%E3%80%81%E4%B8%8B%E8%A1%8C"><span class="nav-number">2.1.</span> <span class="nav-text">报文转发上行、下行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">业务报文转发处理流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%8A%A5%E6%96%87%E5%87%BA%E5%8F%A3-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">确定报文出口 (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%8A%A5%E6%96%87%E5%87%BA%E5%8F%A3-2"><span class="nav-number">2.2.2.</span> <span class="nav-text">确定报文出口 (2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E6%8A%A5%E6%96%87%E5%87%BA%E5%8F%A3-3"><span class="nav-number">2.2.3.</span> <span class="nav-text">确定报文出口 (3)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.4.</span> <span class="nav-text">转发信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E8%BD%AC%E5%8F%91"><span class="nav-number">2.2.5.</span> <span class="nav-text">硬件转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87%E8%BD%AC%E5%8F%91%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">协议报文转发处理流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E5%A4%87%E8%87%AA%E8%BA%AB%E5%8F%91%E9%80%81%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">2.3.1.</span> <span class="nav-text">设备自身发送协议报文处理流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

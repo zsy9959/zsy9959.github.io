@@ -241,6 +241,360 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/" itemprop="url">以太网交换安全</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-05T20:01:37+08:00">
+                2021-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="端口隔离"><a href="#端口隔离" class="headerlink" title="端口隔离"></a><strong>端口隔离</strong></h1><h2 id="端口隔离技术背景"><a href="#端口隔离技术背景" class="headerlink" title="端口隔离技术背景"></a><strong>端口隔离技术背景</strong></h2><p>•以太交换网络中为了实现报文之间的二层隔离，用户通常将不同的端口加入不同的VLAN，实现二层广播域的隔离。</p>
+<p>•大型网络中，业务需求种类繁多，只通过VLAN实现报文二层隔离，会浪费有限的VLAN资源。</p>
+<p>•如下图所示，由于某种业务需求，PC1与PC2虽然属于同一个VLAN ，但是要求它们在二层不能互通（但允许三层互通），PC1与PC3在任何情况下都不能互通，但是VLAN 3里的主机可以访问VLAN 2里的主机。 那么该如何解决这个问题呢？</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/1.png"></p>
+<h2 id="端口隔离技术概述"><a href="#端口隔离技术概述" class="headerlink" title="端口隔离技术概述"></a><strong>端口隔离技术概述</strong></h2><p>采用端口隔离功能，可以实现同一VLAN内端口之间的隔离。用户只需要将端口加入到隔离组中，就可以实现隔离组内端口之间二层数据的隔离。端口隔离功能为用户提供了更安全、更灵活的组网方案。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/2.png"></p>
+<h2 id="端口隔离技术原理"><a href="#端口隔离技术原理" class="headerlink" title="端口隔离技术原理"></a><strong>端口隔离技术原理</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/3.png"></p>
+<blockquote>
+<p>•采用二层隔离三层互通的隔离模式时，在VLANIF接口上使能VLAN内Proxy ARP功能，配置arp-proxy inner-sub-vlan-proxy enable，可以实现同一VLAN内主机通信。</p>
+</blockquote>
+<h2 id="端口隔离配置命令"><a href="#端口隔离配置命令" class="headerlink" title="端口隔离配置命令"></a><strong>端口隔离配置命令</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/4.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/" itemprop="url">认识网络设备</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-05T20:01:18+08:00">
+                2021-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="网络设备框架介绍"><a href="#网络设备框架介绍" class="headerlink" title="网络设备框架介绍"></a>网络设备框架介绍</h1><h2 id="网络设备"><a href="#网络设备" class="headerlink" title="网络设备"></a>网络设备</h2><ul>
+<li><p>网络基础设施由交换机、路由器、防火墙等构成，这些设备日复一日地接收、发送数据，从一个接口收到的数据如何经过设备内部转发到另外一个接口？</p>
+</li>
+<li><p>设备有哪些组件构成？这些组件如何协同工作？。</p>
+</li>
+</ul>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/1.png"></p>
+<h2 id="框式设备硬件模块"><a href="#框式设备硬件模块" class="headerlink" title="框式设备硬件模块"></a>框式设备硬件模块</h2><p>为方便理解网络设备内部的各个功能模块，以S12700E-8为例讲解典型网络设备的构架：</p>
+<p>▫主控板(MPU，Main Processing Unit)：负责整个系统的控制平面。</p>
+<p>▫交换网板(SFU，Switch Fabric Unit)：负责整个系统的数据平面。数据平面提供高速无阻塞数据通道，实现各个业务模块之间的业务交换功能。</p>
+<p>▫接口板(LPU，Line Processing Unit)：线路处理单元是物理设备上用于提供数据转发功能的模块，提供不同速率的光口、电口。</p>
+<p>▫交换网板、接口板上都有自己的管理芯片，与主控板共同组成整个设备的控制管理平面。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/2.png"></p>
+<h3 id="主控板"><a href="#主控板" class="headerlink" title="主控板"></a><strong>主控板</strong></h3><p>主控板提供了整个系统的控制平面和管理平面。</p>
+<p>▫ 控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。</p>
+<p>▫ 管理平面完成系统的运行状态监控、环境监控、日志和告警信息处理、系统加载、系统升级等功能。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/3.png"></p>
+<h3 id="交换网板"><a href="#交换网板" class="headerlink" title="交换网板"></a><strong>交换网板</strong></h3><p>交换网板提供整个系统的数据平面。接口板、主控板之间通过交换网板完成通信。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/4.png"></p>
+<h3 id="接口板"><a href="#接口板" class="headerlink" title="接口板"></a><strong>接口板</strong></h3><p>接口板提供了不同类型（光口、电口），不同速率的接入接口，通过分布式数据平面对数据进行转发。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/5.png"></p>
+<h2 id="盒式设备"><a href="#盒式设备" class="headerlink" title="盒式设备"></a><strong>盒式设备</strong></h2><p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/6.png"></p>
+<p>不同于框式设备，盒式设备的各个业务模块并不是独立的硬件模块，而是集成在一个框内。</p>
+<h2 id="模块连接逻辑图"><a href="#模块连接逻辑图" class="headerlink" title="模块连接逻辑图"></a>模块连接逻辑图</h2><p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/7.png"></p>
+<p>•框式设备各个模块分为不同的单板，单板之间通过框式设备内部的连接进行通信。</p>
+<p>•盒式设备内部集成了这些模块，各个模块之间同样也是通过内部连接进行通信。</p>
+<p>•接口板和接口板之间通过交换网板连接了起来，接口板之间的通信统一经由交换网板进行转发。</p>
+<h2 id="网络设备逻辑构架"><a href="#网络设备逻辑构架" class="headerlink" title="网络设备逻辑构架"></a><strong>网络设备逻辑构架</strong></h2><p>网络设备从逻辑上可以分为以下三个平面：数据平面、控制管理平面和监控平面。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/8.png"> </p>
+<p>以交换机为例，设备可以分为以下的三个平面（参考RFC7426中对网络设备平面划分）：</p>
+<ul>
+<li><p>交换机转发平面：转发平面提供高速无阻塞数据通道，实现各个业务模块之间的业务交换功能。交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据。L2/L3/ACL/QoS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机转发平面的任务范畴。</p>
+</li>
+<li><p>交换机控制平面：控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。交换机的控制平面用于控制和管理所有网络协议的运行。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
+</li>
+<li><p>交换机管理平面：管理平面完成系统的运行状态监控、环境监控、日志和告警信息处理、系统加载、系统升级等功能。交换机的管理平面是提供给网络管理人员使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行管理人员对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
+</li>
+</ul>
+<p>在华为产品具体的实现上，部分系列产品将功能组合区分为数据平面、管理平面和监控平面。</p>
+<h3 id="控制平面"><a href="#控制平面" class="headerlink" title="控制平面"></a><strong>控制平面</strong></h3><p>•设备的控制平面由主控板以及接口板的管理单元组成。</p>
+<p>•控制管理平面完成系统的控制管理功能，是整个系统的中枢神经系统。控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。交换机的控制平面用于控制和管理所有网络协议的运行。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/9.png"></p>
+<h3 id="转发平面"><a href="#转发平面" class="headerlink" title="转发平面"></a><strong>转发平面</strong></h3><p>•设备的转发平面由交换网板以及接口板组成。</p>
+<p>•LPU上存在FPE（转发引擎），其本质也是一个交换芯片，完成本接口板端口之间的交换。</p>
+<p>•数据平面完成数据报文的高速处理和内部无阻塞交换。包括报文的封装与解封装、IPv4/IPv6/MPLS转发处理、QoS与调度处理、内部高速交换以及各种统计。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/10.png"></p>
+<h3 id="监控平面"><a href="#监控平面" class="headerlink" title="监控平面"></a><strong>监控平面</strong></h3><p>•监控平面由主控板、接口板的监控单元构成，部分框式设备还会存在单独的集中监控板(CMU)。</p>
+<p>•监控平面独立完成系统的环境监控，包括电压检测、系统上下电控制、温度监测与风扇控制等，以保证系统的安全稳定运行，在出现单元故障的情况下及时隔离故障，保障系统其它部分的正常运行。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/11.png"></p>
+<h1 id="网络设备对报文的处理流程"><a href="#网络设备对报文的处理流程" class="headerlink" title="网络设备对报文的处理流程"></a><strong>网络设备对报文的处理流程</strong></h1><h2 id="报文转发上行、下行"><a href="#报文转发上行、下行" class="headerlink" title="报文转发上行、下行"></a><strong>报文转发上行、下行</strong></h2><p>以交换网板为中心，可将报文在设备的行程一分为二，前半程称为“上行”，下半程称为“下行”。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/12.png"></p>
+<blockquote>
+<p>•设备处理报文分类：一种是业务报文、一种是协议报文。</p>
+<p>•对于业务报文设备只会进行转发，从一个接口进入之后依据转发表项从另外一个接口发送出去。</p>
+<p>•协议报文（如ARP、OSPF、BGP等协议的报文）设备在收到之后会交由控制层面进行处理，如ARP报文交由控制层面处理、判断之后决定是否回应，是否学习ARP报文中的源MAC、源IP。</p>
+</blockquote>
+<h2 id="业务报文转发处理流程"><a href="#业务报文转发处理流程" class="headerlink" title="业务报文转发处理流程"></a><strong>业务报文转发处理流程</strong></h2><p>业务报文从接口进入上行接口板处理之后，通过框式交换机内部总线交由交换网板，交换网板交由下行接口板处理之后从接口发出去。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/13.png"></p>
+<blockquote>
+<p>•PFE（Packet Forwarding Engine）：包转发引擎。</p>
+<p>•业务报文：服务、应用在交互过程中涉及的报文。</p>
+<p>•切片：把报文送往交换网板之前，进行切片处理，也就是把报文按一定粒度进行切片，切成固定长度。</p>
+<p>•重组：将交换网板发送过来的已经切片的报文进行重新组合。</p>
+</blockquote>
+<h3 id="确定报文出口-1"><a href="#确定报文出口-1" class="headerlink" title="确定报文出口 (1)"></a><strong>确定报文出口</strong> <strong>(1)</strong></h3><p>•当报文从接口板进入时，设备需要依据转发表项（IP路由表、MAC地址表等）确定报文的出接口（对于框式设备需要确定下行接口板）。</p>
+<p>•报文到达交换网板时已经明确了出接口、下行接口板，因此表项查询需要在上行接口板的处理过程中完成。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/14.png"></p>
+<h3 id="确定报文出口-2"><a href="#确定报文出口-2" class="headerlink" title="确定报文出口 (2)"></a><strong>确定报文出口</strong> <strong>(2)</strong></h3><p>•转发表项存放在主控板上，报文进入接口板之后，接口板从主控板处查询表项。</p>
+<p>•每次转发都需要与主控板进行通信，转发效率低，报文时延增加，对高速率接口板而言转发速率严重下跌。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/15.png"></p>
+<h3 id="确定报文出口-3"><a href="#确定报文出口-3" class="headerlink" title="确定报文出口 (3)"></a><strong>确定报文出口</strong> <strong>(3)</strong></h3><p>•转发表项存放在接口板上，报文进入接口板之后直接在接口板完成报文查询，报文转发效率高。</p>
+<p>•所有接口板上都要存储转发表项，控制平面资源占用率高。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/16.png"></p>
+<blockquote>
+<p>二层转发查询MAC地址表，三层转发查询三层路由表。</p>
+</blockquote>
+<h3 id="转发信息"><a href="#转发信息" class="headerlink" title="转发信息"></a><strong>转发信息</strong></h3><p>•高端设备业务报文不经过主控板CPU处理，由接口板提供转发信息查询。</p>
+<p>•接口板上存在的转发信息并非存在于主控板上的转发表项（IP路由表、MAC地址表…）。主控板生成转发表项之后，生成对应的转发信息下发在接口板。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/17.png"></p>
+<h3 id="硬件转发"><a href="#硬件转发" class="headerlink" title="硬件转发"></a><strong>硬件转发</strong></h3><p>•接口板执行转发的部件为包转发引擎PFE（Packet Forwarding Engine），通常为NP或者ASIC芯片，报文直接由接口板独立完成转发，无需主控板参与。</p>
+<p>•高端框式设备把转发层面和控制层面分配在不同的组件，控制层面组件（主控板）负责运行转发相关协议、维护转发表项，转发平面组件（接口板）依据控制层面下发的转发信息能够独立完成转发工作，互不影响，控制层面组件高负载时并不会影响转发平面的正常工作，这种工作机制被称为转控分离。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/18.png"></p>
+<h2 id="协议报文转发处理流程"><a href="#协议报文转发处理流程" class="headerlink" title="协议报文转发处理流程"></a><strong>协议报文转发处理流程</strong></h2><p>设备收到的协议报文，如路由协议：OSPF、IS-IS、BGP报文，ARP报文，STP报文，对设备的ICMP请求报文等，需要交由设备的控制平面处理，即上送主控板由主控板的CPU进行处理。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/19.png"></p>
+<blockquote>
+<p>•主控板CPU收到协议报文之后进行相应的处理之后如果需要回应报文，则主控板会构造协议报文进行回应，如收到发往自身的ARP Request、ICMP Echo Request报文，主控板处理之后构造ARP Reply、ICMP Echo Reply进行回应。</p>
+<p>•主控板CPU处理能力有限，如果过多的协议报文上送主控板CPU处理，会造成其繁忙，无法及时对协议报文进行响应，为此设备默认限制了各种类型的协议报文上送主控板CPU的速率。</p>
+</blockquote>
+<h3 id="设备自身发送协议报文处理流程"><a href="#设备自身发送协议报文处理流程" class="headerlink" title="设备自身发送协议报文处理流程"></a><strong>设备自身发送协议报文处理流程</strong></h3><p>设备自身发送的协议报文，如路由协议报文: OSPF、IS-IS、BGP报文，ARP报文，STP报文，ICMP报文等，由主控板CPU构造之后交由接口板对外发送。</p>
+<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/20.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）框式设备中负责运行路由协议，生成、维护路由表的模块是？</p>
+<p>A.接口板</p>
+<p>B.交换网板</p>
+<p><strong>C.主控板</strong></p>
+<p>D.SPU</p>
+<p>2.（简答题）高端框式设备转发业务报文时是否会向主控板查询转发表项？</p>
+<p><strong>不需要，高端框式设备将转发信息下发到接口板，接口板直接转发报文，无需向主控板查询转发表项。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><p>每台网络设备存在独立的控制平面、转发平面、监控平面，控制平面负责系统的协议处理、路由运算、业务调度等，而转发平面负责转发数据，实现各个业务模块之间的报文交互。监控平面负责系统的环境监控，以保证系统的安全稳定运行。</p>
+</li>
+<li><p>高端框式设备各个平面以不同的板卡形式存在，接口板、交换网板实现转发平面的功能，主控板实现控制平面的功能，监控板实现监控平面的功能。</p>
+</li>
+<li><p>高端框式设备采用“硬转发”，报文的转发由接口板直接完成，无需控制平面参与，报文转发效率极高。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/03/%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2152,870 +2506,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/" itemprop="url">以太网交换</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T09:34:21+08:00">
-                2021-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="以太网是什么？"><a href="#以太网是什么？" class="headerlink" title="以太网是什么？"></a>以太网是什么？</h2><p>以太网(Ethernet)最早是由Xerox(施乐)公司创建的局域网组网规范，1980年DEC、Intel和Xeox三家公司联合开发了初版Ethernet规范—DIX 1.0，1982年这三家公司又推出了修改版本DIX 2.0，并将其提交给EEE 802工作组，经IEEEE成员修改并通过后，成为IEEE的正式标准，并编号为IEEE 802.3。虽然Ethernet规范和IEEE 802.3规范并不完全相同，但一般认为Ethernet和正IEEE 802.3是兼容的。</p>
-<p>以太网是应用最广泛的局域网技术。根据传输速率的不同，以太网分为标准以太网(10Mbit/s)、快速以太网(100Mbis)千兆以太网(1000Mbs)和万兆以太网(10Gbit/s)，这些以太网都符合IEEE 802.3是兼容的。</p>
-<h3 id="1、标准以太网"><a href="#1、标准以太网" class="headerlink" title="1、标准以太网"></a>1、标准以太网</h3><p>标准以太网是最早期的以太网，其传输速率为10Mbts，也称为传统以太网。此种以太网的组网方式非常灵活，既可以使用粗、细缆组成总线网络，也可以使用双绞线组成星状网络，还可以同时使用同轴电缆和双绞线组成混合网络。这些网络都符合EE8023标准，EEE8023中规定的一些传统以太网物理层标准如下。</p>
-<p>①10 Base-2：使用细同轴电缆，最大网段长度为185m。</p>
-<p>②10 Base-5：使用粗同轴电缆，最大网段长度为500m。</p>
-<p>③10 Base-T：使用双纹线，最大网段长度为100m。</p>
-<p>④10 Boad-36：使用同轴电缆，最大网段长度为3600m。</p>
-<p>⑤10 Base-F：使用光纤，最大网段长度为2000m，传输速率为10Mb/s。</p>
-<p>以土标准中首部的数字代表传输速率，单位为Mbis；末尾的数字代表单段网线长度(基准单位为100m)；Base表示基带传输， Broad表示宽带传输。</p>
-<h3 id="2、快速以太网"><a href="#2、快速以太网" class="headerlink" title="2、快速以太网"></a>2、快速以太网</h3><p>随着网络的发展和各项网络技术的普及，标准以太网技术已难以满足人们对网络数据流量和速率的需求。1993年10月以前，人们只能选择价格昂贵、基于100Mbs光缆的FDD技术组建高标准网络，1993年10月， Grand Junction公司推出了世界上第一台快速以太网集线器FastSwitch10/100和百兆网络接口卡 Fast NIC 100，快速以太网技术正式得到应用。</p>
-<p>随后，Intel、3COM等公司也相继推出了自己的快速以太网设备，同时EEE802工作组对100Mbi/s以太网的各种标准进行了研究，并于1995年4月发布了IEEE 802.3u 100Base-T快速以太网标准，快速以太网时代到来。</p>
-<p>IEEE 802.3U标准基本保持了标准局域网的规定，包括帧格式、接口、介质访问控制方法</p>
-<p>( CSMA/CD)等，只是将数据传输速率从10Mbts提升到了100Mbit/s，又使用了一些新的物理层标准，具体如下所示。</p>
-<p>① 100 Base-1X：使用两对5类屏蔽或非屏蔽双绞线，一对用于发送数据，一对用于传输数据；使用RJ-45或DB9接口，节点与集线器的最大距离为100m，支持全双工。</p>
-<p>② 100 Base-T4：使用4对3类、4类或5类双绞线，3对用于发送数据，1对用于检测冲突信号；使用R-45连接器，最大网段长度为100m，不支持全双工。</p>
-<p>③ 100Base-FX：使用一对单模或多模光纤，一路用于发送数据，一路用于接收数据；最大网段长度为200m(使用单模光纤时可达2000m)，支持全双工。此种网络主要用于搭建主千网，以提升主干网络传输速率。</p>
-<h3 id="3、千兆以太网"><a href="#3、千兆以太网" class="headerlink" title="3、千兆以太网"></a>3、千兆以太网</h3><p>千兆以太网(GigabitEthernet)也称为吉比特以太网。1995年11月，IEEE 802.3工作组委任一个高速研究组，以研究将快速以太网速率增至1000Mbls的可行性和方法。1996年6月，IEEE标准委员会批准了千兆以太网方案授权申请，随后IEE 802.3工作组成立了EEE 802.3z工作委员会，该委员会建立了千兆以太网标准，该标准的主要规定如下：</p>
-<p>① 速率为1000Mbit/s的以太网在通信时的全双工/伴半双工操作。</p>
-<p>② 使用8023以太网帧格式、CSMA/CD技术。</p>
-<p>③ 在一个冲突域中支持一个中继器。</p>
-<p>④ 向下兼容10Base-T和100Base-TIEEE 802.3。</p>
-<p>工作组为千兆以太网制定了一系列物理层标准，其中常用的标准如下。</p>
-<p>（1）1000 Base-SX：使用芯径为50m及625m、工作波长为850m的多模光纤，采用8B/10B编码方式，传输距离分别为260m和525m。此标准主要应用于建筑物中同一层的短距离主于网。</p>
-<p>（2）1000 Base-LX：使用芯径为50pm及625m、工作波长为850nm和芯径为5m、工作波长为1300nm的多模、单模光纤，传输距离分别为525m、550m和3000m。此标准主要应用于校园主干网。</p>
-<p>（3）1000 Base-CX：使用1500屏蔽双绞线，采用8B/10B编码方式，传输速率为1.25Gbis，传输距离为25m。此标准主要用于集群设备的连接，如一个交换机机房内的设备互联。</p>
-<p>（4）1000 Base-T：使用4对5类非屏蔽双绞线，采用PAM5编码方式，传输距离为100m。</p>
-<p>此标准主要用于同一层建筑的通信，从而可利用标准以太网或快速以太网已铺设的非屏蔽双绞线电缆。</p>
-<p>千兆以太网采用光纤作为上行链路，用于楼宇间的连接，原本被作为一种交换技术设计，之后被广泛应用于服务器的连接和主干网中。如今，千兆以太网已成为主流的网络技术，无论是大型企业还是中小型企业，在组建网络时都会把千兆以太网作为首选高速网络技术。</p>
-<h3 id="4、万兆以太网"><a href="#4、万兆以太网" class="headerlink" title="4、万兆以太网"></a>4、万兆以太网</h3><p>万兆以太网(10 Gigabit Ethernet，10GE)也称为10吉比特以太网，是继千兆以太网之后产生的高速以太网。在千兆以太网的IEEE 802.3Z规范通过后不久，IEEEE成立了高速研究组（High Speed Study Group，HssG)，该研究组主要致力于10GE的研究。</p>
-<p>10GE并非简单地将千兆以太网的速率提升了10倍，2002年6月，IEEE 802.3ae委员会制定了10GE的正式标准，该标准主要包括以下内容。</p>
-<p>① 兼容8023标准中定义的最小和最大以太网帧长度。</p>
-<p>②仅支持全双工方式。</p>
-<p>③使用点对点链路和结构化布线组建星状局域网。</p>
-<p>④在 MAC/PLS服务接口上实现10Gbs的速度。</p>
-<p>⑤定义两种物理层规范，即局域网PHY和广域网PHY。</p>
-<p>⑥定义将 MAC/PLS的数据传输速率对应到广域网PHY数据传输速率的适配机制。</p>
-<p>⑦定义支持特定物理介质相关接口(PMD)的物理层规范，包括多模光纤和单模光纤以及相应传输距离;支持ISO/C11801第二版中定义的光纤介质类型等。</p>
-<p>⑧通过WAN界面子层，10Gbi/s也能被调整为较低的传输速率。</p>
-<p>此外，10Gbis不再使用铜线，只使用光纤作为传输媒介;不再使用 CSMA/CD协议。千兆以太网仍可使用已有的光纤通道技术，但10GE使用新开发的物理层。10GE常用的物理层规范如下。</p>
-<p>①10G Base-SR：SR表示” Short Reach”(短距离)，10GBae-SR仅用于短距离连接，该规范支持编码方式为64B/66B的短波(850mm)多模光纤，有效传输距离为2m~300m。</p>
-<p>② 10G Base-LR：LR表示“Long Reach”(长距离)，10 G Base-LR主要用于长距离连接，该规范支持编码方式为64B/66B的长波(1310mm)单模光纤，有效传输距离为2m~10km，最高可达25km。</p>
-<p>④ 10 G Base-ER：ER表示“ Extended Reach”(超长距离，10G Base-ER支持超长波（1550nm)单模光纤，有效传输距离为2m~40km。</p>
-<h2 id="IEEE802-3与以太网的关系"><a href="#IEEE802-3与以太网的关系" class="headerlink" title="IEEE802.3与以太网的关系"></a>IEEE802.3与以太网的关系</h2><p>以太网从历史的角度看有两个，第一个是由三家公司开发的DIX以太网标准。这个标准有两个版本，分别是1980年9月发布的1.0版本和1982年11月发布的2.0版本，这也是DIX的最后一个版本。在其后1985年IEEE在DIX以太网标准的基础上制定了IEEE 802.3标准。</p>
-<p>DIX与IEEE 802.3从工作机制上是一致的。但实际上，DIX以太网标准与IEEE 802.3有一些区别，DIX是把定义的OSI参考模型中的物理层和数据链路层所完成的功能，包括在一起了。它把LLC SUBLAYER(子层)和MAC SUBLAYER 媒介访问控制子层划分成了数据链路层的两个子层。目的是为了数据侦传输独立与所用的物理介质和介质访问控制方法。而IEEE 802.3规定了物理层和数据链路层中媒介访问控制子层的MAC部分，它只包括了第二层的一部分功能，而IEEE 802.2定义了逻辑链路控制子层LLC的功能。MAC与介质访问控制方法密切相关，而LLC子层与所有介质访问方法无关。LLC的隔离作用，使得网络层仅针对LLC这种接口工作，不必关心下面的介质类型及介质访问方法。而IEEE 802.3是针对以太网的标准，而IEEE 802.2并不属于以太网。所以说DIX与IEEE 802.3只是包括的范围不同，相应它们两中协议的侦格式也有一些差异。我们也可以这样的理解。</p>
-<p>通俗地说就是，以太网先出来，IEEE发现这个东西很有前途，就赶紧以它为原型制定了一个有线局域网标准叫做IEEE 802.3，这个标准与原始以太网基本一样，只有些许不同，所以我们常常不加区分地将二者等同。但鉴于本篇文章的目的就是为了搞清楚这些层次之间的关系，所以我们要严格地对二者进行区分，IEEE802.3和以太网是不一样的，前者只定义了物理层和链路层的MAC子层，后者包括链路和物理两层。</p>
-<p>链路层分为LLC和MAC，其中LLC叫做802.2，MAC+PHY叫做802.3，所以有如下公式：802.3+802.2=以太网</p>
-<p>以太网协议栈在OSI模型中的位置，如下图</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/OSI%E4%BD%8D%E7%BD%AE.png"></p>
-<p>IEEE 802中定义的服务和协议限定在OSI模型的最低两层（即物理层和数据链路层）。事实上，IEEE 802将OSI的数据链路层分为两个子层，分别是逻辑链路控制（LLC， Logical Link Control）和介质访问控制（MAC， Media Access Control），如下所示：</p>
-<ul>
-<li>数据链路层<ul>
-<li>逻辑链路控制子层</li>
-<li>介质访问控制子层</li>
-</ul>
-</li>
-<li>物理层</li>
-</ul>
-<p>从上面我们可以看出，以太网占了两层（物理层+完整链路层），而IEEE802.3占了一层（物理层+链路层中的MAC子层）。</p>
-<p>了解了以太网和IEEE802.3在OSI模型中的位置以后，下面来看看以太网的层次划分</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/1.png"></p>
-<p>其实在MAC（介质访问控制子层）上面还有一个LLC（逻辑链路控制子层），这两个部分共同构成了链路层。链路层通过MII（或者其它一些升级版的接口，如GMII等）将数据传送到物理层，物理层对这些数据进行处理并以差分信号的形式发送出去，下面解释了图中物理层的一些缩略词的含义：</p>
-<p>MII（media independent interface）：MII的实例应用，就是一种协议，用来将数据从数据链路层传输到物理层。<br>PCS（physical coding sublayer）：对要通过支撑体传送的信息进行编码。实际定义的子层有 4 个：100BASE-X、100BASE-T4、100BASE-T2 和 1000BASE-X。<br>PMA（physical media attachment）：用于给定的介质类型。其功能是：数据传送、冲突侦测、时钟同步等。<br>PMD（physical medium dependent）：就在 MDI 接口之前，用于为MDI和传送支撑体提供接口。<br>MDI（media dependent device）：用于将收发器连接到发送支撑的插头的总称。它可以是 10BASE2 网络中的 BNC 插头，或者双绞线网络的 RJ-45 插头，或者光纤连接器。<br>上面看了那么多是不是有点蒙，下面我们会以网卡为例将抽象与实际关联。</p>
-<h3 id="结合网卡硬件具体分析"><a href="#结合网卡硬件具体分析" class="headerlink" title="结合网卡硬件具体分析"></a>结合网卡硬件具体分析</h3><p>网卡的主要工作原理:发送数据时，计算机把要传输的数据并行写到网卡的缓存，网卡对要传输的数据进编码(10M以太网使用曼切斯特码，100M以太网使用差分曼切斯特码)，串行发到传输介质上.接收数据时，则相反。对于网卡而言，每块网卡都有一个唯一的网络节点地址，它是网卡生产厂家在生产时烧入ROM（只读存储芯片）中的，我们把它叫做MAC地址（物理地址），且保证绝对不会重复。MAC为48bit，前24比特由IEEE分配，是需要钱买的，后24bit由网卡生产厂家自行分配。</p>
-<p>网卡的功能主要有两个:</p>
-<p>将电脑的数据封装为帧，并通过网线(对无线网络来说就是电磁波)将数据发送到网络上去。<br>是接收网络上其它设备传过来的帧，并将帧重新组合成数据，发送到所在的电脑中。<br>网卡能接收所有在网络上传输的信号，但正常情况下只接受发送到该电脑的帧和广播帧，将其余的帧丢弃。然后，传送到系统CPU做进一步处理。当电脑发送数据时，网卡等待合适的时间将分组插入到数据流中。接收系统通知电脑消息是否完整地到达，如果出现问题，将要求对方重新发送。</p>
-<p>现在的网卡大多集成在主板上面了，不过为了说明结构组成，我们还是用上古时期的独立网卡来介绍其结构</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/2.png"></p>
-<p>以最常见的PCI接口的网卡为例，一块网卡主要由PCB线路板、主芯片、数据汞、金手指(总线插槽接口)、BOOTROM、EEPROM、晶振、RJ45接口、指示灯、固定片等等，以及一些二极管、电阻电容等组成。下面我们就来分别了解一下其中主要部件。</p>
-<p>主芯片</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/3.png"></p>
-<p>主芯片有两大类，一种是集成了MAC和PHY的，另一种是只有MAC的，前者对应着数据链路层和物理层，后者只对应数据链路层，需要单独的芯片来构成物理层。在二者分离的情况下，主芯片与PHY芯片之间就需要MII来进行通信</p>
-<p>网卡的主控制芯片是网卡的核心元件，一块网卡性能的好坏和功能的强弱多寡，主要就是看这块芯片的质量。</p>
-<p>bootroom</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/4.png"></p>
-<p>BOOTROM插座也就是常说的无盘启动ROM接口，其是用来通过远程启动服务构造无盘工作站的。远程启动服务(Remoteboot，通常也叫RPL)使通过使用服务器硬盘上的软件来代替工作站硬盘引导一台网络上的工作站成为可能。网卡上必须装有一个RPL(Remote Program Load远程初始程序加载)ROM芯片才能实现无盘启动，每一种RPL ROM芯片都是为一类特定的网络接口卡而制作的，它们之间不能互换。带有RPL的网络接口卡发出引导记录请求的广播(broadcasts)，服务器自动的建立一个连接来响应它，并加载MS-DOS启动文件到工作站的内存中。</p>
-<p>此外，在BOOTROM插槽中心一般还有一颗93C46、93LC46或93c56的EEPROM芯片(93C56是128<em>16bit的EEPROM，而93C46是64</em>16bit的EEPROM)，它相当于网卡的BIOS，里面记录了网卡芯片的供应商ID、子系统供应商ID、网卡的MAC地址、网卡的一些配置，如总线上PHY的地址，BOOTROM的容量，是否启用BOOTROM引导系统等内容。主板板载网卡的EEPROM信息一般集成在主板BIOS中。</p>
-<p>LED指示灯</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/5.png"></p>
-<p>一般来讲，每块网卡都具有1个以上的LED(Light Emitting Diode发光二极管)指示灯，用来表示网卡的不同工作状态，以方便我们查看网卡是否工作正常。典型的LED指示灯有Link/Act、Full、Power等。Link/Act表示连接活动状态，Full表示是否全双工(Full Duplex)，而Power是电源指示(主要用在USB或PCMCIA网卡上)等 。</p>
-<p>数据汞</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/6.png"></p>
-<p>数据汞是消费级PCI网卡上都具备的设备，数据汞也被叫做网络变压器或可称为网络隔离变压器。它在一块网卡上所起的作用主要有两个，一是传输数据，它把PHY送出来的差分信号用差模耦合的线圈耦合滤波以增强信号，并且通过电磁场的转换耦合到不同电平的连接网线的另外一端;一是隔离网线连接的不同网络设备间的不同电平，以防止不同电压通过网线传输损坏设备。除此而外，数据汞还能对设备起到一定的防雷保护作用。</p>
-<p>晶振</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/7.png"></p>
-<p>晶振是石英振荡器的简称，英文名为Crystal，它是时钟电路中最重要的部件，它的作用是向显卡、网卡、主板等配件的各分提供基准频率，它就像个标尺，工作频率不稳定会造成相关设备工作频率不稳定，自然容易出现问题。由于制造工艺不断提高，现在晶振的频率偏差、温度稳定性、老化率、密封性等重要技术指标都很好，已不容易出现故障，但在选用时仍可留意一下晶振的质量。</p>
-<p>网线接口</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/8.png"></p>
-<p>对应着MDI</p>
-<p>网卡上还剩一些组件，PMA，PCS和PMD没有提，自己去了解一下吧，而且并不是所有以太网解决方案都会包括完整的标准内容。</p>
-<h2 id="互联网和以太网的区别"><a href="#互联网和以太网的区别" class="headerlink" title="互联网和以太网的区别"></a>互联网和以太网的区别</h2><h3 id="互联网"><a href="#互联网" class="headerlink" title="互联网"></a>互联网</h3><p>互联网（Internet）是一个网络的网络，它是由从地方到全球范围内几百万个私人的，政府的，学术界的，企业的和政府的网络所构成，通过电子，无线和光纤网络技术等等一系列广泛的技术联系在一起。</p>
-<h3 id="以太网"><a href="#以太网" class="headerlink" title="以太网"></a>以太网</h3><p>以太网（Ethernet）是为了实现局域网通信而设计的一种数据链路层技术，它规定了包括物理层的连线、电子信号和介质访问层协议的内容。以太网是目前应用最普遍的局域网技术，取代了其他局域网标准如令牌环、FDDI和ARCNET。</p>
-<h3 id="二者区别"><a href="#二者区别" class="headerlink" title="二者区别"></a>二者区别</h3><p>1、简单地说，以太网是一直为了实现局域网通信而设计的一系列技术方案，包括物理层传输媒介和 CSMA/CD 协议等内容，而互联网是计算机网络。</p>
-<p>2、以太网很普及，电脑上的以太网接口，Wi-Fi 接口，以太网交换机、路由器上的千兆，万兆以太网口，还有网线，它们都是以太网的组成部分，以太网可以用在局域网、广域网、也可以用在互联网上，现在网络有以太网化的趋势，因为简单易用，造成很普及，然后就得到很好的研究，10兆带宽，100 兆，1000 兆，万兆…这就是它的速率升级图。</p>
-<p>而互联网则是由大大小小的运营商、公司、机构、用户连接起来网络的总称，里面包含以太网、ATM网、还有其它接口，如 E1/E3等等。</p>
-<h2 id="以太网协议"><a href="#以太网协议" class="headerlink" title="以太网协议"></a>以太网协议</h2><p>以太网是当今现有局域网(Local Area Network, LAN)采用的最通用的通信协议标准,定义了局域网中采用的电缆类型和信号处理方法。<br>以太网是建立在CSMA/CD (Carrier Sense Multiple Access/Collision Detection，载波监听多路访问/冲突检测)机制上的广播型网络。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%8F%E8%AE%AE.png"></p>
-<h3 id="冲突域"><a href="#冲突域" class="headerlink" title="冲突域"></a>冲突域</h3><p>冲突域是指连接在同一共享介质上的所有节点的集合。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%86%B2%E7%AA%81%E5%9F%9F.png"></p>
-<h3 id="广播域"><a href="#广播域" class="headerlink" title="广播域"></a>广播域</h3><p>广播报文所能到达的整个访问范围称为二层广播域，简称广播域。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B9%BF%E6%92%AD%E5%9F%9F.png"></p>
-<h3 id="以太网卡"><a href="#以太网卡" class="headerlink" title="以太网卡"></a>以太网卡</h3><p>网络接口卡(Network Interface Card,NIC)也称为“网卡”</p>
-<p>网络接口</p>
-<ul>
-<li>简称“网口”或“接口”或“端口”</li>
-</ul>
-<p>网卡</p>
-<ul>
-<li>每个网口都有一块网卡与之对应。</li>
-<li>计算机或交换机通过网卡来转发数据。</li>
-</ul>
-<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><h3 id="以太网帧格式"><a href="#以太网帧格式" class="headerlink" title="以太网帧格式"></a>以太网帧格式</h3><ul>
-<li><p>以太网技术所使用的帧称为以太网帧(Ethernet Frame)，或简称以太帧。</p>
-</li>
-<li><p>以太帧的格式有两个标准:Ethernet_ll格式和IEEE 802.3格式。</p>
-</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B8%A7%E6%A0%BC%E5%BC%8F.png"></p>
-<h3 id="什么是MAC地址"><a href="#什么是MAC地址" class="headerlink" title="什么是MAC地址"></a>什么是MAC地址</h3><ul>
-<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡。</li>
-<li>一块网卡的MAC地址是具有全球唯一性的。</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80.png"></p>
-<h3 id="IP地址-vs-MAC地址"><a href="#IP地址-vs-MAC地址" class="headerlink" title="IP地址 vs MAC地址"></a>IP地址 vs MAC地址</h3><p>IP地址的特点:</p>
-<ul>
-<li>IP地址是唯一的</li>
-<li>IP地址可变</li>
-<li>基于网络拓扑进行IP地址分配</li>
-</ul>
-<p>MAC地址的特点:</p>
-<ul>
-<li>MAC地址是唯一的</li>
-<li>MAC地址不可变</li>
-<li>基于制造商进行MAC地址分配</li>
-</ul>
-<h3 id="MAC地址表示"><a href="#MAC地址表示" class="headerlink" title="MAC地址表示"></a>MAC地址表示</h3><p>一个MAC地址有48 bit，6 Byte。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E8%A1%A8%E7%A4%BA.png"></p>
-<h3 id="MAC地址构成及分类"><a href="#MAC地址构成及分类" class="headerlink" title="MAC地址构成及分类"></a>MAC地址构成及分类</h3><ul>
-<li>OUI( Organizationally Unique ldentifier ) :厂商代码，由IEEE分配，3 Byte，24 bit</li>
-<li>制造商分配:3 Byte，24 bit</li>
-</ul>
-<p><strong>MAC地址分类</strong></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB.png"></p>
-<h2 id="以太网交换机"><a href="#以太网交换机" class="headerlink" title="以太网交换机"></a>以太网交换机</h2><h3 id="MAC地址表"><a href="#MAC地址表" class="headerlink" title="MAC地址表"></a>MAC地址表</h3><ul>
-<li>每台交换机中都有一个MAC地址表，存放了MAC地址与交换机端口编号之间的映射关系。</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E8%A1%A8.png"></p>
-<h3 id="MAC地址表学习过程"><a href="#MAC地址表学习过程" class="headerlink" title="MAC地址表学习过程"></a>MAC地址表学习过程</h3><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/9.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/10.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/11.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/12.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/13.png"></p>
-<h3 id="交换机转发过程"><a href="#交换机转发过程" class="headerlink" title="交换机转发过程"></a>交换机转发过程</h3><h4 id="交换机的3种数据帧处理行为"><a href="#交换机的3种数据帧处理行为" class="headerlink" title="交换机的3种数据帧处理行为"></a>交换机的3种数据帧处理行为</h4><p>交换机对于从传输介质进入某一端口的帧的处理行为一共有3种:泛洪、转发和丢弃。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/14.png"></p>
-<h4 id="泛洪"><a href="#泛洪" class="headerlink" title="泛洪"></a>泛洪</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/15.png"></p>
-<h4 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/16.png"></p>
-<h4 id="丢弃"><a href="#丢弃" class="headerlink" title="丢弃"></a>丢弃</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/17.png"></p>
-<h2 id="数据封装过程"><a href="#数据封装过程" class="headerlink" title="数据封装过程"></a>数据封装过程</h2><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/18.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/30/VLAN/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/30/VLAN/" itemprop="url">VLAN</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-30T14:47:09+08:00">
-                2021-04-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="为什么需要VLAN"><a href="#为什么需要VLAN" class="headerlink" title="为什么需要VLAN"></a>为什么需要VLAN</h2><p>　　1. 什么是VLAN?</p>
-<p>　　VLAN(Virtual LAN)，翻译成中文是“虚拟局域网”。LAN可以是由少数几台家用计算机构成的网络，也可以是数以百计的计算机构成的企业网络。VLAN所指的LAN特指使用路由器分割的网络——也就是广播域。</p>
-<p>　　在此让我们先复习一下广播域的概念。广播域，指的是广播帧(目标MAC地址全部为1)所能传递到的范围，亦即能够直接通信的范围。严格地说，并不仅仅是广播帧，多播帧(Multicast Frame)和目标不明的单播帧(Unknown Unicast Frame)也能在同一个广播域中畅行无阻。</p>
-<p>　　本来，二层交换机只能构建单一的广播域，不过使用VLAN功能后，它能够将网络分割成多个广播域。</p>
-<p>　　2.未分割广播域时……</p>
-<p>　　那么，为什么需要分割广播域呢?那是因为，如果仅有一个广播域，有可能会影响到网络整体的传输性能。具体原因，请参看附图加深理解。</p>
-<p><img src="/2021/04/30/VLAN/1.png"></p>
-<p>　　图中，是一个由5台二层交换机(交换机1～5)连接了大量客户机构成的网络。假设这时，计算机A需要与计算机B通信。在基于以太网的通信中，必须在数据帧中指定目标MAC地址才能正常通信，因此计算机A必须先广播“ARP请求(ARP Request)信息”，来尝试获取计算机B的MAC地址。</p>
-<p>　　交换机1收到广播帧(ARP请求)后，会将它转发给除接收端口外的其他所有端口，也就是Flooding了。接着，交换机2收到广播帧后也会Flooding。交换机3、4、5也还会Flooding。最终ARP请求会被转发到同一网络中的所有客户机上。</p>
-<p><img src="/2021/04/30/VLAN/2.png"></p>
-<p>　　请大家注意一下，这个ARP请求原本是为了获得计算机B的MAC地址而发出的。也就是说：只要计算机B能收到就万事大吉了。可是事实上，数据帧却传遍整个网络，导致所有的计算机都收到了它。如此一来，一方面广播信息消耗了网络整体的带宽，另一方面，收到广播信息的计算机还要消耗一部分CPU时间来对它进行处理。造成了网络带宽和CPU运算能力的大量无谓消耗。</p>
-<p>　　3. 广播信息是那么经常发出的吗?</p>
-<p>　　读到这里，您也许会问：广播信息真是那么频繁出现的吗?</p>
-<p>　　答案是：是的!实际上广播帧会非常频繁地出现。利用TCP/IP协议栈通信时，除了前面出现的ARP外，还有可能需要发出DHCP、RIP等很多其他类型的广播信息。</p>
-<p>　　ARP广播，是在需要与其他主机通信时发出的。当客户机请求DHCP服务器分配IP地址时，就必须发出DHCP的广播。而使用RIP作为路由协议时，每隔30秒路由器都会对邻近的其他路由器广播一次路由信息。RIP以外的其他路由协议使用多播传输路由信息，这也会被交换机转发(Flooding)。除了TCP/IP以外，NetBEUI、IPX和Apple Talk等协议也经常需要用到广播。例如在Windows下双击打开“网络计算机”时就会发出广播(多播)信息。(Windows XP除外……)</p>
-<p>　　总之，广播就在我们身边。下面是一些常见的广播通信：</p>
-<p>　　(1)ARP请求：建立IP地址和MAC地址的映射关系。</p>
-<p>　　(2)RIP：一种路由协议。</p>
-<p>　　(3)DHCP：用于自动设定IP地址的协议。</p>
-<p>　　(4)NetBEUI：Windows下使用的网络协议。</p>
-<p>　　(5)IPX：NovellNetware使用的网络协议。</p>
-<p>　　(6)Apple Talk：苹果公司的Macintosh计算机使用的网络协议。</p>
-<p>　　如果整个网络只有一个广播域，那么一旦发出广播信息，就会传遍整个网络，并且对网络中的主机带来额外的负担。因此，在设计LAN时，需要注意如何才能有效地分割广播域。</p>
-<p>　　4.广播域的分割与VLAN的必要性</p>
-<p>　　分割广播域时，一般都必须使用到路由器。使用路由器后，可以以路由器上的网络接口(LAN Interface)为单位分割广播域。</p>
-<p>　　但是，通常情况下路由器上不会有太多的网络接口，其数目多在1～4个左右。随着宽带连接的普及，宽带路由器(或者叫IP共享器)变得较为常见，但是需要注意的是，它们上面虽然带着多个(一般为4个左右)连接LAN一侧的网络接口，但那实际上是路由器内置的交换机，并不能分割广播域。</p>
-<p>　　况且使用路由器分割广播域的话，所能分割的个数完全取决于路由器的网络接口个数，使得用户无法自由地根据实际需要分割广播域。</p>
-<p>　　与路由器相比，二层交换机一般带有多个网络接口。因此如果能使用它分割广播域，那么无疑运用上的灵活性会大大提高。</p>
-<p>　　用于在二层交换机上分割广播域的技术，就是VLAN。通过利用VLAN，我们可以自由设计广播域的构成，提高网络设计的自由度。</p>
-<h2 id="实现VLAN的机制"><a href="#实现VLAN的机制" class="headerlink" title="实现VLAN的机制"></a>实现VLAN的机制</h2><p>　　1. 实现VLAN的机制</p>
-<p>　　在理解了“为什么需要VLAN”之后，接下来让我们来了解一下交换机是如何使用VLAN分割广播域的。</p>
-<p>　　首先，在一台未设置任何VLAN的二层交换机上，任何广播帧都会被转发给除接收端口外的所有其他端口(Flooding)。例如，计算机A发送广播信息后，会被转发给端口2、3、4。</p>
-<p><img src="/2021/04/30/VLAN/3.png"></p>
-<p>　　这时，如果在交换机上生成红、蓝两个VLAN;同时设置端口1、2属于红色VLAN、端口3、4属于蓝色VLAN。再从A发出广播帧的话，交换机就只会把它转发给同属于一个VLAN的其他端口——也就是同属于红色VLAN的端口2，不会再转发给属于蓝色VLAN的端口。</p>
-<p>　　同样，C发送广播信息时，只会被转发给其他属于蓝色VLAN的端口，不会被转发给属于红色VLAN的端口。</p>
-<p><img src="/2021/04/30/VLAN/4.png"></p>
-<p>　　就这样，VLAN通过限制广播帧转发的范围分割了广播域。上图中为了便于说明，以红、蓝两色识别不同的VLAN，在实际使用中则是用“VLAN ID”来区分的。</p>
-<p>　　2.直观地描述VLAN</p>
-<p>　　如果要更为直观地描述VLAN的话，我们可以把它理解为将一台交换机在逻辑上分割成了数台交换机。在一台交换机上生成红、蓝两个VLAN，也可以看作是将一台交换机换做一红一蓝两台虚拟的交换机。</p>
-<p><img src="/2021/04/30/VLAN/5.png"></p>
-<p>　　在红、蓝两个VLAN之外生成新的VLAN时，可以想象成又添加了新的交换机。</p>
-<p>　　但是，VLAN生成的逻辑上的交换机是互不相通的。因此，在交换机上设置VLAN后，如果未做其他处理，VLAN间是无法通信的。</p>
-<p>　　明明接在同一台交换机上，但却偏偏无法通信——这个事实也许让人难以接受。但它既是VLAN方便易用的特征，又是使VLAN令人难以理解的原因。</p>
-<p>　　3. 需要VLAN间通信时怎么办</p>
-<p>　　那么，当我们需要在不同的VLAN间通信时又该如何是好呢?</p>
-<p>　　请大家再次回忆一下：VLAN是广播域。而通常两个广播域之间由路由器连接，广播域之间来往的数据包都是由路由器中继的。因此，VLAN间的通信也需要路由器提供中继服务，这被称作“VLAN间路由”。</p>
-<p>　　VLAN间路由，可以使用普通的路由器，也可以使用三层交换机。其中的具体内容，等有机会再细说吧。在这里希望大家先记住不同VLAN间互相通信时需要用到路由功能。</p>
-<p>　　VLAN的访问链接(Access Link)</p>
-<p>　　1.交换机的端口类型</p>
-<p>　　交换机的端口，可以分为以下两种：</p>
-<p>　　(1)访问链接(Access Link)</p>
-<p>　　(2)汇聚链接(Trunk Link)</p>
-<p>　　接下来就让我们来依次学习这两种不同端口的特征。这一讲，首先学习“访问链接”。</p>
-<p>　　2.访问链接</p>
-<p>　　访问链接，指的是“只属于一个VLAN，且仅向该VLAN转发数据帧”的端口。在大多数情况下，访问链接所连的是客户机。</p>
-<p>　　通常设置VLAN的顺序是：</p>
-<p>　　(1)生成VLAN</p>
-<p>　　(2)设定访问链接(决定各端口属于哪一个VLAN)</p>
-<p>　　设定访问链接的手法，可以是事先固定的、也可以是根据所连的计算机而动态改变设定。前者被称为“静态VLAN”、后者自然就是“动态VLAN”了。</p>
-<p>　　● 静态VLAN——基于端口</p>
-<p>　　静态VLAN又被称为基于端口的VLAN(PortBased VLAN)。顾名思义，就是明确指定各端口属于哪个VLAN的设定方法。</p>
-<p><img src="/2021/04/30/VLAN/6.png"></p>
-<p>　　由于需要一个个端口地指定，因此当网络中的计算机数目超过一定数字(比如数百台)后，设定操作就会变得烦杂无比。并且，客户机每次变更所连端口，都必须同时更改该端口所属VLAN的设定——这显然不适合那些需要频繁改变拓补结构的网络。</p>
-<p>　　● 动态VLAN</p>
-<p>　　另一方面，动态VLAN则是根据每个端口所连的计算机，随时改变端口所属的VLAN。这就可以避免上述的更改设定之类的操作。动态VLAN可以大致分为3类：</p>
-<p>　　(1)基于MAC地址的VLAN(MAC Based VLAN)</p>
-<p>　　(2)基于子网的VLAN(Subnet Based VLAN)</p>
-<p>　　(3)基于用户的VLAN(User Based VLAN)</p>
-<p>　　其间的差异，主要在于根据OSI参照模型哪一层的信息决定端口所属的VLAN。</p>
-<p><img src="/2021/04/30/VLAN/VLAN%E9%97%B4%E5%88%92%E5%88%86.png"></p>
-<p>　　● 基于MAC地址的VLAN</p>
-<p>　　基于MAC地址的VLAN，就是通过查询并记录端口所连计算机上网卡的MAC地址来决定端口的所属。假定有一个MAC地址“A”被交换机设定为属于VLAN “10”，那么不论MAC地址为“A”的这台计算机连在交换机哪个端口，该端口都会被划分到VLAN 10中去。计算机连在端口1时，端口1属于VLAN 10;而计算机连在端口2时，则是端口2属于VLAN 10。</p>
-<p><img src="/2021/04/30/VLAN/7.png"></p>
-<p>　　由于是基于MAC地址决定所属VLAN的，因此可以理解为这是一种在OSI的第二层设定访问链接的办法。</p>
-<p>　　但是，基于MAC地址的VLAN，在设定时必须调查所连接的所有计算机的MAC地址并加以登录。而且如果计算机交换了网卡，还是需要更改设定。</p>
-<p>　　● 基于IP地址的VLAN</p>
-<p>　　基于子网的VLAN，则是通过所连计算机的IP地址，来决定端口所属VLAN的。不像基于MAC地址的VLAN，即使计算机因为交换了网卡或是其他原因导致MAC地址改变，只要它的IP地址不变，就仍可以加入原先设定的VLAN。</p>
-<p><img src="/2021/04/30/VLAN/8.png"></p>
-<p>　　因此，与基于MAC地址的VLAN相比，能够更为简便地改变网络结构。IP地址是OSI参照模型中第三层的信息，所以我们可以理解为基于子网的VLAN是一种在OSI的第三层设定访问链接的方法。</p>
-<p>　　基于用户的VLAN，则是根据交换机各端口所连的计算机上当前登录的用户，来决定该端口属于哪个VLAN。这里的用户识别信息，一般是计算机操作系统登录的用户，比如可以是Windows域中使用的用户名。这些用户名信息，属于OSI第四层以上的信息。</p>
-<p>　　总的来说，决定端口所属VLAN时利用的信息在OSI中的层面越高，就越适于构建灵活多变的网络。</p>
-<p>　　VLAN的汇聚链接(Trunk Link)</p>
-<p>　　1.需要设置跨越多台交换机的VLAN时……</p>
-<p>　　到此为止，我们学习的都是使用单台交换机设置VLAN时的情况。那么，如果需要设置跨越多台交换机的VLAN时又如何呢?</p>
-<p>　　在规划企业级网络时，很有可能会遇到隶属于同一部门的用户分散在同一座建筑物中的不同楼层的情况，这时可能就需要考虑到如何跨越多台交换机设置VLAN的问题了。假设有如下图所示的网络，且需要将不同楼层的A、C和B、D设置为同一个VLAN。</p>
-<p><img src="/2021/04/30/VLAN/9.png"></p>
-<p>　　这时最关键的就是“交换机1和交换机2该如何连接才好呢?”</p>
-<p>　　最简单的方法，自然是在交换机1和交换机2上各设一个红、蓝VLAN专用的接口并互联了。</p>
-<p><img src="/2021/04/30/VLAN/10.png"></p>
-<p>　　但是，这个办法从扩展性和管理效率来看都不好。例如，在现有网络基础上再新建VLAN时，为了让这个VLAN能够互通，就需要在交换机间连接新的网线。建筑物楼层间的纵向布线是比较麻烦的，一般不能由基层管理人员随意进行。并且，VLAN越多，楼层间(严格地说是交换机间)互联所需的端口也越来越多，交换机端口的利用效率低是对资源的一种浪费、也限制了网络的扩展。</p>
-<p>　　为了避免这种低效率的连接方式，人们想办法让交换机间互联的网线集中到一根上，这时使用的就是汇聚链接(Trunk Link)。</p>
-<p>　　2.何谓汇聚链接?</p>
-<p>　　汇聚链接(Trunk Link)指的是能够转发多个不同VLAN的通信的端口。</p>
-<p>　　汇聚链路上流通的数据帧，都被附加了用于识别分属于哪个VLAN的特殊信息。</p>
-<p>　　现在再让我们回过头来考虑一下刚才那个网络如果采用汇聚链路又会如何呢?用户只需要简单地将交换机间互联的端口设定为汇聚链接就可以了。这时使用的网线还是普通的UTP线，而不是什么其他的特殊布线。图例中是交换机间互联，因此需要用交叉线来连接。</p>
-<p>　　接下来，让我们具体看看汇聚链接是如何实现跨越交换机间的VLAN的。</p>
-<p>　　A发送的数据帧从交换机1经过汇聚链路到达交换机2时，在数据帧上附加了表示属于红色VLAN的标记。</p>
-<p>　　交换机2收到数据帧后，经过检查VLAN标识发现这个数据帧是属于红色VLAN的，因此去除标记后根据需要将复原的数据帧只转发给其他属于红色VLAN的端口。这时的转送，是指经过确认目标MAC地址并与MAC地址列表比对后只转发给目标MAC地址所连的端口。只有当数据帧是一个广播帧、多播帧或是目标不明的帧时，它才会被转发到所有属于红色VLAN的端口。</p>
-<p>　　蓝色VLAN发送数据帧时的情形也与此相同。</p>
-<p><img src="/2021/04/30/VLAN/11.png"></p>
-<p>　　通过汇聚链路时附加的VLAN识别信息，有可能支持标准的“IEEE 802.1Q”协议，也可能是Cisco产品独有的“ISL(Inter Switch Link)”。如果交换机支持这些规格，那么用户就能够高效率地构筑横跨多台交换机的VLAN。</p>
-<p>　　另外，汇聚链路上流通着多个VLAN的数据，自然负载较重。因此，在设定汇聚链接时，有一个前提就是必须支持100Mbps以上的传输速度。</p>
-<p>　　另外，默认条件下，汇聚链接会转发交换机上存在的所有VLAN的数据。换一个角度看，可以认为汇聚链接(端口)同时属于交换机上所有的VLAN。由于实际应用中很可能并不需要转发所有VLAN的数据，因此为了减轻交换机的负载、也为了减少对带宽的浪费，我们可以通过用户设定限制能够经由汇聚链路互联的VLAN。</p>
-<p>　　关于IEEE 802.1Q和ISL的具体内容，将在下一讲中提到。</p>
-<p>　　3.访问链接的总结</p>
-<p>　　综上所述，设定访问链接的手法有静态VLAN和动态VLAN两种，其中动态VLAN又可以继续细分成几个小类。</p>
-<p>　　其中基于子网的VLAN和基于用户的VLAN有可能是网络设备厂商使用独有的协议实现的，不同厂商的设备之间互联有可能出现兼容性问题;因此在选择交换机时，一定要注意事先确认。</p>
-<p>　　下表总结了静态VLAN和动态VLAN的相关信息。</p>
-<p>　　种类解说</p>
-<p>　　静态VLAN(基于端口的VLAN)将交换机的各端口固定指派给VLAN</p>
-<p>　　动态VLAN基于MAC地址的VLAN根据各端口所连计算机的MAC地址设定</p>
-<p>　　基于子网的VLAN根据各端口所连计算机的IP地址设定</p>
-<p>　　基于用户的VLAN根据端口所连计算机上登录用户设定</p>
-<p>　　VLAN的汇聚方式——IEEE802.1Q与ISL</p>
-<p>　　1.汇聚方式</p>
-<p>　　在交换机的汇聚链接上，可以通过对数据帧附加VLAN信息，构建跨越多台交换机的VLAN。</p>
-<p>　　附加VLAN信息的方法，最具有代表性的有：</p>
-<p>　　(1)IEEE 802.1Q</p>
-<p>　　(2)ISL</p>
-<p>　　现在就让我们看看这两种协议分别如何对数据帧附加VLAN信息。</p>
-<p>　　2.IEEE 802.1Q</p>
-<p>　　IEEE 802.1Q，俗称“Dot One Q”，是经过IEEE认证的对数据帧附加VLAN识别信息的协议。</p>
-<p>　　在此，请大家先回忆一下以太网数据帧的标准格式。</p>
-<p>　　IEEE 802.1Q所附加的VLAN识别信息，位于数据帧中“发送源MAC地址”与“类别域”(Type Field)之间。具体内容为2字节的TPID(Tag Protocol IDentifier)和2字节的TCI(Tag Control Information)，共计4字节。</p>
-<p>　　在数据帧中添加了4字节的内容，那么CRC值自然也会有所变化。这时数据帧上的CRC是插入TPID、TCI后，对包括它们在内的整个数据帧重新计算后所得的值。</p>
-<p><img src="/2021/04/30/VLAN/12.png"></p>
-<p>　　而当数据帧离开汇聚链路时，TPID和TCI会被去除，这时还会进行一次CRC的重新计算。</p>
-<p>　　TPID字段在以太网报文中所处位置与不带VLAN Tag的报文中协议类型字段所处位置相同。TPID的值固定为0x8100，它标示网络帧承载的802.1Q类型，交换机通过它来确定数据帧内附加了基于IEEE 802.1Q的VLAN信息。而实质上的VLAN ID，是TCI中的12位元。由于总共有12位，因此最多可供识别4096个VLAN。</p>
-<p>　　基于IEEE 802.1Q附加的VLAN信息，就像在传递物品时附加的标签。因此，它也被称作“标签型VLAN”(Tagging VLAN)。</p>
-<p>　　3.ISL(Inter Switch Link)</p>
-<p>　　ISL，是Cisco产品支持的一种与IEEE 802.1Q类似的、用于在汇聚链路上附加VLAN信息的协议。</p>
-<p>　　使用ISL后，每个数据帧头部都会被附加26字节的“ISL包头(ISL Header)”，并且在帧尾带上通过对包括ISL包头在内的整个数据帧进行计算后得到的4字节CRC值。换而言之，就是总共增加了30字节的信息。</p>
-<p>　　在使用ISL的环境下，当数据帧离开汇聚链路时，只要简单地去除ISL包头和新CRC就可以了。由于原先的数据帧及其CRC都被完整保留，因此无需重新计算CRC。</p>
-<p><img src="/2021/04/30/VLAN/13.png"></p>
-<p>　　ISL有如用ISL包头和新CRC将原数据帧整个包裹起来，因此也被称为“封装型VLAN”(Encapsulated VLAN)。</p>
-<p>　　需要注意的是，不论是IEEE802.1Q的“Tagging VLAN”，还是ISL的“Encapsulated VLAN”，都不是很严密的称谓。不同的书籍与参考资料中，上述词语有可能被混合使用，因此需要大家在学习时格外注意。</p>
-<p>　　并且由于ISL是Cisco独有的协议，因此只能用于Cisco网络设备之间的互联。</p>
-<h2 id="VLAN间路由"><a href="#VLAN间路由" class="headerlink" title="VLAN间路由"></a>VLAN间路由</h2><p>1.VLAN间路由的必要性</p>
-<p>　　根据目前为止学习的知识，我们已经知道两台计算机即使连接在同一台交换机上，只要所属的VLAN不同就无法直接通信。接下来我们将要学习的就是如何在不同的VLAN间进行路由，使分属不同VLAN的主机能够互相通信。</p>
-<p>　　首先，先来复习一下为什么不同VLAN间不通过路由就无法通信。在LAN内的通信，必须在数据帧头中指定通信目标的MAC地址。而为了获取MAC地址，TCP/IP协议下使用的是ARP。ARP解析MAC地址的方法，则是通过广播。也就是说，如果广播报文无法到达，那么就无从解析MAC地址，亦即无法直接通信。</p>
-<p>　　计算机分属不同的VLAN，也就意味着分属不同的广播域，自然收不到彼此的广播报文。因此，属于不同VLAN的计算机之间无法直接互相通信。为了能够在VLAN间通信，需要利用OSI参照模型中更高一层——网络层的信息(IP地址)来进行路由。关于路由的具体内容，以后有机会再详细解说吧。</p>
-<p>　　路由功能，一般主要由路由器提供。但在今天的局域网里，我们也经常利用带有路由功能的交换机——三层交换机(Layer 3 Switch)来实现。接下来就让我们分别看看使用路由器和三层交换机进行VLAN间路由时的情况。</p>
-<p>2.使用路由器进行VLAN间路由</p>
-<p>　　在使用路由器进行VLAN间路由时，与构建横跨多台交换机的VLAN时的情况类似，我们还是会遇到“该如何连接路由器与交换机”这个问题。路由器和交换机的接线方式，大致有以下两种：</p>
-<p>　　(1)将路由器与交换机上的每个VLAN分别连接</p>
-<p>　　(2)不论VLAN有多少个，路由器与交换机都只用一条网线连接</p>
-<p>　　最容易想到的，当然还是“把路由器和交换机以VLAN为单位分别用网线连接”了。将交换机上用于和路由器互联的每个端口设为访问链接(Access Link)，然后分别用网线与路由器上的独立端口互联。如下图所示，交换机上有2个VLAN，那么就需要在交换机上预留2个端口用于与路由器互联;路由器上同样需要有2个端口;两者之间用2条网线分别连接。</p>
-<p><img src="/2021/04/30/VLAN/14.png"></p>
-<p>　　如果采用这个办法，大家应该不难想象它的扩展性很成问题。每增加一个新的VLAN，都需要消耗路由器的端口和交换机上的访问链接，而且还需要重新布设一条网线。而路由器，通常不会带有太多LAN接口的。新建VLAN时，为了对应增加的VLAN所需的端口，就必须将路由器升级成带有多个LAN接口的高端产品，这部分成本、还有重新布线所带来的开销，都使得这种接线法成为一种不受欢迎的办法。</p>
-<p>　　那么，第二种办法“不论VLAN数目多少，都只用一条网线连接路由器与交换机”呢?当使用一条网线连接路由器与交换机、进行VLAN间路由时，需要用到汇聚链接。</p>
-<p>　　具体实现过程为：首先将用于连接路由器的交换机端口设为汇聚链接(Trunk Link)，而路由器上的端口也必须支持汇聚链路。双方用于汇聚链路的协议自然也必须相同。接着在路由器上定义对应各个VLAN的“子接口”(Sub Interface)。尽管实际与交换机连接的物理端口只有一个，但在理论上我们可以把它分割为多个虚拟端口。</p>
-<p>　　VLAN将交换机从逻辑上分割成了多台，因而用于VLAN间路由的路由器，也必须拥有分别对应各个VLAN的虚拟接口。</p>
-<p><img src="/2021/04/30/VLAN/15.png"></p>
-<p>　　采用这种方法的话，即使之后在交换机上新建VLAN，仍只需要一条网线连接交换机和路由器。用户只需要在路由器上新设一个对应新VLAN的子接口就可以了。与前面的方法相比，扩展性要强得多，也不用担心需要升级LAN接口数不足的路由器或是重新布线。</p>
-<p>3.同一VLAN内的通信</p>
-<p>　　接下来，我们继续学习使用汇聚链路连接交换机与路由器时，VLAN间路由是如何进行的。如下图所示，为各台计算机以及路由器的子接口设定IP地址。</p>
-<p><img src="/2021/04/30/VLAN/16.png"></p>
-<p>　　红色VLAN(VLAN ID=1)的网络地址为192.168.1.0/24，蓝色VLAN(VLAN ID=2)的网络地址为192.168.2.0/24。各计算机的MAC地址分别为A/B/C/D，路由器汇聚链接端口的MAC地址为R。交换机通过对各端口所连计算机MAC地址的学习，生成如下的MAC地址列表。</p>
-<p>　　首先考虑计算机A与同一VLAN内的计算机B之间通信时的情形。</p>
-<p>　　计算机A发出ARP请求信息，请求解析B的MAC地址。交换机收到数据帧后，检索MAC地址列表中与收信端口同属一个VLAN的表项。结果发现，计算机B连接在端口2上，于是交换机将数据帧转发给端口2，最终计算机B收到该帧。收发信双方同属一个VLAN之内的通信，一切处理均在交换机内完成。</p>
-<p><img src="/2021/04/30/VLAN/17.png"></p>
-<p>4.不同VLAN间的通信</p>
-<p>　　接下来是这一讲的核心内容，不同VLAN间的通信。让我们来考虑一下计算机A与计算机C之间通信时的情况。</p>
-<p><img src="/2021/04/30/VLAN/18.png"></p>
-<p>　　计算机A从通信目标的IP地址(192.168.2.1)得出C与本机不属于同一个网段。因此会向设定的默认网关(DefaultGateway，GW)转发数据帧。在发送数据帧之前，需要先用ARP获取路由器的MAC地址。</p>
-<p>　　得到路由器的MAC地址R后，接下来就是按图中所示的步骤发送往C去的数据帧。①的数据帧中，目标MAC地址是路由器的地址R、但内含的目标IP地址仍是最终要通信的对象C的地址。这一部分的内容，涉及到局域网内经过路由器转发时的通信步骤，有机会再详细解说吧。</p>
-<p>　　交换机在端口1上收到①的数据帧后，检索MAC地址列表中与端口1同属一个VLAN的表项。由于汇聚链路会被看作属于所有的VLAN，因此这时交换机的端口6也属于被参照对象。这样交换机就知道往MAC地址R发送数据帧，需要经过端口6转发。</p>
-<p>　　从端口6发送数据帧时，由于它是汇聚链接，因此会被附加上VLAN识别信息。由于原先是来自红色VLAN的数据帧，因此如图中②所示，会被加上红色VLAN的识别信息后进入汇聚链路。路由器收到②的数据帧后，确认其VLAN识别信息，由于它是属于红色VLAN的数据帧，因此交由负责红色VLAN的子接口接收。</p>
-<p>　　接着，根据路由器内部的路由表，判断该向哪里中继。</p>
-<p>　　由于目标网络192.168.2.0/24是蓝色VLAN，，且该网络通过子接口与路由器直连，因此只要从负责蓝色VLAN的子接口转发就可以了。这时，数据帧的目标MAC地址被改写成计算机C的目标地址;并且由于需要经过汇聚链路转发，因此被附加了属于蓝色VLAN的识别信息。这就是图中③的数据帧。</p>
-<p>　　交换机收到③的数据帧后，根据VLAN标识信息从MAC地址列表中检索属于蓝色VLAN的表项。由于通信目标——计算机C连接在端口3上、且端口3为普通的访问链接，因此交换机会将数据帧去除VLAN识别信息后(数据帧④)转发给端口3，最终计算机C才能成功地收到这个数据帧。</p>
-<p>　　进行VLAN间通信时，即使通信双方都连接在同一台交换机上，也必须经过：“发送方——交换机——路由器——交换机——接收方”这样一个流程。</p>
-<p>　　三层交换机</p>
-<p>　　1.使用路由器进行VLAN间路由时的问题</p>
-<p>　　现在，我们知道只要能提供VLAN间路由，就能够使分属不同VLAN的计算机互相通信。但是，如果使用路由器进行VLAN间路由的话，随着VLAN之间流量的不断增加，很可能导致路由器成为整个网络的瓶颈。</p>
-<p>　　交换机使用被称为ASIC(ApplicationSpecified Integrated Circuit)的专用硬件芯片处理数据帧的交换操作，在很多机型上都能实现以缆线速度(Wired Speed)交换。而路由器，则基本上是基于软件处理的。即使以缆线速度接收到数据包，也无法在不限速的条件下转发出去，因此会成为速度瓶颈。就VLAN间路由而言，流量会集中到路由器和交换机互联的汇聚链路部分，这一部分尤其特别容易成为速度瓶颈。并且从硬件上看，由于需要分别设置路由器和交换机，在一些空间狭小的环境里可能连设置的场所都成问题。</p>
-<p>　　2.三层交换机(Layer 3 Switch)</p>
-<p>　　为了解决上述问题，三层交换机应运而生。三层交换机，本质上就是“带有路由功能的(二层)交换机”。路由属于OSI参照模型中第三层网络层的功能，因此带有第三层路由功能的交换机才被称为“三层交换机”。</p>
-<p>　　关于三层交换机的内部结构，可以参照下面的简图。</p>
-<p><img src="/2021/04/30/VLAN/19.png"></p>
-<p>　　在一台本体内，分别设置了交换机模块和路由器模块;而内置的路由模块与交换模块相同，使用ASIC硬件处理路由。因此，与传统的路由器相比，可以实现高速路由。并且，路由与交换模块是汇聚链接的，由于是内部连接，可以确保相当大的带宽。</p>
-<p>　　● 使用三层交换机进行VLAN间路由(VLAN内通信)</p>
-<p>　　在三层交换机内部数据究竟是怎样传播的呢?基本上，它和使用汇聚链路连接路由器与交换机时的情形相同。</p>
-<p>　　假设有如下图所示的4台计算机与三层交换机互联。当使用路由器连接时，一般需要在LAN接口上设置对应各VLAN的子接口;而三层交换机则是在内部生成“VLAN接口”(VLAN Interface)。VLAN接口，是用于各VLAN收发数据的接口。(注：在Cisco的Catalyst系列交换机上，VLAN Interface被称为SVI——Switched Virtual Interface)</p>
-<p><img src="/2021/04/30/VLAN/20.png"></p>
-<p>　　为了与使用路由器进行VLAN间路由对比，让我们同样来考虑一下计算机A与计算机B之间通信时的情况。首先是目标地址为B的数据帧被发到交换机;通过检索同一VLAN的MAC地址列表发现计算机B连在交换机的端口2上;因此将数据帧转发给端口2。</p>
-<p>　　● 使用三层交换机进行VLAN间路由(VLAN间通信)</p>
-<p>　　接下来设想一下计算机A与计算机C间通信时的情形。针对目标IP地址，计算机A可以判断出通信对象不属于同一个网络，因此向默认网关发送数据(Frame 1)。</p>
-<p>　　交换机通过检索MAC地址列表后，经由内部汇聚链接，将数据帧转发给路由模块。在通过内部汇聚链路时，数据帧被附加了属于红色VLAN的VLAN识别信息(Frame 2)。</p>
-<p>　　路由模块在收到数据帧时，先由数据帧附加的VLAN识别信息分辨出它属于红色VLAN，据此判断由红色VLAN接口负责接收并进行路由处理。因为目标网络192.168.2.0/24是直连路由器的网络、且对应蓝色VLAN;因此，接下来就会从蓝色VLAN接口经由内部汇聚链路转发回交换模块。在通过汇聚链路时，这次数据帧被附加上属于蓝色VLAN的识别信息(Frame 3)。</p>
-<p>　　交换机收到这个帧后，检索蓝色VLAN的MAC地址列表，确认需要将它转发给端口3。由于端口3是通常的访问链接，因此转发前会先将VLAN识别信息去除(Frame 4)。最终，计算机C成功地收到交换机转发来的数据帧。</p>
-<p><img src="/2021/04/30/VLAN/21.png"></p>
-<p>　　整体的流程，与使用外部路由器时的情况十分相似——都需要经过“发送方→交换模块→路由模块→交换模块→接收方”。</p>
-<h2 id="加速VLAN间通信的手段"><a href="#加速VLAN间通信的手段" class="headerlink" title="加速VLAN间通信的手段"></a>加速VLAN间通信的手段</h2><p>　　1.流(Flow)</p>
-<p>　　根据到此为止的学习，我们已经知道VLAN间路由，必须经过外部的路由器或是三层交换机的内置路由模块。但是，有时并不是所有的数据都需要经过路由器(或路由模块)。</p>
-<p>　　例如，使用FTP(File Transfer Protocol)传输容量为数MB以上的较大的文件时，由于MTU的限制，IP协议会将数据分割成小块后传输、并在接收方重新组合。这些被分割的数据，“发送的目标”是完全相同的。发送目标相同，也就意味着同样的目标IP地址、目标端口号(注：特别强调一下，这里指的是TCP/UDP端口)。自然，源IP地址、源端口号也应该相同。这样一连串的数据流被称为“流”(Flow)。</p>
-<p>　　只要将流最初的数据正确地路由以后，后继的数据理应也会被同样地路由。</p>
-<p>　　据此，后继的数据不再需要路由器进行路由处理;通过省略反复进行的路由操作，可以进一步提高VLAN间路由的速度。</p>
-<p><img src="/2021/04/30/VLAN/22.png"></p>
-<p>　　2.加速VLAN间路由的机制</p>
-<p>　　接下来，让我们具体考虑一下该如何使用三层交换机进行高速VLAN间路由。</p>
-<p>　　首先，整个流的第一块数据，照常由交换机转发→路由器路由→再次由交换机转发到目标所连端口。这时，将第一块数据路由的结果记录到缓存里保存下来。需要记录的信息有：</p>
-<p>　　(1)目标IP地址</p>
-<p>　　(2)源IP地址</p>
-<p>　　(3)目标TCP/UDP端口号</p>
-<p>　　(4)源TCP/UDP端口号</p>
-<p>　　(5)接收端口号(交换机)</p>
-<p>　　(6)转发端口号(交换机)</p>
-<p>　　(7)转发目标MAC地址</p>
-<p>　　等等。</p>
-<p>　　同一个流的第二块以后的数据到达交换机后，直接通过查询先前保存在缓存中的信息查出“转发端口号”后就可以转发给目标所连端口了。</p>
-<p>　　这样一来，就不需要再一次次经由内部路由模块中继，而仅凭交换机内部的缓存信息就足以判断应该转发的端口。</p>
-<p>　　这时，交换机会对数据帧进行由路由器中继时相似的处理，例如改写MAC地址、IP包头中的TTL和Check Sum校验码信息等。</p>
-<p><img src="/2021/04/30/VLAN/23.png"></p>
-<p>　　通过在交换机上缓存路由结果，实现了以缆线速度(Wired Speed)接收发送方传输来数据的数据、并且能够全速路由、转发给接收方。</p>
-<p>　　需要注意的是，类似的加速VLAN间路由的手法多由各厂商独有的技术所实现，并且该功能的称谓也因厂商而异。例如，在Cisco的Catalyst系列交换机上，这种功能被称为“多层交换”(Multi Layer Switching)。另外，除了三层交换机的内部路由模块，外部路由器中的某些机型也支持类似的高速VLAN间路由机制。</p>
-<h2 id="VLAN间路由举例"><a href="#VLAN间路由举例" class="headerlink" title="VLAN间路由举例"></a>VLAN间路由举例</h2><h3 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h3><ul>
-<li>通过使用路由器可以实现VLAN间通信。</li>
-<li>当路由器使用多臂的方式实现VLAN间的通信时，路由器的接口资源将受到极大的挑战，当VLAN数量特别多时，采用多臂路由的方式是不具备可行性的，并且此种方式的可扩展性并不高。</li>
-<li>当路由器采用单臂的方式实现VLAN间通信时，与多臂路由相比，是一种更佳的选择，因为单臂的可扩展性更高、更经济。</li>
-<li>但是单臂路由也存在一定的短板：（1）路由器与交换机之间的链路由于需承载所有VLAN间的通信数据，因此它的负载将变得非常高，尤其是当VLAN的数量特别多、VLAN间通信的流量特别大时，这段链路将变得不堪重负。（2）单臂链路也不具备冗余性，一旦链路发生故障，VLAN之间的通信也就无法再正常进行。</li>
-<li>使用三层交换机（Layer 3 Switch）也可以实现VLAN间通信，并且能优化上述问题。</li>
-</ul>
-<h3 id="三层交换机"><a href="#三层交换机" class="headerlink" title="三层交换机"></a>三层交换机</h3><ul>
-<li>三层交换机除了能够实现二层交换机所有功能，还支持路由功能。</li>
-<li>三层交换机除了拥有二层接口外，还拥有三层接口。</li>
-<li>VLANIF （VLAN Interface）VLAN接口就是一种非常重要的三层接口，这是一种逻辑接口，物理上并不存在。</li>
-<li>在一台三层交换机上创建了一个VLAN时，就可以将交换机的物理接口(比如GE0/0/1)加入到该VLAN中，此时这些物理接口都是二层接口。与此同时，还能在交换机上配置这个VLAN对应的VLANIF，也就是这个VLAN对应的三层接口。</li>
-<li>三层接口能够与同处于这个VLAN内的设备进行二层通信。另外VLANIF作为一个三层接口，拥有路由功能，可以进行IP地址配置，而通常情况下，这个IP地址会作为VLAN中设备的默认网关地址。</li>
-</ul>
-<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>如下图所示的网络拓扑中：</p>
-<ul>
-<li>交换机拥有两个VLAN，分别是VLAN 10及VLAN20，物理接口GE0/0/1, GE0/0/2及GE0/0/3都被配置为Access类型，其中GE0/0/1及GE0/0/2接口加入了VLAN10，而GE0/0/3接口则加入了VLAN20。</li>
-<li>VLANIF 10配置了IP地址192.168.10.254, VLANIF 20则配置了IP地址192.168.20.254。</li>
-<li>各VLAN内的PC都将其默认网关地址配置为相应VLAN的VLANIF IP地址。</li>
-<li>由于交换机配置了VLAN IF接口，那么三层交换机同时拥有交换模块以及路由模块。</li>
-</ul>
-<p><img src="/2021/04/30/VLAN/%E4%B8%BE%E4%BE%8B.png"></p>
-<h3 id="在三层交换机上，同网段二层数据交换"><a href="#在三层交换机上，同网段二层数据交换" class="headerlink" title="在三层交换机上，同网段二层数据交换"></a>在三层交换机上，同网段二层数据交换</h3><p>以PC1发送一份数据给PC2为例，大致过程如下：<br>（1）PC1构造单播数据帧：</p>
-<ul>
-<li>PC1的上层协议产生的数据载荷到了网络层，数据载荷被封装IP头部，在IP头部中，源IP地址是192.168.10.1，目的IP地址是192.168.10.2。</li>
-<li>数据载荷被封装好IP头部后，数据下发到网卡，继续为其进行数据链路层封装，将其封装成以太网数据帧，该数据帧的源MAC地址为PC1的网卡MAC地址，而目的MAC地址为192.168.10.2这个IP地址对应的MAC地址。</li>
-<li>PC1查询ARP表试图寻找相应的ARP表项，初始时PC1的ARP表中并没有相应的表项，因此PCl发送一个广播的ARP Request去请求PC2的MAC地址。</li>
-</ul>
-<p>（2）交换机处理PC1发送的广播ARP Request数据帧：</p>
-<ul>
-<li>ARP Request的广播数据帧到达了交换机的GE0/0/1接口后，会被打上VLAN10的Tag。</li>
-<li>交换机通过读取数据帧头部，发现这是一个广播数据帧，此时有三个动作：<br>a.将收到的ARP Request广播数据帧在所有加入VLAN10的端口上泛洪，b.将数据帧解封装，将数据帧帧中的源Mac地址、VLAN10、GE0/0/1形成一条新的Mac地址表项c 另外交换机通过数据帧头部的“类型”字段发现该帧内封装着一个ARP报文，将数据帧解封装后上送到自己的ARP协议模块，而ARP模块发现这个ARP报文请求的是192.168.10.2这个IP地址的MAC地址，该IP地址并非自己所有，因此它直接忽略这个数据帧。</li>
-</ul>
-<p>（3）PC2处理泛洪得到的广播ARP Request数据帧：</p>
-<ul>
-<li>交换机在VLAN10内泛洪了PC1发送的ARP Request，因此PC2会收到这个数据帧，它将记录相应的ARP表项（PC1的IP地址和Mac地址），</li>
-<li>通过解析ARP Request广播数据帧，发现该报文请求的IP地址就是自己，于是会发送一个单播的ARP Reply帧进行回应。</li>
-</ul>
-<p>（4）交换机处理PC2回应的单播ARP Reply数据帧：</p>
-<ul>
-<li>交换机收到这个数据帧，解析数据帧头部，将数据帧帧中的源Mac地址、VLAN10、GE0/0/2形成一条新的Mac地址表项</li>
-<li>另外解析数据帧头部后，通过查询MAC地址表并找到目的MAC地址所关联的出接口（通过PC1发送的广播ARP Request报文学习的Mac地址表项），将数据帧从GE0/0/1接口发出。</li>
-</ul>
-<p>（5）PC1处理交换机传递的单播ARP Reply数据帧：</p>
-<ul>
-<li>PC1收到了这个ARP Reply，解析数据帧，可以获知了192.168.10.2对应的MAC地址，形成相应的ARP表项（PC2的IP地址和Mac地址）</li>
-<li>PC1获取PC2的Mac地址后，可以继续封装单播数据帧，然后将单播数据帧从网卡发出。</li>
-</ul>
-<p>（6）交换机处理PC1发送的单播数据帧：</p>
-<ul>
-<li>交换机收到这个数据帧，发现这是一个单播数据帧，于是在MAC地址表中查询目的MAC地址，找到匹配的表项后（PC2回应的ARP Reply报文学习的Mac地址表项），将该帧从GE0/0/2接口发出。</li>
-</ul>
-<p>（7）PC2处理交换机传递的单播数据帧：</p>
-<ul>
-<li>PC2收到这个数据帧后，解析以太网头部，发现目的Mac地址正是自己网卡的Mac地址，通过数据帧头部的“类型”字段发现该帧内封装着一个IP数据报</li>
-<li>将IP数据报上送IP协议栈，继续继续IP头部，发现目的IP地址也是自己网卡的IP地址，通IP数据报头部中的“协议”字段发现数据报内还封装上层应用协议的数据</li>
-<li>将上层应用协议的数据上送给上层协议模块处理数据。</li>
-</ul>
-<h3 id="在三层交换机上，跨网段三层数据交换"><a href="#在三层交换机上，跨网段三层数据交换" class="headerlink" title="在三层交换机上，跨网段三层数据交换"></a>在三层交换机上，跨网段三层数据交换</h3><p>以PC1发送一份数据给PC3为例，大致过程如下:<br>（1）PC1构造单播数据帧：</p>
-<ul>
-<li>PC1的上层协议产生的数据载荷到了网络层，数据载荷被封装IP头部，源IP地址是192.168.10.1，目的IP地址是192.168.20.1。</li>
-<li>将数据帧下送到了PC1的网卡，网卡将其封装成以太网数据帧，由于数据包的目的IP地址与本机不在相同网段（PC2可以通过将IP地址与地址掩码做 &amp;操作，确定其IP网段范围），这意味着PC1需要先把报文发送到默认网关，因此数据帧的目的MAC地址需填写网关(192.168.10.254)的MAC地址。</li>
-<li>PC1在ARP表中查询192.168.10.254，发现并没有匹配的表项，因此它发送一个广播的ARP Request试图查询网关的MAC地址。</li>
-</ul>
-<p>（2）交换机处理广播ARP Request数据帧：</p>
-<ul>
-<li>广播ARP Request数据帧到达了交换机的GE0/0/1接口，会被打上VLAN10的Tag。</li>
-<li>交换机通过读取数据帧头部，发现这是一个广播数据帧，有三个动作：<br>a. 将广播报文在加入VLAN 10的端口上进行泛洪，b.将数据帧解封装，将数据帧帧中的源Mac地址、VLAN10、GE0/0/1形成一条新的Mac地址表项c 另外交换机通过数据帧头部的“类型”字段发现该帧内封装着一个ARP报文，将数据帧解封装后上送到自己的ARP协议模块，而ARP模块发现这个ARP报文请求的是192.168.10.254这个IP地址的MAC地址，恰好VLANIF 10的IP地址就是192.168.10.254，因此它直接发送一个ARP Reply对PCI进行回应。</li>
-</ul>
-<p>（3）PC1处理收到的ARP Reply报文：</p>
-<ul>
-<li>PC1收到了这个ARP Reply，获知了192.168.10.254对应的MAC地址，因此继续封装数据帧，然后将数据帧从网卡发出。</li>
-</ul>
-<p>（4）交换机处理收到的单播数据帧：</p>
-<ul>
-<li>交换机收到这个数据帧，发现这是一个单播数据帧，而且该帧的目的MAC地址正是本机的MAC地址，因此交换机将数据帧解封装，并将里面的数据上送到IP模块进行处理（通过数据帧头部的“类型”字段可以得知数据帧封装着一个IP数据报）。</li>
-<li>IP模块读取数据包的目的IP地址后，发现目的IP地址并非本机的IP地址，于是它在路由表中查询这个地址，结果发现有一条本地直连路由匹配（最长掩码匹配原则），而该直连路由的出接口是VLANIF20，因此交换机重新将这个数据包封装成帧。</li>
-<li>新的以太网帧头中，源MAC地址填写的是交换机的MAC地址，而目的MAC则需填写192.168.20.1的MAC地址，如果交换机的ARP表中没有相关的表项，那么它需要在VLAN20中发送广播ARPRequest去请求PC3的MAC地址（此过程和1-2过程类似，不在赘述），最后将封装好的数据帧从GE0/0/3接口发出。</li>
-</ul>
-<p>（5）PC3处理交换机传递的单播数据帧：</p>
-<ul>
-<li>PC3收到这个数据帧后，解析以太网帧头部，发现目的Mac地址正是自己网卡的Mac地址，通过数据帧头部的“类型”字段发现该帧内封装着一个IP数据报</li>
-<li>将IP数据报上送IP协议栈，继续继续IP头部，发现目的IP地址也是自己网卡的IP地址，通IP数据报头部中的“协议”字段发现数据报内还封装上层应用协议的数据</li>
-<li>将上层应用协议的数据上送给上层协议模块处理数据。</li>
-</ul>
-<h2 id="传统型路由器存在的意义"><a href="#传统型路由器存在的意义" class="headerlink" title="传统型路由器存在的意义"></a>传统型路由器存在的意义</h2><p>　　1.路由器的必要性</p>
-<p>　　三层交换机的价格，在问世之初非常昂贵，但是现在它们的价格已经下降了许多。目前国外一些廉价机型的售价，折合成人民币后仅为一万多元，而且还在继续下降中。</p>
-<p>　　既然三层交换机能够提供比传统型路由器更为高速的路由处理，那么网络中还有使用路由器的必要吗?</p>
-<p>　　答案是：“是”。</p>
-<p>　　使用路由器的必要性，主要表现在以下几个方面：</p>
-<p>　　(1)用于与WAN连接</p>
-<p>　　三层交换机终究是“交换机”。也就是说，绝大多数机型只配有LAN(以太网)接口。在少数高端交换机上也有用于连接WAN的串行接口或是ATM接口，但在大多数情况下，连接WAN还是需要用到路由器。</p>
-<p>　　(2)保证网络安全</p>
-<p>　　在三层交换机上，通过数据包过滤也能确保一定程度的网络安全。但是使用路由器所提供的各种网络安全功能，用户可以构建更为安全可靠的网络。</p>
-<p>　　路由器提供的网络安全功能中，除了最基本的数据包过滤功能外，还能基于IPSec构建VPN(VirtualPrivate Network)、利用RADIUS进行用户认证等等。</p>
-<p>　　(3)支持除TCP/IP以外的异构网络架构</p>
-<p>　　尽管TCP/IP已经成为当前网络协议架构的主流，但还有不少网络利用Novell Netware下的IPX/SPX或Macintosh下的AppleTalk等网络协议。三层交换机中，除了部分高端机型外基本上还只支持TCP/IP。因此，在需要使用除TCP/IP之外其他网络协议的环境下，路由器还是必不可少的。</p>
-<p>　　注：在少数高端交换机上，也能支持上述路由器的功能。例如Cisco的Catalyst 6500系列，就可以选择与WAN连接的接口模块;还有可选的基于IPSec实现VPN的模块;并且也能支持TCP/IP以外的其他网络协议。</p>
-<p>　　2.路由器和交换机配合构建LAN的实例</p>
-<p>　　下面让我们来看一个路由器和交换机搭配构建LAN的实例。</p>
-<p><img src="/2021/04/30/VLAN/24.png"></p>
-<p>　　利用在各楼层配置的二层交换机定义VLAN，连接TCP/IP客户计算机。各楼层间的VLAN间通信，利用三层交换机的高速路由加以实现。如果网络环境要求高可靠性，还可以考虑冗余配置三层交换机。</p>
-<p>　　与WAN的连接，则通过带有各种网络接口的路由器进行。并且，通过路由器的数据包过滤和VPN等功能实现网络安全。此外，使用路由器还能支持Novell Netware等TCP/IP之外的网络。</p>
-<p>　　只有在充分掌握了二层、三层交换机以及传统路由器的基础上，才能做到物竞其用，构筑出高效率、高性价比的网络。</p>
-<h2 id="使用VLAN设计局域网"><a href="#使用VLAN设计局域网" class="headerlink" title="使用VLAN设计局域网"></a>使用VLAN设计局域网</h2><p>　　1.使用VLAN设计局域网的特点</p>
-<p>　　通过使用VLAN构建局域网，用户能够不受物理链路的限制而自由地分割广播域。</p>
-<p>　　另外，通过先前提到的路由器与三层交换机提供的VLAN间路由，能够适应灵活多变的网络构成。</p>
-<p>　　但是，由于利用VLAN容易导致网络构成复杂化，因此也会造成整个网络的组成难以把握。</p>
-<p>　　可以这样说，在利用VLAN时，除了有“网络构成灵活多变”这个优点外，还搭配着“网络构成复杂化”这个缺点。</p>
-<p>　　下面，就让我们来看看具体的实例。</p>
-<p>　　2.不使用VLAN的局域网中网络构成的改变</p>
-<p>　　假设有如图所示的由1台路由器、2台交换机构成的“不使用VLAN构建”的网络。</p>
-<p><img src="/2021/04/30/VLAN/25.png"></p>
-<p>　　图中的路由器，带有2个LAN接口。左侧的网络是192.168.1.0/24，右侧是192.168.2.0/24。</p>
-<p>　　现在如果想将192.168.1.0/24这个网络上的计算机A转移到192.168.2.0/24上去，就需要改变物理连接、将A接到右侧的交换机上。</p>
-<p>　　并且，当需要新增一个地址为192.168.3.0/24的网络时，还要在路由器上再占用一个LAN接口并添置一台交换机。而由于这台路由器上只带了2个LAN接口，因此为了新增网络还必须将路由器升级为带有3个以上LAN接口的产品。</p>
-<p>　　3.使用VLAN的局域网中网络构成的改变</p>
-<p>　　接下来再假设有一个由1台路由器、2台交换机构成的“使用VLAN”的局域网。交换机与交换机、交换机与路由器之间均为汇聚链路;并且假设192.168.1.0/24对应红色VLAN、192.168.2.0/24对应蓝色VLAN。</p>
-<p><img src="/2021/04/30/VLAN/26.png"></p>
-<p>　　需要将连接在交换机1上192.168.1.0/24这个网段的计算机A转属192.168.2.0/24时，无需更改物理布线。只要在交换机上生成蓝色VLAN，然后将计算机A所连的端口1加入到蓝色VLAN中去，使它成为访问链接即可。</p>
-<p>　　然后，根据需要设定计算机A的IP地址、默认网关等信息就可以了。如果IP地址相关的设定是由DHCP获取的，那么在客户机方面无需进行任何设定修改，就可以在不同网段间移动。</p>
-<p>　　利用VLAN后，我们可以在免于改动任何物理布线的前提下，自由进行网络的逻辑设计。如果所处的工作环境恰恰需要经常改变网络布局，那么利用VLAN的优势就非常明显了。</p>
-<p>　　并且，当需要新增一个地址为192.168.3.0/24的网段时，也只需要在交换机上新建一个对应192.168.3.0/24的VLAN，并将所需的端口加入它的访问链路就可以了。</p>
-<p>　　如果网络环境中还需要利用外部路由器，则只要在路由器的汇聚端口上新增一个子接口的设定就可以完成全部操作，而不需要消耗更多的物理接口(LAN接口)。要使用的是三层交换机内部的路由模块，则只需要新设一个VLAN接口即可。</p>
-<p>　　网络环境的成长，往往是难以预测的，很可能经常会出现需要分割现有网络或是增加新网络的情况。而充分活用VLAN后，就可以轻易地解决这些问题。</p>
-<p>　　4.利用VLAN而导致的网络结构复杂化</p>
-<p>　　虽然利用VLAN可以灵活地构建网络，但是同时，它也带来了网络结构复杂化的问题。</p>
-<p>　　特别是由于数据流纵横交错，一旦发生故障时，准确定位并排除故障会比较困难。</p>
-<p>　　为了便于理解数据流向的复杂化，假设有下图所示的网络。计算机A向计算机C发送数据时，数据流的整体走向如下：</p>
-<p>　　计算机A→交换机1→路由器→交换机1→交换机2→计算机C</p>
-<p><img src="/2021/04/30/VLAN/27.png"></p>
-<p><img src="/2021/04/30/VLAN/28.png"></p>
-<p>　　首先计算机A向交换机1送出数据(①)，其后数据被转发给路由器(②)进行VLAN间路由。路由后的数据，再从汇聚链路返回交换机1(③)。由于通信目标计算机C并不直连在交换机1上，因此还需要经过汇聚链路转发到交换机2(④)。在交换机2上，数据最终被转发到C所连的端口2上，这才完成整个流程(⑤)。</p>
-<p>　　在这个例子中，仅由2台交换机构成网络，其数据流已经如此复杂，如果构建横跨多台交换机的VLAN的话，每个数据流的流向显然会更加难以把握。</p>
-<p>　　5. 网络的逻辑结构与物理结构</p>
-<p>　　为了对应日渐复杂化的数据流，管理员需要从“逻辑结构”与“物理结构”两方面入手，把握好网络的现状。</p>
-<p>　　物理结构，指的是从物理层和数据链路层观察到的网络的现状，表示了网络的物理布线形态和VLAN的设定等等。</p>
-<p>　　而逻辑结构，则表示从网络层以上的层面观察到的网络结构。下面我们就试着以路由器为中心分析一个IP网络的逻辑结构。</p>
-<p>　　还是先前的那个例子，描绘了布线形态和VLAN设定的“物理结构”如下图所示。</p>
-<p><img src="/2021/04/30/VLAN/29.png"></p>
-<p>　　分析这个物理结构并转换成以路由器为中心的逻辑结构后，会得到如下的逻辑结构图。当我们需要进行路由或是数据包过滤的设定时，都必须在逻辑结构的基础上进行。</p>
-<p><img src="/2021/04/30/VLAN/30.png"></p>
-<p>　　把握这两种网络结构图的区别是十分重要的，特别是在VLAN和三层交换机大行其道的现代企业级网络当中。</p>
-<h2 id="VLAN以太网二层接口类型"><a href="#VLAN以太网二层接口类型" class="headerlink" title="VLAN以太网二层接口类型"></a>VLAN以太网二层接口类型</h2><h3 id="Access接口"><a href="#Access接口" class="headerlink" title="Access接口"></a>Access接口</h3><p>接收数据帧</p>
-<ul>
-<li>Untagged数据帧,打上PVID，接收。</li>
-<li>Tagged数据帧，与PVID比较，相同则接收;不同则丢弃。</li>
-</ul>
-<p>发送数据帧</p>
-<ul>
-<li>VID与PVID比较，相同则剥离标签发送;不同则丢弃。</li>
-</ul>
-<p><img src="/2021/04/30/VLAN/Aceess.png"></p>
-<h3 id="Trunk接口"><a href="#Trunk接口" class="headerlink" title="Trunk接口"></a>Trunk接口</h3><p>接收数据帧</p>
-<ul>
-<li>Untagged数据帧，打上PVID，且VID在允许列表中，则接收;VID不在允许列表,则丢弃。</li>
-<li>Tagged数据帧，查看VID是否在允许列表中，在允许列表中，则接收;VID不在允许列表，则丢弃。</li>
-</ul>
-<p>发送数据帧</p>
-<ul>
-<li>VID在允许列表中，且VID与PVID一致，则剥离标签发送。</li>
-<li>VID在允许列表，但VID与PVID不一致，则直接带标签发送。</li>
-<li>不在允许列表中，则直接丢弃。</li>
-</ul>
-<p><img src="/2021/04/30/VLAN/Trunk.png"></p>
-<h3 id="Hybrid接口-前两者混合接口"><a href="#Hybrid接口-前两者混合接口" class="headerlink" title="Hybrid接口(前两者混合接口)"></a>Hybrid接口(前两者混合接口)</h3><p>接收数据帧</p>
-<ul>
-<li>Untagged数据帧，打上PVID，且VID在允许列表中，则接收;VID不在允许列表中，则丢弃。</li>
-<li>Tagged数据帧,查看VID是否在允许列表中，在允许列表中，则接收;VID不在允许列表，则丢弃。</li>
-</ul>
-<p>发送数据帧</p>
-<ul>
-<li>VID不在允许列表中，直接丢弃。</li>
-<li>VID在Untagged列表中，剥离标签发送。</li>
-<li>VID在Tagged列表中，带标签直接发送。</li>
-</ul>
-<p><img src="/2021/04/30/VLAN/Hybrid.png"></p>
-<h2 id="VLAN基础配置命令"><a href="#VLAN基础配置命令" class="headerlink" title="VLAN基础配置命令"></a>VLAN基础配置命令</h2><p>1.创建VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] vlan vlan-id</span><br></pre></td></tr></table></figure>
-<p>通过此命令创建VLAN并进入VLAN视图，如果VLAN已存在，直接进入该VLAN的视图。</p>
-<p>vlan-id是整数形式，取值范围是1~4094。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] vlan batch &#123; vlan-id1 [ to vlan-id2 ] &#125;</span><br></pre></td></tr></table></figure>
-<p>通过此命令批量创建VLAN。其中:</p>
-<ul>
-<li>batch:指定批量创建的VLAN ID。</li>
-<li>vlan-id1:表示第一个VLAN的编号。</li>
-<li>vlan-id2:表示最后一个VLAN的编号。</li>
-</ul>
-<h3 id="Access接口配置命令"><a href="#Access接口配置命令" class="headerlink" title="Access接口配置命令"></a>Access接口配置命令</h3><p>1.配置接口类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port link-type access</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置接口的链路类型为Access。<br>2.配置Access接口的缺省VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port default vlan vlan-id</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置接口的缺省VLAN并同时加入这个VLAN。</p>
-<ul>
-<li>vlan-id:配置缺省VLAN的编号。整数形式，取值范围是1~4094。</li>
-</ul>
-<h3 id="Trunk接口配置命令"><a href="#Trunk接口配置命令" class="headerlink" title="Trunk接口配置命令"></a>Trunk接口配置命令</h3><p>1.配置接口类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port link-type trunk</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置接口的链路类型为Trunk。<br>2.配置Trunk接口加入指定VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port trunk allow-pass vlan &#123; &#123; vlan-id1 [ to vlan-id2 ] &#125;| all &#125;</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置Trunk类型接口加入的VLAN。<br>3.(可选)配置Trunk接口的缺省VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port trunk pvid vlan vlan-id</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置Trunk类型接口的缺省VLAN。</p>
-<h3 id="Hybrid接口配置命令"><a href="#Hybrid接口配置命令" class="headerlink" title="Hybrid接口配置命令"></a>Hybrid接口配置命令</h3><p>1.配置接口类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] port link-type hybrid</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置接口的链路类型为Hybrid。<br>2.配置Hybrid接口加入指定VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port hybrid untagged vlan &#123; &#123; vlan-id1 [ to vlan-id2 ] &#125; | all &#125;</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置Hybrid类型接口加入的VLAN，这些VLAN的帧以Untagged方式通过接口。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port hybrid tagged vlan &#123; &#123; vlan-id1 [ to vlan-id2] &#125; | all &#125;</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置Hybrid类型接口加入的VLAN，这些VLAN的帧以Tagged方式通过接口。<br>3.(可选)配置Hybrid接口的缺省VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port hybrid pvid vlan vlan-id</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，配置Hybrid类型接口的缺省VLAN。</p>
-<h3 id="基于MAC地址划分VLAN配置命令"><a href="#基于MAC地址划分VLAN配置命令" class="headerlink" title="基于MAC地址划分VLAN配置命令"></a>基于MAC地址划分VLAN配置命令</h3><p>1.关联MAC地址与VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-vlan10] mac-vlan mac-address mac-address [ mac-address-mask | mac-address-mask-length ]</span><br></pre></td></tr></table></figure>
-<p>通过此命令配置MAC地址与VLAN关联。</p>
-<ul>
-<li>mac-address:指定与VLAN关联的MAC地址。格式为H-H-H。其中H为4位的十六进制数，可以输入1~4位，如00e0、fcO1。当输入不足4位时，表示前面的几位为0，如:输入e0，等同于O0e0。MAC地址不可设置为O000-0000-0000、FFFF-FFFF-FFFF和组播地址。</li>
-<li>mac-address-mask:指定MAC地址掩码。格式为H-H-H，其中H为1至4位的十六进制数。</li>
-<li> mac-address-mask-length:指定MAC地址掩码长度。整数形式，取值范围是1~48。</li>
-</ul>
-<p>2.使能MAC地址与VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] mac-vlan enable</span><br></pre></td></tr></table></figure>
-<p>通过此命令使能接口的MAC VLAN功能。</p>
-<h2 id="VLAN间路由子接口配置命令"><a href="#VLAN间路由子接口配置命令" class="headerlink" title="VLAN间路由子接口配置命令"></a>VLAN间路由子接口配置命令</h2><p><img src="/2021/04/30/VLAN/%E5%AD%90%E6%8E%A5%E5%8F%A3.png"></p>
-<h2 id="VLANIF接口接口配置"><a href="#VLANIF接口接口配置" class="headerlink" title="VLANIF接口接口配置"></a>VLANIF接口接口配置</h2><p><img src="/2021/04/30/VLAN/VLANIF.png"></p>
-<h2 id="二层接口和三层接口对比"><a href="#二层接口和三层接口对比" class="headerlink" title="二层接口和三层接口对比"></a>二层接口和三层接口对比</h2><table>
-<thead>
-<tr>
-<th>二层接口(Layer2 Interface )</th>
-<th>三层接口(Layer3 Interface )</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>二层接口不能配置IP地址</td>
-<td>三层接口可以配置IP地址</td>
-</tr>
-<tr>
-<td>二层接口不具备MAC地址</td>
-<td>三层接口具备MAC地址</td>
-</tr>
-<tr>
-<td>当二层接口收到数据帧时，设备在其MAC地址表中查询该帧的目的MAC地址，找到匹配的MAC地址表项后按照该表项的指示转发帧;如果没有找到匹配的MAC地址表项，则将帧进行泛洪。</td>
-<td>三层接口收到数据帧后，如果数据帧的目的MAC地址与设备的本地MAC地址相同，则将数据帧解除封装，然后在路由表中查询数据包的目的IP地址，找到匹配的路由表项后按照该表项的指示转发包;如果没有找到匹配的表项，则将包丢弃。</td>
-</tr>
-<tr>
-<td>典型的二层接口如二层交换机（只具备二层交换能力的交换机)的物理接口;大部分三层交换机（同时具备二层及三层交换能力的交换机）的物理接口缺省为二层接口。</td>
-<td>典型的三层接口如路由器的三层接口。某些三层交换机的物理接口可以切换成三层模式。此外除了物理三层接口，还存在逻辑三层接口，例如交换机的VLANIF，或者网络设备上的逻辑子接口，如GEO/0/1.10。</td>
-</tr>
-<tr>
-<td>二层接口并不隔离广播域，当二层接口收到广播帧时，会将数据帧进行泛洪。</td>
-<td>三层接口隔离广播域，当三层接口收到广播帧时，缺省不会进行泛洪，而是直接终结。</td>
-</tr>
-</tbody></table>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3070,7 +2560,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3083,7 +2573,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
