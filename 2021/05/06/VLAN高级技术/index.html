@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="VLAN高级技术," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="VLAN聚合VLAN聚合产生的技术背景•在一般的三层交换机中，通常是采用一个VLAN对应一个VLANIF接口的方式实现广播域之间的互通，这在某些情况下导致了IP地址的浪费。 •因为一个VLAN对应的子网中，子网号、子网广播地址、子网网关地址不能用作VLAN内的主机IP地址，且子网中实际接入的主机可能少于可用IP地址数量，空闲的IP地址也会因不能再被其他VLAN使用而被浪费掉。  VLAN聚合概述•">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VLAN高级技术">
+<meta property="og:url" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="VLAN聚合VLAN聚合产生的技术背景•在一般的三层交换机中，通常是采用一个VLAN对应一个VLANIF接口的方式实现广播域之间的互通，这在某些情况下导致了IP地址的浪费。 •因为一个VLAN对应的子网中，子网号、子网广播地址、子网网关地址不能用作VLAN内的主机IP地址，且子网中实际接入的主机可能少于可用IP地址数量，空闲的IP地址也会因不能再被其他VLAN使用而被浪费掉。  VLAN聚合概述•">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/3.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/4.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/5.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/6.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/7.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/8.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/9.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/10.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/11.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/12.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/13.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/14.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/15.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/16.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/17.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/18.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/19.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/20.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/21.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/22.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/23.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/24.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/25.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/26.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/27.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/28.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/29.png">
+<meta property="og:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/30.png">
+<meta property="article:published_time" content="2021-05-06T04:20:26.000Z">
+<meta property="article:modified_time" content="2021-05-06T09:09:48.189Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="VLAN高级技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/06/VLAN高级技术/"/>
+
+
+
+
+
+  <title>VLAN高级技术 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VLAN高级技术</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T12:20:26+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="VLAN聚合"><a href="#VLAN聚合" class="headerlink" title="VLAN聚合"></a><strong>VLAN聚合</strong></h1><h2 id="VLAN聚合产生的技术背景"><a href="#VLAN聚合产生的技术背景" class="headerlink" title="VLAN聚合产生的技术背景"></a><strong>VLAN聚合产生的技术背景</strong></h2><p>•在一般的三层交换机中，通常是采用一个VLAN对应一个VLANIF接口的方式实现广播域之间的互通，这在某些情况下导致了IP地址的浪费。</p>
+<p>•因为一个VLAN对应的子网中，子网号、子网广播地址、子网网关地址不能用作VLAN内的主机IP地址，且子网中实际接入的主机可能少于可用IP地址数量，空闲的IP地址也会因不能再被其他VLAN使用而被浪费掉。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png"></p>
+<h2 id="VLAN聚合概述"><a href="#VLAN聚合概述" class="headerlink" title="VLAN聚合概述"></a><strong>VLAN聚合概述</strong></h2><p>•<strong>VLAN聚合</strong>（VLAN Aggregation，也称Super-VLAN）: 指在一个物理网络内，用多个VLAN（称为Sub-VLAN）隔离广播域，并将这些Sub-VLAN聚合成一个逻辑的VLAN（称为Super-VLAN），这些Sub-VLAN使用同一个IP子网和缺省网关，进而达到节约IP地址资源的目的。</p>
+<p>•<strong>Sub-VLAN</strong>：只包含物理接口，不能建立三层VLANIF接口，用于隔离广播域。每个Sub-VLAN内的主机与外部的三层通信是靠Super-VLAN的三层VLANIF接口来实现的。</p>
+<p>•<strong>Super-VLAN</strong>：只建立三层VLANIF接口，不包含物理接口，与子网网关对应。与普通VLAN不同，Super-VLAN的VLANIF接口状态取决于所包含Sub-VLAN的物理接口状态。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png"></p>
+<h2 id="VLAN聚合的原理"><a href="#VLAN聚合的原理" class="headerlink" title="VLAN聚合的原理"></a><strong>VLAN聚合的原理</strong></h2><p>每个Sub-VLAN对应一个广播域，多个Sub-VLAN和一个Super-VLAN关联，只给Super-VLAN分配一个IP子网，所有Sub-VLAN都使用Super-VLAN的IP子网和缺省网关进行三层通信。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/3.png"></p>
+<blockquote>
+<p>•多个Sub-VLAN共享一个网关地址，节约了子网网络地址、子网定向广播地址、子网缺省网关地址，且各Sub-VLAN间的界线也不再是从前的子网界线了，可以根据每个Sub-VLAN内所需的IP地址数量进行灵活的地址规划，从而既保证了各个Sub-VLAN作为一个独立广播域实现广播隔离，又节省了IP地址资源，提高了编址的灵活性。</p>
+</blockquote>
+<h2 id="VLAN聚合的应用"><a href="#VLAN聚合的应用" class="headerlink" title="VLAN聚合的应用"></a><strong>VLAN聚合的应用</strong></h2><p>传统VLAN方式每一个VLAN需要划分不同的IP地址网段，在本例中需要耗费4个IP网段和产生4条路由条目；Super-VLAN方式只需要分配一个IP地址网段，下属二层VLAN共用同一个IP地址网段，共用同一个三层网关，同时VLAN之间保持二层隔离。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/4.png"></p>
+<h2 id="相同Sub-VLAN内部通信"><a href="#相同Sub-VLAN内部通信" class="headerlink" title="相同Sub-VLAN内部通信"></a><strong>相同Sub-VLAN内部通信</strong></h2><p>同一个Sub-VLAN之间属于同一个广播域，因此相同Sub-VLAN之间可以通过二层直接通信。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/5.png"></p>
+<h2 id="不同Sub-VLAN之间通信举例"><a href="#不同Sub-VLAN之间通信举例" class="headerlink" title="不同Sub-VLAN之间通信举例"></a><strong>不同Sub-VLAN之间通信举例</strong></h2><p>Super-VLAN VLANIF100开启ARP代理之后PC1和PC2之间通信过程如下：</p>
+<p>1.PC1发现PC2与自己在同一网段，且自己ARP表无PC2对应表项，则直接发送ARP广播请求PC2的MAC地址。</p>
+<p>2.作为网关的Super-VLAN对应的VLANIF 100收到PC1的ARP请求，由于网关上使能Sub-VLAN间的ARP代理功能，则向Super-VLAN 100的所有Sub-VLAN接口发送一个ARP广播，请求PC2的MAC地址。</p>
+<p>3.PC2收到网关发送的ARP广播后，对此请求进行ARP应答。</p>
+<p>4.网关收到PC2的应答后，就把自己的MAC地址回应给PC1，PC1之后要发给PC2的报文都先发送给网关，由网关做三层转发。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/6.png"></p>
+<blockquote>
+<p>•不同Sub-VLAN之间进行通信，IP地址属于相同网段，因此主机会发送ARP请求，但是实际不同Sub-VLAN之间属于不同的广播域，因而ARP报文无法传递到其他Sub-VLAN，ARP请求得不到响应，设备无法学习到对端MAC地址，从而无法完成Sub-VLAN之间通信。</p>
+<p>•要实现Sub-VLAN之间的通信，需要在Super-VLAN 的VLANIF中开启ARP代理功能。</p>
+</blockquote>
+<h2 id="Sub-VLAN与其他设备的二层通信"><a href="#Sub-VLAN与其他设备的二层通信" class="headerlink" title="Sub-VLAN与其他设备的二层通信"></a><strong>Sub-VLAN与其他设备的二层通信</strong></h2><p>•当Sub-VLAN与其他设备进行二层通信时，与普通的VLAN内二层通信无区别。</p>
+<p>•由于Super-VLAN不属于任何物理接口，即不会处理任何携带Super-VLAN标签的报文。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/7.png"></p>
+<blockquote>
+<p>•Sub-VLAN二层通信过程举例：</p>
+<p>▫从PC1进入SW1的报文会被打上VLAN10的Tag。在SW1中这个Tag不会因为VLAN10是VLAN100的Sub-VLAN而变为VLAN100的Tag。</p>
+<p>▫当报文从SW1的GE0/0/0出去时，依然携带VLAN10的Tag。也就是说，SW1本身不会发出VLAN100的报文。就算其他设备有VLAN100的报文发送到该设备上，这些报文也会因为SW1上没有VLAN100应的物理接口而被丢弃。</p>
+<p>▫对于其他设备而言，有效的VLAN只有Sub-VLAN10，20和30， 所有的报文都是在这些VLAN中交互的。因此，SW1上虽然配置了VLAN聚合，但与其他设备的二层通信，不会涉及到Super-VLAN，与正常的二层通信流程一样。</p>
+<p>•当Sub-VLAN内的PC需要与其他网络进行三层通信时，首先将数据发往默认网关，即Super-VLAN对应的VLANIF，再进行路由。</p>
+</blockquote>
+<h2 id="VLAN聚合关键配置命令"><a href="#VLAN聚合关键配置命令" class="headerlink" title="VLAN聚合关键配置命令"></a><strong>VLAN聚合关键配置命令</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/8.png"></p>
+<h2 id="VLAN聚合配置举例-1"><a href="#VLAN聚合配置举例-1" class="headerlink" title="VLAN聚合配置举例 (1)"></a><strong>VLAN聚合配置举例</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/9.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/10.png"></p>
+<h2 id="VLAN聚合配置举例-2"><a href="#VLAN聚合配置举例-2" class="headerlink" title="VLAN聚合配置举例(2)"></a><strong>VLAN聚合配置举例(2)</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/11.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/12.png"></p>
+<h1 id="MUX-VLAN"><a href="#MUX-VLAN" class="headerlink" title="MUX VLAN"></a><strong>MUX VLAN</strong></h1><h2 id="MUX-VLAN产生背景"><a href="#MUX-VLAN产生背景" class="headerlink" title="MUX VLAN产生背景"></a><strong>MUX VLAN产生背景</strong></h2><p>在企业网络中，各个部门之间网络需要相互独立，通常用VLAN技术可以实现这一要求。如果企业规模很大，且拥有大量的合作伙伴，要求各个合作伙伴能够访问公司服务器，但是不能相互访问，这时如果使用传统的VLAN技术，不但需要耗费大量的VLAN ID，还增加了网络管理者的工作量同时也增加了维护量。</p>
+<p>MUX VLAN（Multiplex VLAN）提供了一种通过VLAN进行网络资源控制的机制。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/13.png"></p>
+<h2 id="MUX-VLAN的基本概念"><a href="#MUX-VLAN的基本概念" class="headerlink" title="MUX VLAN的基本概念"></a><strong>MUX VLAN的基本概念</strong></h2><p>MUX VLAN分为Principal VLAN（主VLAN）和Subordinate VLAN（从VLAN），Subordinate VLAN又分为Separate VLAN（隔离型从VLAN）和Group VLAN（互通型从VLAN）。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/14.png"></p>
+<blockquote>
+<p>•在使用MUX VLAN的过程中，无论是Separate VLAN还是Group VLAN都必须与一个Principle VLAN绑定。</p>
+<p>•加入Principal VLAN（主VLAN）中的接口，可以与MUX VLAN内的所有接口进行通信。</p>
+</blockquote>
+<h2 id="MUX-VLAN的应用"><a href="#MUX-VLAN的应用" class="headerlink" title="MUX VLAN的应用"></a><strong>MUX VLAN的应用</strong></h2><p>在交换机上，通过把部门A和部门B所在的VLAN分别设置为互通型从VLAN，把访客区所属的VLAN设置为隔离型从VLAN，把服务器所连接口所属VLAN设置为Principal VLAN，即主VLAN。并且所有从VLAN都与主VLAN绑定。从而实现如下网络设计要求：</p>
+<p>▫部门A内的用户之间能够实现二层互通。</p>
+<p>▫部门B内的用户之间能够实现二层互通。</p>
+<p>▫部门A与部门B的用户之间二层隔离。</p>
+<p>▫部门A和部门B的员工都能够通过二层访问服务器。</p>
+<p>▫访客区内的任意PC除了能访问服务器之外，不能访问其他任意设备，包括其他访客。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/15.png"></p>
+<h2 id="MUX-VLAN配置命令"><a href="#MUX-VLAN配置命令" class="headerlink" title="MUX VLAN配置命令"></a><strong>MUX VLAN配置命令</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/16.png"></p>
+<blockquote>
+<p>•只有使能接口MUX VLAN功能后，才能实现Principal VLAN与Subordinate VLAN之间通信、Group VLAN内的接口可以相互通信及Separate VLAN接口间不能相互通信的目的。</p>
+</blockquote>
+<h2 id="MUX-VLAN配置举例"><a href="#MUX-VLAN配置举例" class="headerlink" title="MUX VLAN配置举例"></a><strong>MUX VLAN配置举例</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/17.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/18.png"></p>
+<h2 id="MUX-VLAN配置验证"><a href="#MUX-VLAN配置验证" class="headerlink" title="MUX VLAN配置验证"></a><strong>MUX VLAN配置验证</strong></h2><p>查看VLAN配置结果，通过ping命令检测PC5（192.168.1.5/24）与PC6（192.168.1.6/24）之间的网络连通性。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/19.png"></p>
+<h1 id="QinQ"><a href="#QinQ" class="headerlink" title="QinQ"></a><strong>QinQ</strong></h1><h2 id="QinQ概述"><a href="#QinQ概述" class="headerlink" title="QinQ概述"></a><strong>QinQ概述</strong></h2><p>•随着以太网技术在网络中的大量部署，利用VLAN对用户进行隔离和标识受到很大限制。因为IEEE802.1Q中定义的VLAN Tag域只有12个比特，仅能表示4096个VLAN，无法满足城域以太网中标识大量用户的需求，于是QinQ技术应运而生。</p>
+<p>•QinQ（802.1Q in 802.1Q）技术是一项扩展VLAN空间的技术，通过在802.1Q标签报文的基础上再增加一层802.1Q的Tag来达到扩展VLAN空间的功能。</p>
+<p>•如下图所示用户报文在公网上传递时携带了两层Tag，内层是私网Tag，外层是公网Tag。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/20.png"></p>
+<h2 id="QinQ封装结构"><a href="#QinQ封装结构" class="headerlink" title="QinQ封装结构"></a><strong>QinQ封装结构</strong></h2><p>QinQ封装报文是在无标签的以太网数据帧的源MAC地址字段后面加上两个VLAN标签构成。</p>
+<p>•TPID（Tag Protocol Identifier，标签协议标识）表示帧类型。取值为0x8100时表示802.1Q Tag帧。如果不支持802.1Q的设备收到这样的帧，会将其丢弃。</p>
+<p>•对于内层的802.1Q Tag，该值设置为0x8100；对于外层的802.1Q Tag，不同厂商所使用的值可能不相同：</p>
+<p>​    ▫0x8100：Huawei路由器使用</p>
+<p>​    ▫0x88A8：802.1ad规定外层802.1Q Tag中的TPID为0x88a8</p>
+<p>•在华为设备上，外层802.1Q Tag缺省情况下值为0x8100，可以通过命令行调整该值。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/21.png"></p>
+<h2 id="QinQ工作原理"><a href="#QinQ工作原理" class="headerlink" title="QinQ工作原理"></a><strong>QinQ工作原理</strong></h2><p>在公网的传输过程中，设备只根据外层VLAN Tag转发报文，并根据报文的外层VLAN Tag进行MAC地址学习，而用户的私网VLAN Tag将被当作报文的数据部分进行传输。即使私网VLAN Tag相同，也能通过公网VLAN Tag区分不同用户。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/22.png"></p>
+<blockquote>
+<p>•企业A和企业B的私网VLAN分别为VLAN 1～10和VLAN 1～20。公网为企业A和企业B分配的公网VLAN分别为VLAN 3和VLAN 4。当企业A和企业B中带VLAN Tag的报文进入公网时，报文外面就会被分别封装上VLAN 3和VLAN 4的VLAN标签。这样，来自不同企业网络的报文在公网中传输时被完全分开，即使这些企业网络各自的VLAN范围存在重叠，在公网中传输时也不会产生冲突。当报文穿过公网，到达公网另一侧PE设备后，报文会被剥离公网为其添加的公网VLAN标签，然后再传送给用户网络的CE设备。</p>
+</blockquote>
+<h2 id="QinQ实现方式-基本QinQ"><a href="#QinQ实现方式-基本QinQ" class="headerlink" title="**QinQ实现方式 - **基本QinQ"></a>**QinQ实现方式 - **基本QinQ</h2><p>基本QinQ的报文处理过程:</p>
+<p>1.SW1收到VLAN ID为10和20的报文，将该报文发给SW2。</p>
+<p>2.SW2收到该报文后，在该报文原有Tag的外侧再添加一层VLAN ID 为100的外层Tag。</p>
+<p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
+<p>4.SW3收到VLAN100的报文后，剥离报文的外层Tag（VLAN ID 为100）。将报文发送给SW4，此时报文只有一层Tag（VLAN ID 为10或20）。</p>
+<p>5.SW4收到该报文，根据VLAN ID和目的MAC地址进行相应的转发。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/23.png"></p>
+<blockquote>
+<p>•基本QinQ是基于端口方式实现的。开启端口的基本QinQ功能后，当该端口接收到报文，设备会为该报文打上本端口缺省VLAN 的VLAN Tag。如果接收到的是已经带有VLAN Tag的报文，该报文就成为双Tag的报文；如果接收到的是不带VLAN Tag的报文，该报文就成为带有端口缺省VLAN Tag的报文。</p>
+<p>•基于端口的QinQ的缺点是外层VLAN Tag封装方式固定，不能根据业务种类选择外层VLAN Tag封装的方式，从而很难有效支持多业务的灵活运营。</p>
+</blockquote>
+<h2 id="QinQ实现方式-灵活QinQ"><a href="#QinQ实现方式-灵活QinQ" class="headerlink" title="**QinQ实现方式 **- 灵活QinQ"></a>**QinQ实现方式 **- <strong>灵活QinQ</strong></h2><p>灵活QinQ的报文处理过程：</p>
+<p>1.SW1收到VLAN ID为10和20的报文，将该报文转发给SW2。</p>
+<p>2.SW2收到VLAN ID为10的报文后，添加一层VLAN ID 为100 的外层Tag；SW2收到VLAN ID为20的报文后，添加一层VLAN ID为200的外层Tag。</p>
+<p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
+<p>4.SW3收到报文后，剥离报文的外层Tag（VLAN ID 为100或200）。将报文发送给SW4，此时报文只有一层Tag（VLAN ID 为10或20）。</p>
+<p>5.SW4收到报文，根据VLAN ID和目的MAC地址进行相应的转发。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/24.png"></p>
+<blockquote>
+<p>•灵活QinQ（Selective QinQ）可根据流分类的结果选择是否打外层VLAN Tag，打上何种外层VLAN Tag。灵活QinQ可根据用户的VLAN标签、优先级、MAC地址、IP协议、IP源地址、IP目的地址、或应用程序的端口号进行流分类。</p>
+<p>•基于VLAN ID的灵活QinQ：为具有不同内层VLAN ID的报文添加不同的外层VLAN Tag。</p>
+<p>•基于802.1p优先级的灵活QinQ：根据报文的原有内层VLAN的802.1p优先级添加不同的外层VLAN Tag。</p>
+<p>•基于流策略的灵活QinQ：根据QoS策略添加不同的外层VLAN Tag。基于流策略的灵活QinQ能够针对业务类型提供差别服务。</p>
+<p>•灵活QinQ功能是对基本QinQ功能的扩展，它比基本QinQ的功能更灵活。二者之间的主要区别是：</p>
+<p>​    ▫基本QinQ：对进入二层QinQ接口的所有帧都加上相同的外    层Tag。</p>
+<p>​    ▫灵活QinQ：对进入二层QinQ接口的帧，可以根据不同的内    层Tag而加上不同的外层Tag，对于用户VLAN的划分更加细    致</p>
+</blockquote>
+<h2 id="QinQ在园区网络中的应用"><a href="#QinQ在园区网络中的应用" class="headerlink" title="QinQ在园区网络中的应用"></a><strong>QinQ在园区网络中的应用</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/25.png"></p>
+<blockquote>
+<p>•BRAS：Broadband Remote Access Server，宽带远程接入服务器。BRAS提供宽带接入服务、实现多种业务的汇聚与转发，能满足不同用户对传输容量和带宽利用率的要求，因此RRAS是宽带用户接入的核心设备。</p>
+<p>•BUM：Broadcast、Unknown unicast、Multicast，广播，未知单播、组播。交换机以泛洪的方式处理以上类型的数据帧。</p>
+</blockquote>
+<h2 id="QinQ配置命令介绍"><a href="#QinQ配置命令介绍" class="headerlink" title="QinQ配置命令介绍"></a><strong>QinQ配置命令介绍</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/26.png"></p>
+<blockquote>
+<p>•配置灵活QinQ的当前接口类型建议为Hybrid，并且必须先通过命令qinq vlan-translation enable先使能VLAN转换功能。灵活QinQ功能只在当前接口的入方向生效。</p>
+<p>•接口配置VLAN Stacking功能后在发送帧时，若需要剥掉外层Tag，该接口要以Untagged方式加入叠加后的stack-vlan；若不需要剥掉外层Tag，该接口要以Tagged方式加入叠加后的stack-vlan。</p>
+</blockquote>
+<h2 id="QinQ配置举例-基本QinQ"><a href="#QinQ配置举例-基本QinQ" class="headerlink" title="**QinQ配置举例 **- 基本QinQ"></a>**QinQ配置举例 **- <strong>基本QinQ</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/27.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/28.png"></p>
+<h2 id="QinQ配置举例-灵活QinQ"><a href="#QinQ配置举例-灵活QinQ" class="headerlink" title="**QinQ配置举例 **- 灵活QinQ"></a>**QinQ配置举例 **- 灵活QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/29.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/30.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）当Sub-VLAN与外部进行二层通信时，在出接口打上的VLAN标记为？</p>
+<p><strong>A.Sub-VLAN</strong></p>
+<p>B.Secondary VLAN</p>
+<p>C.Super-VLAN</p>
+<p>D.Isolate VLAN</p>
+<p>2.（单选题）下面关于QinQ描述错误的是？</p>
+<p>A.QinQ报文在公网中报文根据外层VLAN Tag转发。</p>
+<p><strong>B.QinQ报文在公网中报文根据内层VLAN Tag转发。</strong></p>
+<p>C.QinQ为用户提供了一种更为简单的二层VPN隧道。</p>
+<p>D.QinQ不需要信令协议的支持，可以通过纯静态配置实现。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VLAN聚合通过配置Super-VLAN和Sub-VLAN，不同Sub-VLAN之间进行通信，需要Super-VLAN开启ARP代理。VLAN聚合既避免了由于子网划分带来的网络地址规划复杂的问题，又能够实现通过VLAN隔离不同广播域的目的。</p>
+<p>•MUX VLAN包括Principal VLAN和Subordinate VLAN，同时Subordinate VLAN又分为Separate VLAN和Group VLAN。Separate port只能和Principal port进行通信，和其他类型的接口实现完全隔离。Group port可以和Principal port进行通信，在同一组内的接口也可互相通信，但不能和其他组接口或Separate port通信。</p>
+<p>•QinQ技术不仅扩展了标识VLAN的数量，而且可以实现用户报文携带私网VLAN标签在公网内的透传。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/" rel="tag"># VLAN高级技术</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/" rel="next" title="以太网交换安全">
+                <i class="fa fa-chevron-left"></i> 以太网交换安全
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/06/RSTP/" rel="prev" title="RSTP原理与配置">
+                RSTP原理与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88"><span class="nav-number">1.</span> <span class="nav-text">VLAN聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E4%BA%A7%E7%94%9F%E7%9A%84%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">VLAN聚合产生的技术背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E6%A6%82%E8%BF%B0"><span class="nav-number">1.2.</span> <span class="nav-text">VLAN聚合概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">VLAN聚合的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.4.</span> <span class="nav-text">VLAN聚合的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%90%8CSub-VLAN%E5%86%85%E9%83%A8%E9%80%9A%E4%BF%A1"><span class="nav-number">1.5.</span> <span class="nav-text">相同Sub-VLAN内部通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%8CSub-VLAN%E4%B9%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.6.</span> <span class="nav-text">不同Sub-VLAN之间通信举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sub-VLAN%E4%B8%8E%E5%85%B6%E4%BB%96%E8%AE%BE%E5%A4%87%E7%9A%84%E4%BA%8C%E5%B1%82%E9%80%9A%E4%BF%A1"><span class="nav-number">1.7.</span> <span class="nav-text">Sub-VLAN与其他设备的二层通信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">1.8.</span> <span class="nav-text">VLAN聚合关键配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-1"><span class="nav-number">1.9.</span> <span class="nav-text">VLAN聚合配置举例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN%E8%81%9A%E5%90%88%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-2"><span class="nav-number">1.10.</span> <span class="nav-text">VLAN聚合配置举例(2)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MUX-VLAN"><span class="nav-number">2.</span> <span class="nav-text">MUX VLAN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MUX-VLAN%E4%BA%A7%E7%94%9F%E8%83%8C%E6%99%AF"><span class="nav-number">2.1.</span> <span class="nav-text">MUX VLAN产生背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MUX-VLAN%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">2.2.</span> <span class="nav-text">MUX VLAN的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MUX-VLAN%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">MUX VLAN的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MUX-VLAN%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">2.4.</span> <span class="nav-text">MUX VLAN配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MUX-VLAN%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">2.5.</span> <span class="nav-text">MUX VLAN配置举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MUX-VLAN%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81"><span class="nav-number">2.6.</span> <span class="nav-text">MUX VLAN配置验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#QinQ"><span class="nav-number">3.</span> <span class="nav-text">QinQ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">QinQ概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E5%B0%81%E8%A3%85%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">QinQ封装结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">QinQ工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F-%E5%9F%BA%E6%9C%ACQinQ"><span class="nav-number">3.4.</span> <span class="nav-text">**QinQ实现方式 - **基本QinQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F-%E7%81%B5%E6%B4%BBQinQ"><span class="nav-number">3.5.</span> <span class="nav-text">**QinQ实现方式 **- 灵活QinQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E5%9C%A8%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">3.6.</span> <span class="nav-text">QinQ在园区网络中的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.7.</span> <span class="nav-text">QinQ配置命令介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-%E5%9F%BA%E6%9C%ACQinQ"><span class="nav-number">3.8.</span> <span class="nav-text">**QinQ配置举例 **- 基本QinQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QinQ%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-%E7%81%B5%E6%B4%BBQinQ"><span class="nav-number">3.9.</span> <span class="nav-text">**QinQ配置举例 **- 灵活QinQ</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
