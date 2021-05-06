@@ -79,18 +79,56 @@
 
 
 
-<meta name="description" content="my blog">
+<meta name="description" content="前言•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP&#x2F;STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。 •为了弥补RSTP&#x2F;STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MSTP原理与配置">
 <meta property="og:url" content="http://example.com/2021/05/06/MSTP/index.html">
 <meta property="og:site_name" content="zsy&#39;s blog">
-<meta property="og:description" content="my blog">
+<meta property="og:description" content="前言•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP&#x2F;STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。 •为了弥补RSTP&#x2F;STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree">
 <meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/1.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/2.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/3.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/5.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/6.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/7.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/8.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/9.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/10.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/11.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/12.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/15.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/14.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/16.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/18.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/19.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/20.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/21.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/22.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/23.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/24.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/25.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/26.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/27.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/28.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/29.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/28.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/30.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/31.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/28.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/32.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/33.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/34.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/35.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/36.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/37.png">
+<meta property="og:image" content="http://example.com/2021/05/06/MSTP/4.png">
 <meta property="article:published_time" content="2021-05-06T09:11:06.000Z">
-<meta property="article:modified_time" content="2021-05-06T09:12:07.440Z">
+<meta property="article:modified_time" content="2021-05-06T12:11:06.297Z">
 <meta property="article:author" content="张思宇">
 <meta property="article:tag" content="MSTP">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/06/MSTP/1.png">
 
 
 
@@ -310,7 +348,355 @@
       
 
       
-        
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP/STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。</p>
+<p>•为了弥补RSTP/STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree Protocol，多生成树协议）。MSTP兼容STP和RSTP，通过建立多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述RSTP/STP技术的缺陷</p>
+<p>▫描述MSTP对RSTP/STP技术的改进</p>
+<p>▫描述MSTP的各种概念</p>
+<p>▫描述MSTP的工作过程</p>
+<p>▫实现MSTP的基本配置</p>
+<h1 id="MSTP概述"><a href="#MSTP概述" class="headerlink" title="MSTP概述"></a>MSTP概述</h1><h2 id="RSTP-STP的不足-1"><a href="#RSTP-STP的不足-1" class="headerlink" title="RSTP/STP的不足 (1)"></a><strong>RSTP/STP的不足</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/1.png"></p>
+<h2 id="RSTP-STP的不足-2"><a href="#RSTP-STP的不足-2" class="headerlink" title="RSTP/STP的不足 (2)"></a><strong>RSTP/STP的不足</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/2.png"></p>
+<h2 id="多生成树协议概述"><a href="#多生成树协议概述" class="headerlink" title="多生成树协议概述"></a><strong>多生成树协议概述</strong></h2><p>•MSTP是IEEE 802.1S中定义的生成树协议，MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。</p>
+<p>•MSTP可以将一个或多个VLAN映射到一个Instance（实例），再基于Instance计算生成树，映射到同一个Instance的VLAN共享同一棵生成树。</p>
+<p><img src="/2021/05/06/MSTP/3.png"></p>
+<blockquote>
+<p>•如图中例子，经计算，最终生成两棵生成树：</p>
+<ul>
+<li><p>Instance1对应的生成树以SW1为根交换设备，转发VLAN1~VLAN10的报文。</p>
+</li>
+<li><p>Instance2对应的生成树以SW2为根交换设备，转发VLAN11~VLAN20的报文。</p>
+</li>
+<li><p>不同VLAN的报文沿不同的路径转发，实现了负载分担。</p>
+</li>
+</ul>
+<p>•注意：生成树不是基于VLAN运行的，而是基于Instance运行的。</p>
+</blockquote>
+<h1 id="MSTP的基本概念"><a href="#MSTP的基本概念" class="headerlink" title="MSTP的基本概念"></a><strong>MSTP的基本概念</strong></h1><h2 id="MST-Region"><a href="#MST-Region" class="headerlink" title="MST Region"></a><strong>MST</strong> <strong>Region</strong></h2><p><img src="/2021/05/06/MSTP/5.png"></p>
+<blockquote>
+<p>•同一个MST域的设备具有下列特点：</p>
+<ul>
+<li><p>都启动了MSTP。</p>
+</li>
+<li><p>具有相同的域名。</p>
+</li>
+<li><p>具有相同的VLAN到生成树实例映射配置。</p>
+</li>
+<li><p>具有相同的MSTP修订级别配置。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTI"><a href="#MSTI" class="headerlink" title="MSTI"></a><strong>MSTI</strong></h2><p><img src="/2021/05/06/MSTP/6.png"></p>
+<blockquote>
+<p>•Instance0是缺省存在的，而且缺省时，华为交换机上所有的VLAN都映射到了Instance0。</p>
+<p>•通过设置VLAN映射表（即VLAN和MSTI的对应关系表），把VLAN和MSTI联系起来。</p>
+<ul>
+<li>每个VLAN只能对应一个MSTI，即同一VLAN的数据只能在一个MSTI中传输，而一个MSTI可能对应多个VLAN。</li>
+</ul>
+</blockquote>
+<h2 id="CST"><a href="#CST" class="headerlink" title="CST"></a><strong>CST</strong></h2><p><img src="/2021/05/06/MSTP/7.png"></p>
+<h2 id="IST"><a href="#IST" class="headerlink" title="IST"></a><strong>IST</strong></h2><p><img src="/2021/05/06/MSTP/8.png"></p>
+<h2 id="CIST"><a href="#CIST" class="headerlink" title="CIST"></a><strong>CIST</strong></h2><p><img src="/2021/05/06/MSTP/9.png"></p>
+<h2 id="SST"><a href="#SST" class="headerlink" title="SST"></a><strong>SST</strong></h2><p><img src="/2021/05/06/MSTP/10.png"></p>
+<h2 id="总根，域根和主桥"><a href="#总根，域根和主桥" class="headerlink" title="总根，域根和主桥"></a><strong>总根，域根和主桥</strong></h2><p><img src="/2021/05/06/MSTP/11.png"></p>
+<blockquote>
+<p>•主桥包括总根和IST域根。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><img src="/2021/05/06/MSTP/12.png"></p>
+<h2 id="MSTP的端口角色-1"><a href="#MSTP的端口角色-1" class="headerlink" title="MSTP的端口角色 (1)"></a><strong>MSTP的端口角色 (1)</strong></h2><p>MSTP中定义的所有端口角色包括：</p>
+<p>根端口、指定端口、Alternate端口、Backup端口、Master端口、域边缘端口和边缘端口。</p>
+<p><img src="/2021/05/06/MSTP/15.png"></p>
+<p><img src="/2021/05/06/MSTP/14.png"></p>
+<p><img src="/2021/05/06/MSTP/16.png"></p>
+<blockquote>
+<p>•除边缘端口外，其他端口角色都参与MSTP的计算过程。</p>
+<p>•同一端口在不同的生成树实例中可以担任不同的角色。</p>
+</blockquote>
+<h2 id="MSTP的端口状态"><a href="#MSTP的端口状态" class="headerlink" title="MSTP的端口状态"></a><strong>MSTP的端口状态</strong></h2><p>MSTP定义的端口状态与RSTP协议中定义相同:</p>
+<ul>
+<li><p>Forwarding状态：端口既转发用户流量，学习MAC地址，又接收/发送BPDU报文。</p>
+</li>
+<li><p>Learning状态：过渡状态，端口接收/发送BPDU报文，不转发用户流量但是学习MAC地址。</p>
+</li>
+<li><p>Discarding状态：端口只接收BPDU报文，不转发用户流量也不学习MAC地址。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>MSTP端口状态</strong></th>
+<th><strong>端口在拓扑中的角色</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Forwarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Discarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口、Alternate端口、Backup端口</td>
+</tr>
+</tbody></table>
+<h2 id="MSTP报文"><a href="#MSTP报文" class="headerlink" title="MSTP报文"></a><strong>MSTP报文</strong></h2><p><img src="/2021/05/06/MSTP/18.png"></p>
+<p><img src="/2021/05/06/MSTP/19.png"></p>
+<p>•无论是域内的MST BPDU还是域间的，前36个字节和RST BPDU相同。从第37个字节开始是MSTP专有字段。最后的MSTI配置信息字段由若干MSTI配置信息组连缀而成。</p>
+<p>•MST BPDU中主要信息说明：</p>
+<ul>
+<li><p>Protocol Identifier：2 Byte，协议标识符。</p>
+</li>
+<li><p>Protocol Version Identifier：1 Byte，协议版本标识符，STP为0，RSTP为2，MSTP为3。</p>
+</li>
+<li><p>BPDU Type：1 Byte，BPDU类型：</p>
+<ul>
+<li>0x00：STP的Configuration BPDU</li>
+<li>0x80：STP的TCN BPDU（Topology Change Notification BPDU）</li>
+<li>0x02：RST BPDU（Rapid Spanning-Tree BPDU）或者MST BPDU（Multiple Spanning-Tree BPDU）</li>
+</ul>
+</li>
+<li><p>CIST Flags：1 Byte，CIST标志字段。</p>
+</li>
+<li><p>CIST Root Identifier：8 Byte，CIST的总根交换设备ID。</p>
+</li>
+<li><p>CIST External Path Cost：4 Byte，CIST外部路径开销指从本交换设备所属的MST域到CIST根交换设备所属的MST域的累计路径开销。CIST外部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Regional Root Identifier：8 Byte，CIST的域根交换设备ID，即IST Master的ID。如果总根在这个域内，那么域根交换设备ID就是总根交换设备ID。</p>
+</li>
+<li><p>CIST Port Identifier：2 Byte，本端口在IST中的指定端口ID。</p>
+</li>
+<li><p>Message Age：2 Byte，BPDU报文的生存期。</p>
+</li>
+<li><p>Max Age：2 Byte，BPDU报文的最大生存期，超时则认为到根交换设备的链路故障。</p>
+</li>
+<li><p>Hello Time：2 Byte，Hello定时器，缺省为2秒。</p>
+</li>
+<li><p>Forward Delay：2 Byte，Forward Delay定时器，缺省为15秒。</p>
+</li>
+<li><p>Version 1 Length：1 Byte，Version1 BPDU的长度，值固定为0。</p>
+</li>
+<li><p>Version 3 Length：2 Byte，Version3 BPDU的长度。</p>
+</li>
+<li><p>MST Configuration Identifier：51 Byte，MST配置标识，表示MST域的标签信息，包含4个字段。</p>
+</li>
+<li><p>CIST Internal Root Path Cost：4 Byte，CIST内部路径开销指从本端口到IST Master交换设备的累计路径开销。CIST内部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Bridge Identifier：8 Byte，CIST的指定交换设备ID。</p>
+</li>
+<li><p>CIST Remaining Hops：1 Byte，BPDU报文在CIST中的剩余跳数。</p>
+</li>
+<li><p>MSTI Configuration Messages：16 Byte，MSTI配置信息。每个MSTI的配置信息占16 Byte，如果有n个MSTI就占用n×16 Byte。</p>
+</li>
+</ul>
+<h1 id="MSTP的工作原理"><a href="#MSTP的工作原理" class="headerlink" title="MSTP的工作原理"></a>MSTP的工作原理</h1><h2 id="MSTP拓扑计算"><a href="#MSTP拓扑计算" class="headerlink" title="MSTP拓扑计算"></a><strong>MSTP拓扑计算</strong></h2><p>•MSTP拓扑计算：</p>
+<ul>
+<li><p>MSTP可以将整个二层网络划分为多个MST域，各个域之间通过计算生成CST，域内生成IST，CST和IST构成了整个交换设备网络的CIST。</p>
+</li>
+<li><p>域内还可以基于实例计算生成多棵生成树，每棵生成树都被称为是一个MSTI。</p>
+</li>
+</ul>
+<p>•CIST和MSTI都是根据优先级向量来计算的，这些优先级向量信息都包含在MST BPDU中。各交换设备互相交换MST BPDU来生成CIST和MSTI 。</p>
+<ul>
+<li><p>参与CIST计算的优先级向量为：</p>
+<p>▪{ 根交换设备ID，外部路径开销，域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>参与MSTI计算的优先级向量为：</p>
+<p>▪{ 域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>注意：括号中的向量的优先级从左到右依次递减。</p>
+</li>
+</ul>
+<blockquote>
+<p>•优先级向量说明：</p>
+<ul>
+<li><p>根交换设备ID：根交换设备ID用于选择CIST中的根交换设备。</p>
+<ul>
+<li><p>根交换设备ID = Priority(16 bit) + MAC(48 bit)。</p>
+</li>
+<li><p>其中Priority为MSTI0的优先级。</p>
+</li>
+</ul>
+</li>
+<li><p>外部路径开销（External Root Path Cost，ERPC）：从CIST的域根到达总根的路径开销。</p>
+<ul>
+<li>MST域内所有交换设备上保存的外部路径开销相同。</li>
+<li>若CIST根交换设备在域中，则域内所有交换设备上保存的外部路径开销为0。</li>
+</ul>
+</li>
+<li><p>域根ID：域根ID用于选择MSTI中的域根。</p>
+<ul>
+<li>域根ID = Priority(16 bit) + MAC(48 bit)。</li>
+<li>其中Priority为MSTI0的优先级。</li>
+</ul>
+</li>
+<li><p>内部路径开销（Internal Root Path Cost，IRPC）：本桥到达域根的路径开销。</p>
+<ul>
+<li>域边缘端口保存的内部路径开销大于非域边缘端口保存的内部路径开销。</li>
+</ul>
+</li>
+<li><p>指定交换设备ID：CIST或MSTI实例的指定交换设备是本桥通往域根的最邻近的上游桥。</p>
+<ul>
+<li>如果本桥就是总根或域根，则指定交换设备为自己。</li>
+</ul>
+</li>
+<li><p>指定端口ID：指定交换设备上同本设备上根端口相连的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+<li><p>接收端口ID：接收到BPDU报文的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>•优先级向量比较原则：</p>
+<ul>
+<li><p>同一向量比较，值最小的向量具有最高优先级。</p>
+</li>
+<li><p>优先级向量比较原则如下</p>
+<p>1.首先，比较根交换设备ID。</p>
+<p>2.如果根交换设备ID相同，再比较外部路径开销。</p>
+<p>3.如果外部路径开销相同，再比较域根ID。</p>
+<p>4.如果域根ID仍然相同，再比较内部路径开销。</p>
+<p>5.如果内部路径仍然相同，再比较指定交换设备ID。</p>
+<p>6.如果指定交换设备ID仍然相同，再比较指定端口ID。</p>
+<p>7.如果指定端口ID还相同，再比较接收端口ID。</p>
+</li>
+<li><p>如果端口接收到的BPDU内包含的配置消息优于端口上保存的配置消息，则端口上原来保存的配置消息被新收到的配置消息替代。端口同时更新交换设备保存的全局配置消息。反之，新收到的BPDU被丢弃。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="CIST计算"><a href="#CIST计算" class="headerlink" title="CIST计算"></a><strong>CIST计算</strong></h2><p>•经过比较MST BPDU消息后，在整个网络中选择一个优先级最高的交换设备作为CIST的树根，即总根。</p>
+<p>•在每个MST域内，MSTP通过计算生成IST；同时MSTP将每个MST域作为单台交换设备对待，通过计算在MST域间生成CST。CST和IST构成了整个交换设备网络的CIST。</p>
+<p><img src="/2021/05/06/MSTP/20.png"></p>
+<h2 id="MSTI计算"><a href="#MSTI计算" class="headerlink" title="MSTI计算"></a>MSTI计算</h2><p>•在MST域内，MSTP根据VLAN和生成树实例的映射关系，针对不同的VLAN生成不同的生成树实例。</p>
+<p>•每棵生成树独立进行计算，计算过程与STP计算生成树的过程类似。</p>
+<p><img src="/2021/05/06/MSTP/21.png"></p>
+<blockquote>
+<p>•MSTI的特点：</p>
+<p>​    ▫每个MSTI独立计算自己的生成树，互不干扰。</p>
+<p>​    ▫每个MSTI的生成树计算方法与STP基本相同。</p>
+<p>​    ▫每个MSTI的生成树可以有不同的根，不同的拓扑。</p>
+<p>​    ▫每个MSTI在自己的生成树内发送BPDU。</p>
+<p>​    ▫每个MSTI的拓扑通过命令配置决定。</p>
+<p>​    ▫每个端口在不同MSTI上的生成树参数可以不同。</p>
+<p>​    ▫每个端口在不同MSTI上的角色、状态可以不同。</p>
+<p>•根桥和备份根桥：可以通过计算来自动确定生成树的根桥，用户也可以手动配置设备为指定生成树的根桥或备份根桥。</p>
+<p>​    ▫设备在各生成树中的角色互相独立，在作为一棵生成树的根    桥或备份根桥的同时，也可以作为其它生成树的根桥或备份    根桥；但在同一棵生成树中，一台设备不能既作为根桥，又    作为备份根桥。</p>
+<p>​    ▫在一棵生成树中，生效的根桥只有一个；当两台或两台以上    的设备被指定为同一棵生成树的根桥时，系统将选择MAC地    址最小的设备作为根桥。</p>
+<p>​    ▫可以在每棵生成树中指定多个备份根桥。当根桥出现故障或    被关机时，备份根桥可以取代根桥成为指定生成树的根桥；    但此时若配置了新的根桥，则备份根桥将不会成为根桥。如    果配置了多个备份根桥，则MAC地址最小的备份根桥将成为    指定生成树的根桥。</p>
+</blockquote>
+<h2 id="MSTP网络数据转发"><a href="#MSTP网络数据转发" class="headerlink" title="MSTP网络数据转发"></a><strong>MSTP网络数据转发</strong></h2><p>在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：</p>
+<ul>
+<li><p>在MST域内，沿着其对应的MSTI转发。</p>
+</li>
+<li><p>在MST域间，沿着CST转发。</p>
+</li>
+</ul>
+<p><img src="/2021/05/06/MSTP/22.png"></p>
+<blockquote>
+<p>•如图所示，以VLAN2的数据发送为例。</p>
+</blockquote>
+<h1 id="MSTP的基本配置"><a href="#MSTP的基本配置" class="headerlink" title="MSTP的基本配置"></a>MSTP的基本配置</h1><h2 id="MSTP的基础配置命令"><a href="#MSTP的基础配置命令" class="headerlink" title="MSTP的基础配置命令"></a><strong>MSTP的基础配置命令</strong></h2><p><img src="/2021/05/06/MSTP/23.png"></p>
+<blockquote>
+<p>•命令：<strong>stp mode</strong> <strong>mstp</strong></p>
+<p>▫STP和MSTP不能互相识别报文，而MSTP和RSTP可以互相识别报文，所以若工作在MSTP工作模式下，交换设备会设置所有和运行STP的交换设备直接相连的端口工作在STP模式下，其他端口工作在MSTP模式下，实现运行不同生成树协议的设备之间的互通。</p>
+</blockquote>
+<h2 id="配置MST域并激活"><a href="#配置MST域并激活" class="headerlink" title="配置MST域并激活"></a><strong>配置MST域并激活</strong></h2><p><img src="/2021/05/06/MSTP/24.png"></p>
+<p><img src="/2021/05/06/MSTP/25.png"></p>
+<blockquote>
+<p>•命令：<strong>stp region-configuration</strong></p>
+<ul>
+<li>缺省情况下，MST域的三个参数均取缺省值。</li>
+</ul>
+<p>•命令：<strong>region-name</strong> <em>name</em></p>
+<ul>
+<li><em>name</em>：指定交换设备的MST域名。字符串形式，不支持空格，区分大小写，长度为1～32个字符。</li>
+</ul>
+<p>•命令：<strong>instance</strong> <em>instance-id</em> <strong>vlan</strong> { <em>vlan-id1</em> [ <strong>to</strong> <em>vlan-id2</em> ] }</p>
+<ul>
+<li><em>instance-id</em>：指定生成树实例的编号。整数形式，取值范围是0～4094，取值为0表示的是CIST。</li>
+</ul>
+<p>•命令：<strong>revision-level</strong> <em>level</em></p>
+<ul>
+<li><p><em>level</em>：指定MST域的修订级别。整数形式，取值范围是0～65535。</p>
+</li>
+<li><p>MSTP是标准协议，各厂商设备的MSTP修订级别一般都默认为0。如果某厂商的设备不为0，为保持MST域内计算，在部署MSTP时，需要将各设备的MSTP修订级别修改为一致。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTP的可选配置命令"><a href="#MSTP的可选配置命令" class="headerlink" title="MSTP的可选配置命令"></a>MSTP的可选配置命令</h2><p><img src="/2021/05/06/MSTP/26.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>root</strong> { <strong>primary</strong> | <strong>secondary</strong> }</p>
+<ul>
+<li><p><strong>instance</strong> <em>instance-id</em>：指定生成树实例的编号。如果不指定instance，则配置设备在实例0上为根桥/备份根桥设备。</p>
+</li>
+<li><p><strong>primary</strong>：指定配置为生成树的根桥设备。配置后该设备优先级值自动为0，将不能更改设备优先级。</p>
+</li>
+<li><p><strong>secondary</strong>：指定配置为生成树的备份根桥设备。配置后该设备优先级值自动为4096，将不能更改设备优先级。</p>
+</li>
+</ul>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定交换设备的优先级数值。优先级值越小，则交换设备的优先级越高。整数形式，取值范围是0～61440，步长为4096，如0、4096、8192等。缺省值是32768。</li>
+</ul>
+<p>•命令：<strong>stp</strong> <strong>pathcost-standard</strong> { <strong>dot1d-1998</strong> | <strong>dot1t</strong> | <strong>legacy</strong> }</p>
+<ul>
+<li><p><strong>dot1d-1998</strong>：指定路径开销值的计算方法是IEEE 802.1D-1998标准方法，取值范围为1~65535。</p>
+</li>
+<li><p><strong>dot1t</strong>：指定路径开销值的计算方法是IEEE 802.1T标准方法，取值范围为1~200,000,000。</p>
+</li>
+<li><p><strong>legacy</strong>：指定路径开销值的计算方法是华为计算方法，取值范围为1~200,000。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/05/06/MSTP/27.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>port priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定端口在生成树计算时的优先级。整数形式，取值范围是0～240，步长为16，如0、16、32等。</li>
+</ul>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-1"><a href="#案例：单域多实例场景配置-1" class="headerlink" title="案例：单域多实例场景配置 (1)"></a><strong>案例：单域多实例场景配置</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/29.png"></p>
+<blockquote>
+<p>可以配置SW1为VLAN2的网关（VLANIF2：192.168.1.254/24），SW2为VLAN3的网关（VLANIF3:192.168.2.254/24），最终实现PC1能Ping通SW1的VLANIF2接口，PC2能Ping通SW2的VLANIF3接口。</p>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-2"><a href="#案例：单域多实例场景配置-2" class="headerlink" title="案例：单域多实例场景配置 (2)"></a><strong>案例：单域多实例场景配置</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/30.png"></p>
+<p><img src="/2021/05/06/MSTP/31.png"></p>
+<h2 id="案例：单域多实例场景配置-3"><a href="#案例：单域多实例场景配置-3" class="headerlink" title="案例：单域多实例场景配置 (3)"></a><strong>案例：单域多实例场景配置</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/32.png"></p>
+<p><img src="/2021/05/06/MSTP/33.png"></p>
+<p><img src="/2021/05/06/MSTP/34.png"></p>
+<h2 id="验证配置结果-1"><a href="#验证配置结果-1" class="headerlink" title="验证配置结果 (1)"></a><strong>验证配置结果</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/35.png"></p>
+<p><img src="/2021/05/06/MSTP/36.png"></p>
+<h2 id="验证配置结果-2"><a href="#验证配置结果-2" class="headerlink" title="验证配置结果 (2)"></a><strong>验证配置结果</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/37.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 某运行MSTP协议的交换机的端口角色如下图所示，请问GigabitEthernet0/0/1端口在Instance1中的端口状态应该是？</p>
+<p>A.Blocking</p>
+<p><strong>B.Discarding</strong></p>
+<p>C.Forwarding</p>
+<p>D.Learning</p>
+<p><img src="/2021/05/06/MSTP/4.png"></p>
+<p>2.(判断题) CIST是由内部生成树和公共生成树构成的一棵树。（  ）</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•在MSTP网络中，可以将一个或多个VLAN映射到一个Instance，然后MSTP基于该Instance计算生成树。基于Instance的生成树被称为MSTI，MSTP为每个Instance维护独立的MSTI，映射到同一个Instance的VLAN将共享同一棵生成树。</p>
+<p>•在以太网中部署MSTP协议后可实现如下功能：</p>
+<ul>
+<li><p>形成多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+</li>
+<li><p>多棵生成树在VLAN间实现负载均衡，不同VLAN的流量按照不同的路径转发。</p>
+</li>
+</ul>
+
       
     </div>
     
@@ -404,8 +790,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -476,6 +871,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MSTP%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">MSTP概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RSTP-STP%E7%9A%84%E4%B8%8D%E8%B6%B3-1"><span class="nav-number">3.1.</span> <span class="nav-text">RSTP&#x2F;STP的不足 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RSTP-STP%E7%9A%84%E4%B8%8D%E8%B6%B3-2"><span class="nav-number">3.2.</span> <span class="nav-text">RSTP&#x2F;STP的不足 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%94%9F%E6%88%90%E6%A0%91%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">3.3.</span> <span class="nav-text">多生成树协议概述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MSTP%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">4.</span> <span class="nav-text">MSTP的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MST-Region"><span class="nav-number">4.1.</span> <span class="nav-text">MST Region</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTI"><span class="nav-number">4.2.</span> <span class="nav-text">MSTI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CST"><span class="nav-number">4.3.</span> <span class="nav-text">CST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IST"><span class="nav-number">4.4.</span> <span class="nav-text">IST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CIST"><span class="nav-number">4.5.</span> <span class="nav-text">CIST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SST"><span class="nav-number">4.6.</span> <span class="nav-text">SST</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E6%A0%B9%EF%BC%8C%E5%9F%9F%E6%A0%B9%E5%92%8C%E4%B8%BB%E6%A1%A5"><span class="nav-number">4.7.</span> <span class="nav-text">总根，域根和主桥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.8.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E7%9A%84%E7%AB%AF%E5%8F%A3%E8%A7%92%E8%89%B2-1"><span class="nav-number">4.9.</span> <span class="nav-text">MSTP的端口角色 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E7%9A%84%E7%AB%AF%E5%8F%A3%E7%8A%B6%E6%80%81"><span class="nav-number">4.10.</span> <span class="nav-text">MSTP的端口状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E6%8A%A5%E6%96%87"><span class="nav-number">4.11.</span> <span class="nav-text">MSTP报文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MSTP%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">MSTP的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E6%8B%93%E6%89%91%E8%AE%A1%E7%AE%97"><span class="nav-number">5.1.</span> <span class="nav-text">MSTP拓扑计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CIST%E8%AE%A1%E7%AE%97"><span class="nav-number">5.2.</span> <span class="nav-text">CIST计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTI%E8%AE%A1%E7%AE%97"><span class="nav-number">5.3.</span> <span class="nav-text">MSTI计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91"><span class="nav-number">5.4.</span> <span class="nav-text">MSTP网络数据转发</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MSTP%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">MSTP的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">6.1.</span> <span class="nav-text">MSTP的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEMST%E5%9F%9F%E5%B9%B6%E6%BF%80%E6%B4%BB"><span class="nav-number">6.2.</span> <span class="nav-text">配置MST域并激活</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MSTP%E7%9A%84%E5%8F%AF%E9%80%89%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">6.3.</span> <span class="nav-text">MSTP的可选配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8D%95%E5%9F%9F%E5%A4%9A%E5%AE%9E%E4%BE%8B%E5%9C%BA%E6%99%AF%E9%85%8D%E7%BD%AE-1"><span class="nav-number">6.4.</span> <span class="nav-text">案例：单域多实例场景配置 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8D%95%E5%9F%9F%E5%A4%9A%E5%AE%9E%E4%BE%8B%E5%9C%BA%E6%99%AF%E9%85%8D%E7%BD%AE-2"><span class="nav-number">6.5.</span> <span class="nav-text">案例：单域多实例场景配置 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8D%95%E5%9F%9F%E5%A4%9A%E5%AE%9E%E4%BE%8B%E5%9C%BA%E6%99%AF%E9%85%8D%E7%BD%AE-3"><span class="nav-number">6.6.</span> <span class="nav-text">案例：单域多实例场景配置 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%9C-1"><span class="nav-number">6.7.</span> <span class="nav-text">验证配置结果 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%9C-2"><span class="nav-number">6.8.</span> <span class="nav-text">验证配置结果 (2)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

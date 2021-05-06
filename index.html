@@ -550,7 +550,355 @@
       
         
           
-            
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP/STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。</p>
+<p>•为了弥补RSTP/STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree Protocol，多生成树协议）。MSTP兼容STP和RSTP，通过建立多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述RSTP/STP技术的缺陷</p>
+<p>▫描述MSTP对RSTP/STP技术的改进</p>
+<p>▫描述MSTP的各种概念</p>
+<p>▫描述MSTP的工作过程</p>
+<p>▫实现MSTP的基本配置</p>
+<h1 id="MSTP概述"><a href="#MSTP概述" class="headerlink" title="MSTP概述"></a>MSTP概述</h1><h2 id="RSTP-STP的不足-1"><a href="#RSTP-STP的不足-1" class="headerlink" title="RSTP/STP的不足 (1)"></a><strong>RSTP/STP的不足</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/1.png"></p>
+<h2 id="RSTP-STP的不足-2"><a href="#RSTP-STP的不足-2" class="headerlink" title="RSTP/STP的不足 (2)"></a><strong>RSTP/STP的不足</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/2.png"></p>
+<h2 id="多生成树协议概述"><a href="#多生成树协议概述" class="headerlink" title="多生成树协议概述"></a><strong>多生成树协议概述</strong></h2><p>•MSTP是IEEE 802.1S中定义的生成树协议，MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。</p>
+<p>•MSTP可以将一个或多个VLAN映射到一个Instance（实例），再基于Instance计算生成树，映射到同一个Instance的VLAN共享同一棵生成树。</p>
+<p><img src="/2021/05/06/MSTP/3.png"></p>
+<blockquote>
+<p>•如图中例子，经计算，最终生成两棵生成树：</p>
+<ul>
+<li><p>Instance1对应的生成树以SW1为根交换设备，转发VLAN1~VLAN10的报文。</p>
+</li>
+<li><p>Instance2对应的生成树以SW2为根交换设备，转发VLAN11~VLAN20的报文。</p>
+</li>
+<li><p>不同VLAN的报文沿不同的路径转发，实现了负载分担。</p>
+</li>
+</ul>
+<p>•注意：生成树不是基于VLAN运行的，而是基于Instance运行的。</p>
+</blockquote>
+<h1 id="MSTP的基本概念"><a href="#MSTP的基本概念" class="headerlink" title="MSTP的基本概念"></a><strong>MSTP的基本概念</strong></h1><h2 id="MST-Region"><a href="#MST-Region" class="headerlink" title="MST Region"></a><strong>MST</strong> <strong>Region</strong></h2><p><img src="/2021/05/06/MSTP/5.png"></p>
+<blockquote>
+<p>•同一个MST域的设备具有下列特点：</p>
+<ul>
+<li><p>都启动了MSTP。</p>
+</li>
+<li><p>具有相同的域名。</p>
+</li>
+<li><p>具有相同的VLAN到生成树实例映射配置。</p>
+</li>
+<li><p>具有相同的MSTP修订级别配置。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTI"><a href="#MSTI" class="headerlink" title="MSTI"></a><strong>MSTI</strong></h2><p><img src="/2021/05/06/MSTP/6.png"></p>
+<blockquote>
+<p>•Instance0是缺省存在的，而且缺省时，华为交换机上所有的VLAN都映射到了Instance0。</p>
+<p>•通过设置VLAN映射表（即VLAN和MSTI的对应关系表），把VLAN和MSTI联系起来。</p>
+<ul>
+<li>每个VLAN只能对应一个MSTI，即同一VLAN的数据只能在一个MSTI中传输，而一个MSTI可能对应多个VLAN。</li>
+</ul>
+</blockquote>
+<h2 id="CST"><a href="#CST" class="headerlink" title="CST"></a><strong>CST</strong></h2><p><img src="/2021/05/06/MSTP/7.png"></p>
+<h2 id="IST"><a href="#IST" class="headerlink" title="IST"></a><strong>IST</strong></h2><p><img src="/2021/05/06/MSTP/8.png"></p>
+<h2 id="CIST"><a href="#CIST" class="headerlink" title="CIST"></a><strong>CIST</strong></h2><p><img src="/2021/05/06/MSTP/9.png"></p>
+<h2 id="SST"><a href="#SST" class="headerlink" title="SST"></a><strong>SST</strong></h2><p><img src="/2021/05/06/MSTP/10.png"></p>
+<h2 id="总根，域根和主桥"><a href="#总根，域根和主桥" class="headerlink" title="总根，域根和主桥"></a><strong>总根，域根和主桥</strong></h2><p><img src="/2021/05/06/MSTP/11.png"></p>
+<blockquote>
+<p>•主桥包括总根和IST域根。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><img src="/2021/05/06/MSTP/12.png"></p>
+<h2 id="MSTP的端口角色-1"><a href="#MSTP的端口角色-1" class="headerlink" title="MSTP的端口角色 (1)"></a><strong>MSTP的端口角色 (1)</strong></h2><p>MSTP中定义的所有端口角色包括：</p>
+<p>根端口、指定端口、Alternate端口、Backup端口、Master端口、域边缘端口和边缘端口。</p>
+<p><img src="/2021/05/06/MSTP/15.png"></p>
+<p><img src="/2021/05/06/MSTP/14.png"></p>
+<p><img src="/2021/05/06/MSTP/16.png"></p>
+<blockquote>
+<p>•除边缘端口外，其他端口角色都参与MSTP的计算过程。</p>
+<p>•同一端口在不同的生成树实例中可以担任不同的角色。</p>
+</blockquote>
+<h2 id="MSTP的端口状态"><a href="#MSTP的端口状态" class="headerlink" title="MSTP的端口状态"></a><strong>MSTP的端口状态</strong></h2><p>MSTP定义的端口状态与RSTP协议中定义相同:</p>
+<ul>
+<li><p>Forwarding状态：端口既转发用户流量，学习MAC地址，又接收/发送BPDU报文。</p>
+</li>
+<li><p>Learning状态：过渡状态，端口接收/发送BPDU报文，不转发用户流量但是学习MAC地址。</p>
+</li>
+<li><p>Discarding状态：端口只接收BPDU报文，不转发用户流量也不学习MAC地址。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>MSTP端口状态</strong></th>
+<th><strong>端口在拓扑中的角色</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Forwarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Discarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口、Alternate端口、Backup端口</td>
+</tr>
+</tbody></table>
+<h2 id="MSTP报文"><a href="#MSTP报文" class="headerlink" title="MSTP报文"></a><strong>MSTP报文</strong></h2><p><img src="/2021/05/06/MSTP/18.png"></p>
+<p><img src="/2021/05/06/MSTP/19.png"></p>
+<p>•无论是域内的MST BPDU还是域间的，前36个字节和RST BPDU相同。从第37个字节开始是MSTP专有字段。最后的MSTI配置信息字段由若干MSTI配置信息组连缀而成。</p>
+<p>•MST BPDU中主要信息说明：</p>
+<ul>
+<li><p>Protocol Identifier：2 Byte，协议标识符。</p>
+</li>
+<li><p>Protocol Version Identifier：1 Byte，协议版本标识符，STP为0，RSTP为2，MSTP为3。</p>
+</li>
+<li><p>BPDU Type：1 Byte，BPDU类型：</p>
+<ul>
+<li>0x00：STP的Configuration BPDU</li>
+<li>0x80：STP的TCN BPDU（Topology Change Notification BPDU）</li>
+<li>0x02：RST BPDU（Rapid Spanning-Tree BPDU）或者MST BPDU（Multiple Spanning-Tree BPDU）</li>
+</ul>
+</li>
+<li><p>CIST Flags：1 Byte，CIST标志字段。</p>
+</li>
+<li><p>CIST Root Identifier：8 Byte，CIST的总根交换设备ID。</p>
+</li>
+<li><p>CIST External Path Cost：4 Byte，CIST外部路径开销指从本交换设备所属的MST域到CIST根交换设备所属的MST域的累计路径开销。CIST外部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Regional Root Identifier：8 Byte，CIST的域根交换设备ID，即IST Master的ID。如果总根在这个域内，那么域根交换设备ID就是总根交换设备ID。</p>
+</li>
+<li><p>CIST Port Identifier：2 Byte，本端口在IST中的指定端口ID。</p>
+</li>
+<li><p>Message Age：2 Byte，BPDU报文的生存期。</p>
+</li>
+<li><p>Max Age：2 Byte，BPDU报文的最大生存期，超时则认为到根交换设备的链路故障。</p>
+</li>
+<li><p>Hello Time：2 Byte，Hello定时器，缺省为2秒。</p>
+</li>
+<li><p>Forward Delay：2 Byte，Forward Delay定时器，缺省为15秒。</p>
+</li>
+<li><p>Version 1 Length：1 Byte，Version1 BPDU的长度，值固定为0。</p>
+</li>
+<li><p>Version 3 Length：2 Byte，Version3 BPDU的长度。</p>
+</li>
+<li><p>MST Configuration Identifier：51 Byte，MST配置标识，表示MST域的标签信息，包含4个字段。</p>
+</li>
+<li><p>CIST Internal Root Path Cost：4 Byte，CIST内部路径开销指从本端口到IST Master交换设备的累计路径开销。CIST内部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Bridge Identifier：8 Byte，CIST的指定交换设备ID。</p>
+</li>
+<li><p>CIST Remaining Hops：1 Byte，BPDU报文在CIST中的剩余跳数。</p>
+</li>
+<li><p>MSTI Configuration Messages：16 Byte，MSTI配置信息。每个MSTI的配置信息占16 Byte，如果有n个MSTI就占用n×16 Byte。</p>
+</li>
+</ul>
+<h1 id="MSTP的工作原理"><a href="#MSTP的工作原理" class="headerlink" title="MSTP的工作原理"></a>MSTP的工作原理</h1><h2 id="MSTP拓扑计算"><a href="#MSTP拓扑计算" class="headerlink" title="MSTP拓扑计算"></a><strong>MSTP拓扑计算</strong></h2><p>•MSTP拓扑计算：</p>
+<ul>
+<li><p>MSTP可以将整个二层网络划分为多个MST域，各个域之间通过计算生成CST，域内生成IST，CST和IST构成了整个交换设备网络的CIST。</p>
+</li>
+<li><p>域内还可以基于实例计算生成多棵生成树，每棵生成树都被称为是一个MSTI。</p>
+</li>
+</ul>
+<p>•CIST和MSTI都是根据优先级向量来计算的，这些优先级向量信息都包含在MST BPDU中。各交换设备互相交换MST BPDU来生成CIST和MSTI 。</p>
+<ul>
+<li><p>参与CIST计算的优先级向量为：</p>
+<p>▪{ 根交换设备ID，外部路径开销，域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>参与MSTI计算的优先级向量为：</p>
+<p>▪{ 域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>注意：括号中的向量的优先级从左到右依次递减。</p>
+</li>
+</ul>
+<blockquote>
+<p>•优先级向量说明：</p>
+<ul>
+<li><p>根交换设备ID：根交换设备ID用于选择CIST中的根交换设备。</p>
+<ul>
+<li><p>根交换设备ID = Priority(16 bit) + MAC(48 bit)。</p>
+</li>
+<li><p>其中Priority为MSTI0的优先级。</p>
+</li>
+</ul>
+</li>
+<li><p>外部路径开销（External Root Path Cost，ERPC）：从CIST的域根到达总根的路径开销。</p>
+<ul>
+<li>MST域内所有交换设备上保存的外部路径开销相同。</li>
+<li>若CIST根交换设备在域中，则域内所有交换设备上保存的外部路径开销为0。</li>
+</ul>
+</li>
+<li><p>域根ID：域根ID用于选择MSTI中的域根。</p>
+<ul>
+<li>域根ID = Priority(16 bit) + MAC(48 bit)。</li>
+<li>其中Priority为MSTI0的优先级。</li>
+</ul>
+</li>
+<li><p>内部路径开销（Internal Root Path Cost，IRPC）：本桥到达域根的路径开销。</p>
+<ul>
+<li>域边缘端口保存的内部路径开销大于非域边缘端口保存的内部路径开销。</li>
+</ul>
+</li>
+<li><p>指定交换设备ID：CIST或MSTI实例的指定交换设备是本桥通往域根的最邻近的上游桥。</p>
+<ul>
+<li>如果本桥就是总根或域根，则指定交换设备为自己。</li>
+</ul>
+</li>
+<li><p>指定端口ID：指定交换设备上同本设备上根端口相连的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+<li><p>接收端口ID：接收到BPDU报文的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>•优先级向量比较原则：</p>
+<ul>
+<li><p>同一向量比较，值最小的向量具有最高优先级。</p>
+</li>
+<li><p>优先级向量比较原则如下</p>
+<p>1.首先，比较根交换设备ID。</p>
+<p>2.如果根交换设备ID相同，再比较外部路径开销。</p>
+<p>3.如果外部路径开销相同，再比较域根ID。</p>
+<p>4.如果域根ID仍然相同，再比较内部路径开销。</p>
+<p>5.如果内部路径仍然相同，再比较指定交换设备ID。</p>
+<p>6.如果指定交换设备ID仍然相同，再比较指定端口ID。</p>
+<p>7.如果指定端口ID还相同，再比较接收端口ID。</p>
+</li>
+<li><p>如果端口接收到的BPDU内包含的配置消息优于端口上保存的配置消息，则端口上原来保存的配置消息被新收到的配置消息替代。端口同时更新交换设备保存的全局配置消息。反之，新收到的BPDU被丢弃。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="CIST计算"><a href="#CIST计算" class="headerlink" title="CIST计算"></a><strong>CIST计算</strong></h2><p>•经过比较MST BPDU消息后，在整个网络中选择一个优先级最高的交换设备作为CIST的树根，即总根。</p>
+<p>•在每个MST域内，MSTP通过计算生成IST；同时MSTP将每个MST域作为单台交换设备对待，通过计算在MST域间生成CST。CST和IST构成了整个交换设备网络的CIST。</p>
+<p><img src="/2021/05/06/MSTP/20.png"></p>
+<h2 id="MSTI计算"><a href="#MSTI计算" class="headerlink" title="MSTI计算"></a>MSTI计算</h2><p>•在MST域内，MSTP根据VLAN和生成树实例的映射关系，针对不同的VLAN生成不同的生成树实例。</p>
+<p>•每棵生成树独立进行计算，计算过程与STP计算生成树的过程类似。</p>
+<p><img src="/2021/05/06/MSTP/21.png"></p>
+<blockquote>
+<p>•MSTI的特点：</p>
+<p>​    ▫每个MSTI独立计算自己的生成树，互不干扰。</p>
+<p>​    ▫每个MSTI的生成树计算方法与STP基本相同。</p>
+<p>​    ▫每个MSTI的生成树可以有不同的根，不同的拓扑。</p>
+<p>​    ▫每个MSTI在自己的生成树内发送BPDU。</p>
+<p>​    ▫每个MSTI的拓扑通过命令配置决定。</p>
+<p>​    ▫每个端口在不同MSTI上的生成树参数可以不同。</p>
+<p>​    ▫每个端口在不同MSTI上的角色、状态可以不同。</p>
+<p>•根桥和备份根桥：可以通过计算来自动确定生成树的根桥，用户也可以手动配置设备为指定生成树的根桥或备份根桥。</p>
+<p>​    ▫设备在各生成树中的角色互相独立，在作为一棵生成树的根    桥或备份根桥的同时，也可以作为其它生成树的根桥或备份    根桥；但在同一棵生成树中，一台设备不能既作为根桥，又    作为备份根桥。</p>
+<p>​    ▫在一棵生成树中，生效的根桥只有一个；当两台或两台以上    的设备被指定为同一棵生成树的根桥时，系统将选择MAC地    址最小的设备作为根桥。</p>
+<p>​    ▫可以在每棵生成树中指定多个备份根桥。当根桥出现故障或    被关机时，备份根桥可以取代根桥成为指定生成树的根桥；    但此时若配置了新的根桥，则备份根桥将不会成为根桥。如    果配置了多个备份根桥，则MAC地址最小的备份根桥将成为    指定生成树的根桥。</p>
+</blockquote>
+<h2 id="MSTP网络数据转发"><a href="#MSTP网络数据转发" class="headerlink" title="MSTP网络数据转发"></a><strong>MSTP网络数据转发</strong></h2><p>在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：</p>
+<ul>
+<li><p>在MST域内，沿着其对应的MSTI转发。</p>
+</li>
+<li><p>在MST域间，沿着CST转发。</p>
+</li>
+</ul>
+<p><img src="/2021/05/06/MSTP/22.png"></p>
+<blockquote>
+<p>•如图所示，以VLAN2的数据发送为例。</p>
+</blockquote>
+<h1 id="MSTP的基本配置"><a href="#MSTP的基本配置" class="headerlink" title="MSTP的基本配置"></a>MSTP的基本配置</h1><h2 id="MSTP的基础配置命令"><a href="#MSTP的基础配置命令" class="headerlink" title="MSTP的基础配置命令"></a><strong>MSTP的基础配置命令</strong></h2><p><img src="/2021/05/06/MSTP/23.png"></p>
+<blockquote>
+<p>•命令：<strong>stp mode</strong> <strong>mstp</strong></p>
+<p>▫STP和MSTP不能互相识别报文，而MSTP和RSTP可以互相识别报文，所以若工作在MSTP工作模式下，交换设备会设置所有和运行STP的交换设备直接相连的端口工作在STP模式下，其他端口工作在MSTP模式下，实现运行不同生成树协议的设备之间的互通。</p>
+</blockquote>
+<h2 id="配置MST域并激活"><a href="#配置MST域并激活" class="headerlink" title="配置MST域并激活"></a><strong>配置MST域并激活</strong></h2><p><img src="/2021/05/06/MSTP/24.png"></p>
+<p><img src="/2021/05/06/MSTP/25.png"></p>
+<blockquote>
+<p>•命令：<strong>stp region-configuration</strong></p>
+<ul>
+<li>缺省情况下，MST域的三个参数均取缺省值。</li>
+</ul>
+<p>•命令：<strong>region-name</strong> <em>name</em></p>
+<ul>
+<li><em>name</em>：指定交换设备的MST域名。字符串形式，不支持空格，区分大小写，长度为1～32个字符。</li>
+</ul>
+<p>•命令：<strong>instance</strong> <em>instance-id</em> <strong>vlan</strong> { <em>vlan-id1</em> [ <strong>to</strong> <em>vlan-id2</em> ] }</p>
+<ul>
+<li><em>instance-id</em>：指定生成树实例的编号。整数形式，取值范围是0～4094，取值为0表示的是CIST。</li>
+</ul>
+<p>•命令：<strong>revision-level</strong> <em>level</em></p>
+<ul>
+<li><p><em>level</em>：指定MST域的修订级别。整数形式，取值范围是0～65535。</p>
+</li>
+<li><p>MSTP是标准协议，各厂商设备的MSTP修订级别一般都默认为0。如果某厂商的设备不为0，为保持MST域内计算，在部署MSTP时，需要将各设备的MSTP修订级别修改为一致。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTP的可选配置命令"><a href="#MSTP的可选配置命令" class="headerlink" title="MSTP的可选配置命令"></a>MSTP的可选配置命令</h2><p><img src="/2021/05/06/MSTP/26.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>root</strong> { <strong>primary</strong> | <strong>secondary</strong> }</p>
+<ul>
+<li><p><strong>instance</strong> <em>instance-id</em>：指定生成树实例的编号。如果不指定instance，则配置设备在实例0上为根桥/备份根桥设备。</p>
+</li>
+<li><p><strong>primary</strong>：指定配置为生成树的根桥设备。配置后该设备优先级值自动为0，将不能更改设备优先级。</p>
+</li>
+<li><p><strong>secondary</strong>：指定配置为生成树的备份根桥设备。配置后该设备优先级值自动为4096，将不能更改设备优先级。</p>
+</li>
+</ul>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定交换设备的优先级数值。优先级值越小，则交换设备的优先级越高。整数形式，取值范围是0～61440，步长为4096，如0、4096、8192等。缺省值是32768。</li>
+</ul>
+<p>•命令：<strong>stp</strong> <strong>pathcost-standard</strong> { <strong>dot1d-1998</strong> | <strong>dot1t</strong> | <strong>legacy</strong> }</p>
+<ul>
+<li><p><strong>dot1d-1998</strong>：指定路径开销值的计算方法是IEEE 802.1D-1998标准方法，取值范围为1~65535。</p>
+</li>
+<li><p><strong>dot1t</strong>：指定路径开销值的计算方法是IEEE 802.1T标准方法，取值范围为1~200,000,000。</p>
+</li>
+<li><p><strong>legacy</strong>：指定路径开销值的计算方法是华为计算方法，取值范围为1~200,000。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/05/06/MSTP/27.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>port priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定端口在生成树计算时的优先级。整数形式，取值范围是0～240，步长为16，如0、16、32等。</li>
+</ul>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-1"><a href="#案例：单域多实例场景配置-1" class="headerlink" title="案例：单域多实例场景配置 (1)"></a><strong>案例：单域多实例场景配置</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/29.png"></p>
+<blockquote>
+<p>可以配置SW1为VLAN2的网关（VLANIF2：192.168.1.254/24），SW2为VLAN3的网关（VLANIF3:192.168.2.254/24），最终实现PC1能Ping通SW1的VLANIF2接口，PC2能Ping通SW2的VLANIF3接口。</p>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-2"><a href="#案例：单域多实例场景配置-2" class="headerlink" title="案例：单域多实例场景配置 (2)"></a><strong>案例：单域多实例场景配置</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/30.png"></p>
+<p><img src="/2021/05/06/MSTP/31.png"></p>
+<h2 id="案例：单域多实例场景配置-3"><a href="#案例：单域多实例场景配置-3" class="headerlink" title="案例：单域多实例场景配置 (3)"></a><strong>案例：单域多实例场景配置</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/32.png"></p>
+<p><img src="/2021/05/06/MSTP/33.png"></p>
+<p><img src="/2021/05/06/MSTP/34.png"></p>
+<h2 id="验证配置结果-1"><a href="#验证配置结果-1" class="headerlink" title="验证配置结果 (1)"></a><strong>验证配置结果</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/35.png"></p>
+<p><img src="/2021/05/06/MSTP/36.png"></p>
+<h2 id="验证配置结果-2"><a href="#验证配置结果-2" class="headerlink" title="验证配置结果 (2)"></a><strong>验证配置结果</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/37.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 某运行MSTP协议的交换机的端口角色如下图所示，请问GigabitEthernet0/0/1端口在Instance1中的端口状态应该是？</p>
+<p>A.Blocking</p>
+<p><strong>B.Discarding</strong></p>
+<p>C.Forwarding</p>
+<p>D.Learning</p>
+<p><img src="/2021/05/06/MSTP/4.png"></p>
+<p>2.(判断题) CIST是由内部生成树和公共生成树构成的一棵树。（  ）</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•在MSTP网络中，可以将一个或多个VLAN映射到一个Instance，然后MSTP基于该Instance计算生成树。基于Instance的生成树被称为MSTI，MSTP为每个Instance维护独立的MSTI，映射到同一个Instance的VLAN将共享同一棵生成树。</p>
+<p>•在以太网中部署MSTP协议后可实现如下功能：</p>
+<ul>
+<li><p>形成多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+</li>
+<li><p>多棵生成树在VLAN间实现负载均衡，不同VLAN的流量按照不同的路径转发。</p>
+</li>
+</ul>
+
           
         
       
@@ -669,7 +1017,402 @@
       
         
           
-            
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•以太网交换网络中为了进行链路备份，提高网络可靠性，通常会使用冗余链路，但是这也带来了网络环路的问题。网络环路会引发广播风暴和MAC地址表震荡等问题，导致用户通信质量差，甚至通信中断。为了解决交换网络中的环路问题，IEEE提出了基于802.1D标准的STP（Spanning Tree Protocol，生成树协议）。</p>
+<p>•随着局域网规模的不断增长，STP拓扑收敛速度慢的问题逐渐凸显，因此，IEEE在2001年发布了802.1W标准，定义了RSTP（Rapid Spanning Tree Protocol，快速生成树协议），RSTP在STP的基础上进行了改进，可实现网络拓扑的快速收敛。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><ul>
+<li><p>描述STP技术的缺陷</p>
+</li>
+<li><p>描述RSTP对STP技术的改进</p>
+</li>
+<li><p>描述RSTP的基本工作原理</p>
+</li>
+<li><p>完成RSTP的基本配置</p>
+</li>
+</ul>
+<h1 id="STP回顾与STP不足"><a href="#STP回顾与STP不足" class="headerlink" title="STP回顾与STP不足"></a><strong>STP回顾与STP不足</strong></h1><h2 id="回顾：STP的工作原理"><a href="#回顾：STP的工作原理" class="headerlink" title="回顾：STP的工作原理"></a><strong>回顾：STP的工作原理</strong></h2><p>•STP通过在交换机之间传递配置BPDU来选举根交换机 (或根桥)，以及确定每个交换机端口的角色和状态。</p>
+<p>​    ▫在初始化过程中，每个交换机都主动发送配置BPDU。</p>
+<p>​    ▫在网络拓扑稳定以后，只有根桥周期性发送配置BPDU，其他交    换机在收到上游传来的配置BPDU后，才会发送自己的配BPDU。</p>
+<p>•配置BPDU包含了桥ID、路径开销和端口ID等参数。</p>
+<p><img src="/2021/05/06/RSTP/1.png"></p>
+<blockquote>
+<p>•配置BPDU泛洪：</p>
+<ul>
+<li><p>在初始形成STP树的过程中，所有STP交换机会周期性地（Hello Time，缺省为2s）主动产生并发送配置BPDU，大家都认为自己是根桥。</p>
+</li>
+<li><p>随着BPDU的泛洪和收集，各交换机根据BPDU包含的信息进行比较，并选举出根桥。</p>
+</li>
+<li><p>在此之后（即STP树形成后的稳定期），只有根桥会周期性地（缺省为2s）主动产生并发送配置BPDU。相应的，非根桥交换机会从自己的根端口周期性地接收到配置BPDU，并立即触发产生自己的配置BPDU，然后从自己的指定端口发出。——这一过程看起来就像是，根桥发出的配置BPDU逐跳地“经过”了其他的交换机。也可以理解为：从根桥倒一盆水下来，水顺着这棵无环的树从上往下不断地往下流。因此如图所示，可以理解为SW1与SW2间的链路是SW2的上游链路，SW2与SW3间的链路是SW2的下游链路。</p>
+</li>
+</ul>
+<p>•报文格式：</p>
+<ul>
+<li><p>配置BPDU携带的参数可以分为3类：</p>
+</li>
+<li><p>第一类，BPDU对自身的标识，包括：协议标识、协议版本号、BPDU类型和标志。</p>
+<ul>
+<li>协议标识（Protocol ID，PID），2 Byte，总是0x000。</li>
+<li>协议版本号（Protocol Version ID，PVI），1 Byte，总是0x00。</li>
+<li>BPDU类型（BPDU Type），1 Byte，配置BPDU的类型值为0x00。</li>
+<li>标志（Flag），1 Byte，网络拓扑变化标志，仅使用了最低位和最高位。</li>
+</ul>
+</li>
+<li><p>第二类，用于进行STP计算的参数，包括：当前根桥的BID、根路径开销、发送该BPDU的交换机的BID和发送该BPDU的端口的PID。</p>
+<ul>
+<li>根桥ID（Root ID），8 Byte，当前根桥的BID。</li>
+<li>根路径开销（Root Path Cost，RPC），4 Byte，发送该BPDU的端口累计到根桥的开销。</li>
+<li>网桥ID（Bridge ID，BID），8 Byte，发送该BPDU的交换机的BID。</li>
+<li>接口ID（Port ID，PDID），2 Byte，发送该BPDU的端口ID。</li>
+</ul>
+</li>
+<li><p>第三类，时间参数，包括：消息寿命、最大寿命、Hello时间和转发延迟。</p>
+<ul>
+<li>消息寿命（Message Age），2 Byte，该BPDU消息的年龄。从根桥发出的配置BPDU，Message Age为0。在实际的实现中，配置BPDU每“经过”一个桥，Message Age增加1。</li>
+<li>最大寿命（Max Age），2 Byte，BPDU的最大生命周期，缺省为20s。</li>
+<li>Hello时间（Hello Time），2 Byte，根桥发送配置BPDU的周期，缺省为2s。</li>
+<li>转发延迟（Forward Delay），2 Byte，端口在侦听和学习状态（后续会讲）所停留的时间间隔，缺省为15s。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="回顾：STP树的生成过程"><a href="#回顾：STP树的生成过程" class="headerlink" title="回顾：STP树的生成过程"></a><strong>回顾：STP树的生成过程</strong></h2><p><img src="/2021/05/06/RSTP/2.png"></p>
+<blockquote>
+<p>•STP基本原理：</p>
+<ul>
+<li>在一个具有物理环路的交换网络中，交换机通过运行STP，自动生成一个没有环路的工作拓扑，也被称为STP树。树节点为某些特定的交换机，树枝为某些特定的链路。</li>
+</ul>
+<p>•STP采用四个步骤来解决二层环路问题（生成一棵STP树）：</p>
+<ul>
+<li>在一个交换网络中选举一个根桥；在每个非根桥上选举一个根端口；为每个网段选举一个指定端口；阻塞交换机上所有剩余的非根、非指定端口（备用端口）。</li>
+</ul>
+<p>•如何生成STP树？</p>
+<ul>
+<li>主要通过比较4个参数：根桥ID、根路径开销、网桥ID和端口ID，值越小，越优先。而这些参数，都是报文BPDU中的字段。<ul>
+<li>根桥选举：比较根桥ID，最小胜出。</li>
+<li>根端口选举：依次比较RPC、对端BID、对端PID和本端PID，最小胜出。</li>
+<li>指定端口选举：依次比较RPC、本端BID和本端PID，最小胜出。</li>
+<li>在确定了根端口和指定端口之后，交换机上所有剩余的非根端口和非指定端口被阻塞。</li>
+</ul>
+</li>
+</ul>
+<p>•在华为产品的实现中，被阻塞的非指定端口表现为Alternate Port。</p>
+</blockquote>
+<h2 id="回顾：STP的端口状态迁移"><a href="#回顾：STP的端口状态迁移" class="headerlink" title="回顾：STP的端口状态迁移"></a><strong>回顾：STP的端口状态迁移</strong></h2><p><img src="/2021/05/06/RSTP/3.png"></p>
+<blockquote>
+<p>•根据端口是否接收和发送STP协议帧，以及端口是否能转发用户数据帧，STP定义了五种端口状态：Disabled、Blocking、Listening、Learning和Forwarding。</p>
+<ul>
+<li>Disabled状态：端口无法接收和发出任何帧（即：端口不仅不处理BPDU报文，也不转发用户流量），端口处于关闭（down）状态。</li>
+<li>Blocking状态：端口只能接收并处理BPDU，不能发送BPDU，也不能转发用户数据帧（用户流量），是阻塞端口的最终状态。</li>
+<li>Listening状态：端口可以接收并发送BPDU，但不进行MAC地址学习，也不能转发用户数据帧。这是过渡状态，用于确定端口角色，将选举出根桥、根端口和指定端口，同时用于防止临时环路。</li>
+<li>Learning状态：端口可以接收并发送BPDU，也可以进行MAC地址学习，根据收到的用户流量构建MAC地址表，但不能转发用户数据帧（用户流量）。这也是过渡状态，用于防止MAC地址表未建立，网络中出现大量数据帧泛洪。</li>
+<li>Forwarding状态：端口可以接收并发送BPDU，也可以进行MAC地址学习，同时能够转发用户数据帧（用户流量）。只有根端口或指定端口才能进入Forwarding状态。</li>
+</ul>
+<p>•端口状态迁移：</p>
+<ol>
+<li><p>STP交换机的端口在初始启动时，会从Disabled状态进入到Blocking状态。在Blocking状态，端口只接收和分析BPDU，但不发送。</p>
+</li>
+<li><p>在整个过程中，端口一但被关闭或发生了链路故障，就会进入Disabled状态。</p>
+</li>
+<li><p>如果端口被选为根端口或指定端口，则会进入Listening状态，此时端口接收并发送BPDU，这种状态会持续一个Forward Delay的时间长度，缺省为15s，是为了防止临时环路：因为此时网络中可能还存在因STP树的计算过程不同步而产生的临时环路。</p>
+</li>
+<li><p>在端口状态迁移过程中，如果端口的角色被判定为非根端口或非指定端口，则其端口状态就会立即退回到Blocking状态。</p>
+</li>
+<li><p>如果没有因“意外情况”回到Disabled状态，那么端口会进入Learning状态，此时端口不但可以接收并发送BPDU，还会开始构建MAC地址表，为用户流量的转发做好准备。这个状态也会持续一个Forward Delay的时间长度，缺省为15s，是为了防止此时交换机的MAC地址表还未建立，导致大量的数据帧被泛洪<strong>。</strong></p>
+</li>
+<li><p>最后，端口进入Forwarding状态，开始转发用户流量。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="STP的不足"><a href="#STP的不足" class="headerlink" title="STP的不足"></a>STP的不足</h2><p>STP虽然能够解决环路问题，但是由于网络拓扑收敛慢，影响了用户通信质量。如果网络中的拓扑结构频繁变化，网络也会随之频繁失去连通性，从而导致用户通信频繁中断，这是用户无法忍受的。</p>
+<p>STP的不足：</p>
+<ul>
+<li><p>STP没有细致区分端口状态和端口角色，不利于初学者学习及部署。</p>
+<ul>
+<li>从用户角度来讲，Listening、Learning和Blocking状态并没有区别，都同样不转发用户流量。</li>
+<li>从使用和配置角度来讲，端口之间最本质的区别并不在于端口状态，而是在于端口扮演的角色。</li>
+</ul>
+</li>
+<li><p>STP算法是被动的算法，依赖定时器等待的方式判断拓扑变化，收敛速度慢。</p>
+</li>
+<li><p>STP算法要求在稳定的拓扑中，根桥主动发出配置BPDU报文，而其他设备再进行处理，最终传遍整个STP网络。</p>
+</li>
+</ul>
+<h2 id="STP对计时器的依赖"><a href="#STP对计时器的依赖" class="headerlink" title="STP对计时器的依赖"></a><strong>STP对计时器的依赖</strong></h2><p><img src="/2021/05/06/RSTP/4.png"></p>
+<p><img src="/2021/05/06/RSTP/5.png"></p>
+<h2 id="STP重收敛过程慢"><a href="#STP重收敛过程慢" class="headerlink" title="STP重收敛过程慢"></a><strong>STP重收敛过程慢</strong></h2><p><img src="/2021/05/06/RSTP/6.png"></p>
+<p><img src="/2021/05/06/RSTP/7.png"></p>
+<blockquote>
+<p>•直连故障：</p>
+<ul>
+<li><p>两台交换机间有两条链路，其中一条是主用链路，另一条为备用链路。</p>
+</li>
+<li><p>当网络稳定时，交换机SW2检测到根端口的链路发生故障，则被阻塞的端口会开始端口状态迁移，最终进入用户流量转发状态。</p>
+</li>
+</ul>
+<p>•非直连故障：</p>
+<ul>
+<li><p>当网络正常时，SW3的被阻塞端口会定期收到来自根桥的BPDU。</p>
+</li>
+<li><p>当SW1与SW2之间的链路发生故障时，SW2能够第一时间检测到故障发生，此时它认为自己成为新的根桥，于是向SW3发送自己的配置BPDU（根桥ID为自己的桥ID）。</p>
+</li>
+<li><p>SW3的被阻塞端口将收到上述配置BPDU，但该BPDU并不比当前端口所缓存的配置BPDU更优，因此SW3忽略该配置BPDU。</p>
+</li>
+<li><p>当Max Age计时器超时后，SW3端口上缓存的配置BPDU老化，SW3开始向SW2发送配置BPDU，该配置BPDU由根桥SW1发送的配置BPDU触发，其中的根桥ID字段值为SW1的桥ID。</p>
+</li>
+<li><p>SW2收到上述配置BPDU后，解析该报文并认定SW1为根桥，于是将其连接SW3的端口切换为根端口。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="STP拓扑变更机制"><a href="#STP拓扑变更机制" class="headerlink" title="STP拓扑变更机制"></a><strong>STP拓扑变更机制</strong></h2><p>STP的拓扑变更机制，需要先将拓扑变化信息传递给根桥，再由根桥向下游泛洪拓扑变化信息。</p>
+<p><img src="/2021/05/06/RSTP/8.png"></p>
+<blockquote>
+<p>•拓扑变更，STP处理过程：</p>
+<p>当交换机检测到拓扑更改时，会通知生成树的根桥，然后根桥将该拓扑更改信息泛洪到整个网络。</p>
+<p>拓扑变化过程，如图：</p>
+<ul>
+<li>如果网络中新增一台交换机，导致工作拓扑发生了变化，则位于变化点的交换机可以通过端口状态直接感知到这种变化，但是其他的交换机是无法直接感知到的。</li>
+<li>位于变化点的交换机会以Hello Time（缺省2s）为周期通过其根端口不断向上游发送TCN BPDU，直到接收到从上游交换机发来的、TCA位置1的配置BPDU。TCA位置1是为了通知下游设备停止发送TCN BPDU报文。</li>
+<li>上游交换机收到TCN BPDU后，一方面会通过其指定端口回复TCA位置1的配置BPDU，另一方面会以Hello Time为周期通过其根端口不断向它的上游发送TCN BPDU。</li>
+<li>这个过程一直重复，直到根桥收到TCN BPDU。</li>
+<li>根桥收到TCN BPDU后，会发送TC位置1的配置BPDU，通告所有交换机网络拓扑发生了变化，通知下游设备直接删除桥MAC地址表项。</li>
+</ul>
+</blockquote>
+<h1 id="RSTP概述"><a href="#RSTP概述" class="headerlink" title="RSTP概述"></a><strong>RSTP概述</strong></h1><h2 id="RSTP概述-1"><a href="#RSTP概述-1" class="headerlink" title="RSTP概述"></a><strong>RSTP概述</strong></h2><p>•IEEE 802.1W中定义的RSTP可以视为STP的改进版本，RSTP在许多方面对STP进行了优化，它的收敛速度更快，而且能够兼容STP。</p>
+<p>•RSTP对STP的改进：</p>
+<ul>
+<li>通过端口角色的增补，简化了生成树协议的理解及部署；</li>
+<li>端口状态的重新划分；</li>
+<li>配置BPDU格式的改变，充分利用了STP协议报文中的Flag字段，明确了端口角色；</li>
+<li>配置BPDU的处理发生变化；</li>
+<li>快速收敛；</li>
+<li>增加保护功能。</li>
+</ul>
+<blockquote>
+<p>•RSTP可以兼容STP：RSTP可以和STP互操作，但是此时会丧失快速收敛等RSTP优势。</p>
+<ul>
+<li><p>当一个网段里既有运行STP的交换设备又有运行RSTP的交换设备，STP交换设备会忽略RSTP的BPDU。运行RSTP的交换设备在某端口上接收到运行STP的交换设备发出的配置BPDU，在两个Hello Time时间之后，便把自己的端口转换到STP工作模式，发送配置BPDU，从而实现了互操作。</p>
+</li>
+<li><p>在华为技术有限公司的数据通信设备上可以配置运行STP的交换设备被撤离网络后，运行RSTP的交换设备可迁移回到RSTP工作模式。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="RSTP在园区网络中的应用位置"><a href="#RSTP在园区网络中的应用位置" class="headerlink" title="RSTP在园区网络中的应用位置"></a><strong>RSTP在园区网络中的应用位置</strong></h2><p><img src="/2021/05/06/RSTP/9.png"></p>
+<h1 id="RSTP对STP的改进"><a href="#RSTP对STP的改进" class="headerlink" title="RSTP对STP的改进"></a><strong>RSTP对STP的改进</strong></h1><h2 id="改进点1：端口角色"><a href="#改进点1：端口角色" class="headerlink" title="改进点1：端口角色"></a><strong>改进点1：端口角色</strong></h2><p>通过端口角色的增补，简化了生成树协议的理解与部署。</p>
+<p><img src="/2021/05/06/RSTP/10.png"></p>
+<p><img src="/2021/05/06/RSTP/11.png"></p>
+<blockquote>
+<p>•RSTP的端口角色共有4种：根端口、指定端口、Alternate端口和Backup端口。</p>
+<p>•根端口和指定端口的作用同STP中定义，Alternate端口和Backup端口的描述如下：</p>
+<ul>
+<li><p>从配置BPDU报文发送角度来看：</p>
+<ul>
+<li>Alternate端口就是由于学习到其它网桥发送的配置BPDU报文而阻塞的端口。</li>
+<li>Backup端口就是由于学习到自己发送的配置BPDU报文而阻塞的端口。</li>
+</ul>
+</li>
+<li><p>从用户流量角度来看：</p>
+<ul>
+<li>Alternate端口提供了从指定桥到根的另一条可切换路径，作为根端口的备份端口。</li>
+<li>Backup端口作为指定端口的备份，提供了另一条从根桥到相应网段的备份通路。</li>
+</ul>
+</li>
+</ul>
+<p>•给一个RSTP域内所有端口分配角色的过程就是整个拓扑收敛的过程。</p>
+</blockquote>
+<h2 id="改进点2：端口状态"><a href="#改进点2：端口状态" class="headerlink" title="改进点2：端口状态"></a><strong>改进点2：端口状态</strong></h2><p>RSTP的状态规范缩减为3种，根据端口是否转发用户流量和学习MAC地址来划分:</p>
+<p>▫Discarding状态：不转发用户流量也不学习MAC地址；</p>
+<p>▫Learning状态：不转发用户流量但是学习MAC地址；</p>
+<p>▫Forwarding状：既转发用户流量又学习MAC地址。</p>
+<table>
+<thead>
+<tr>
+<th align="center">STP端口状态</th>
+<th align="center"><strong>RSTP端口状态</strong></th>
+<th align="center"><strong>端口在拓扑中的角色</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Forwarding</td>
+<td align="center">Forwarding</td>
+<td align="center">包括根端口、指定端口</td>
+</tr>
+<tr>
+<td align="center">Learning</td>
+<td align="center">Learning</td>
+<td align="center">包括根端口、指定端口</td>
+</tr>
+<tr>
+<td align="center">Listening</td>
+<td align="center">Discarding</td>
+<td align="center">包括根端口、指定端口</td>
+</tr>
+<tr>
+<td align="center">Blocking</td>
+<td align="center">Discarding</td>
+<td align="center">包括Alternate端口、Backup端口</td>
+</tr>
+<tr>
+<td align="center">Disabled</td>
+<td align="center">Discarding</td>
+<td align="center">包括Disable端口</td>
+</tr>
+</tbody></table>
+<h2 id="改进点3：配置BPDU-RST-BPDU"><a href="#改进点3：配置BPDU-RST-BPDU" class="headerlink" title="改进点3：配置BPDU - RST BPDU"></a><strong>改进点3：配置BPDU - RST BPDU</strong></h2><p>•RSTP的配置BPDU充分利用了STP报文中的Flag字段，明确了端口角色。</p>
+<p>•除了保证和STP格式基本一致之外，RSTP作了如下变化：</p>
+<ul>
+<li><p>Type字段：配置BPDU类型不再是0而是2，所以运行STP的设备收到RSTP的配置BPDU时会丢弃。</p>
+</li>
+<li><p>Flag字段：使用了原来保留的中间6位，这样改变的配置BPDU叫做RST BPDU。</p>
+</li>
+</ul>
+<p>•<strong>RST BPDU报文格式：</strong></p>
+<p><img src="/2021/05/06/RSTP/12.png"></p>
+<blockquote>
+<p>•RST BPDU与STP配置BPDU报文格式不同点，包括：BPDU类型和Flag字段。</p>
+<ul>
+<li><p>BPDU类型，1 Byte，RST BPDU的类型值为0x02。</p>
+</li>
+<li><p>标志，1 Byte，包括：</p>
+<p>▪bit 7：TCA，表示拓扑变化确认；</p>
+<p>▪bit 6：Agreement，表示同意，用于P/A机制；</p>
+<p>▪bit 5：Forwarding，表示转发状态；</p>
+<p>▪bit 4：Learning，表示学习状态；</p>
+<p>▪bit 3和bit 2：表示端口角色，00表示未知端口，01表示替代或备份端口，10表示根端口，11表示指定端口；</p>
+<p>▪bit 1：Proposal，表示提议，用于P/A机制；</p>
+<p>▪bit 0：TC，表示拓扑变化。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点4：配置BPDU的处理-1"><a href="#改进点4：配置BPDU的处理-1" class="headerlink" title="改进点4：配置BPDU的处理 (1)"></a><strong>改进点4：配置BPDU的处理</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/RSTP/13.png"></p>
+<h2 id="改进点4：配置BPDU的处理-2"><a href="#改进点4：配置BPDU的处理-2" class="headerlink" title="改进点4：配置BPDU的处理 (2)"></a><strong>改进点4：配置BPDU的处理</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/14.png"></p>
+<h2 id="改进点4：配置BPDU的处理-3"><a href="#改进点4：配置BPDU的处理-3" class="headerlink" title="改进点4：配置BPDU的处理 (3)"></a><strong>改进点4：配置BPDU的处理 (3)</strong></h2><p><img src="/2021/05/06/RSTP/15.png"></p>
+<blockquote>
+<p>•STP：</p>
+<ul>
+<li>STP只有指定端口会立即处理次优BPDU，其他端口会忽略次优BPDU，等到Max Age计时器超时后，缓存的次优BPDU才会老化，然后发送自身更优的BPDU，进行新一轮的拓扑收敛。</li>
+</ul>
+<p>•RSTP：</p>
+<ul>
+<li>RSTP处理次优BPDU报文不再依赖于任何定时器（即不再依赖于BPDU老化）解决拓扑收敛，同时RSTP的任何端口角色都会处理次优BPDU，从而加快了拓扑收敛。</li>
+</ul>
+</blockquote>
+<h2 id="改进点5：快速收敛机制-1"><a href="#改进点5：快速收敛机制-1" class="headerlink" title="改进点5：快速收敛机制 (1)"></a><strong>改进点5：快速收敛机制 (1)</strong></h2><p><img src="/2021/05/06/RSTP/16.png"></p>
+<p><img src="/2021/05/06/RSTP/17.png"></p>
+<h2 id="改进点5：快速收敛机制-2"><a href="#改进点5：快速收敛机制-2" class="headerlink" title="改进点5：快速收敛机制 (2)"></a><strong>改进点5：快速收敛机制</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/18.png"></p>
+<blockquote>
+<p>•边缘端口的UP和Down，不会引起网络拓扑的变动。</p>
+</blockquote>
+<h2 id="改进点5：快速收敛机制-3"><a href="#改进点5：快速收敛机制-3" class="headerlink" title="**改进点5：快速收敛机制 (3) **"></a>**改进点5：快速收敛机制 (3) **</h2><p><img src="/2021/05/06/RSTP/19.png"></p>
+<blockquote>
+<p>•事实上对于STP，指定端口的选择可以很快完成，主要的速度瓶颈在于：为了避免环路，必须等待足够长的时间，使全网的端口状态全部确定，也就是说必须要等待至少一个Forward Delay所有端口才能进行转发。</p>
+<p>•而RSTP的主要目的就是消除这个瓶颈，通过阻塞自己的非根端口来保证不会出现环路。而使用P/A机制加快了上游端口进入Forwarding状态的速度。</p>
+</blockquote>
+<h3 id="P-A机制详解-1"><a href="#P-A机制详解-1" class="headerlink" title="P/A机制详解(1)"></a><strong>P/A机制详解(1)</strong></h3><p><img src="/2021/05/06/RSTP/20.png"></p>
+<h3 id="P-A机制详解-2"><a href="#P-A机制详解-2" class="headerlink" title="P/A机制详解(2)"></a><strong>P/A机制详解(2)</strong></h3><p><img src="/2021/05/06/RSTP/21.png"></p>
+<blockquote>
+<p>•SW2的下游端口同步过程：替代端口，状态不变；边缘端口，不参与计算；阻塞非边缘指定端口。</p>
+</blockquote>
+<h3 id="P-A机制详解-3"><a href="#P-A机制详解-3" class="headerlink" title="P/A机制详解(3)"></a><strong>P/A机制详解(3)</strong></h3><p><img src="/2021/05/06/RSTP/22.png"></p>
+<h2 id="改进点6：拓扑变更机制"><a href="#改进点6：拓扑变更机制" class="headerlink" title="改进点6：拓扑变更机制"></a><strong>改进点6：拓扑变更机制</strong></h2><p>在RSTP中检测拓扑是否发生变化只有一个标准：一个非边缘端口迁移到Forwarding状态。</p>
+<p><img src="/2021/05/06/RSTP/23.png"></p>
+<blockquote>
+<p>•在STP中，如果拓扑发生了变化，需要先向根桥传递TCN BPDU，再由根桥来通知拓扑变更，泛洪TC置位的配置BPDU。</p>
+<p>•在RSTP中，通过新的拓扑变更机制，TC置位的RST BPDU会快速的在网络中泛洪。</p>
+<p>•如上图所示：</p>
+<ul>
+<li><p>SW3的根端口收不到从根桥发来的RST BPDU后，Alternate端口会快速切换为新的根端口，启动TC While Timer，并清空所有端口学习到的MAC地址。然后向外发出TC置位的RST BPDU。</p>
+</li>
+<li><p>SW2接收到RST BPDU后，会清空接收口以外所有端口学习到的MAC地址，同时开启计时器，并向外发送TC置位的RST BPDU。</p>
+</li>
+<li><p>最终，RST BPDU会在全网泛洪。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点7：保护功能-1"><a href="#改进点7：保护功能-1" class="headerlink" title="改进点7：保护功能 (1)"></a><strong>改进点7：保护功能</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/RSTP/24.png"></p>
+<blockquote>
+<p>•在交换设备上，通常将直接与用户终端（如PC机）或文件服务器等非交换设备相连的端口配置为边缘端口。</p>
+<p>•如上图所示：</p>
+<ul>
+<li><p>SW3与某主机互联，并设置该互联端口为边缘端口。</p>
+</li>
+<li><p>后来该主机被恶意用户侵占，并伪造RST BPDU攻击SW3，因此边缘端口会收到RST BPDU，失去边缘端口特性，并进行生成树计算。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点7：保护功能-2"><a href="#改进点7：保护功能-2" class="headerlink" title="改进点7：保护功能 (2)"></a><strong>改进点7：保护功能</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/25.png"></p>
+<blockquote>
+<p>•由于维护人员的错误配置或网络中的恶意攻击，根桥有可能会收到优先级更高的RST BPDU，使得根桥失去根地位，从而引起网络拓扑结构的错误变动。这种拓扑变化，会导致原来应该通过高速链路的流量被牵引到低速链路上，造成网络拥塞。</p>
+<p>•如上图所示：</p>
+<ul>
+<li><p>网络稳定时，SW1为根桥，向下游设备发送最优RST BPDU。</p>
+</li>
+<li><p>如果SW2被恶意用户侵占，例如恶意修改SW2的桥优先级，使得SW2的桥优先级优于SW1，此时SW2会主动发送自己的RST BPDU。</p>
+</li>
+<li><p>当SW1的指定端口收到该RST BPDU后，会重新进行生成树计算，而SW1也会失去根桥的地位，引起拓扑变动。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点7：保护功能-3"><a href="#改进点7：保护功能-3" class="headerlink" title="改进点7：保护功能 (3)"></a><strong>改进点7：保护功能</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/RSTP/26.png"></p>
+<blockquote>
+<p>•在运行RSTP的网络中，根端口状态是依靠不断接收来自上游交换设备的RST BPDU维持。当由于链路拥塞或者单向链路故障导致根端口收不到来自上游交换设备的RST BPDU时，此时交换设备会重新选择根端口。</p>
+<p>•如图所示，当SW1和SW3之间的链路发生单向链路故障时，SW3由于根端口在超时时间内收不到来自上游设备的BPDU报文，Alternate端口切换成根端口，根端口切换成指定端口，从而形成了环路。</p>
+</blockquote>
+<h2 id="改进点7：保护功能-4"><a href="#改进点7：保护功能-4" class="headerlink" title="改进点7：保护功能 (4)"></a><strong>改进点7：保护功能</strong> <strong>(4)</strong></h2><p><img src="/2021/05/06/RSTP/27.png"></p>
+<blockquote>
+<p>•交换设备在接收到TC置位的RST BPDU报文后，会执行MAC地址表项的删除操作。如果有人伪造TC置位的RST BPDU报文恶意攻击交换设备时，交换设备短时间内会收到很多RST BPDU报文，频繁的删除操作会给设备造成很大的负担，给网络的稳定带来很大隐患。</p>
+<p>•如上图所示：</p>
+<ul>
+<li>如果SW3被恶意用户侵占，伪造大量TC置位的RST BPDU并向外发送。SW2收到这些RST BPDU后，会频繁执行MAC地址表项的删除操作，形成巨大负担。</li>
+</ul>
+</blockquote>
+<h1 id="RSTP的工作过程"><a href="#RSTP的工作过程" class="headerlink" title="RSTP的工作过程"></a><strong>RSTP的工作过程</strong></h1><h2 id="RSTP拓扑收敛过程-1"><a href="#RSTP拓扑收敛过程-1" class="headerlink" title="RSTP拓扑收敛过程(1)"></a><strong>RSTP拓扑收敛过程(1)</strong></h2><p><img src="/2021/05/06/RSTP/28.png"></p>
+<blockquote>
+<p>•RSTP收敛与STP收敛过程类似。</p>
+<p>•网络初始化时，网络中所有的RSTP交换机都认为自己是“根桥”，并设置每个端口都为指定端口，发送RST BPDU。其中SW1的桥ID最优，最终会被选举为根桥。</p>
+</blockquote>
+<h2 id="RSTP拓扑收敛过程-2"><a href="#RSTP拓扑收敛过程-2" class="headerlink" title="RSTP拓扑收敛过程(2)"></a><strong>RSTP拓扑收敛过程(2)</strong></h2><p><img src="/2021/05/06/RSTP/29.png"></p>
+<blockquote>
+<p>•每个认为自己是“根桥”的交换机生成一个RST BPDU报文来协商指定网段的端口状态，此RST BPDU报文Flag字段里面的Proposal位需要置位。</p>
+<p>•当一个端口收到RST BPDU报文时，此端口会比较收到的RST BPDU报文和本地的RST BPDU报文。如果本地的RST BPDU报文优于接收的RST BPDU报文，则端口会丢弃接收的RST BPDU报文，并发送Proposal置位的本地RST BPDU报文来回复对端设备。</p>
+<p>•如图，RSTP上游链路的设备互联端口收敛过程，以SW1与SW2为例。</p>
+</blockquote>
+<h2 id="RSTP拓扑收敛过程-3"><a href="#RSTP拓扑收敛过程-3" class="headerlink" title="RSTP拓扑收敛过程(3)"></a><strong>RSTP拓扑收敛过程(3)</strong></h2><p><img src="/2021/05/06/RSTP/30.png"></p>
+<blockquote>
+<p>•如图，RSTP下游链路的设备互联端口会进入慢收敛过程，以SW2与SW3为例。</p>
+</blockquote>
+<h1 id="RSTP的基本配置"><a href="#RSTP的基本配置" class="headerlink" title="RSTP的基本配置"></a><strong>RSTP的基本配置</strong></h1><h2 id="RSTP的基础配置命令-1"><a href="#RSTP的基础配置命令-1" class="headerlink" title="RSTP的基础配置命令(1)"></a><strong>RSTP的基础配置命令(1)</strong></h2><p><img src="/2021/05/06/RSTP/31.png"></p>
+<h2 id="RSTP的基础配置命令-2"><a href="#RSTP的基础配置命令-2" class="headerlink" title="RSTP的基础配置命令(2)"></a><strong>RSTP的基础配置命令(2)</strong></h2><p><img src="/2021/05/06/RSTP/32.png"></p>
+<blockquote>
+<p>•配置接口路径开销：</p>
+<ul>
+<li><p>dot1d-1998：指定路径开销值的计算方法是IEEE 802.1d-1998标准方法。使用IEEE 802.1d-1998标准方法时取值范围是1～65535。</p>
+</li>
+<li><p>dot1t：指定路径开销值的计算方法是IEEE 802.1t标准方法。使用IEEE 802.1t标准方法时取值范围是1～200,000,000。</p>
+</li>
+<li><p>legacy：指定路径开销值的计算方法是华为计算方法。使用华为计算方法时取值范围是1～200,000。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="RSTP的基础配置命令-3"><a href="#RSTP的基础配置命令-3" class="headerlink" title="RSTP的基础配置命令(3)"></a><strong>RSTP的基础配置命令(3)</strong></h2><p><img src="/2021/05/06/RSTP/33.png"></p>
+<h2 id="RSTP的保护功能配置命令-1"><a href="#RSTP的保护功能配置命令-1" class="headerlink" title="RSTP的保护功能配置命令(1)"></a><strong>RSTP的保护功能配置命令(1)</strong></h2><p><img src="/2021/05/06/RSTP/34.png"></p>
+<h2 id="RSTP的保护功能配置命令-2"><a href="#RSTP的保护功能配置命令-2" class="headerlink" title="RSTP的保护功能配置命令(2)"></a><strong>RSTP的保护功能配置命令(2)</strong></h2><p><img src="/2021/05/06/RSTP/35.png"></p>
+<blockquote>
+<p>•配置后，在<strong>stp</strong> <strong>tc-protection interval</strong>指定的时间内，设备只会处理<strong>stp</strong> <strong>tc-protection threshold</strong>指定数量的拓扑变化报文，对于其他的报文会延迟处理，所以可能会影响生成树的收敛速度。例如，时间设定为10秒，阈值设定为5，则设备收到拓扑变化报文后，在10秒内只会处理最开始收到的5个拓扑变化报文，对于后面收到的报文则会等10秒超时后再统一处理。</p>
+</blockquote>
+<h2 id="案例：RSTP的基础配置"><a href="#案例：RSTP的基础配置" class="headerlink" title="案例：RSTP的基础配置"></a><strong>案例：RSTP的基础配置</strong></h2><p><img src="/2021/05/06/RSTP/36.png"></p>
+<p><img src="/2021/05/06/RSTP/37.png"></p>
+<p><img src="/2021/05/06/RSTP/38.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下哪些是RSTP的端口状态？(   )</p>
+<p>A.Idle</p>
+<p><strong>B.Discarding</strong></p>
+<p><strong>C.Forwarding</strong></p>
+<p><strong>D.Learning</strong></p>
+<p>2.（单选题）RSTP的根保护必须配置在设备的根端口上。(   )</p>
+<p>A.对</p>
+<p><strong>B.错</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•生成树是一个用于局域网中消除环路的协议。运行该协议的设备通过彼此交互信息而发现网络中的环路，并对某些接口进行阻塞以消除环路。由于局域网规模的不断增长，生成树协议已经成为重要的局域网协议之一。</p>
+<p>•RSTP是生成树协议中的其中一个版本，它在STP的基础上，做了很多的改进，大大加快了网络收敛的速度。</p>
+<p>•本章节，主要介绍了RSTP对STP的七个改进点，包括：端口角色、端口状态、配置BPDU格式、配置BPDU的处理方式、快速收敛机制、拓扑变更机制和4种保护特性。</p>
+
           
         
       
@@ -906,9 +1649,9 @@
 <p>•配置灵活QinQ的当前接口类型建议为Hybrid，并且必须先通过命令qinq vlan-translation enable先使能VLAN转换功能。灵活QinQ功能只在当前接口的入方向生效。</p>
 <p>•接口配置VLAN Stacking功能后在发送帧时，若需要剥掉外层Tag，该接口要以Untagged方式加入叠加后的stack-vlan；若不需要剥掉外层Tag，该接口要以Tagged方式加入叠加后的stack-vlan。</p>
 </blockquote>
-<h2 id="QinQ配置举例-基本QinQ"><a href="#QinQ配置举例-基本QinQ" class="headerlink" title="**QinQ配置举例 **- 基本QinQ"></a>**QinQ配置举例 **- <strong>基本QinQ</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/27.png"></p>
+<h2 id="QinQ配置举例-基本QinQ"><a href="#QinQ配置举例-基本QinQ" class="headerlink" title="QinQ配置举例 - 基本QinQ"></a>QinQ配置举例 - 基本QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/27.png"></p>
 <p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/28.png"></p>
-<h2 id="QinQ配置举例-灵活QinQ"><a href="#QinQ配置举例-灵活QinQ" class="headerlink" title="**QinQ配置举例 **- 灵活QinQ"></a>**QinQ配置举例 **- 灵活QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/29.png"></p>
+<h2 id="QinQ配置举例-灵活QinQ"><a href="#QinQ配置举例-灵活QinQ" class="headerlink" title="QinQ配置举例 - 灵活QinQ"></a>QinQ配置举例 - 灵活QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/29.png"></p>
 <p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/30.png"></p>
 <h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）当Sub-VLAN与外部进行二层通信时，在出接口打上的VLAN标记为？</p>
 <p><strong>A.Sub-VLAN</strong></p>
