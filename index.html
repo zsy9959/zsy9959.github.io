@@ -241,6 +241,569 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/" itemprop="url">OSPF特殊区域及其它特性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-09T19:04:41+08:00">
+                2021-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在一个大型网络中，OSPF路由器通常需要同时维护由域内路由、域间路由、外部路由构成的数据库。当网络规模不断扩大时，LSDB规模也不断增长。如果某区域不需要为其他区域提供流量中转服务，那么该区域内的路由器就没有必要维护本区域外的链路状态信息。</p>
+<p>•OSPF通过划分区域可以减小区域内路由器LSDB的规模，对于那些位于自治系统（AS）边界的非骨干区域的低端路由器来说仍然无法承受，通过OSPF的特殊区域特性可以进一步减少LSA数量和路由表规模。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述OSPF特殊区域类型及相关特征</p>
+<p>▫阐明OSPF路由汇总的应用场景及功能优势</p>
+<p>▫实现OSPF报文认证的配置</p>
+<h1 id="Stub区域和Totally-Stub区域"><a href="#Stub区域和Totally-Stub区域" class="headerlink" title="Stub区域和Totally Stub区域"></a>Stub区域和Totally Stub区域</h1><h2 id="网络规模变大引发的问题"><a href="#网络规模变大引发的问题" class="headerlink" title="网络规模变大引发的问题"></a>网络规模变大引发的问题</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/1.png"></p>
+<p>OSPF路由器计算区域内、区域间、外部路由都需要依靠网络中的LSA，当网络规模变大时，设备的LSDB规模也变大，设备的路由计算变得更加吃力，造成设备性能浪费。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/3.png"></p>
+<h2 id="传输区域和末端区域"><a href="#传输区域和末端区域" class="headerlink" title="传输区域和末端区域"></a>传输区域和末端区域</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/4.png"></p>
+<p>OSPF的区域可分为两种类型：</p>
+<p>▫传输区域（Transit Area）：除了承载本区域发起的流量和访问本区域的流量外，还承载了源IP和目的IP都不属于本区域的流量，即“穿越型流量”，如本例中的Area 0。</p>
+<p>▫末端区域（Stub Area）：只承载本区域发起的流量和访问本区域的流量，如本例中的Area 1和Area 2。</p>
+<h2 id="Stub区域"><a href="#Stub区域" class="headerlink" title="Stub区域"></a>Stub区域</h2><p>•Stub区域的ABR不向Stub区域内传播它接收到的AS外部路由，Stub区域中路由器的LSDB、路由表规模都会大大减小。</p>
+<p>•为保证Stub区域能够到达AS外部，Stub区域的ABR将生成一条缺省路由（使用3类LSA描述）。</p>
+<p>•配置Stub区域时需要注意下列几点：</p>
+<p>​    ▫骨干区域不能被配置为Stub区域。</p>
+<p>​    ▫Stub区域中的所有路由器都必须将该区域配置为Stub。</p>
+<p>​    ▫Stub区域内不能引入也不接收AS外部路由。</p>
+<p>​    ▫虚连接不能穿越Stub区域。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/5.png"></p>
+<h2 id="Stub区域的路由表及3类LSA"><a href="#Stub区域的路由表及3类LSA" class="headerlink" title="Stub区域的路由表及3类LSA"></a>Stub区域的路由表及3类LSA</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/6.png"></p>
+<h2 id="Totally-Stub区域-1"><a href="#Totally-Stub区域-1" class="headerlink" title="Totally Stub区域 (1)"></a>Totally Stub区域 (1)</h2><p>•Totally Stub区域既不允许AS外部路由在本区域内传播，也不允许区域间路由在本区域内传播。</p>
+<p>•Totally Stub区域内的路由器通过本区域ABR下发的缺省路由（使用3类LSA描述）到达其他区域，以及AS外部。</p>
+<p>•配置Totally Stub区域时需要注意：</p>
+<p>▫与Stub区域配置的区别在于，在ABR上需要追加no-summary关键字。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/7.png"></p>
+<blockquote>
+<p>•思考：为什么非ABR设备不需要追加no-summary参数呢？</p>
+</blockquote>
+<h2 id="Totally-Stub区域-2"><a href="#Totally-Stub区域-2" class="headerlink" title="Totally Stub区域 (2)"></a>Totally Stub区域 (2)</h2><p>•Totally Stub区域访问其他区域及AS外部是通过默认路由实现的。</p>
+<p>•AS外部、其他OSPF区域的拓扑及路由变化不会导致Totally Stub区域内的路由器进行路由重计算，减少了设备性能浪费。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/8.png"></p>
+<p>Stub区域、Totally Stub区域解决了末端区域维护过大LSDB带来的问题，但对于某些特定场景，它们并不是最佳解决方案。</p>
+<h1 id="NSSA区域和Totally-NSSA区域"><a href="#NSSA区域和Totally-NSSA区域" class="headerlink" title="NSSA区域和Totally NSSA区域"></a>NSSA区域和Totally NSSA区域</h1><h2 id="Stub区域与Totally-Stub区域存在的问题"><a href="#Stub区域与Totally-Stub区域存在的问题" class="headerlink" title="Stub区域与Totally Stub区域存在的问题"></a>Stub区域与Totally Stub区域存在的问题</h2><p>•OSPF规定Stub区域是不能引入外部路由的，这样可以避免大量外部路由引入造成设备资源消耗。</p>
+<p>•对于既需要引入外部路由又要避免外部路由带来的资源消耗的场景，Stub和Totally Stub区域就不能满足需求了。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/9.png"></p>
+<h2 id="NSSA区域与Totally-NSSA区域"><a href="#NSSA区域与Totally-NSSA区域" class="headerlink" title="NSSA区域与Totally NSSA区域"></a>NSSA区域与Totally NSSA区域</h2><p>•NSSA区域能够引入外部路由，同时又不会学习来自OSPF网络其它区域引入的外部路由。</p>
+<p>•Totally NSSA与NSSA区域的配置区别在于前者在ABR上需要追加no-summary关键字。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/10.png"></p>
+<blockquote>
+<p>NSSA区域能够引入外部路由，同时又不会学习来自OSPF网络其它区域的外部路由。</p>
+<p>▫7类LSA是为了支持NSSA区域而新增的一种LSA类型，用于描述NSSA区域引入的外部路由信息。NSSA区域的ASBR将外部路由引入该区域后，使用7类LSA描述这些路由。</p>
+<p>▫7类LSA的扩散范围仅限于始发NSSA区域，7类LSA不会被注入到普通区域。</p>
+<p>▫NSSA区域的ABR会将7类LSA转化为5类LSA，并将该LSA注入到骨干区域，从而在整个OSPF域内泛洪。</p>
+<p>▫NSSA区域的ABR会阻挡其他区域引入的外部路由引入本区域，即NSSA区域内不会存在4类及5类LSA，为了让NSSA区域内的路由器能够通过骨干区域到达AS外部，NSSA区域的ABR会自动向该区域注入一条缺省路由，该路由采用7类LSA描述。</p>
+</blockquote>
+<h2 id="NSSA区域与Totally-NSSA区域的LSDB"><a href="#NSSA区域与Totally-NSSA区域的LSDB" class="headerlink" title="NSSA区域与Totally NSSA区域的LSDB"></a>NSSA区域与Totally NSSA区域的LSDB</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/11.png"></p>
+<blockquote>
+<p>•场景1（将Area 2配置为NSSA区域）：当R5将外部路由192.168.3.0/24引入NSSA区域时，R5作为ASBR生成7类LSA在Area 2内泛洪；R3生成使用7类LSA描述的缺省路由注入Area 2，Area 2内的路由器依然会收到R3注入的3类LSA，并计算出到达其他区域的区域间路由。</p>
+<p>•场景2（将Area2配置为Totally NSSA区域）：Totally NSSA区域和NSSA区域类似，只是Totally NSSA区域的ABR会阻挡3类LSA进入该区域，因此在场景2中，R3不会将区域间路由注入Area 2，故而在R5的LSDB中，仅会看到一条描述缺省路由的3类LSA。</p>
+</blockquote>
+<h2 id="OSPF-LSA回顾"><a href="#OSPF-LSA回顾" class="headerlink" title="OSPF LSA回顾"></a>OSPF LSA回顾</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/12.png"></p>
+<h2 id="路由器对LSA的处理原则"><a href="#路由器对LSA的处理原则" class="headerlink" title="路由器对LSA的处理原则"></a>路由器对LSA的处理原则</h2><p>OSPF通过交互LSA实现链路状态数据库同步，路由器收到LSA后，按照以下原则处理：</p>
+<p>▫如果收到的LSA本地没有，则更新LSDB并泛洪该LSA。</p>
+<p>▫如果本地LSDB已存在该LSA，但是收到的更新，则更新LSDB并泛洪该LSA。</p>
+<p>▫如果收到的LSA和LSDB中相同，则忽略，并终止泛洪。</p>
+<p>▫如果收到的LSA损坏，例如Checksum错误，则不接收该LSA。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/13.png"></p>
+<h1 id="区域间路由汇总和外部路由汇总"><a href="#区域间路由汇总和外部路由汇总" class="headerlink" title="区域间路由汇总和外部路由汇总"></a>区域间路由汇总和外部路由汇总</h1><h2 id="在ABR执行路由汇总"><a href="#在ABR执行路由汇总" class="headerlink" title="在ABR执行路由汇总"></a>在ABR执行路由汇总</h2><p>•路由汇总又被称为路由聚合，即是将一组前缀相同的路由汇聚成一条路由，从而达到减小路由表规模以及优化设备资源利用率的目的，我们把汇聚之前的这组路由称为精细路由或明细路由，把汇聚之后的这条路由称为汇总路由或聚合路由。</p>
+<p>•OSPF路由汇总的类型：</p>
+<p>​    ▫在ABR执行路由汇总：对区域间的路由执行路由汇总。</p>
+<p>​    ▫在ASBR执行路由汇总：对引入的外部路由执行路由汇总。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/14.png"></p>
+<h2 id="在ASBR执行路由汇总"><a href="#在ASBR执行路由汇总" class="headerlink" title="在ASBR执行路由汇总"></a>在ASBR执行路由汇总</h2><p>•在ASBR配置路由汇总后，ASBR将对自己所引入的外部路由进行汇总。</p>
+<p>•NSSA区域的ASBR也可以对引入NSSA区域的外部路由进行汇总。</p>
+<p>•在NSSA区域中，ABR执行7类LSA转化成5类LSA动作，此时它也是ASBR。若配置路由汇总，则对由7类LSA转化成的5类LSA进行汇总。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/15.png"></p>
+<blockquote>
+<p>•R1、R3、R5分别对引入的外部路由执行路由汇总。</p>
+</blockquote>
+<h1 id="OSPF协议特性"><a href="#OSPF协议特性" class="headerlink" title="OSPF协议特性"></a>OSPF协议特性</h1><h2 id="Silent-Interface"><a href="#Silent-Interface" class="headerlink" title="Silent-Interface"></a>Silent-Interface</h2><p>•通过Silent-Interface的配置，增强OSPF的组网适应能力，减少系统资源的消耗。</p>
+<p>•Silent-Interface有以下特性：</p>
+<p>​    ▫Silent-Interface不会接收和发送OSPF报文。</p>
+<p>​    ▫Silent-Interface的直连路由仍可以发布出去。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/16.png"></p>
+<h2 id="OSPF报文认证"><a href="#OSPF报文认证" class="headerlink" title="OSPF报文认证"></a>OSPF报文认证</h2><p>•OSPF支持报文认证功能，只有通过认证的OSPF报文才能被接收。</p>
+<p>•路由器支持两种OSPF报文认证方式，当两种认证方式都存在时，优先使用接口认证方式：</p>
+<p>​    ▫区域认证方式：一个OSPF区域中所有的路由器在该区域下的认证模式和口令必须一致。</p>
+<p>​    ▫接口认证方式：相邻路由器直连接口下的认证模式和口令必须一致。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/17.png"></p>
+<blockquote>
+<p>区域视图下，配置OSPF区域的认证模式。</p>
+<ul>
+<li>执行命令<strong>authentication-mode simple</strong>  [ <strong>plain</strong> <em>plain-text</em> | [ <strong>cipher</strong> ] <em>cipher-text</em> ]，配置OSPF区域的认证模式。<ul>
+<li>plain表示明文口令类型。</li>
+<li>cipher表示密文口令类型。对于MD5/HMAC-MD5认证模式，当此参数缺省时，默认为cipher类型。</li>
+</ul>
+</li>
+</ul>
+<p>配置接口认证方式。</p>
+<ul>
+<li>执行命令<strong>ospf</strong> <strong>authentication-mode simple</strong> [ <strong>plain</strong> <em>plain-text</em> | [ <strong>cipher</strong> ] <em>cipher-text</em> ]，配置OSPF接口的认证模式。</li>
+</ul>
+</blockquote>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）OSPF定义了以下哪几种特殊区域？(   )</p>
+<p><strong>A.Stub Area</strong></p>
+<p><strong>B.Totally Stub Area</strong></p>
+<p><strong>C.Not-So-Stubby Area（NSSA)</strong></p>
+<p><strong>D.Totally NSSA</strong></p>
+<p>2.（简答题）Stub区域与Totally Stub区域的主要差别是什么？</p>
+<p><strong>Stub区域不允许4类和5类LSA进入，但允许3类LSA进入。Totally Stub区域不仅不允许4类和5类LSA进入，同时也不允许3类LSA进入，只允许表示缺省路由的3类LSA进入。</strong></p>
+<p>3.（简答题）区域间路由汇总功能在什么路由器上配置？</p>
+<p><strong>在ABR上配置</strong></p>
+<h1 id="本章总结"><a href="#本章总结" class="headerlink" title="本章总结"></a>本章总结</h1><p>•本章详细介绍了OSPF特殊区域，Stub区域内的路由器通过缺省路由到达外部网络、Totally Stub区域内的路由器通过缺省路由到达外部网络和OSPF区域间网络；NSSA、Totally NSSA区域内的路由器可引入外部路由。</p>
+<p>•在本章还介绍了OSPF协议的特性。包括Silent-Interface、认证、以及OSPF路由器收到LSA时的处理方式。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/" itemprop="url">OSPF路由计算</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-09T19:04:13+08:00">
+                2021-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•同一区域内的OSPF路由器拥有完全一致的LSDB，在区域内部，OSPF采用SPF算法完成路由计算。</p>
+<p>•随着网络规模不断扩大，路由器为了完成路由计算所消耗的内存、CPU资源也越来越多。通过区域划分可以在一定程度上缓解路由器的压力。</p>
+<p>•在大规模网络中除了OSPF之外，还可能存在其它路由协议，OSPF支持外部路由引入，从而使得OSPF路由器知晓到达域外的路由。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫解释LSA关键字段的作用；</p>
+<p>▫描述常见的LSA类型及其功能；</p>
+<p>▫阐明SPF算法；</p>
+<p>▫描述OSPF区域内路由、区域间路由计算原理；</p>
+<p>▫描述OSPF区域间路由的防环机制；</p>
+<p>▫描述OSPF外部路由计算原理。</p>
+<h1 id="区域内路由计算"><a href="#区域内路由计算" class="headerlink" title="区域内路由计算"></a>区域内路由计算</h1><h2 id="LSA概述"><a href="#LSA概述" class="headerlink" title="LSA概述"></a>LSA概述</h2><h3 id="LSA的基本概念"><a href="#LSA的基本概念" class="headerlink" title="LSA的基本概念"></a>LSA的基本概念</h3><p>•LSA是OSPF进行路由计算的关键依据。</p>
+<p>•OSPF的LSU报文可以携带多种不同类型的LSA。</p>
+<p>•各种类型的LSA拥有相同的报文头部。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/1.png"></p>
+<p><strong>重要字段解释</strong></p>
+<p>•<strong>LS Age</strong>（链路状态老化时间）：此字段表示LSA已经生存的时间，单位是秒。</p>
+<p>•<strong>Options</strong>（可选项）：每一个bit都对应了OSPF所支持的某种特性。</p>
+<p>•<strong>LS Type</strong>（链路状态类型）<strong>：</strong>指示本LSA的类型。</p>
+<p>•<strong>Link State ID</strong>（链路状态ID）<strong>：</strong>不同的LSA，对该字段的定义不同。</p>
+<p>•<strong>Advertising Router</strong>（通告路由器）：产生该LSA的路由器的Router ID。</p>
+<p>•<strong>LS</strong> <strong>Sequence</strong> <strong>Number</strong>（链路状态序列号）：当LSA每次有新的实例产生时，序列号就会增加。</p>
+<p>•<strong>LS Checksum</strong>（校验和）：用于保证数据的完整性和准确性。</p>
+<p>•<strong>Length</strong>：是一个包含LSA头部在内的LSA的总长度值。</p>
+<blockquote>
+<p>•链路状态类型、链路状态ID、通告路由器三元组唯一地标识了一个LSA。</p>
+<p>•链路状态老化时间 、链路状态序列号 、校验和用于判断LSA的新旧</p>
+<p>•LS Age：当LSA被始发时，该字段为0，随着LSA在网络中被泛洪，该时间逐渐累加，当到达MaxAge（缺省值为3600s）时，LSA不再用于路由计算。</p>
+<p>•LS Sequence Number：该字段用于判断LSA的新旧或是否存在重复的实例。序列号范围是0x80000001-0x7FFFFFFF，路由器始发一个LSA，序列号为0x80000001，之后每次更新序列号加1，当LSA达到最大序列号时，重新产生该LSA，并且把序列号设置为0x80000001。</p>
+</blockquote>
+<h3 id="常见LSA的类型"><a href="#常见LSA的类型" class="headerlink" title="常见LSA的类型"></a>常见LSA的类型</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/2.png"></p>
+<blockquote>
+<p>•在许多场合中，我们习惯使用类型值来称呼对应的LSA，例如1类LSA等同于Router LSA，2类LSA等同于Network LSA，以此类推。</p>
+</blockquote>
+<h2 id="Router-LSA"><a href="#Router-LSA" class="headerlink" title="Router-LSA"></a>Router-LSA</h2><h3 id="Router-LSA详解-1"><a href="#Router-LSA详解-1" class="headerlink" title="Router LSA详解 (1)"></a>Router LSA详解 (1)</h3><p>•Router LSA（1类LSA）：每台OSPF路由器都会产生。它描述了该路由器直连接口的信息。</p>
+<p>•Router LSA只能在所属的区域内泛洪。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/3.png"></p>
+<p>•V (Virtual Link ) ：如果产生此LSA的路由器是虚连接的端点，则置为1。 </p>
+<p>•E (External )： 如果产生此LSA的路由器是ASBR，则置为1。 </p>
+<p>•B (Border )：如果产生此LSA的路由器是ABR，则置为1。 </p>
+<p>•links ：LSA中的Link（链路）数量。Router LSA使用Link来承载路由器直连接口的信息。</p>
+<h3 id="Router-LSA详解-2"><a href="#Router-LSA详解-2" class="headerlink" title="Router LSA详解 (2)"></a>Router LSA详解 (2)</h3><p>•Router LSA使用Link来承载路由器直连接口的信息。</p>
+<p>•每条Link均包含“链路类型”、“链路ID”、“链路数据”以及“度量值”这几个关键信息。</p>
+<p>•路由器可能会采用一个或者多个Link来描述某个接口。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/4.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/5.png"></p>
+<blockquote>
+<p>•度量值（Metric）：Cost值。</p>
+</blockquote>
+<h3 id="Router-LSA描述P2P网络"><a href="#Router-LSA描述P2P网络" class="headerlink" title="Router LSA描述P2P网络"></a>Router LSA描述P2P网络</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/6.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/7.png"></p>
+<h3 id="Router-LSA描述TransNet"><a href="#Router-LSA描述TransNet" class="headerlink" title="Router LSA描述TransNet"></a>Router LSA描述TransNet</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/8.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/9.png"></p>
+<h2 id="Network-LSA"><a href="#Network-LSA" class="headerlink" title="Network-LSA"></a>Network-LSA</h2><h3 id="Network-LSA详解"><a href="#Network-LSA详解" class="headerlink" title="Network LSA详解"></a>Network LSA详解</h3><p>•Network LSA（2类LSA） ：由DR产生，描述本网段的链路状态，在所属的区域内传播。</p>
+<p>•Network LSA 记录了该网段内所有与DR建立了邻接关系的OSPF路由器，同时携带了该网段的网络掩码。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/10.png"></p>
+<p>•<strong>Link State ID</strong> <strong>：</strong>DR的接口IP地址。</p>
+<p>•<strong>Network Mask</strong>：MA网络的子网掩码。</p>
+<p>•<strong>Attached Router</strong>：连接到该MA网络的路由器的Router-ID（与该DR建立了邻接关系的邻居的Router-ID，以及DR自己的Router-ID），如果有多台路由器接入该MA网络，则使用多个字段描述。</p>
+<h3 id="Network-LSA描述MA网络"><a href="#Network-LSA描述MA网络" class="headerlink" title="Network LSA描述MA网络"></a>Network LSA描述MA网络</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/11.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/12.png"></p>
+<h2 id="SPF计算过程"><a href="#SPF计算过程" class="headerlink" title="SPF计算过程"></a>SPF计算过程</h2><h3 id="SPF算法-1"><a href="#SPF算法-1" class="headerlink" title="SPF算法 (1)"></a>SPF算法 (1)</h3><p>Phase 1：构建SPF树。</p>
+<p>▫路由器将自己作为最短路径树的树根，根据Router-LSA和Network-LSA中的拓扑信息，依次将Cost值最小的路由器添加到SPF树中。路由器以Router ID或者DR标识。</p>
+<p>▫广播网络中DR和其所连接路由器的Cost值为0。</p>
+<p>▫SPF树中只有单向的最短路径，保证了OSPF区域内路由计算不会出现环路。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/13.png"></p>
+<h3 id="SPF算法-2"><a href="#SPF算法-2" class="headerlink" title="SPF算法 (2)"></a>SPF算法 (2)</h3><p>Phase 2：计算最优路由。</p>
+<p>▫将Router-LSA、Network-LSA中的路由信息以叶子节点形式附加在对应的OSPF路由器上，计算最优路由。</p>
+<p>▫已经出现的路由信息不会再添加到SPF树干上。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/14.png"></p>
+<h3 id="SPF算法举例"><a href="#SPF算法举例" class="headerlink" title="SPF算法举例"></a>SPF算法举例</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/15.png"></p>
+<h3 id="构建SPF树-1"><a href="#构建SPF树-1" class="headerlink" title="构建SPF树 (1)"></a>构建SPF树 (1)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/16.png"></p>
+<h3 id="构建SPF树-2"><a href="#构建SPF树-2" class="headerlink" title="构建SPF树 (2)"></a>构建SPF树 (2)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/17.png"></p>
+<h3 id="构建SPF树-3"><a href="#构建SPF树-3" class="headerlink" title="构建SPF树 (3)"></a>构建SPF树 (3)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/18.png"></p>
+<h3 id="构建SPF树-4"><a href="#构建SPF树-4" class="headerlink" title="构建SPF树 (4)"></a>构建SPF树 (4)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/19.png"></p>
+<blockquote>
+<p>•R3在候选列表中存在两个不同的Cost值，分别为48和2，因此将Cost值较小的添加到最短路径树，并从候选列表中删除。</p>
+</blockquote>
+<h3 id="构建SPF树-5"><a href="#构建SPF树-5" class="headerlink" title="构建SPF树 (5)"></a>构建SPF树 (5)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/20.png"></p>
+<h3 id="构建SPF树-6"><a href="#构建SPF树-6" class="headerlink" title="构建SPF树 (6)"></a>构建SPF树 (6)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/21.png"></p>
+<h3 id="构建SPF树-7"><a href="#构建SPF树-7" class="headerlink" title="构建SPF树 (7)"></a>构建SPF树 (7)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/22.png"></p>
+<h3 id="计算最优路由"><a href="#计算最优路由" class="headerlink" title="计算最优路由"></a>计算最优路由</h3><p>•从根节点开始依次添加各节点LSA中的路由信息。</p>
+<p>•添加顺序为各节点加入SPF树的顺序，已经出现的忽略。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/23.png"></p>
+<blockquote>
+<p>•第二阶段根据Router LSA中的Stub、Network LSA中的路由信息，完成最优路由的计算。</p>
+<p>•从根节点开始，依次添加LSA中的路由信息（添加顺序按照每个节点加入SPF树的顺序）：</p>
+<p>▫10.0.1.1（R1）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.13.0/24，Metric=48；</p>
+<p>▫10.0.12.2（DR）的Network LSA中，网络号/子网掩码10.0.12.0/24，Metric=1+0=1；</p>
+<p>▫10.0.2.2（R2）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.24.0/24，Metric=1+0+48=49；</p>
+<p>▫10.0.235.2（DR）的Network LSA中，网络号/子网掩码10.0.235.0/24，Metric=1+0+1=2；</p>
+<p>▫10.0.3.3（R3）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.13.0/24，已在R1上，忽略；</p>
+<p>▫10.0.5.5（R5）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.45.0/24，Metric=1+0+0+1+48=50；</p>
+<p>▫10.0.4.4（R4）的Router LSA中，共2个Stub连接，网络号/子网掩码10.0.24.0/24，已在R2上，忽略；网络号/子网掩码10.0.45.0/24，已在R5上，忽略。</p>
+</blockquote>
+<h3 id="结果验证"><a href="#结果验证" class="headerlink" title="结果验证"></a>结果验证</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/24.png"></p>
+<h2 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h2><p>1.（多选题）Router-LSA中主要包含哪几种链路类型？(   )</p>
+<p>**A.P2P **</p>
+<p><strong>B.TransNet</strong></p>
+<p><strong>C.StubNet</strong></p>
+<p><strong>D.Vlink</strong></p>
+<p>2.（判断题）经过SPF算法计算后，被认为是最优的OSPF路由一定会被放入路由器的路由表。(  )</p>
+<p>A.对</p>
+<p><strong>B.错</strong></p>
+<h2 id="本节小结"><a href="#本节小结" class="headerlink" title="本节小结"></a>本节小结</h2><p>•OSPF根据LSDB计算路由表，LSDB中可能存在多种类型的LSA，并且所有的LSA有相同的报文头部格式。</p>
+<p>•同一区域的OSPF路由器拥有完全一致的LSDB。在只有一个区域的情况下，区域内部主要存在两种类型的LSA，即Router-LSA和Network-LSA。</p>
+<p>•每台路由器都会产生Router-LSA，描述了路由器的直连接口信息。</p>
+<p>•在MA网络中，DR会产生Network-LSA来描述接入该MA网络的所有路由器的Router-ID（其中包括DR自身），以及这个网络的掩码。</p>
+<h1 id="区域间路由计算"><a href="#区域间路由计算" class="headerlink" title="区域间路由计算"></a>区域间路由计算</h1><h2 id="区域间路由计算过程"><a href="#区域间路由计算过程" class="headerlink" title="区域间路由计算过程"></a>区域间路由计算过程</h2><h3 id="大型网络中，单区域OSPF存在的问题"><a href="#大型网络中，单区域OSPF存在的问题" class="headerlink" title="大型网络中，单区域OSPF存在的问题"></a>大型网络中，单区域OSPF存在的问题</h3><p>•一系列连续的OSPF路由器构成的网络称为OSPF域（Domain）。</p>
+<p>•OSPF要求网络内的路由器同步LSDB，实现对于网络的一致认知。</p>
+<p>•当网络规模越来越大时，LSDB将变得非常臃肿，设备基于该LSDB进行路由计算，其负担也极大地增加了，此外路由器的路由表规模也变大了，这些无疑都将加大路由器的性能损耗。</p>
+<p>•当网络拓扑发生变更时，这些变更需要被扩散到整个网络，并可能引发整网的路由重计算。</p>
+<p>•单区域的设计，使得OSPF无法部署路由汇总。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/25.png"></p>
+<h3 id="区域划分"><a href="#区域划分" class="headerlink" title="区域划分"></a>区域划分</h3><p>•Router LSA和Network LSA只在区域内泛洪，因此通过区域划分在一定程度上降低网络设备的内存及CPU的消耗。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/26.png"></p>
+<p>划分区域后，路由器可以分为两种角色：</p>
+<p>区域内部路由器（Internal Router）：该类设备的所有接口都属于同一个OSPF区域。如R1、R4、R5。</p>
+<p>区域边界路由器（Area Border Router）：该类设备接口分别连接两个及两个以上的不同区域。如R2、R3。</p>
+<h3 id="区域间路由信息传递"><a href="#区域间路由信息传递" class="headerlink" title="区域间路由信息传递"></a>区域间路由信息传递</h3><p>•OSPF区域间路由信息传递是通过ABR产生的Network Summary LSA（3类LSA）实现的。</p>
+<p>•以192.168.1.0/24路由信息为例：</p>
+<p>​    ▫R2依据Area 1内所泛洪的Router LSA及Network LSA计算得出192.168.1.0/24路由（区域内路由），并将该路由通过Network Summary LSA通告到Area 0。R3根据该LSA可计算出到达192.168.1.0/24的区域间路由。</p>
+<p>​    ▫R3重新生成一份Network Summary LSA通告到Area 2中，至此所有OSPF区域都能学习到去往192.168.1.0/24的路由。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/27.png"></p>
+<h3 id="Network-Summary-LSA详解"><a href="#Network-Summary-LSA详解" class="headerlink" title="Network Summary LSA详解"></a>Network Summary LSA详解</h3><p>Network Summary LSA（3类LSA）由ABR产生，用于向一个区域通告到达另一个区域的路由。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/28.png"></p>
+<h3 id="Network-Summary-LSA示例"><a href="#Network-Summary-LSA示例" class="headerlink" title="Network Summary LSA示例"></a>Network Summary LSA示例</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/29.png"></p>
+<h3 id="R1和R3的路由计算"><a href="#R1和R3的路由计算" class="headerlink" title="R1和R3的路由计算"></a>R1和R3的路由计算</h3><p>1.通过区域内SPF的计算，R1到达R2的Cost值为1，R3到达R2的Cost值为2。</p>
+<p>2.R1和R3根据收到的Network Summary LSA进行路由计算：</p>
+<p>▫R1将到达R2和Cost值和Network Summary LSA所携带的Cost值相加，因此R1到达192.168.1.0/24的Cost值为2。</p>
+<p>▫R3将到达R2和Cost值和Network Summary LSA所携带的Cost值相加，因此R3到达192.168.1.0/24的Cost值为3。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/30.png"></p>
+<h3 id="R5的路由计算"><a href="#R5的路由计算" class="headerlink" title="R5的路由计算"></a>R5的路由计算</h3><p>1.R3作为ABR，它通过Area 0内泛洪的Network Summary LSA计算出到达192.168.1.0/24的路由，然后重新向Area 2注入到达该网段的Network Summary LSA，其中包含自己到达该网段的Cost（值为3）。</p>
+<p>2.R5在SPF中计算得知到达R3的Cost为1，因此R5到达192.168.1.0/24的Cost为4。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/31.png"></p>
+<h3 id="区域间路由计算结果验证"><a href="#区域间路由计算结果验证" class="headerlink" title="区域间路由计算结果验证"></a>区域间路由计算结果验证</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/32.png"></p>
+<h2 id="区域间路由防环机制"><a href="#区域间路由防环机制" class="headerlink" title="区域间路由防环机制"></a>区域间路由防环机制</h2><h3 id="域间路由环路的产生"><a href="#域间路由环路的产生" class="headerlink" title="域间路由环路的产生"></a>域间路由环路的产生</h3><p>•OSPF区域间路由的传播过程与距离矢量路由协议的路由传播过程非常相似。</p>
+<p>•对于区域间路由的传递，OSPF也需要一定的防环机制。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/33.png"></p>
+<h3 id="区域间路由的防环机制-1"><a href="#区域间路由的防环机制-1" class="headerlink" title="区域间路由的防环机制 (1)"></a>区域间路由的防环机制 (1)</h3><p>OSPF要求所有的非骨干区域必须与Area0直接相连，区域间路由需经由Area0中转。</p>
+<p>区域间的路由传递不能发生在两个非骨干区域之间，这使得OSPF的区域架构在逻辑上形成了一个类似星型的拓扑。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/34.png"></p>
+<h3 id="区域间路由的防环机制-2"><a href="#区域间路由的防环机制-2" class="headerlink" title="区域间路由的防环机制 (2)"></a>区域间路由的防环机制 (2)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/35.png"></p>
+<h3 id="区域间路由的防环机制-3"><a href="#区域间路由的防环机制-3" class="headerlink" title="区域间路由的防环机制 (3)"></a>区域间路由的防环机制 (3)</h3><p>ABR从非骨干区域收到的3类LSA不能用于区域间路由的计算。</p>
+<p>R1和R2、R3和R4之间的链路中断导致骨干区域不连续。</p>
+<ul>
+<li><p>R4将10.0.2.2/32路由以3类LSA的形式发送到Area 1。</p>
+</li>
+<li><p>R5和R6可以根据上述3类LSA计算出10.0.2.2/32路由。</p>
+</li>
+<li><p>R3从非骨干区域收到3类LSA，不进行路由计算，也不会将此3类LSA发送到其他区域。</p>
+</li>
+<li><p>此时，R1和R3都无法和10.0.2.2/32通信。</p>
+</li>
+</ul>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/36.png"></p>
+<h2 id="虚连接的作用及配置"><a href="#虚连接的作用及配置" class="headerlink" title="虚连接的作用及配置"></a>虚连接的作用及配置</h2><p>•OSPF要求骨干区域必须是连续的，但是并不要求物理上连续，可以使用虚连接使骨干区域在逻辑上连续。</p>
+<p>•虚连接可以在任意两个ABR上建立，但是要求这两个ABR都有端口连接到一个相同的非骨干区域。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/37.png"></p>
+<blockquote>
+<p>•注意：虚连接的创建使OSPF协议可以通过非骨干区域通信，违背了OSPF区域间的防环规则，在某些场景下会导致路由环路的产生，因此不建议部署OSPF虚连接。</p>
+</blockquote>
+<h2 id="思考题-1"><a href="#思考题-1" class="headerlink" title="思考题"></a>思考题</h2><p>1.（判断题）一条Network Summary LSA只能描述一条路由信息。</p>
+<p>A.错</p>
+<p><strong>B.对</strong></p>
+<p>2.（简答题）OSPF如何避免区域间的路由环路？</p>
+<p><strong>OSPF划分了骨干区域和非骨干区域，所有非骨干区域均直接和骨干区域相连，且骨干区域只有一个；非骨干区域之间的通信都要通过骨干区域中转；并规定从骨干区域传来的三类LSA不再传回骨干区域。</strong></p>
+<h2 id="本节小结-1"><a href="#本节小结-1" class="headerlink" title="本节小结"></a>本节小结</h2><p>•OSPF引入了多区域的概念，使得该协议能够支持更大规模的组网。</p>
+<p>•OSPF使用3类LSA来描述区域间的路由信息。</p>
+<p>•为了避免出现区域间路由环路，OSPF设计了多个规则。</p>
+<p>•OSPF Virtual Link是一种虚拟的、逻辑的链路，被部署在两台OSPF路由器之间，它穿越某个非骨干区域，用于实现另一个非骨干区域与Area0的连接。Virtual Link应该始终作为一种临时的技术手段来解决非骨干区域没有与Area0直接相连的情况。</p>
+<h1 id="外部路由计算"><a href="#外部路由计算" class="headerlink" title="外部路由计算"></a>外部路由计算</h1><h2 id="OSPF外部路由引入背景"><a href="#OSPF外部路由引入背景" class="headerlink" title="OSPF外部路由引入背景"></a>OSPF外部路由引入背景</h2><p>网络中存在部分链路未开启OSPF协议如：</p>
+<p>▫路由器连接外部网络使用静态路由或者BGP协议；</p>
+<p>▫服务器直连的链路未开启OSPF协议。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/38.png"></p>
+<h2 id="外部路由引入的基本概念"><a href="#外部路由引入的基本概念" class="headerlink" title="外部路由引入的基本概念"></a>外部路由引入的基本概念</h2><p>•ASBR（AS Boundary Router）：自治系统边界路由器。只要一台OSPF设备引入了外部路由，它就成为了ASBR。如图中的R1。</p>
+<p>•ASBR将外部路由信息以AS-external LSA（5类LSA）的形式在OSPF网络内泛洪。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/39.png"></p>
+<blockquote>
+<p>•<strong>在OSPF进程下，通过如下命令引入外部路由。设备支持引入BGP、ISIS、OSPF、直连以及静态路由。</strong></p>
+<p>▫<strong>import-route</strong> { <strong>limit</strong> <em>limit-number</em> | { <strong>bgp</strong> [ <strong>permit-ibgp</strong> ] | <strong>direct</strong> | <strong>unr</strong> | <strong>rip</strong> [ <em>process-id-rip</em> ] | <strong>static</strong> | <strong>isis</strong> [ process-id-isis ] | <strong>ospf</strong> [ process-id-ospf ] } [ <strong>cost</strong> <em>cost</em> | <strong>type</strong> <em>type</em> | <strong>tag</strong> <em>tag</em> | <strong>route-policy</strong> <em>route-policy-name</em> ]  }</p>
+</blockquote>
+<h2 id="AS-external-LSA详解"><a href="#AS-external-LSA详解" class="headerlink" title="AS-external LSA详解"></a>AS-external LSA详解</h2><p>AS-external LSA（5类LSA）：由ASBR产生，描述到达AS外部的路由，该LSA会被通告到所有的区域（除了Stub区域和NSSA区域）。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/40.png"></p>
+<blockquote>
+<p>•Forwarding Address：当FA为0.0.0.0时，则到达该外部网段的流量会被发往引入这条外部路由的ASBR。而如果FA不为0.0.0.0，则流量会被发往这个转发地址。FA这一概念的引入，使得OSPF在某些特殊的场景中得以规避次优路径问题。</p>
+<p>•External Route Tag（外部路由标记）：这是一个只有外部路由才能够携带的标记，常被用于部署路由策略。</p>
+</blockquote>
+<h2 id="AS-external-LSA示例"><a href="#AS-external-LSA示例" class="headerlink" title="AS-external LSA示例"></a>AS-external LSA示例</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/41.png"></p>
+<h2 id="R3的路由计算过程"><a href="#R3的路由计算过程" class="headerlink" title="R3的路由计算过程"></a>R3的路由计算过程</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/42.png"></p>
+<h2 id="ASBR-Summary-LSA"><a href="#ASBR-Summary-LSA" class="headerlink" title="ASBR-Summary LSA"></a>ASBR-Summary LSA</h2><p>ASBR-Summary LSA（4类LSA）：由ABR产生，描述到ASBR的路由，通告给除ASBR所在区域的其他相关区域。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/43.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/44.png"></p>
+<h2 id="ASBR-Summary-LSA示例"><a href="#ASBR-Summary-LSA示例" class="headerlink" title="ASBR-Summary LSA示例"></a>ASBR-Summary LSA示例</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/45.png"></p>
+<h2 id="R5的路由计算过程"><a href="#R5的路由计算过程" class="headerlink" title="R5的路由计算过程"></a>R5的路由计算过程</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/46.png"></p>
+<h2 id="区分OSPF外部路由的2种度量值类型-1"><a href="#区分OSPF外部路由的2种度量值类型-1" class="headerlink" title="区分OSPF外部路由的2种度量值类型 (1)"></a>区分OSPF外部路由的2种度量值类型 (1)</h2><p>•<strong>Metric-Type-1</strong></p>
+<p>▫当外部路由的开销与自治系统内部的路由开销相当，并且和OSPF自身路由的开销具有可比性时，可以认为这类路由的可信程度较高，将其配置成Metric-Type-1。</p>
+<p>▫Metric-Type-1外部路由的开销为AS内部开销（路由器到ASBR的开销）与AS外部开销之和。</p>
+<p>•<strong>Metric-Type-2</strong></p>
+<p>▫当ASBR到AS之外的开销远远大于在AS之内到达ASBR的开销时，可以认为这类路由的可信程度较低，将其配置成Metric-Type-2。</p>
+<p>▫Metric-Type-2外部路由的开销等于AS外部开销。</p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/47.png"></p>
+<h2 id="区分OSPF外部路由的2种度量值类型-2"><a href="#区分OSPF外部路由的2种度量值类型-2" class="headerlink" title="区分OSPF外部路由的2种度量值类型 (2)"></a>区分OSPF外部路由的2种度量值类型 (2)</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/48.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/49.png"></p>
+<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/50.png"></p>
+<h2 id="思考题-2"><a href="#思考题-2" class="headerlink" title="思考题"></a>思考题</h2><p>1.（多选题）ABR可能会产生以下哪些类型的LSA？(   )</p>
+<p>**A. ASBR-Summary LSA **</p>
+<p><strong>B. AS-external-LSA</strong></p>
+<p><strong>C. Router-LSA</strong></p>
+<p><strong>D. Network Summary LSA</strong></p>
+<p>2.（单选题）对于同一个路由前缀，以下哪种优先级最高？(   )</p>
+<p><strong>A.区域内路由</strong></p>
+<p>B.区域间路由</p>
+<p>C.第一类外部路由</p>
+<p>D.第二类外部路由</p>
+<h2 id="本节小结-2"><a href="#本节小结-2" class="headerlink" title="本节小结"></a>本节小结</h2><p>•在一个大规模网络中，可能存在多种不同的路由协议，OSPF支持将AS外部路由引入本AS，使得AS内的路由器能够获知到达AS外部的路由。</p>
+<p>•ASBR将外部路由引入OSPF后，使用5类LSA描述它们，与ASBR同属一个区域的路由器能够根据5类LSA以及区域内的1类、2类LSA完成外部路由计算；与ASBR不在同一个区域的路由器还需借助4类LSA才能完成外部路由计算。</p>
+<p>•OSPF将外部路由引入OSPF后，可以设置路由的度量值类型：Metric-Type-1或Metric-Type-2，不同度量值类型的外部路由，其开销的计算方式不同，其路由的优先级也不相同，Metric-Type-1路由的优先级高于Metric-Type-2路由。</p>
+<h1 id="本章总结"><a href="#本章总结" class="headerlink" title="本章总结"></a>本章总结</h1><p>•本章知识点包括OSPF区域内路由计算、区域间路由计算、外部路由计算等。</p>
+<p>•OSPF路由遵循以下优先级顺序，区域内路由&gt;区域间路由&gt;Metric-Type-1外部路由&gt;Metric-Type-2外部路由。</p>
+<p>•LSA是OSPF链路状态信息的载体，随着网络规模逐渐变大，网络业务逐渐变得复杂，通过OSPF区域的划分以及大量外部路由的引入，路由器的LSDB中可能存在大量的1类、2类、3类、4类、5类LSA，容易造成设备性能的浪费。</p>
+<p>•OSPF存在什么技术手段可以在保证网络可达性的前提下，减少设备性能损耗么？</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -775,7 +1338,7 @@
 <p>•OSPF与IS-IS是两种不同的动态路由协议，路由信息无法在路由协议之间直接交互。</p>
 <p>•如图所示，A公司部署OSPF，边界设备为R1和R2；B公司部署IS-IS，边界设备为R3和R4。边界互联部分可以部署OSPF或IS-IS，例如：可以将R1与R3互联网段、R2与R4互联网段部署进A公司的OSPF，此时边界设备仅为R3和R4。</p>
 </blockquote>
-<h2 id="IP路由高级应用场景分析-2"><a href="#IP路由高级应用场景分析-2" class="headerlink" title="**IP路由高级应用场景分析 **(2)"></a>**IP路由高级应用场景分析 **(2)</h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/13.png"></p>
+<h2 id="IP路由高级应用场景分析-2"><a href="#IP路由高级应用场景分析-2" class="headerlink" title="IP路由高级应用场景分析 (2)"></a>IP路由高级应用场景分析 (2)</h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/13.png"></p>
 <p>场景描述：</p>
 <p>▫在大型企业网络中，网络规模十分庞大，选用单一的路由协议无法满足网络的需求，因此多种路由协议共存的情况十分常见。</p>
 <p>▫或者出于业务逻辑或行政管理的考虑，会在不同的网络结构中设计和部署不同的路由协议，使路由的层次结构更加清晰可控。</p>
@@ -1774,7 +2337,7 @@
 <blockquote>
 <p>•边缘端口的UP和Down，不会引起网络拓扑的变动。</p>
 </blockquote>
-<h2 id="改进点5：快速收敛机制-3"><a href="#改进点5：快速收敛机制-3" class="headerlink" title="**改进点5：快速收敛机制 (3) **"></a>**改进点5：快速收敛机制 (3) **</h2><p><img src="/2021/05/06/RSTP/19.png"></p>
+<h2 id="改进点5：快速收敛机制-3"><a href="#改进点5：快速收敛机制-3" class="headerlink" title="改进点5：快速收敛机制 (3)"></a>改进点5：快速收敛机制 (3)</h2><p><img src="/2021/05/06/RSTP/19.png"></p>
 <blockquote>
 <p>•事实上对于STP，指定端口的选择可以很快完成，主要的速度瓶颈在于：为了避免环路，必须等待足够长的时间，使全网的端口状态全部确定，也就是说必须要等待至少一个Forward Delay所有端口才能进行转发。</p>
 <p>•而RSTP的主要目的就是消除这个瓶颈，通过阻塞自己的非根端口来保证不会出现环路。而使用P/A机制加快了上游端口进入Forwarding状态的速度。</p>
@@ -2085,7 +2648,7 @@
 <blockquote>
 <p>•企业A和企业B的私网VLAN分别为VLAN 1～10和VLAN 1～20。公网为企业A和企业B分配的公网VLAN分别为VLAN 3和VLAN 4。当企业A和企业B中带VLAN Tag的报文进入公网时，报文外面就会被分别封装上VLAN 3和VLAN 4的VLAN标签。这样，来自不同企业网络的报文在公网中传输时被完全分开，即使这些企业网络各自的VLAN范围存在重叠，在公网中传输时也不会产生冲突。当报文穿过公网，到达公网另一侧PE设备后，报文会被剥离公网为其添加的公网VLAN标签，然后再传送给用户网络的CE设备。</p>
 </blockquote>
-<h2 id="QinQ实现方式-基本QinQ"><a href="#QinQ实现方式-基本QinQ" class="headerlink" title="**QinQ实现方式 - **基本QinQ"></a>**QinQ实现方式 - **基本QinQ</h2><p>基本QinQ的报文处理过程:</p>
+<h2 id="QinQ实现方式-基本QinQ"><a href="#QinQ实现方式-基本QinQ" class="headerlink" title="QinQ实现方式 - 基本QinQ"></a>QinQ实现方式 - 基本QinQ</h2><p>基本QinQ的报文处理过程:</p>
 <p>1.SW1收到VLAN ID为10和20的报文，将该报文发给SW2。</p>
 <p>2.SW2收到该报文后，在该报文原有Tag的外侧再添加一层VLAN ID 为100的外层Tag。</p>
 <p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
@@ -2096,7 +2659,7 @@
 <p>•基本QinQ是基于端口方式实现的。开启端口的基本QinQ功能后，当该端口接收到报文，设备会为该报文打上本端口缺省VLAN 的VLAN Tag。如果接收到的是已经带有VLAN Tag的报文，该报文就成为双Tag的报文；如果接收到的是不带VLAN Tag的报文，该报文就成为带有端口缺省VLAN Tag的报文。</p>
 <p>•基于端口的QinQ的缺点是外层VLAN Tag封装方式固定，不能根据业务种类选择外层VLAN Tag封装的方式，从而很难有效支持多业务的灵活运营。</p>
 </blockquote>
-<h2 id="QinQ实现方式-灵活QinQ"><a href="#QinQ实现方式-灵活QinQ" class="headerlink" title="**QinQ实现方式 **- 灵活QinQ"></a>**QinQ实现方式 **- <strong>灵活QinQ</strong></h2><p>灵活QinQ的报文处理过程：</p>
+<h2 id="QinQ实现方式-灵活QinQ"><a href="#QinQ实现方式-灵活QinQ" class="headerlink" title="QinQ实现方式 - 灵活QinQ"></a>QinQ实现方式 - 灵活QinQ</h2><p>灵活QinQ的报文处理过程：</p>
 <p>1.SW1收到VLAN ID为10和20的报文，将该报文转发给SW2。</p>
 <p>2.SW2收到VLAN ID为10的报文后，添加一层VLAN ID 为100 的外层Tag；SW2收到VLAN ID为20的报文后，添加一层VLAN ID为200的外层Tag。</p>
 <p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
@@ -3064,713 +3627,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/WLAN/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/02/WLAN/" itemprop="url">WLAN</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T16:55:54+08:00">
-                2021-05-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="WLAN概述"><a href="#WLAN概述" class="headerlink" title="WLAN概述"></a>WLAN概述</h2><h3 id="什么是WLAN"><a href="#什么是WLAN" class="headerlink" title="什么是WLAN"></a>什么是WLAN</h3><p>WLAN即Wireless LAN(无线局域网），是指通过无线技术构建的无线局域网络。WLAN广义上是指以无线电波、激光、红外线等无线信号来代替有线局域网中的部分或全部传输介质所构成的网络。</p>
-<p><img src="/2021/05/02/WLAN/1.png"></p>
-<h3 id="IEEE-802-11、WLAN与Wi-Fi"><a href="#IEEE-802-11、WLAN与Wi-Fi" class="headerlink" title="IEEE 802.11、WLAN与Wi-Fi"></a>IEEE 802.11、WLAN与Wi-Fi</h3><p>IEEE 802.11标准与Wi-Fi的世代</p>
-<p><img src="/2021/05/02/WLAN/2.png"></p>
-<h3 id="Wi-Fi在办公场景的发展趋势"><a href="#Wi-Fi在办公场景的发展趋势" class="headerlink" title="Wi-Fi在办公场景的发展趋势"></a>Wi-Fi在办公场景的发展趋势</h3><p><img src="/2021/05/02/WLAN/3.png"></p>
-<h2 id="WLAN的基本概念"><a href="#WLAN的基本概念" class="headerlink" title="WLAN的基本概念"></a>WLAN的基本概念</h2><h3 id="WLAN设备介绍"><a href="#WLAN设备介绍" class="headerlink" title="WLAN设备介绍"></a>WLAN设备介绍</h3><p><img src="/2021/05/02/WLAN/4.png"></p>
-<h3 id="基本的WLAN组网架构"><a href="#基本的WLAN组网架构" class="headerlink" title="基本的WLAN组网架构"></a>基本的WLAN组网架构</h3><p><img src="/2021/05/02/WLAN/5.png"></p>
-<h3 id="敏捷分布式AP架构"><a href="#敏捷分布式AP架构" class="headerlink" title="敏捷分布式AP架构"></a>敏捷分布式AP架构</h3><p>架构特点</p>
-<ul>
-<li>AP的一种特殊架构，将AP拆分为中心AP和敏分AP两部分，中心AP可管理多台敏分AP，在适用的场景下，成本低，覆盖好。敏捷分布式AP可以用于FAT AP、AC+FIT AP、云管理架构。</li>
-<li>适用范围:房间分布密集的场景。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/6.png"></p>
-<h3 id="有线侧组网概念-CAPWAP协议"><a href="#有线侧组网概念-CAPWAP协议" class="headerlink" title="有线侧组网概念:CAPWAP协议"></a>有线侧组网概念:CAPWAP协议</h3><h4 id="什么是CAPWAP隧道"><a href="#什么是CAPWAP隧道" class="headerlink" title="什么是CAPWAP隧道"></a>什么是CAPWAP隧道</h4><p>CAPWAP ( Control And Provisioning of WirelessAccess Points Protocol，无线接入点控制和配置协议）∶该协议定义了如何对AP进行管理、业务配置，即AC通过CAPWAP隧道来实现对AP的集中管理和控制。</p>
-<h4 id="CAPWAP隧道的功能"><a href="#CAPWAP隧道的功能" class="headerlink" title="CAPWAP隧道的功能"></a>CAPWAP隧道的功能</h4><ul>
-<li>AP与AC间的状态维护。</li>
-<li>AC通过CAPWAP隧道对AP进行管理、业务配置下发。</li>
-<li>当采用隧道转发模式时，AP将STA发出的数据通过CAPWAP隧道实现与AC之间的交互。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/7.png"></p>
-<h3 id="有线侧组网概念-AP-AC组网方式"><a href="#有线侧组网概念-AP-AC组网方式" class="headerlink" title="有线侧组网概念:AP-AC组网方式"></a>有线侧组网概念:AP-AC组网方式</h3><p>AP和AC间的组网分为:二层组网和三层组网。</p>
-<h4 id="二层组网"><a href="#二层组网" class="headerlink" title="二层组网"></a>二层组网</h4><ul>
-<li>二层组网:AP与AC之间的网络为直连或者二层网络。</li>
-<li>由于二层组网比较简单，适用于简单临时的组网，能够进行比较快速的组网配置,但不适用于大型组网架构。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/8.png"></p>
-<h4 id="三层组网"><a href="#三层组网" class="headerlink" title="三层组网"></a>三层组网</h4><ul>
-<li><p>AP与AC之间的网络为三层网络。</p>
-</li>
-<li><p>在实际组网中，一台AC可以连接几十甚至几百台AP，组网一般比较复杂，在大型组网中一般采用三层组网。</p>
-</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/9.png"></p>
-<h3 id="有线侧组网概念-AC连接方式"><a href="#有线侧组网概念-AC连接方式" class="headerlink" title="有线侧组网概念:AC连接方式"></a>有线侧组网概念:AC连接方式</h3><p>AC的连接方式分为:直连式组网和旁挂式组网。</p>
-<h4 id="直连式组网"><a href="#直连式组网" class="headerlink" title="直连式组网"></a>直连式组网</h4><ul>
-<li>直连式组网可以认为AP、AC与上层网络串联在一起，所有数据必须通过AC到达上层网络。</li>
-<li>直连式组网中AC同时扮演AC和汇聚交换机的功能,AP的数据业务和管理业务都由AC集中转发和处理。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/10.png"></p>
-<h4 id="旁挂式组网"><a href="#旁挂式组网" class="headerlink" title="旁挂式组网"></a>旁挂式组网</h4><ul>
-<li><p>旁挂式组网，AC旁挂在AP与上行网络的直连网络中，不再直接连接AP。</p>
-</li>
-<li><p>旁挂式组网，AC旁挂在AP与上行网络的直连网络上,AP的业务数据可以不经AC而直接到达上行网络。</p>
-<p><img src="/2021/05/02/WLAN/11.png"></p>
-</li>
-</ul>
-<h3 id="无线侧组网概念-无线通信系统"><a href="#无线侧组网概念-无线通信系统" class="headerlink" title="无线侧组网概念:无线通信系统"></a>无线侧组网概念:无线通信系统</h3><p>无线通信系统中，信息可以是图像、文字、声音等。信息需要先经过信源编码转换为方便于电路计算和处理的数字信号，再经过信道编码和调制，转换为无线电波发射出去。</p>
-<p><img src="/2021/05/02/WLAN/12.png"></p>
-<h3 id="无线侧组网概念-无线电磁波"><a href="#无线侧组网概念-无线电磁波" class="headerlink" title="无线侧组网概念:无线电磁波"></a>无线侧组网概念:无线电磁波</h3><p>无线电磁波是频率介于3赫兹和约300G赫兹之间的电磁波，也叫作射频电波，或简称射频、射电。无线电技术将声音讯号或其他信号经过转换，利用无线电磁波传播。</p>
-<p><img src="/2021/05/02/WLAN/13.png"></p>
-<h3 id="无线侧组网概念-无线信道"><a href="#无线侧组网概念-无线信道" class="headerlink" title="无线侧组网概念:无线信道"></a>无线侧组网概念:无线信道</h3><p>信道是传输信息的通道，无线信道就是空间中的无线电磁波。</p>
-<h4 id="2-4GHz频段"><a href="#2-4GHz频段" class="headerlink" title="2.4GHz频段"></a>2.4GHz频段</h4><p><img src="/2021/05/02/WLAN/14.png"></p>
-<p>2.4GHz频段被划分为14个有重叠的、频率宽度是20MHz的信道。其中包含重叠信道和非重叠信道。</p>
-<ul>
-<li>重叠信道:在一个空间内同时存在重叠信道，则会产生干扰问题。</li>
-<li>非重叠信道:在一个空间内可以同时存在非重叠信道，不会产生干扰问题。</li>
-</ul>
-<h4 id="5GHz频段"><a href="#5GHz频段" class="headerlink" title="5GHz频段"></a>5GHz频段</h4><p><img src="/2021/05/02/WLAN/15.png"></p>
-<p>对于5G频段，支持更宽频谱，频率资源更为丰富，AP不仅支持20MHz带宽的信道，还支持40MHz、80MHz及更大带宽的信道。</p>
-<h3 id="无线侧组网概念-BSS-SSID-BSS"><a href="#无线侧组网概念-BSS-SSID-BSS" class="headerlink" title="无线侧组网概念:BSS/SSID/BSS"></a>无线侧组网概念:BSS/SSID/BSS</h3><h4 id="基本服务集BSS-Basic-Service-Set"><a href="#基本服务集BSS-Basic-Service-Set" class="headerlink" title="基本服务集BSS (Basic Service Set)"></a>基本服务集BSS (Basic Service Set)</h4><ul>
-<li>一个AP所覆盖的范围。</li>
-<li>在一个BSS的服务区域内，STA可以相互通信。</li>
-</ul>
-<h4 id="基本服务集标识符BSSID-Basic-Service-Setldentifier"><a href="#基本服务集标识符BSSID-Basic-Service-Setldentifier" class="headerlink" title="基本服务集标识符BSSID (Basic Service Setldentifier)"></a>基本服务集标识符BSSID (Basic Service Setldentifier)</h4><ul>
-<li>是无线网络的一个身份标识，用AP的MAC地址表示。</li>
-</ul>
-<h4 id="服务集标识符SSID-Service-Set-ldentifier"><a href="#服务集标识符SSID-Service-Set-ldentifier" class="headerlink" title="服务集标识符SSID (Service Set ldentifier)"></a>服务集标识符SSID (Service Set ldentifier)</h4><ul>
-<li>是无线网络的一个身份标识，用字符串表示。</li>
-<li>为了便于用户辨识不同的无线网络，用SSID代替BSSID。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/16.png"></p>
-<h3 id="无线侧组网概念-VAP"><a href="#无线侧组网概念-VAP" class="headerlink" title="无线侧组网概念:VAP"></a>无线侧组网概念:VAP</h3><p>早期的AP只支持1个BSS，如果要在同一空间内部署多个BSS，则需要安放多个AP，这不但增加了成本，还占用了信道资源。为了改善这种状况，现在的AP通常支持创建出多个虚拟AP (Virtual Access Point, VAP)。</p>
-<p>虚拟接入点VAP:</p>
-<ul>
-<li>VAP就是在一个物理实体AP上虚拟出的多个AP。每一个被虚拟出的AP就是一个VAP。每个VAP提供和物理实体AP一样的功能。</li>
-<li>每个VAP对应1个BSS。这样1个AP，就可以提供多个BSS,<br>可以再为这些BSS，设置不同的SSID。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/17.png"></p>
-<h3 id="无线侧组网概念-ESS"><a href="#无线侧组网概念-ESS" class="headerlink" title="无线侧组网概念: ESS"></a>无线侧组网概念: ESS</h3><p>为了满足实际业务的需求，需要对BSS的覆盖范围进行扩展。同时用户从一个BSS移动到另一个BSS时，不能感知到SSID的变化，则可以通过扩展服务集ESS实现。</p>
-<p>扩展服务集ESS (Extend Service Set):</p>
-<ul>
-<li>由多个使用相同SSID的BSS组成，是采用相同的SSID的多个BSS组成的更大规模的虚拟BSS。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/18.png"></p>
-<h2 id="WLAN的工作原理"><a href="#WLAN的工作原理" class="headerlink" title="WLAN的工作原理"></a>WLAN的工作原理</h2><h3 id="WLAN工作流程概述"><a href="#WLAN工作流程概述" class="headerlink" title="WLAN工作流程概述"></a>WLAN工作流程概述</h3><p><img src="/2021/05/02/WLAN/19.png"></p>
-<h3 id="步骤1-AP上线"><a href="#步骤1-AP上线" class="headerlink" title="步骤1-AP上线"></a>步骤1-AP上线</h3><p><img src="/2021/05/02/WLAN/20.png"></p>
-<p>其中包含五步</p>
-<h4 id="1-AP获取IP地址"><a href="#1-AP获取IP地址" class="headerlink" title="1.AP获取IP地址"></a>1.AP获取IP地址</h4><p>AP必须获得IP地址才能够与AC通信，WLAN网络才能够正常工作。</p>
-<p>AP获取IP地址的方式包括以下:</p>
-<ul>
-<li>静态方式:登录到AP设备上手工配置IP地址。</li>
-<li>DHCP方式:通过配置DHCP服务器，使AP作为DHCP客户端向DHCP服务器请求lIP地址。</li>
-</ul>
-<p>典型方案:</p>
-<ul>
-<li>部署专门的DHCP Server为AP分配IP地址。</li>
-<li>使用AC的DHCP服务为AP分配IP地址。</li>
-<li>使用网络中的设备，例如核心交换机为AP分配IP地址。</li>
-</ul>
-<h5 id="AP获取IP地址-DHCP方式"><a href="#AP获取IP地址-DHCP方式" class="headerlink" title="AP获取IP地址:DHCP方式"></a>AP获取IP地址:DHCP方式</h5><p><img src="/2021/05/02/WLAN/21.png"></p>
-<h4 id="2-CAPWAP隧道建立"><a href="#2-CAPWAP隧道建立" class="headerlink" title="2.CAPWAP隧道建立"></a>2.CAPWAP隧道建立</h4><p>AC通过CAPWAP隧道来实现对AP的集中管理和控制。</p>
-<p>Step 1: Discovery阶段（AP发现AC阶段)</p>
-<ul>
-<li>AP通过发送Discovery Request报文，找到可用的AC。</li>
-<li>AP发现AC有两种方式:静态方式、动态方式</li>
-</ul>
-<p>Step 2:建立CAPWAP隧道阶段</p>
-<ul>
-<li>AP与AC关联，完成CAPWAP隧道建立。包括数据隧道和控制隧道:数据隧道、控制隧道</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/22.png"></p>
-<h5 id="Step1-AP动态发现AC"><a href="#Step1-AP动态发现AC" class="headerlink" title="Step1 : AP动态发现AC"></a>Step1 : AP动态发现AC</h5><p><img src="/2021/05/02/WLAN/23.png"></p>
-<h5 id="Step2-建立CAPWAP隧道"><a href="#Step2-建立CAPWAP隧道" class="headerlink" title="Step2:建立CAPWAP隧道"></a>Step2:建立CAPWAP隧道</h5><p>AP与AC关联，完成CAPWAP隧道建立。包括数据隧道和控制隧道:</p>
-<ul>
-<li>数据隧道:AP接收的业务数据报文经过CAPWAP数据隧道集中到AC上转发。同时还可以选择对数据隧道进行数据传输层安全DTLS ( Datagram Transport Layer Security )加密，使能DTLS加密功能后，CAPWAP数据报文都会经过DTLS加解密。</li>
-<li>控制隧道:通过CAPWAP控制隧道实现AP与AC之间的管理报文的交互。同时还可以选择对控制隧道进行数据传输层安全DTLS加密，使能DTLS加密功能后，CAPWAP控制报文都会经过DTLS加解密。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/24.png"></p>
-<h4 id="3-AP接入控制"><a href="#3-AP接入控制" class="headerlink" title="3.AP接入控制"></a>3.AP接入控制</h4><p>AP接入控制</p>
-<ul>
-<li>AP发现AC后，会发送Join Request报文。AC收到后会判断是否允许该AP接入，并响应Join Response报文。</li>
-<li>AC上支持三种对AP的认证方式:MAC认证、序列号(SN)认证和不认证。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/25.png"></p>
-<h4 id="4-AP的版本升级（可选）"><a href="#4-AP的版本升级（可选）" class="headerlink" title="4.AP的版本升级（可选）"></a>4.AP的版本升级（可选）</h4><ul>
-<li>AP根据收到的Join Response报文中的参数判断当前的系统软件版本是否与AC上指定的一致。如果不一致，则AP通过发送Image Data Request报文请求软件版本，然后进行版本升级，升级方式包括AC模式、FTP模式和SFTP模式。</li>
-<li>AP在软件版本更新完成后重新启动，重复进行前面三个步骤。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/26.png"></p>
-<h4 id="5-CAPWAP隧道维持"><a href="#5-CAPWAP隧道维持" class="headerlink" title="5.CAPWAP隧道维持"></a>5.CAPWAP隧道维持</h4><p>数据隧道维持:</p>
-<ul>
-<li>AP与AC之间交互Keepalive报文来检测数据隧道的连通状态</li>
-</ul>
-<p>控制隧道维持:</p>
-<ul>
-<li>AP与AC交互Echo报文来检测控制隧道的连通状态。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/27.png"></p>
-<h4 id="AC预配置"><a href="#AC预配置" class="headerlink" title="AC预配置"></a>AC预配置</h4><p>为确保AP能够上线,AC需预先配置如下内容</p>
-<p><img src="/2021/05/02/WLAN/28.png"></p>
-<h3 id="步骤2-WLAN业务下发配置"><a href="#步骤2-WLAN业务下发配置" class="headerlink" title="步骤2-WLAN业务下发配置"></a>步骤2-WLAN业务下发配置</h3><p><img src="/2021/05/02/WLAN/30.png"></p>
-<h4 id="配置模板"><a href="#配置模板" class="headerlink" title="配置模板"></a>配置模板</h4><p>为了方便用户配置和维护WLAN的各个功能，针对WLAN的不同功能和特性设计了各种类型的模板，这些模板统称为WLAN模板。</p>
-<p><img src="/2021/05/02/WLAN/31.png"></p>
-<h5 id="VAP模板"><a href="#VAP模板" class="headerlink" title="VAP模板"></a>VAP模板</h5><p><img src="/2021/05/02/WLAN/32.png"></p>
-<h3 id="步骤3-STA接入"><a href="#步骤3-STA接入" class="headerlink" title="步骤3-STA接入"></a>步骤3-STA接入</h3><p><img src="/2021/05/02/WLAN/33.png"></p>
-<p>步骤3中又包含七步。</p>
-<h4 id="1-扫描"><a href="#1-扫描" class="headerlink" title="1.扫描"></a>1.扫描</h4><ul>
-<li>STA可以通过主动扫描，定期搜索周围的无线网络，获取到周围的无线网络信息。</li>
-<li>根据Probe Request帧（探测请求帧）是否携带SSID，可以将主动扫描分为两种:</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/34.png"></p>
-<h4 id="无线接入安全协议"><a href="#无线接入安全协议" class="headerlink" title="无线接入安全协议"></a>无线接入安全协议</h4><p>链路认证和接入认证常用的安全策略。</p>
-<p><img src="/2021/05/02/WLAN/35.png"></p>
-<h4 id="2-链路认证"><a href="#2-链路认证" class="headerlink" title="2.链路认证"></a>2.链路认证</h4><p>为了保证无线链路的安全，接入过程中AP需要完成对STA的认证，802.11链路定义了两种认证机制:开放系统认证和共享密钥认证。</p>
-<p>开放系统认证(Open System Authentication)</p>
-<p><img src="/2021/05/02/WLAN/36.png"></p>
-<ul>
-<li>开放系统认证:即不认证，任意STA都可以认证成功。</li>
-</ul>
-<p>共享密钥认证(Shared-key Authentication)</p>
-<p><img src="/2021/05/02/WLAN/37.png"></p>
-<ul>
-<li>共享密钥认证:STA和AP预先配置相同的共享密钥，验证两边的密钥配置是否相同。如果一致，则认证成功;否则，认证失败。</li>
-</ul>
-<h4 id="3-关联"><a href="#3-关联" class="headerlink" title="3.关联"></a>3.关联</h4><ul>
-<li>完成链路认证后，STA会继续发起链路服务协商，具体的协商通过Association报文实现。</li>
-<li>终端关联过程实质上就是链路服务协商的过程，协商内容包括:支持的速率、信道等。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/38.png"></p>
-<h4 id="4-接入认证"><a href="#4-接入认证" class="headerlink" title="4.接入认证"></a>4.接入认证</h4><ul>
-<li>接入认证即对用户进行区分，并在用户访问网络之前限制其访问权限。相对于链路认证，接入认证安全性更高。</li>
-<li>主要包含:PSK认证和802.1X认证。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/39.png"></p>
-<h4 id="5-STA地址分配"><a href="#5-STA地址分配" class="headerlink" title="5.STA地址分配"></a>5.STA地址分配</h4><ul>
-<li>STA获取到自身的IP地址，是STA正常上线的前提条件。</li>
-<li>如果STA是通过DHCP方式获取IP地址，可以用AC设备或汇聚交换机作为DHCP服务器为STA分配IP地址。一般情况下使用汇聚交换机作为DHCP服务器。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/40.png"></p>
-<h4 id="6-用户认证"><a href="#6-用户认证" class="headerlink" title="6.用户认证"></a>6.用户认证</h4><ul>
-<li>用户认证是一种“端到端”的安全结构，包括:802.1X认证、MAC认证和Portal认证。</li>
-</ul>
-<p>Portal认证</p>
-<ul>
-<li>也称Web认证，一般将Portal认证网站称为门户网站。</li>
-<li>用户上网时，必须在门户网站进行认证。只有认证通过后才可以使用网络资源。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/41.png"></p>
-<h3 id="步骤4-WLAN业务数据转发"><a href="#步骤4-WLAN业务数据转发" class="headerlink" title="步骤4-WLAN业务数据转发"></a>步骤4-WLAN业务数据转发</h3><p><img src="/2021/05/02/WLAN/42.png"></p>
-<h4 id="数据转发方式"><a href="#数据转发方式" class="headerlink" title="数据转发方式"></a>数据转发方式</h4><p><img src="/2021/05/02/WLAN/43.png"></p>
-<h2 id="WLAN的基础配置命令"><a href="#WLAN的基础配置命令" class="headerlink" title="WLAN的基础配置命令"></a>WLAN的基础配置命令</h2><h3 id="配置AP上线"><a href="#配置AP上线" class="headerlink" title="配置AP上线"></a>配置AP上线</h3><p>1.配置AC作为DHCP服务器，配置Option 43字段</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-ip-pool-pool1] option code [ sub-option sub-code ] &#123; ascii asci-string l hex hex-string | cipher cipher-string lip-address ip-address</span><br></pre></td></tr></table></figure>
-<p>配置DHCP服务器分配给DHCP客户端的自定义选项。</p>
-<p>2.创建域管理模板，并配置国家码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC] wlan</span><br><span class="line">[AC-wlan-view]</span><br></pre></td></tr></table></figure>
-<p>进入WLAN视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] regulatory-domain-profile name profile-name</span><br><span class="line">[AC-wlan-regulate-domain-profile-name]</span><br></pre></td></tr></table></figure>
-<p>创建域管理模板，并进入模板视图，若模板已存在则直接进入模板视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-regulate-domain-profile-name] country-code country-code</span><br></pre></td></tr></table></figure>
-<p>配置设备的国家码标识。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-group name group-name</span><br><span class="line">[AC-wlan-ap-group-group-name]</span><br></pre></td></tr></table></figure>
-<p>创建AP组，并进入AP组视图，若AP组已存在则直接进入AP组视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-ap-group-group-name] regulatory-domain-profile profile-name</span><br></pre></td></tr></table></figure>
-<p>将指定的域管理模板引用到AP或AP组。<br>3．配置源接口或源地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC] capwap source interface &#123; loopback loopback-number | vlanif </span><br><span class="line">vlan-id &#125;</span><br></pre></td></tr></table></figure>
-<p>配置AC与AP建立CAPWAP隧道的源接口。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] capwap source ip-address ip-address</span><br></pre></td></tr></table></figure>
-<p>配置AC的源IP地址。<br>4.添加AP设备–离线导入AP</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap auth-mode &#123; mac-auth | sn-auth &#125;</span><br></pre></td></tr></table></figure>
-<p>配置AP认证模式为MAC地址认证，或SN认证，缺省为MAC地址认证。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-id ap-id [ [ type-id type-id | ap-type ap-type ] &#123; ap-mac ap-mac | ap-sn ap-sn | ap-mac ap-mac ap-sn ap-sn &#125; ]</span><br><span class="line">[AC-wlan-ap-ap-id] ap-name ap-name</span><br></pre></td></tr></table></figure>
-<p>离线增加AP设备或进入AP视图，并配置单个AP的名称。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-id 0</span><br><span class="line">[AC-wlan-ap-0] ap-group ap-group</span><br></pre></td></tr></table></figure>
-<p>配置AP所加入的组。<br>5．检查AP上线结果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] display ap &#123; all | ap-group ap-group &#125;</span><br></pre></td></tr></table></figure>
-<p>查看AP信息。</p>
-<h3 id="配置射频"><a href="#配置射频" class="headerlink" title="配置射频"></a>配置射频</h3><p>1.进入射频视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-id 0</span><br><span class="line">[AC-wlan-ap-0] radio radio-id</span><br><span class="line">[AC-wlan-radio-0]</span><br></pre></td></tr></table></figure>
-<p>2.配置指定射频的工作带宽和信道</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] channel &#123; 20mhz | 40mhz-minus &#x2F; 40mhz-plus | 80mhz &#x2F; 160mhz &#125; channel</span><br><span class="line">lWarning: This action may cause service interruption.Continue?[Y&#x2F;N]y</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] channel 80+80mhz channel1 channel2</span><br><span class="line">Warning: This action may cause service interruption.Continue?[Y&#x2F;N]y</span><br></pre></td></tr></table></figure>
-<p>配置AP组中所有AP或单个AP指定射频的工作带宽和信道。<br>3.配置天线的增益</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] antenna-gain antenna-gain</span><br></pre></td></tr></table></figure>
-<p>配置AP组中所有AP或单个AP指定射频的天线增益。<br>4．配置射频的发射功率</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] eirp eirp</span><br></pre></td></tr></table></figure>
-<p>配置AP组中所有AP或单个AP指定射频的发射功率。</p>
-<p>5.配置射频覆盖距离参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] coverage distance distance</span><br></pre></td></tr></table></figure>
-<p>配置AP组中所有AP或单个AP指定射频的射频覆盖距离参数。</p>
-<p>6.配置射频工作的频段</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] frequency &#123; 2.4g | 5g &#125;</span><br></pre></td></tr></table></figure>
-<p>7．创建射频模板</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] radio-2g-profile name profile-name</span><br></pre></td></tr></table></figure>
-<p>创建2G射频模板，并进入模板视图，若模板已存在则直接进入模板视图。<br>8.引用射频模板</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-group name group-name</span><br><span class="line">[AC-wlan-ap-group-group-name] radio-2g-profile profile-name radio &#123; radio-id | all &#125;</span><br></pre></td></tr></table></figure>
-<p>在AP组中，将指定的2G射频模板引用到2G射频。</p>
-<h3 id="配置VAP"><a href="#配置VAP" class="headerlink" title="配置VAP"></a>配置VAP</h3><p>1．创建VAP模板</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] vap-profile name profile-name</span><br><span class="line">[AC-wlan-vap-prof-profile-name]</span><br></pre></td></tr></table></figure>
-<p>创建VAP模板，并进入模板视图，若模板已存在则直接进入模板视图。</p>
-<p>2.配置数据转发方式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-vap-prof-profile-name] forward-mode &#123; direct-forward | tunnel &#125;</span><br></pre></td></tr></table></figure>
-<p>配置VAP模板下的数据转发方式，可以是直接转发或隧道转发。<br>3.配置业务VLAN</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-vap-prof-profile-name] service-vlan &#123; vlan-id vlan-id | vlan-pool pool-name &#125;</span><br></pre></td></tr></table></figure>
-<p>配置VAP的业务VLAN。</p>
-<p>4.配置安全模板</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] security-profile name profile-name</span><br><span class="line">[AC-wlan-sec-prof-profile-name]</span><br></pre></td></tr></table></figure>
-<p>创建安全模板或者进入安全模板视图。<br>缺省情况下，系统已经创建名称为default、default-wds和default-mesh的安全模板。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] vap-profile name profile-name</span><br><span class="line">[AC-wlan-vap-prof-profile-name] security-profile profile-name</span><br></pre></td></tr></table></figure>
-<p>在指定VAP模板中引用安全模板。</p>
-<p>5.配置SSID模板</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ssid-profile name profile-name</span><br><span class="line">[AC-wlan-ssid-prof-profile-name]</span><br></pre></td></tr></table></figure>
-<p>创建SSID模板，并进入模板视图，若模板已存在则直接进入模板视图。<br>缺省情况下，系统上存在名为default的SSID模板。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-ssid-prof-profile-name] ssid ssid</span><br></pre></td></tr></table></figure>
-<p>配置当前SSID模板中的服务组合识别码SSID ( Service Set ldentifier ) 。缺省情况下，SSID模板中的SSID为HUAWEI-WLAN。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] vap-profile name profile-name</span><br><span class="line">[AC-wlan-vap-prof-profile-name] ssid-profile profile-name</span><br></pre></td></tr></table></figure>
-<p>在指定VAP模板中引用SSID模板。</p>
-<p>6.引用VAP模板</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-group name group-name</span><br><span class="line">[AC-wlan-ap-group-group-name] vap-profile profile-name wlan wlan-id radio &#123; radio-id | all &#125; [service-vlan&#123; vlan-id vlan-id \ vlan-pool pool-name &#125; ]</span><br></pre></td></tr></table></figure>
-<p>在AP组中，将指定的VAP模板引用到射频。<br>7．查看VAP信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] display vap &#123; ap-group ap-group-name |&#123;  	 ap-name ap-name | ap-id ap-id &#125; [ radio radio-id ] &#125; [ ssid ssid ]</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] display vap &#123; all | ssid ssid &#125;</span><br></pre></td></tr></table></figure>
-<p>查看业务型VAP的相关信息。</p>
-<h3 id="案例-旁挂二层组网隧道转发"><a href="#案例-旁挂二层组网隧道转发" class="headerlink" title="案例:旁挂二层组网隧道转发"></a>案例:旁挂二层组网隧道转发</h3><p><img src="/2021/05/02/WLAN/44.png"> </p>
-<p><img src="/2021/05/02/WLAN/45.png"></p>
-<h4 id="配置网络互通"><a href="#配置网络互通" class="headerlink" title="配置网络互通"></a>配置网络互通</h4><p><img src="/2021/05/02/WLAN/53.png"></p>
-<p><img src="/2021/05/02/WLAN/46.png"></p>
-<h4 id="配置AP上线-1"><a href="#配置AP上线-1" class="headerlink" title="配置AP上线"></a>配置AP上线</h4><p><img src="/2021/05/02/WLAN/53.png"></p>
-<p><img src="/2021/05/02/WLAN/47.png"></p>
-<p><img src="/2021/05/02/WLAN/48.png"></p>
-<h4 id="查看AP上线"><a href="#查看AP上线" class="headerlink" title="查看AP上线"></a>查看AP上线</h4><p>将AP上电后，当执行命令display ap all查看到AP的“State”字段为“nor”时，表示AP正常上线。</p>
-<p><img src="/2021/05/02/WLAN/49.png"></p>
-<h4 id="配置WLAN业务参数"><a href="#配置WLAN业务参数" class="headerlink" title="配置WLAN业务参数"></a>配置WLAN业务参数</h4><p><img src="/2021/05/02/WLAN/53.png"></p>
-<p><img src="/2021/05/02/WLAN/50.png"></p>
-<p><img src="/2021/05/02/WLAN/51.png"></p>
-<h4 id="查看VAP模板信息"><a href="#查看VAP模板信息" class="headerlink" title="查看VAP模板信息"></a>查看VAP模板信息</h4><p>WLAN业务配置会自动下发给AP，配置完成后，通过执行命令display vap ssid wlan-net查看如下信息，当“Status”项显示为“ON”时，表示AP对应的射频上的VAP已创建成功。</p>
-<p><img src="/2021/05/02/WLAN/52.png"></p>
-<h2 id="新一代WLAN解决方案"><a href="#新一代WLAN解决方案" class="headerlink" title="新一代WLAN解决方案"></a>新一代WLAN解决方案</h2><h3 id="华为WLAN方案满足未来无线建网需求"><a href="#华为WLAN方案满足未来无线建网需求" class="headerlink" title="华为WLAN方案满足未来无线建网需求"></a>华为WLAN方案满足未来无线建网需求</h3><p><img src="/2021/05/02/WLAN/54.png"></p>
-<h3 id="双轮驱动-技术与应用发展助推Wi-Fi-6时代到来"><a href="#双轮驱动-技术与应用发展助推Wi-Fi-6时代到来" class="headerlink" title="双轮驱动:技术与应用发展助推Wi-Fi 6时代到来"></a>双轮驱动:技术与应用发展助推Wi-Fi 6时代到来</h3><p><img src="/2021/05/02/WLAN/55.png"></p>
-<h3 id="Wi-Fi-6-Vs-Wi-Fi-5"><a href="#Wi-Fi-6-Vs-Wi-Fi-5" class="headerlink" title="Wi-Fi 6 Vs Wi-Fi 5"></a>Wi-Fi 6 Vs Wi-Fi 5</h3><p><img src="/2021/05/02/WLAN/56.png"></p>
-<h3 id="下—代园区网络-智简园区（中小型园区网络"><a href="#下—代园区网络-智简园区（中小型园区网络" class="headerlink" title="下—代园区网络:智简园区（中小型园区网络)"></a>下—代园区网络:智简园区（中小型园区网络)</h3><p>基本概念</p>
-<ul>
-<li>通过云管理平台，可以实现任意地点对设备进行集中的管理和维护，大大降低网络部署运维成本。</li>
-<li>适用范围:中小型企业。</li>
-</ul>
-<p>优势(对比AC+FIT AP架构)</p>
-<ul>
-<li>即插即用，自动开局，减少网络部署成本。</li>
-<li>统一运维:所有云管理网元统一在云管理平台上进行监控和管理。</li>
-<li>工具化:通常情况下，云解决方案会在云端提供各类工具，有效降低各类开支。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/57.png"></p>
-<h3 id="下一代园区网络-智简园区-大中型园区网络"><a href="#下一代园区网络-智简园区-大中型园区网络" class="headerlink" title="下一代园区网络:智简园区(大中型园区网络)"></a>下一代园区网络:智简园区(大中型园区网络)</h3><p>架构特点</p>
-<ul>
-<li>AP需要配合iMaster NCE使用，由iMaster NCE统一管理和配置，功能丰富，进一步和有线网络融合，结合大数据和Al技术实现园区网络的极简、智慧和安全。</li>
-<li>适用范围:大中型企业。</li>
-</ul>
-<p><img src="/2021/05/02/WLAN/58.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/" itemprop="url">广域网技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T16:55:45+08:00">
-                2021-05-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="广域网技术概述"><a href="#广域网技术概述" class="headerlink" title="广域网技术概述"></a>广域网技术概述</h2><h3 id="什么是广域网"><a href="#什么是广域网" class="headerlink" title="什么是广域网"></a>什么是广域网</h3><p>广域网 （WAN）是连接不同地区局域网的网络，通常所覆盖的范围从几十公里到几千公里。它能连接多个地区、城市和国家，或横跨几个洲提供远距离通信，形成国际性的远程网络。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/1.png"></p>
-<h3 id="广域网与局域网区别"><a href="#广域网与局域网区别" class="headerlink" title="广域网与局域网区别"></a>广域网与局域网区别</h3><ul>
-<li>局域网是一种覆盖地理区域比较小的计算机网络。</li>
-<li>广域网是一种通过租用ISP网络或者自建专用网络来构建的覆盖地理区域比较广的计算机网络。</li>
-</ul>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/2.png"></p>
-<h3 id="早期广域网技术介绍"><a href="#早期广域网技术介绍" class="headerlink" title="早期广域网技术介绍"></a>早期广域网技术介绍</h3><p>早期广域网与局域网的区别在于数据链路层和物理层的差异性，在TCP/IP参考模型中，其他各层无差异。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/3.png"></p>
-<h3 id="广域网络设备角色介绍"><a href="#广域网络设备角色介绍" class="headerlink" title="广域网络设备角色介绍"></a>广域网络设备角色介绍</h3><p>广域网络设备基本角色有三种，CE ( Customer Edge，用户边缘设备）、PE ( Provider Edge，服务提供商边缘设备）和P ( Provider ，服务提供商设备)。具体定义是:</p>
-<ul>
-<li>CE:用户端连接服务提供商的边缘设备。CE连接一个或多PE，实现用户接入。</li>
-<li>PE:服务提供商连接CE的边缘设备。PE同时连接CE和P设备，是重要的网络节点。</li>
-<li>P︰服务提供商不连接任何CE的设备。</li>
-</ul>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/4.png"></p>
-<h3 id="早期广域网技术的应用"><a href="#早期广域网技术的应用" class="headerlink" title="早期广域网技术的应用"></a>早期广域网技术的应用</h3><p>早期的广域网技术王要定针刈个可日1份在ED笔里干解决用户接入广域网的长距离传输问题。仕ISP之间常用的广域网封装协议有PPP/HDLC/FR等，用于解决用内部常用的广域网协议主要是ATM，它用于解决骨干网高速转发的问题。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/5.png"></p>
-<h2 id="PPP协议原理与配置"><a href="#PPP协议原理与配置" class="headerlink" title="PPP协议原理与配置"></a>PPP协议原理与配置</h2><h3 id="PPP协议概述"><a href="#PPP协议概述" class="headerlink" title="PPP协议概述"></a>PPP协议概述</h3><ul>
-<li><p>PPP ( Point-to-Point Protocol，点到点协议）是一种常见的广域网数据链路层协议，主要用于在全双工的链路上进行点到点的数据传输封装。</p>
-</li>
-<li><p>PPP提供了安全认证协议族PAP ( Password Authentication Protocol，密码验证协议）和CHAP (Challenge Handshake Authentication Protocol，挑战握手认证协议）。</p>
-</li>
-<li><p>PPP协议具有良好的扩展性，例如，当需要在以太网链路上承载PPP协议时，PPP可以扩展为PPPoE。</p>
-</li>
-<li><p>PPP协议提供LCP(Link Control Protocol，链路控制协议)，用于各种链路层参数的协商，例如最大接收单元，认证模式等。</p>
-</li>
-<li><p>PPP协议提供各种NCP (Network Control protocol，网络控制协议），如IPCP ( IP Control Protocol ，IP控制协议)，用于各网络层参数的协商，更好地支持了网络层协议。</p>
-</li>
-</ul>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/6.png"></p>
-<h3 id="PPP链路建立流程"><a href="#PPP链路建立流程" class="headerlink" title="PPP链路建立流程"></a>PPP链路建立流程</h3><p>PPP链路的建立有三个阶段的协商过程，链路层协商、认证协商（可选）和网络层协商。</p>
-<ul>
-<li>链路层协商（LCP）:通过LCP报文进行链路参数协商，建立链路层连接。</li>
-<li>认证协商（可选)︰通过链路建立阶段协商的认证方式进行链路认证。</li>
-<li>网络层协商（NCP）∶通过NCP协商来选择和配置一个网络层协议并进行网络层参数协商。</li>
-</ul>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/7.png"></p>
-<h3 id="PPP链路接口状态机"><a href="#PPP链路接口状态机" class="headerlink" title="PPP链路接口状态机"></a>PPP链路接口状态机</h3><p>PPP协商由链路两端的接口完成。接口的状态表示了协议的协商阶段。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/8.png"></p>
-<h3 id="LCP报文格式"><a href="#LCP报文格式" class="headerlink" title="LCP报文格式"></a>LCP报文格式</h3><p>PPP报文可由Protocol字段标识不同类型的PPP报文。例如，当Protocol字段为OxC021时，代表是LCP报文。此时又由Code字段标识不同类型LCP报文，如下表所示。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/9.png"></p>
-<h3 id="LCP协商过程"><a href="#LCP协商过程" class="headerlink" title="LCP协商过程"></a>LCP协商过程</h3><h4 id="LCP协商过程-正常协商"><a href="#LCP协商过程-正常协商" class="headerlink" title="LCP协商过程-正常协商"></a>LCP协商过程-正常协商</h4><p>LCP协商由不同的LCP报文交互完成。协商由任意一方发送Configure-Request报文发起。如果对端接收此报文且参数匹配，则通过回复Configure-Ack响应协商成功。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/10.png"></p>
-<h4 id="LCP协商过程-参数不匹配"><a href="#LCP协商过程-参数不匹配" class="headerlink" title="LCP协商过程-参数不匹配"></a>LCP协商过程-参数不匹配</h4><p>在LCP报文交互中出现LCP参数不匹配时，接收方回复Configure-Nak响应告知对端修改参数然后重新协商。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/11.png"></p>
-<h4 id="LCP协商过程-参数不识别"><a href="#LCP协商过程-参数不识别" class="headerlink" title="LCP协商过程-参数不识别"></a>LCP协商过程-参数不识别</h4><p>在LCP报文交互中出现LCP参数不识别时，接收方回复Configure-Reject响应告知对端删除不识别的参数然后重新协商。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/12.png"></p>
-<h3 id="PPP认证过程"><a href="#PPP认证过程" class="headerlink" title="PPP认证过程"></a>PPP认证过程</h3><p>链路协商成功后，进行认证协商（此过程可选）。认证协商有两种模式，PAP和CHAP。</p>
-<h4 id="PPP认证模式-PAP"><a href="#PPP认证模式-PAP" class="headerlink" title="PPP认证模式- PAP"></a>PPP认证模式- PAP</h4><p>PAP认证双方有两次握手。协商报文以明文的形式在链路上传输。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/13.png"></p>
-<h4 id="PPP认证模式-CHAP"><a href="#PPP认证模式-CHAP" class="headerlink" title="PPP认证模式- CHAP"></a>PPP认证模式- CHAP</h4><p>CHAP认证双方有三次握手。协商报文被加密后再在链路上传输。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/14.png"></p>
-<h5 id="认证方不携带用户名，被认证方接口有密码"><a href="#认证方不携带用户名，被认证方接口有密码" class="headerlink" title="认证方不携带用户名，被认证方接口有密码"></a>认证方不携带用户名，被认证方接口有密码</h5><p>认证方不带用户名时，被认证方首先使用<strong>自己的接口密码</strong>+random+id生成MD5发送给认证方。</p>
-<p>认证方收到回复帧后，到自己的AAA库中找与<strong>被认证方</strong>接口用户名相对应的密码，生成一个MD5值。</p>
-<p>最后如果被认证方发送的MD5值和认证方生成的MD5值相同的话，则认证通过，显示Success，若不通过则显示Failure.</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%AE%A4%E8%AF%81%E6%96%B9%E4%B8%8D%E5%B8%A6%E7%94%A8%E6%88%B7%E5%90%8D.png"></p>
-<h5 id="认证方（双方）携带用户名，被认证方接口无密码"><a href="#认证方（双方）携带用户名，被认证方接口无密码" class="headerlink" title="认证方（双方）携带用户名，被认证方接口无密码"></a>认证方（双方）携带用户名，被认证方接口无密码</h5><p>认证方携带用户名时，被认证方接受到挑战帧后，首先进入自己AAA库中找到与<strong>认证方</strong>发送过来用户名相对应的密码+random+id生成MD5发送给认证方。</p>
-<p>认证方接受到被认证方发送过来的MD5值后，首先也同样进入AAA库中找到与<strong>被认证方</strong>发送过来的用户名相对应的密码+random+id生成自己的MD5值。</p>
-<p>最后如果被认证方发送的MD5值和认证方生成的MD5值相同的话，则认证通过，显示Success，若不通过则显示Failure.</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%AE%A4%E8%AF%81%E6%96%B9%E5%B8%A6%E7%94%A8%E6%88%B7%E5%90%8D.png"></p>
-<blockquote>
-<p>第三次握手中，如果是Success，MESSAGE =”welcome to XXX”。 XXX是认证方接口用户名。</p>
-</blockquote>
-<h5 id="认证方（双方）携带用户名，被认证方接口有密码"><a href="#认证方（双方）携带用户名，被认证方接口有密码" class="headerlink" title="认证方（双方）携带用户名，被认证方接口有密码"></a>认证方（双方）携带用户名，被认证方接口有密码</h5><p>认证方携带用户名时，被认证方接受到挑战帧，此使被认证方<strong>使用自己的接口密码</strong>生成MD5值，<strong>不再使用AAA库中与认证方用户名相对应的密码</strong>生成MD5值了。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%A2%AB%E8%AE%A4%E8%AF%81%E6%96%B9%E6%8E%A5%E5%8F%A3%E6%9C%89%E5%AF%86%E7%A0%81.png"></p>
-<h5 id="双方携带用户名，认证方AAA库中无密码"><a href="#双方携带用户名，认证方AAA库中无密码" class="headerlink" title="双方携带用户名，认证方AAA库中无密码"></a>双方携带用户名，认证方AAA库中无密码</h5><p>此时因为被认证方发送过来的MD5与认证方生成MD5比较失败无法通过认证。</p>
-<blockquote>
-<p>比较失败的原因是认证方AAA库中没有对应的密码。</p>
-</blockquote>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%AE%A4%E8%AF%81%E6%96%B9aaa%E5%BA%93%E4%B8%AD%E6%97%A0%E5%AF%B9%E5%BA%94%E5%AF%86%E7%A0%81.png"></p>
-<h3 id="NCP协商"><a href="#NCP协商" class="headerlink" title="NCP协商"></a>NCP协商</h3><p>PPP认证协商后，双方进入NCP协商阶段，协商在数据链路上所传输的数据包的格式与类型。以常见的IPCP协议为例，它分为静态IP地址协商和动态IP地址协商。</p>
-<h4 id="NCP协商-静态IР地址协商"><a href="#NCP协商-静态IР地址协商" class="headerlink" title="NCP协商-静态IР地址协商"></a>NCP协商-静态IР地址协商</h4><p>静态IP地址协商需要手动在链路两端配置IP地址。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/15.png"></p>
-<h4 id="NCP协商-动态IP地址协商"><a href="#NCP协商-动态IP地址协商" class="headerlink" title="NCP协商-动态IP地址协商"></a>NCP协商-动态IP地址协商</h4><p>动态IP地址协商支持PPP链路─端为对端配置IP地址。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/16.png"></p>
-<h3 id="PPP协议配置"><a href="#PPP协议配置" class="headerlink" title="PPP协议配置"></a>PPP协议配置</h3><h4 id="PPP基础配置命令"><a href="#PPP基础配置命令" class="headerlink" title="PPP基础配置命令"></a>PPP基础配置命令</h4><p>1.配置接口封装PPP协议</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0]link-protocol ppp</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，将接口封装协议改为ppp，华为串行接口默认封装协议为ppp。<br>2.配置协商超时时间间隔</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp timer negotiate seconds</span><br></pre></td></tr></table></figure>
-<p>在PPPLCP协商过程中，本端设备会向对端设备发送LCP协商报文，如果在指定协商时间间隔内没有收到对端的应答报文，则重新发送。</p>
-<h4 id="PAP认证配置命令"><a href="#PAP认证配置命令" class="headerlink" title="PAP认证配置命令"></a>PAP认证配置命令</h4><p>1.配置验证方以PAP方式认证对端</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password &#123; cipher | irreversible-cipher &#125; password</span><br><span class="line">[Huawei-aaa] local-user user-name service-type ppp</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp authentication-mode pap</span><br></pre></td></tr></table></figure>
-<p>配置验证方以PAP方式认证对端，首先需要通过AAA将被验证方的用户名和密码加入本地用户列表，然后选择认证模式。<br>2.配置被验证方以PAP方式被对端认证</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp pap local-user user-name password &#123; cipher simple &#125; password</span><br></pre></td></tr></table></figure>
-<p>配置本地被对端以PAP方式验证时，本地发送PAP用户名和口令。</p>
-<h4 id="CHAP认证配置命令"><a href="#CHAP认证配置命令" class="headerlink" title="CHAP认证配置命令"></a>CHAP认证配置命令</h4><p>1.配置验证方以CHAP方式认证对端</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password &#123; cipher | irreversible-cipher &#125; password</span><br><span class="line">[Huawei-aaa] local-user user-name service-type ppp</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp authentication-mode chap</span><br></pre></td></tr></table></figure>
-<p>2.配置被验证方以CHAP方式被对端认证</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp chap user user-name</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp chap password &#123; cipher | simple &#125; password</span><br></pre></td></tr></table></figure>
-<p>配置本地用户名，配置本地被对端以CHAP方式验证时的口令。</p>
-<h3 id="配置举例"><a href="#配置举例" class="headerlink" title="配置举例"></a>配置举例</h3><h4 id="配置举例-PAP认证"><a href="#配置举例-PAP认证" class="headerlink" title="配置举例- PAP认证"></a>配置举例- PAP认证</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/17.png"></p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/18.png"></p>
-<h4 id="配置举例-CHAP认证"><a href="#配置举例-CHAP认证" class="headerlink" title="配置举例-CHAP认证"></a>配置举例-CHAP认证</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/19.png"></p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/20.png"></p>
-<h2 id="PPPoE原理与配置"><a href="#PPPoE原理与配置" class="headerlink" title="PPPoE原理与配置"></a>PPPoE原理与配置</h2><h3 id="什么是PPPoE"><a href="#什么是PPPoE" class="headerlink" title="什么是PPPoE"></a>什么是PPPoE</h3><p>PPPoE ( PPP over Ethernet，以太网承载PPP协议)是一种把PPP帧封装到以太网帧中的链路层协议。PPPoE可以使以太网网络中的多台主机连接到远端的宽带接入服务器。</p>
-<p>PPPoE集中了PPP和Ethernet两个技术的优点。既有以太网的组网灵活优势，又可以利用PPP协议实现认证、计费等功能。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/21.png"></p>
-<h3 id="PPPoE应用场景"><a href="#PPPoE应用场景" class="headerlink" title="PPPoE应用场景"></a>PPPoE应用场景</h3><p>PPPoE实现了在以太网上提供点到点的连接。PPPoE客户端与PPPoE服务器端之间建立PPP会话，封装PPP数据报文，为以太网上的主机提供接入服务，实现用户控制和计费，在企业网络与运营商网络中应用广泛。</p>
-<p>PPPoE的常见应用场景有家庭用户拨号上网、企业用户拨号上网等</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/22.png"></p>
-<h3 id="PPPoE会话建立"><a href="#PPPoE会话建立" class="headerlink" title="PPPoE会话建立"></a>PPPoE会话建立</h3><p>PPPoE的会话建立有三个阶段，PPPoE发现阶段、PPPoE会话阶段和PPPoE终结阶段。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/23.png"></p>
-<h3 id="PPPoE报文"><a href="#PPPoE报文" class="headerlink" title="PPPoE报文"></a>PPPoE报文</h3><p>PPPoE会话的建立通过不同的PPPoE报文交互实现。PPPoE报文结构及常见的报文类型如下所示:</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/24.png"></p>
-<h3 id="PPPoE发现阶段"><a href="#PPPoE发现阶段" class="headerlink" title="PPPoE发现阶段"></a>PPPoE发现阶段</h3><p>PPPoE协议发现有四个步骤:客户端发送请求、服务端响应请求、客户端确认响应和建立会话。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/25.png"></p>
-<h3 id="PPPoE会话阶段"><a href="#PPPoE会话阶段" class="headerlink" title="PPPoE会话阶段"></a>PPPoE会话阶段</h3><p>PPPoE会话阶段会进行PPP协商，分为LCP协商、认证协商、NCP协商三个阶段。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/26.png"></p>
-<h3 id="PPPoE会话终结阶段"><a href="#PPPoE会话终结阶段" class="headerlink" title="PPPoE会话终结阶段"></a>PPPoE会话终结阶段</h3><p>当PPPoE客户端希望关闭连接时，会向PPPoE服务器端发送一个PADT报文，用于关闭连接。同样，如果PPPoE服务器端希望关闭连接时，也会向PPPoE客户端发送一个PADT报文。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/27.png"></p>
-<h3 id="PPPoE基础配置"><a href="#PPPoE基础配置" class="headerlink" title="PPPoE基础配置"></a>PPPoE基础配置</h3><p>1.通过拨号规则来配置发起PPPoE会话的条件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] dialer-rule</span><br></pre></td></tr></table></figure>
-<p>2.配置拨号接口用户名，此用户名必须与对端服务器用户名相同</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Dialer1]dialer user username</span><br></pre></td></tr></table></figure>
-<p>3.将接口置于一个拨号访问组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Dialer1]dialer-group group-number</span><br></pre></td></tr></table></figure>
-<p>4.指定当前拨号接口使用的拨号绑定</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Dialer1]dialer-bundle number</span><br></pre></td></tr></table></figure>
-<p>5.将物理端口与dialer-bundle进行绑定</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-EthernetO&#x2F;0&#x2F;0]pppoe-client dial-bundle-number number</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置实例"><a href="#配置实例" class="headerlink" title="配置实例"></a>配置实例</h3><h4 id="配置实例-PPPoE客户端"><a href="#配置实例-PPPoE客户端" class="headerlink" title="配置实例-PPPoE客户端"></a>配置实例-PPPoE客户端</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/28.png"></p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/29.png"></p>
-<h4 id="配置实例-PPPoE服务器端"><a href="#配置实例-PPPoE服务器端" class="headerlink" title="配置实例-PPPoE服务器端"></a>配置实例-PPPoE服务器端</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/30.png"></p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/31.png"></p>
-<h4 id="配置验证"><a href="#配置验证" class="headerlink" title="配置验证"></a>配置验证</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/32.png"></p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/33.png"></p>
-<h2 id="广域网技术的发展"><a href="#广域网技术的发展" class="headerlink" title="广域网技术的发展"></a>广域网技术的发展</h2><h3 id="传统IР路由转发"><a href="#传统IР路由转发" class="headerlink" title="传统IР路由转发"></a>传统IР路由转发</h3><p>传统的IP转发采用的是逐跳转发。数据报文经过每一台路由器，都要被解封装查看报又网络层信忌，然后依掂哈出取囚四乩原则查找路由表指导报文转发。各路由器重复进行解封装查找路由表和再封装的过程，所以转发性能低。</p>
-<p>传统IP路由转发的特点:</p>
-<ul>
-<li>所有路由器需要知道全网的路由。</li>
-<li>传统lP转发是面向无连接的，无法提供较好的端到端QoS保证。</li>
-</ul>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/34.png"></p>
-<h3 id="MPLS标签转发"><a href="#MPLS标签转发" class="headerlink" title="MPLS标签转发"></a>MPLS标签转发</h3><ul>
-<li>MPLS是一种IP骨干网技术。</li>
-<li>MPLS是种隧道技术，在IP路由和控制协议的基础上，向网络层提供面向连接的交换。能够提供较好的QoS保证。</li>
-<li>MPLS标签指导报文转发的过程中，使用本地标签查找替代传统IP转发的路由查找，大大提高转发效率。</li>
-<li>MPLS转发过程中使用的标签，既可以通过手工静态配置，又可以通过动态标签分发协议分配。</li>
-</ul>
-<p>MPLS的标签分发有静态和动态两种方式，均面临着不同的问题</p>
-<ul>
-<li>静态标签分发为手工配置。</li>
-<li>动态标签分发的问题。</li>
-</ul>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/35.png"></p>
-<h3 id="Segment-Routing简介"><a href="#Segment-Routing简介" class="headerlink" title="Segment Routing简介"></a>Segment Routing简介</h3><p>为解决传统IP转发和MPLS转发的问题，业界提出了SR ( Segment Routing，分段路由）。SR的转发机制有很大改进，主要体现在以下几个方面:</p>
-<p>1.基于现有协议进行扩展:</p>
-<ul>
-<li>扩展后的IGP/BGP具有标签分发能力，因此网络中无需其他任何标签分发协议，实现协议简化。</li>
-</ul>
-<p>2.引入源路由机制:</p>
-<ul>
-<li>基于源路由机制，支持通过控制器进行集中算路。</li>
-</ul>
-<p>3.由业务来定义网络:</p>
-<ul>
-<li>业务驱动网络，由应用提出需求（时延、带宽、丢包率等），控制器收集网络拓扑、带宽利用率、时延等信息，根据业务需求计算显式路径。</li>
-</ul>
-<h3 id="Segment-Routing转发原理"><a href="#Segment-Routing转发原理" class="headerlink" title="Segment Routing转发原理"></a>Segment Routing转发原理</h3><p>SR将网络路径分成一个个的段( Segment )，并且为这些段分配SID ( Segment ID ) 。</p>
-<p>SID的分配对象有两种，转发节点或者邻接链路。本例中转发节点SID 1600X，X为路由器编号;邻接链路SID160xx，XX表示链路两端的节点编号。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/36.png"></p>
-<p>邻接链路和网络节点的SID有序排列形成段序列( Segment List )，它代表一条转发路径。SR由源节点将段序列编码在数据包头部，随数据包传输。SR的本质是指令，指引报文去哪里和怎么去。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/37.png"></p>
-<h3 id="SR的部署方式"><a href="#SR的部署方式" class="headerlink" title="SR的部署方式"></a>SR的部署方式</h3><p>SR部署分为有控制器部署和无控制器部署。控制器配合方式由控制<br>器收集信息，预留路径资源和计算路径，最后将结果下发到头结点，是更为推荐的部署方式。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/38.png"></p>
-<h3 id="Seg-ment-Routing的应用"><a href="#Seg-ment-Routing的应用" class="headerlink" title="Seg ment Routing的应用"></a>Seg ment Routing的应用</h3><p>SR可以简易的指定的报文转发路径，在现网中可以为不同业务定义不同的路径。例如本例定义了数据下载、视频和语音三条显式路径，实现了业务驱动网络。设备由控制器纳管，支持路径实时快速发放。</p>
-<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/39.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3825,7 +3681,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3838,7 +3694,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

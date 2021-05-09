@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="OSPF特殊区域及其它特性," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•在一个大型网络中，OSPF路由器通常需要同时维护由域内路由、域间路由、外部路由构成的数据库。当网络规模不断扩大时，LSDB规模也不断增长。如果某区域不需要为其他区域提供流量中转服务，那么该区域内的路由器就没有必要维护本区域外的链路状态信息。 •OSPF通过划分区域可以减小区域内路由器LSDB的规模，对于那些位于自治系统（AS）边界的非骨干区域的低端路由器来说仍然无法承受，通过OSPF的特殊区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSPF特殊区域及其它特性">
+<meta property="og:url" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•在一个大型网络中，OSPF路由器通常需要同时维护由域内路由、域间路由、外部路由构成的数据库。当网络规模不断扩大时，LSDB规模也不断增长。如果某区域不需要为其他区域提供流量中转服务，那么该区域内的路由器就没有必要维护本区域外的链路状态信息。 •OSPF通过划分区域可以减小区域内路由器LSDB的规模，对于那些位于自治系统（AS）边界的非骨干区域的低端路由器来说仍然无法承受，通过OSPF的特殊区">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/1.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/3.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/4.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/5.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/6.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/7.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/8.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/9.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/10.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/11.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/12.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/13.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/14.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/15.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/16.png">
+<meta property="og:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/17.png">
+<meta property="article:published_time" content="2021-05-09T11:04:41.000Z">
+<meta property="article:modified_time" content="2021-05-09T12:10:46.627Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="OSPF特殊区域及其它特性">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/09/OSPF特殊区域及其它特性/"/>
+
+
+
+
+
+  <title>OSPF特殊区域及其它特性 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OSPF特殊区域及其它特性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-09T19:04:41+08:00">
+                2021-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在一个大型网络中，OSPF路由器通常需要同时维护由域内路由、域间路由、外部路由构成的数据库。当网络规模不断扩大时，LSDB规模也不断增长。如果某区域不需要为其他区域提供流量中转服务，那么该区域内的路由器就没有必要维护本区域外的链路状态信息。</p>
+<p>•OSPF通过划分区域可以减小区域内路由器LSDB的规模，对于那些位于自治系统（AS）边界的非骨干区域的低端路由器来说仍然无法承受，通过OSPF的特殊区域特性可以进一步减少LSA数量和路由表规模。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述OSPF特殊区域类型及相关特征</p>
+<p>▫阐明OSPF路由汇总的应用场景及功能优势</p>
+<p>▫实现OSPF报文认证的配置</p>
+<h1 id="Stub区域和Totally-Stub区域"><a href="#Stub区域和Totally-Stub区域" class="headerlink" title="Stub区域和Totally Stub区域"></a>Stub区域和Totally Stub区域</h1><h2 id="网络规模变大引发的问题"><a href="#网络规模变大引发的问题" class="headerlink" title="网络规模变大引发的问题"></a>网络规模变大引发的问题</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/1.png"></p>
+<p>OSPF路由器计算区域内、区域间、外部路由都需要依靠网络中的LSA，当网络规模变大时，设备的LSDB规模也变大，设备的路由计算变得更加吃力，造成设备性能浪费。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/3.png"></p>
+<h2 id="传输区域和末端区域"><a href="#传输区域和末端区域" class="headerlink" title="传输区域和末端区域"></a>传输区域和末端区域</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/4.png"></p>
+<p>OSPF的区域可分为两种类型：</p>
+<p>▫传输区域（Transit Area）：除了承载本区域发起的流量和访问本区域的流量外，还承载了源IP和目的IP都不属于本区域的流量，即“穿越型流量”，如本例中的Area 0。</p>
+<p>▫末端区域（Stub Area）：只承载本区域发起的流量和访问本区域的流量，如本例中的Area 1和Area 2。</p>
+<h2 id="Stub区域"><a href="#Stub区域" class="headerlink" title="Stub区域"></a>Stub区域</h2><p>•Stub区域的ABR不向Stub区域内传播它接收到的AS外部路由，Stub区域中路由器的LSDB、路由表规模都会大大减小。</p>
+<p>•为保证Stub区域能够到达AS外部，Stub区域的ABR将生成一条缺省路由（使用3类LSA描述）。</p>
+<p>•配置Stub区域时需要注意下列几点：</p>
+<p>​    ▫骨干区域不能被配置为Stub区域。</p>
+<p>​    ▫Stub区域中的所有路由器都必须将该区域配置为Stub。</p>
+<p>​    ▫Stub区域内不能引入也不接收AS外部路由。</p>
+<p>​    ▫虚连接不能穿越Stub区域。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/5.png"></p>
+<h2 id="Stub区域的路由表及3类LSA"><a href="#Stub区域的路由表及3类LSA" class="headerlink" title="Stub区域的路由表及3类LSA"></a>Stub区域的路由表及3类LSA</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/6.png"></p>
+<h2 id="Totally-Stub区域-1"><a href="#Totally-Stub区域-1" class="headerlink" title="Totally Stub区域 (1)"></a>Totally Stub区域 (1)</h2><p>•Totally Stub区域既不允许AS外部路由在本区域内传播，也不允许区域间路由在本区域内传播。</p>
+<p>•Totally Stub区域内的路由器通过本区域ABR下发的缺省路由（使用3类LSA描述）到达其他区域，以及AS外部。</p>
+<p>•配置Totally Stub区域时需要注意：</p>
+<p>▫与Stub区域配置的区别在于，在ABR上需要追加no-summary关键字。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/7.png"></p>
+<blockquote>
+<p>•思考：为什么非ABR设备不需要追加no-summary参数呢？</p>
+</blockquote>
+<h2 id="Totally-Stub区域-2"><a href="#Totally-Stub区域-2" class="headerlink" title="Totally Stub区域 (2)"></a>Totally Stub区域 (2)</h2><p>•Totally Stub区域访问其他区域及AS外部是通过默认路由实现的。</p>
+<p>•AS外部、其他OSPF区域的拓扑及路由变化不会导致Totally Stub区域内的路由器进行路由重计算，减少了设备性能浪费。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/8.png"></p>
+<p>Stub区域、Totally Stub区域解决了末端区域维护过大LSDB带来的问题，但对于某些特定场景，它们并不是最佳解决方案。</p>
+<h1 id="NSSA区域和Totally-NSSA区域"><a href="#NSSA区域和Totally-NSSA区域" class="headerlink" title="NSSA区域和Totally NSSA区域"></a>NSSA区域和Totally NSSA区域</h1><h2 id="Stub区域与Totally-Stub区域存在的问题"><a href="#Stub区域与Totally-Stub区域存在的问题" class="headerlink" title="Stub区域与Totally Stub区域存在的问题"></a>Stub区域与Totally Stub区域存在的问题</h2><p>•OSPF规定Stub区域是不能引入外部路由的，这样可以避免大量外部路由引入造成设备资源消耗。</p>
+<p>•对于既需要引入外部路由又要避免外部路由带来的资源消耗的场景，Stub和Totally Stub区域就不能满足需求了。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/9.png"></p>
+<h2 id="NSSA区域与Totally-NSSA区域"><a href="#NSSA区域与Totally-NSSA区域" class="headerlink" title="NSSA区域与Totally NSSA区域"></a>NSSA区域与Totally NSSA区域</h2><p>•NSSA区域能够引入外部路由，同时又不会学习来自OSPF网络其它区域引入的外部路由。</p>
+<p>•Totally NSSA与NSSA区域的配置区别在于前者在ABR上需要追加no-summary关键字。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/10.png"></p>
+<blockquote>
+<p>NSSA区域能够引入外部路由，同时又不会学习来自OSPF网络其它区域的外部路由。</p>
+<p>▫7类LSA是为了支持NSSA区域而新增的一种LSA类型，用于描述NSSA区域引入的外部路由信息。NSSA区域的ASBR将外部路由引入该区域后，使用7类LSA描述这些路由。</p>
+<p>▫7类LSA的扩散范围仅限于始发NSSA区域，7类LSA不会被注入到普通区域。</p>
+<p>▫NSSA区域的ABR会将7类LSA转化为5类LSA，并将该LSA注入到骨干区域，从而在整个OSPF域内泛洪。</p>
+<p>▫NSSA区域的ABR会阻挡其他区域引入的外部路由引入本区域，即NSSA区域内不会存在4类及5类LSA，为了让NSSA区域内的路由器能够通过骨干区域到达AS外部，NSSA区域的ABR会自动向该区域注入一条缺省路由，该路由采用7类LSA描述。</p>
+</blockquote>
+<h2 id="NSSA区域与Totally-NSSA区域的LSDB"><a href="#NSSA区域与Totally-NSSA区域的LSDB" class="headerlink" title="NSSA区域与Totally NSSA区域的LSDB"></a>NSSA区域与Totally NSSA区域的LSDB</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/11.png"></p>
+<blockquote>
+<p>•场景1（将Area 2配置为NSSA区域）：当R5将外部路由192.168.3.0/24引入NSSA区域时，R5作为ASBR生成7类LSA在Area 2内泛洪；R3生成使用7类LSA描述的缺省路由注入Area 2，Area 2内的路由器依然会收到R3注入的3类LSA，并计算出到达其他区域的区域间路由。</p>
+<p>•场景2（将Area2配置为Totally NSSA区域）：Totally NSSA区域和NSSA区域类似，只是Totally NSSA区域的ABR会阻挡3类LSA进入该区域，因此在场景2中，R3不会将区域间路由注入Area 2，故而在R5的LSDB中，仅会看到一条描述缺省路由的3类LSA。</p>
+</blockquote>
+<h2 id="OSPF-LSA回顾"><a href="#OSPF-LSA回顾" class="headerlink" title="OSPF LSA回顾"></a>OSPF LSA回顾</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/12.png"></p>
+<h2 id="路由器对LSA的处理原则"><a href="#路由器对LSA的处理原则" class="headerlink" title="路由器对LSA的处理原则"></a>路由器对LSA的处理原则</h2><p>OSPF通过交互LSA实现链路状态数据库同步，路由器收到LSA后，按照以下原则处理：</p>
+<p>▫如果收到的LSA本地没有，则更新LSDB并泛洪该LSA。</p>
+<p>▫如果本地LSDB已存在该LSA，但是收到的更新，则更新LSDB并泛洪该LSA。</p>
+<p>▫如果收到的LSA和LSDB中相同，则忽略，并终止泛洪。</p>
+<p>▫如果收到的LSA损坏，例如Checksum错误，则不接收该LSA。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/13.png"></p>
+<h1 id="区域间路由汇总和外部路由汇总"><a href="#区域间路由汇总和外部路由汇总" class="headerlink" title="区域间路由汇总和外部路由汇总"></a>区域间路由汇总和外部路由汇总</h1><h2 id="在ABR执行路由汇总"><a href="#在ABR执行路由汇总" class="headerlink" title="在ABR执行路由汇总"></a>在ABR执行路由汇总</h2><p>•路由汇总又被称为路由聚合，即是将一组前缀相同的路由汇聚成一条路由，从而达到减小路由表规模以及优化设备资源利用率的目的，我们把汇聚之前的这组路由称为精细路由或明细路由，把汇聚之后的这条路由称为汇总路由或聚合路由。</p>
+<p>•OSPF路由汇总的类型：</p>
+<p>​    ▫在ABR执行路由汇总：对区域间的路由执行路由汇总。</p>
+<p>​    ▫在ASBR执行路由汇总：对引入的外部路由执行路由汇总。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/14.png"></p>
+<h2 id="在ASBR执行路由汇总"><a href="#在ASBR执行路由汇总" class="headerlink" title="在ASBR执行路由汇总"></a>在ASBR执行路由汇总</h2><p>•在ASBR配置路由汇总后，ASBR将对自己所引入的外部路由进行汇总。</p>
+<p>•NSSA区域的ASBR也可以对引入NSSA区域的外部路由进行汇总。</p>
+<p>•在NSSA区域中，ABR执行7类LSA转化成5类LSA动作，此时它也是ASBR。若配置路由汇总，则对由7类LSA转化成的5类LSA进行汇总。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/15.png"></p>
+<blockquote>
+<p>•R1、R3、R5分别对引入的外部路由执行路由汇总。</p>
+</blockquote>
+<h1 id="OSPF协议特性"><a href="#OSPF协议特性" class="headerlink" title="OSPF协议特性"></a>OSPF协议特性</h1><h2 id="Silent-Interface"><a href="#Silent-Interface" class="headerlink" title="Silent-Interface"></a>Silent-Interface</h2><p>•通过Silent-Interface的配置，增强OSPF的组网适应能力，减少系统资源的消耗。</p>
+<p>•Silent-Interface有以下特性：</p>
+<p>​    ▫Silent-Interface不会接收和发送OSPF报文。</p>
+<p>​    ▫Silent-Interface的直连路由仍可以发布出去。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/16.png"></p>
+<h2 id="OSPF报文认证"><a href="#OSPF报文认证" class="headerlink" title="OSPF报文认证"></a>OSPF报文认证</h2><p>•OSPF支持报文认证功能，只有通过认证的OSPF报文才能被接收。</p>
+<p>•路由器支持两种OSPF报文认证方式，当两种认证方式都存在时，优先使用接口认证方式：</p>
+<p>​    ▫区域认证方式：一个OSPF区域中所有的路由器在该区域下的认证模式和口令必须一致。</p>
+<p>​    ▫接口认证方式：相邻路由器直连接口下的认证模式和口令必须一致。</p>
+<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/17.png"></p>
+<blockquote>
+<p>区域视图下，配置OSPF区域的认证模式。</p>
+<ul>
+<li>执行命令<strong>authentication-mode simple</strong>  [ <strong>plain</strong> <em>plain-text</em> | [ <strong>cipher</strong> ] <em>cipher-text</em> ]，配置OSPF区域的认证模式。<ul>
+<li>plain表示明文口令类型。</li>
+<li>cipher表示密文口令类型。对于MD5/HMAC-MD5认证模式，当此参数缺省时，默认为cipher类型。</li>
+</ul>
+</li>
+</ul>
+<p>配置接口认证方式。</p>
+<ul>
+<li>执行命令<strong>ospf</strong> <strong>authentication-mode simple</strong> [ <strong>plain</strong> <em>plain-text</em> | [ <strong>cipher</strong> ] <em>cipher-text</em> ]，配置OSPF接口的认证模式。</li>
+</ul>
+</blockquote>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）OSPF定义了以下哪几种特殊区域？(   )</p>
+<p><strong>A.Stub Area</strong></p>
+<p><strong>B.Totally Stub Area</strong></p>
+<p><strong>C.Not-So-Stubby Area（NSSA)</strong></p>
+<p><strong>D.Totally NSSA</strong></p>
+<p>2.（简答题）Stub区域与Totally Stub区域的主要差别是什么？</p>
+<p><strong>Stub区域不允许4类和5类LSA进入，但允许3类LSA进入。Totally Stub区域不仅不允许4类和5类LSA进入，同时也不允许3类LSA进入，只允许表示缺省路由的3类LSA进入。</strong></p>
+<p>3.（简答题）区域间路由汇总功能在什么路由器上配置？</p>
+<p><strong>在ABR上配置</strong></p>
+<h1 id="本章总结"><a href="#本章总结" class="headerlink" title="本章总结"></a>本章总结</h1><p>•本章详细介绍了OSPF特殊区域，Stub区域内的路由器通过缺省路由到达外部网络、Totally Stub区域内的路由器通过缺省路由到达外部网络和OSPF区域间网络；NSSA、Totally NSSA区域内的路由器可引入外部路由。</p>
+<p>•在本章还介绍了OSPF协议的特性。包括Silent-Interface、认证、以及OSPF路由器收到LSA时的处理方式。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/" rel="tag"># OSPF特殊区域及其它特性</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/" rel="next" title="OSPF路由计算">
+                <i class="fa fa-chevron-left"></i> OSPF路由计算
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Stub%E5%8C%BA%E5%9F%9F%E5%92%8CTotally-Stub%E5%8C%BA%E5%9F%9F"><span class="nav-number">3.</span> <span class="nav-text">Stub区域和Totally Stub区域</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%A7%84%E6%A8%A1%E5%8F%98%E5%A4%A7%E5%BC%95%E5%8F%91%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">网络规模变大引发的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%8C%BA%E5%9F%9F%E5%92%8C%E6%9C%AB%E7%AB%AF%E5%8C%BA%E5%9F%9F"><span class="nav-number">3.2.</span> <span class="nav-text">传输区域和末端区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stub%E5%8C%BA%E5%9F%9F"><span class="nav-number">3.3.</span> <span class="nav-text">Stub区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stub%E5%8C%BA%E5%9F%9F%E7%9A%84%E8%B7%AF%E7%94%B1%E8%A1%A8%E5%8F%8A3%E7%B1%BBLSA"><span class="nav-number">3.4.</span> <span class="nav-text">Stub区域的路由表及3类LSA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Totally-Stub%E5%8C%BA%E5%9F%9F-1"><span class="nav-number">3.5.</span> <span class="nav-text">Totally Stub区域 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Totally-Stub%E5%8C%BA%E5%9F%9F-2"><span class="nav-number">3.6.</span> <span class="nav-text">Totally Stub区域 (2)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NSSA%E5%8C%BA%E5%9F%9F%E5%92%8CTotally-NSSA%E5%8C%BA%E5%9F%9F"><span class="nav-number">4.</span> <span class="nav-text">NSSA区域和Totally NSSA区域</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Stub%E5%8C%BA%E5%9F%9F%E4%B8%8ETotally-Stub%E5%8C%BA%E5%9F%9F%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.1.</span> <span class="nav-text">Stub区域与Totally Stub区域存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSSA%E5%8C%BA%E5%9F%9F%E4%B8%8ETotally-NSSA%E5%8C%BA%E5%9F%9F"><span class="nav-number">4.2.</span> <span class="nav-text">NSSA区域与Totally NSSA区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSSA%E5%8C%BA%E5%9F%9F%E4%B8%8ETotally-NSSA%E5%8C%BA%E5%9F%9F%E7%9A%84LSDB"><span class="nav-number">4.3.</span> <span class="nav-text">NSSA区域与Totally NSSA区域的LSDB</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF-LSA%E5%9B%9E%E9%A1%BE"><span class="nav-number">4.4.</span> <span class="nav-text">OSPF LSA回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%AF%B9LSA%E7%9A%84%E5%A4%84%E7%90%86%E5%8E%9F%E5%88%99"><span class="nav-number">4.5.</span> <span class="nav-text">路由器对LSA的处理原则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8C%BA%E5%9F%9F%E9%97%B4%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB%E5%92%8C%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB"><span class="nav-number">5.</span> <span class="nav-text">区域间路由汇总和外部路由汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8ABR%E6%89%A7%E8%A1%8C%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB"><span class="nav-number">5.1.</span> <span class="nav-text">在ABR执行路由汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8ASBR%E6%89%A7%E8%A1%8C%E8%B7%AF%E7%94%B1%E6%B1%87%E6%80%BB"><span class="nav-number">5.2.</span> <span class="nav-text">在ASBR执行路由汇总</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OSPF%E5%8D%8F%E8%AE%AE%E7%89%B9%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">OSPF协议特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Silent-Interface"><span class="nav-number">6.1.</span> <span class="nav-text">Silent-Interface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E6%8A%A5%E6%96%87%E8%AE%A4%E8%AF%81"><span class="nav-number">6.2.</span> <span class="nav-text">OSPF报文认证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E7%AB%A0%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">本章总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
