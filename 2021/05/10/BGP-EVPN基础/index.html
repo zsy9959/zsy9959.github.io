@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-BGP EVPN基础," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•标准BGP-4仅支持IPv4单播地址，为了支持更多的网络层协议，MP-BGP（Multiprotocol Extensions for BGP-4）（RFC4760）被提出作为BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。 •随着SDN的发展和商用，EVPN（Ethernet VPN）在各解决方案中占据重要角色，应用覆盖全场景包括">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BGP-EVPN基础">
+<meta property="og:url" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•标准BGP-4仅支持IPv4单播地址，为了支持更多的网络层协议，MP-BGP（Multiprotocol Extensions for BGP-4）（RFC4760）被提出作为BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。 •随着SDN的发展和商用，EVPN（Ethernet VPN）在各解决方案中占据重要角色，应用覆盖全场景包括">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/1.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/2.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/3.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/4.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/5.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/6.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/7.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/8.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/9.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/10.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/11.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/12.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/13.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/14.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/15.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/16.png">
+<meta property="og:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/17.png">
+<meta property="article:published_time" content="2021-05-10T13:21:55.000Z">
+<meta property="article:modified_time" content="2021-05-10T13:40:27.852Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-BGP EVPN基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/10/BGP-EVPN基础/"/>
+
+
+
+
+
+  <title>BGP-EVPN基础 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BGP-EVPN基础</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T21:21:55+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•标准BGP-4仅支持IPv4单播地址，为了支持更多的网络层协议，MP-BGP（Multiprotocol Extensions for BGP-4）（RFC4760）被提出作为BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。</p>
+<p>•随着SDN的发展和商用，EVPN（Ethernet VPN）在各解决方案中占据重要角色，应用覆盖全场景包括园区网络、数据中心网络、广域IP承载网络和SD-WAN。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MP-BGP的基本概念</p>
+<p>▫描述EVPN的起源</p>
+<p>▫描述EVPN的常见路由类型</p>
+<p>▫描述EVPN的典型应用场景</p>
+<h1 id="MP-BGP"><a href="#MP-BGP" class="headerlink" title="MP-BGP"></a>MP-BGP</h1><h2 id="MP-BGP-1"><a href="#MP-BGP-1" class="headerlink" title="MP-BGP"></a>MP-BGP</h2><p>MP-BGP（Multiprotocol Extensions for BGP-4）在RFC4760中被定义，用于实现BGP-4的扩展以允许BGP携带多种网络层协议（例如IPv6、L3VPN、EVPN等）。这种扩展有很好的后向兼容性，即一个支持MP-BGP的路由器可以和一个仅支持BGP-4的路由器交互。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/1.png"></p>
+<blockquote>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4760/">https://datatracker.ietf.org/doc/rfc4760/</a></p>
+</blockquote>
+<h2 id="BGP-4扩展"><a href="#BGP-4扩展" class="headerlink" title="BGP-4扩展"></a>BGP-4扩展</h2><p>•BGP-4中IPv4特有的三个信息是NEXT_HOP属性、AGGREGATOR和IPv4 NLRI。因此为了支持多种网络层协议，BGP-4需要增加两种能力：</p>
+<p>​    ▫关联其他网络层协议下一跳信息的能力。</p>
+<p>​    ▫关联其他网络层协议NLRI的能力。</p>
+<p>•这种两种能力被互联网数字分配机构（IANA）统称为地址族（Address Family，AF）。</p>
+<p>•为了实现后向兼容性，协议规定MP-BGP增加两种新的属性，MP_REACH_NLRI和MP_UNREACH_NLRI，分别用于表示可达的目的信息和不可达的目的信息。这两种属性都属于可选非过渡（optional and non-transitive）。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/2.png"></p>
+<blockquote>
+<p>•BGP-4规定IPv4的NEXT_HOP和AGGREGATOR属于Path attributes字段，IPv4的NLRI中携带IPv4的路由条目。</p>
+<p>•MP-BGP新增Path attributes的字段，将对应的网络层协议的NEXT_HOP字段和NLRI归属于MP_REACH_NLRI。MP_REACH_NLRI为Path attributes的新增字段。</p>
+</blockquote>
+<h2 id="MP-REACH-NLRI"><a href="#MP-REACH-NLRI" class="headerlink" title="MP_REACH_NLRI"></a>MP_REACH_NLRI</h2><p>•MP_REACH_NLRI被携带于BGP Update报文中，有以下作用：</p>
+<p>​    ▫通告可达的路由给BGP邻居</p>
+<p>​    ▫通告可达路的路由的下一跳给BGP邻居</p>
+<p>•其详细字段如下：</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/3.png"></p>
+<blockquote>
+<p>•SAFI字段中1表示单播，2表示组播。值由IANA分配，其分配原则被定义于RFC2434（Guidelines for Writing an IANA Considerations Section in RFCs）。</p>
+<p>•本章节后续学习EVPN的AFI为25 (L2VPN) ，SAFI为70 (EVPN)。</p>
+</blockquote>
+<h2 id="MP-UNREACH-NLRI"><a href="#MP-UNREACH-NLRI" class="headerlink" title="MP_UNREACH_NLRI"></a>MP_UNREACH_NLRI</h2><p>•MP_UNREACH_NLRI被携带于BGP Update报文中，用于撤销不可达的路由。</p>
+<p>•其详细字段如下：</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/4.png"></p>
+<blockquote>
+<p>•例如EVPN的AFI为25 (L2VPN) ，SAFI为70 (EVPN)。</p>
+</blockquote>
+<h1 id="EVPN"><a href="#EVPN" class="headerlink" title="EVPN"></a>EVPN</h1><h2 id="EVPN简介"><a href="#EVPN简介" class="headerlink" title="EVPN简介"></a>EVPN简介</h2><h3 id="MPLS简介"><a href="#MPLS简介" class="headerlink" title="MPLS简介"></a>MPLS简介</h3><p>•MPLS （Multiprotocol Label Switching，多协议标记交换）位于TCP/IP协议栈中的数据链路层和网络层之间，在两层之间增加了额外的MPLS头部。报文转发直接基于MPLS头部。MPLS头部又被称为MPLS标签（Label）。</p>
+<p>•MPLS以标签交换替代IP转发，实现了基于标签的快速转发。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/5.png"></p>
+<blockquote>
+<p>•MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）、Appletalk、DECnet、CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
+<p>•MPLS以标签交换替代IP转发。标签是一个短而定长的、只具有本地意义的连接标识符，与ATM的VPI/VCI以及Frame Relay的DLCI类似。</p>
+<p>•MPLS域（MPLS Domain）：一系列连续的运行MPLS的网络设备构成了一个MPLS域。</p>
+</blockquote>
+<h3 id="VPLS简介"><a href="#VPLS简介" class="headerlink" title="VPLS简介"></a>VPLS简介</h3><p>VPLS（Virtual Private LAN Service）是一种基于以太网的二层VPN技术，它在MPLS网络上提供了类似LAN的业务，允许用户可以从多个地址位置接入网络、相互访问。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/6.png"></p>
+<h3 id="传统L2VPN"><a href="#传统L2VPN" class="headerlink" title="传统L2VPN"></a>传统L2VPN</h3><p>•传统的L2VPN业务例如VPLS（Virtual Private LAN Service），提供用户远程站点之间二层连接服务。它组建二层交换网，像二层交换机一样透传以太报文。本例中PE1和PE2组建的VPLS网络透传CE1和CE2之间的VLAN流量。</p>
+<p>•因此在传统L2VPN中对于远端MAC地址的学习依靠ARP广播泛洪，PE设备将需要承载广播流量。广播占用较多的接口带宽，这是传统L2VPN的一个典型问题。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/7.png"></p>
+<blockquote>
+<p>•VPLS有更多的问题，例如不支持多活接入、故障收敛慢、不支持负载均衡等不在本课程介绍，请学习HCIE-HCIE-Datacom《Etherent VPN》和RFC 7209 - Requirements for Ethernet VPN (EVPN)。</p>
+</blockquote>
+<h3 id="EVPN的诞生"><a href="#EVPN的诞生" class="headerlink" title="EVPN的诞生"></a>EVPN的诞生</h3><p>•随着新技术和新场景对网络需求，VPLS被暴露出更多的问题无法满足二层VPN的需求。业界重新审视了对Ethernet VPN的需求（RFC 7209），提出新的解决方案EVPN（Ethernet VPN）。</p>
+<p>•EVPN最初在RFC 7432中被定义，EVPN引入控制平面，用于更好的控制MAC地址学习过程。</p>
+<p>•EVPN的控制平面采用MP-BGP，数据平面支持MPLS LSPs或者IP/GRE tunneling。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/8.png"></p>
+<blockquote>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7209/">https://datatracker.ietf.org/doc/rfc7209/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7432/">https://datatracker.ietf.org/doc/rfc7432/</a></p>
+</blockquote>
+<h3 id="EVPN的优势"><a href="#EVPN的优势" class="headerlink" title="EVPN的优势"></a>EVPN的优势</h3><p>•EVPN颠覆了传统L2 VPN数据面学习的方式，引入控制面学习MAC和IP指导数据转发，实现了转控分离。</p>
+<p>•EVPN解决传统L2 VPN的典型问题，带来双活，快速收敛，简化运维等更多的价值。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/9.png"></p>
+<blockquote>
+<p>•更多详细EVPN原理，请参考HCIE-Datacom《Ethernet VPN》。</p>
+</blockquote>
+<h2 id="EVPN常见路由"><a href="#EVPN常见路由" class="headerlink" title="EVPN常见路由"></a>EVPN常见路由</h2><h3 id="EVPN-NLRI"><a href="#EVPN-NLRI" class="headerlink" title="EVPN NLRI"></a>EVPN NLRI</h3><p>•EVPN定义了一种新的BGP NLRI（Network Layer Reachable Information）来承载所有的EVPN路由，被称为EVPN NLRI。</p>
+<p>•EVPN NLRI是MP-BGP的新型扩展，被包含于MP_REACH_NLRI中，定义了新的NLRI。它规定了EVPN的AFI（Address Family Identifier）是25，SAFI（Subsequent Address Family Identifier）是70。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/10.png"></p>
+<h3 id="EVPN路由"><a href="#EVPN路由" class="headerlink" title="EVPN路由"></a>EVPN路由</h3><p>EVPN NLRI格式采用TLV（Type-Length-Value）三元组结构，使得报文具有很强的灵活性和扩展性：</p>
+<p>▫Route Type定义了不同的EVPN路由。RFC 7432中首先定义了四类路由。</p>
+<p>▫Length定义了字段的长度。</p>
+<p>▫Route Type Specifc则表示不同的路由类型有不同的字段填充。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/11.png"></p>
+<blockquote>
+<p>•The NLRI field in the MP_REACH_NLRI/MP_UNREACH_NLRI attribute contains the EVPN NLRI (encoded as specified above). </p>
+<p>•The EVPN NLRI is carried in BGP [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4271">RFC4271</a>] using BGP Multiprotocol Extensions [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4760">RFC4760</a>] with an Address Family Identifier (AFI) of 25 (L2VPN) and a Subsequent Address Family Identifier (SAFI) of 70 (EVPN). The NLRI field in the MP_REACH_NLRI/MP_UNREACH_NLRI attribute contains the EVPN NLRI (encoded as specified above). </p>
+<p>•In order for two BGP speakers to exchange labeled EVPN NLRI, they must use BGP Capabilities Advertisements to ensure that they both are capable of properly processing such NLRI. This is done as specified in [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4760">RFC4760</a>], by using capability code 1 (multiprotocol BGP) with an AFI of 25 (L2VPN) and a SAFI of 70 (EVPN).</p>
+</blockquote>
+<h3 id="EVPN更多类型路由及作用"><a href="#EVPN更多类型路由及作用" class="headerlink" title="EVPN更多类型路由及作用"></a>EVPN更多类型路由及作用</h3><p>EVPN不仅限于二层VPN的应用，随着其EVPN路由类型的增加，支持更多的应用例如L3 VPN功能。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/12.png"></p>
+<blockquote>
+<p>•Type5类路由IP Prefix Route在标准化进程中目前处于草案阶段，draft-ietf-bess-evpn-prefix-advertisement。</p>
+</blockquote>
+<h3 id="EVPN协议标准"><a href="#EVPN协议标准" class="headerlink" title="EVPN协议标准"></a>EVPN协议标准</h3><p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/13.png"></p>
+<h2 id="EVPN典型应用场景"><a href="#EVPN典型应用场景" class="headerlink" title="EVPN典型应用场景"></a>EVPN典型应用场景</h2><h3 id="EVPN在广域IP承载网的应用"><a href="#EVPN在广域IP承载网的应用" class="headerlink" title="EVPN在广域IP承载网的应用"></a>EVPN在广域IP承载网的应用</h3><p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/14.png"></p>
+<blockquote>
+<p>•E-LINE、E-TREE、E-LAN是EVC定义的三种类型，具体请参考城域以太网标准。<a target="_blank" rel="noopener" href="https://wiki.mef.net/display/CESG/E-Line">https://wiki.mef.net/display/CESG/E-Line</a></p>
+<p>•MEF中提到了三种EVC的服务种类，点到点EVC（Point-to-Point EVC）、多点到多点EVC（Mutlipoint-to-Multipoint EVC）和根到多点EVC（Rooted-Multipoint EVC）。</p>
+<ul>
+<li>E-LINE：一条点到点的EVC将两个UNI严格地关联。</li>
+<li>E-LAN：一个多点到多点EVC可以将两个或者两个以上的UNI关联起来，而且用户/运营商可以在不影响其他UNI的前提下根据需要向这个EVC中添加任意个UNI，或者将这个EVC中的某些UNI剔除。</li>
+<li>E-TREE：这种EVC类似于三层VPN中的Hub-Spoke模式，它包含一个或多个根UNI（Root）和若干叶子UNI（Leaf），其中根UNI可以和EVC中的所有UNI直接通信，而叶子UNI只能和EVC中的根UNI直接通信，两个叶子UNI之间不能直接通信。 </li>
+</ul>
+</blockquote>
+<h3 id="EVPN在数据中心网络的应用"><a href="#EVPN在数据中心网络的应用" class="headerlink" title="EVPN在数据中心网络的应用"></a>EVPN在数据中心网络的应用</h3><p>•在云数据中心采用EVPN的NVO（Network Virtualization Overlay）解决方案（RFC 8365）。</p>
+<p>•推荐数据平面使用VXLAN封装与控制平面EVPN结合，构建灵活的数据中心Overlay网络。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/15.png"></p>
+<h3 id="EVPN在园区网的应用"><a href="#EVPN在园区网的应用" class="headerlink" title="EVPN在园区网的应用"></a>EVPN在园区网的应用</h3><p>•园区网虚拟化园区解决方案同在云数据中心相同，采用EVPN的NVO解决方案（RFC 8365）。</p>
+<p>•在不同的底层组网上使用VXLAN封装与控制平面EVPN结合，构建灵活的数据中心Overlay网络。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/16.png"></p>
+<h3 id="EVPN在SD-WAN的应用"><a href="#EVPN在SD-WAN的应用" class="headerlink" title="EVPN在SD-WAN的应用"></a>EVPN在SD-WAN的应用</h3><p>•SD-WAN是新一代的企业分支互联解决方案，支持智能动态选路、ZTP和可视化等特性。</p>
+<p>•SD-WAN解决方案中，在RR与CPE之间部署EVPN用于在控制平面传播SD-WAN的Overlay VPN路由，数据平面采用IPSec VPN构建安全的转发通道。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/17.png"></p>
+<blockquote>
+<p>•Overlay VPN路由包括站点VPN路由前缀、下一跳TNP路由信息以及用于CPE之间数据通道的数据加密所需要的IPSec相关密钥等信息。详细内容请参考SD-WAN课程。</p>
+<p>•CPE（Customer Premise Equipment，客户终端设备）。</p>
+</blockquote>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（简答题）请简述EVPN的原理和常见的路由类型。</p>
+<p><strong>EVPN是MP-BGP的扩展，常见有五种路由类型，被用于作为L2或者L3隧道的控制平面。</strong></p>
+<p>2.（简答题）请简述EVPN的应用场景。</p>
+<p><strong>EVPN可以被广泛用于企业全场景，例如SD-WAN、园区网、数据中心和广域网。在数据中心和园区中，EVPN与VXLAN结合构建业务 Overlay。在SD-WAN场景中EVPN与IPSec结合构建企业分支互联网络。在广域网中EVPN可以与各种底层隧道/标签技术结合，例如MPLS/SR/VPLS/VPWS等。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MP-BGP对BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。</p>
+<p>•本章节简单介绍EVPN的提出用于解决Ethernet二层VPN的问题。随着应用场景的逐渐丰富和协议的扩展，EVPN可以被用于多场景包括广域IP承载网络、数据中心网络、园区网络和SD-WAN。</p>
+<h1 id="拓展信息"><a href="#拓展信息" class="headerlink" title="拓展信息"></a>拓展信息</h1><p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4760/">https://datatracker.ietf.org/doc/rfc4760/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7209/">https://datatracker.ietf.org/doc/rfc7209/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7432/">https://datatracker.ietf.org/doc/rfc7432/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc8365/">https://datatracker.ietf.org/doc/rfc8365/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://wiki.mef.net/display/CESG/MEF+6.3+-+EVC+Ethernet+Services+Definitions">https://wiki.mef.net/display/CESG/MEF+6.3+-+EVC+Ethernet+Services+Definitions</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-BGP-EVPN%E5%9F%BA%E7%A1%80/" rel="tag"># IP-BGP EVPN基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/" rel="next" title="BGP路由优选">
+                <i class="fa fa-chevron-left"></i> BGP路由优选
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MP-BGP"><span class="nav-number">3.</span> <span class="nav-text">MP-BGP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MP-BGP-1"><span class="nav-number">3.1.</span> <span class="nav-text">MP-BGP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP-4%E6%89%A9%E5%B1%95"><span class="nav-number">3.2.</span> <span class="nav-text">BGP-4扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MP-REACH-NLRI"><span class="nav-number">3.3.</span> <span class="nav-text">MP_REACH_NLRI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MP-UNREACH-NLRI"><span class="nav-number">3.4.</span> <span class="nav-text">MP_UNREACH_NLRI</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#EVPN"><span class="nav-number">4.</span> <span class="nav-text">EVPN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EVPN%E7%AE%80%E4%BB%8B"><span class="nav-number">4.1.</span> <span class="nav-text">EVPN简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E7%AE%80%E4%BB%8B"><span class="nav-number">4.1.1.</span> <span class="nav-text">MPLS简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VPLS%E7%AE%80%E4%BB%8B"><span class="nav-number">4.1.2.</span> <span class="nav-text">VPLS简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9FL2VPN"><span class="nav-number">4.1.3.</span> <span class="nav-text">传统L2VPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E7%9A%84%E8%AF%9E%E7%94%9F"><span class="nav-number">4.1.4.</span> <span class="nav-text">EVPN的诞生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">4.1.5.</span> <span class="nav-text">EVPN的优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EVPN%E5%B8%B8%E8%A7%81%E8%B7%AF%E7%94%B1"><span class="nav-number">4.2.</span> <span class="nav-text">EVPN常见路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN-NLRI"><span class="nav-number">4.2.1.</span> <span class="nav-text">EVPN NLRI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E8%B7%AF%E7%94%B1"><span class="nav-number">4.2.2.</span> <span class="nav-text">EVPN路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E6%9B%B4%E5%A4%9A%E7%B1%BB%E5%9E%8B%E8%B7%AF%E7%94%B1%E5%8F%8A%E4%BD%9C%E7%94%A8"><span class="nav-number">4.2.3.</span> <span class="nav-text">EVPN更多类型路由及作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E5%8D%8F%E8%AE%AE%E6%A0%87%E5%87%86"><span class="nav-number">4.2.4.</span> <span class="nav-text">EVPN协议标准</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EVPN%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">4.3.</span> <span class="nav-text">EVPN典型应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E5%9C%A8%E5%B9%BF%E5%9F%9FIP%E6%89%BF%E8%BD%BD%E7%BD%91%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.3.1.</span> <span class="nav-text">EVPN在广域IP承载网的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E5%9C%A8%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83%E7%BD%91%E7%BB%9C%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.3.2.</span> <span class="nav-text">EVPN在数据中心网络的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E5%9C%A8%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.3.3.</span> <span class="nav-text">EVPN在园区网的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVPN%E5%9C%A8SD-WAN%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.3.4.</span> <span class="nav-text">EVPN在SD-WAN的应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%93%E5%B1%95%E4%BF%A1%E6%81%AF"><span class="nav-number">7.</span> <span class="nav-text">拓展信息</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

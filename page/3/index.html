@@ -241,6 +241,1687 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/02/IP%E8%B7%AF%E7%94%B1/" itemprop="url">IP路由</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T08:53:42+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="路由概述"><a href="#路由概述" class="headerlink" title="路由概述"></a>路由概述</h2><h3 id="背景-网段间通信"><a href="#背景-网段间通信" class="headerlink" title="背景:网段间通信"></a>背景:网段间通信</h3><ul>
+<li>IP地址唯一标识了网络中的一个节点，每个IP地址都拥有自己的网段，各个网段可能分布在网络的不同区域。</li>
+<li>为实现IP寻址，分布在不同区域的网段之间要能够相互通信。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/3.png"></p>
+<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><ul>
+<li>路由是指导报文转发的路径信息，通过路由可以确认转发IP报文的路径。</li>
+<li>路由设备是依据路由转发报文到目的网段的网络设备，最常见的路由设备:路由器。</li>
+<li>路由设备维护着一张路由表，保存着路由信息。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/1.png"></p>
+<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><ul>
+<li>路由器通过各种方式发现路由</li>
+<li>路由器选择最优的路由条目放入路由表中</li>
+<li>路由表指导设备对IP报文的转发</li>
+<li>路由器通过对路由表的管理实现对路径信息的管理</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/2.png"></p>
+<h3 id="路由信息获取方式"><a href="#路由信息获取方式" class="headerlink" title="路由信息获取方式"></a>路由信息获取方式</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/4.png"></p>
+<h3 id="最优路由条目优选"><a href="#最优路由条目优选" class="headerlink" title="最优路由条目优选"></a>最优路由条目优选</h3><h4 id="查看路由表"><a href="#查看路由表" class="headerlink" title="查看路由表"></a>查看路由表</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/7.png"></p>
+<h4 id="路由表中各个内容的含义"><a href="#路由表中各个内容的含义" class="headerlink" title="路由表中各个内容的含义"></a>路由表中各个内容的含义</h4><ul>
+<li>Destination/Mask:︰表示此路由的目的网络地址与网络掩码。将目的地址和子网掩码“逻辑与”后可得到目的主机或路由器所在网段的地址。例如:目的地址为1.1.1.1，掩码为255.255.255.0的主机或路由器所在网段的地址为1.1.1.0</li>
+<li>Proto ( Protocol )∶该路由的协议类型，也即路由器是通过什么协议获知该路由的。</li>
+<li>Pre ( Preference)∶表示此路由的路由协议优先级。针对同一目的地，可能存在不同下一跳、出接口等多条路由，这些不同的路由可能是由不同的路由协议发现的，也可以是手工配置的静态路由。优先级最高（数值最小)者将成为当前的最优路由。</li>
+<li>Cost:路由开销。当到达同一目的地的多条路由具有相同的路由优先级时，路由开销最小的将成为当前的最优路由。</li>
+<li>NextHop:表示对于本路由器而言，到达该路由指向的目的网络的下一跳地址。该字段指明了数据转发的下一个设备。</li>
+<li>Interface:表示此路由的出接口。指明数据将从本路由器的哪个接口转发出去。</li>
+</ul>
+<h4 id="路由优先级"><a href="#路由优先级" class="headerlink" title="路由优先级"></a>路由优先级</h4><h5 id="优先级比较"><a href="#优先级比较" class="headerlink" title="优先级比较"></a>优先级比较</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/8.png"></p>
+<h5 id="比较示例"><a href="#比较示例" class="headerlink" title="比较示例"></a>比较示例</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/9.png"></p>
+<h5 id="优先级默认数值"><a href="#优先级默认数值" class="headerlink" title="优先级默认数值"></a>优先级默认数值</h5><p>常见路由类型的默认优先级如下:</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/10.png"></p>
+<h4 id="度量值"><a href="#度量值" class="headerlink" title="度量值"></a>度量值</h4><h5 id="度量值比较"><a href="#度量值比较" class="headerlink" title="度量值比较"></a>度量值比较</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/11.png"></p>
+<h5 id="比较示例-1"><a href="#比较示例-1" class="headerlink" title="比较示例"></a>比较示例</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/12.png"></p>
+<h3 id="路由转发"><a href="#路由转发" class="headerlink" title="路由转发"></a>路由转发</h3><h4 id="最长掩码匹配原则"><a href="#最长掩码匹配原则" class="headerlink" title="最长掩码匹配原则"></a>最长掩码匹配原则</h4><ul>
+<li>当路由器收到一个IP数据包时，会将数据包的目的IP地址与自己本地路由表中的所有路由表项进行逐位（Bit-By-Bit)比对，直到找到掩码匹配度最长的条目，这就是最长前缀匹配机制。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/13.png"></p>
+<h4 id="最长匹配示例"><a href="#最长匹配示例" class="headerlink" title="最长匹配示例"></a>最长匹配示例</h4><h5 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/14.png"></p>
+<h5 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/15.png"></p>
+<h4 id="路由转发流程"><a href="#路由转发流程" class="headerlink" title="路由转发流程"></a>路由转发流程</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/16.png"></p>
+<h2 id="直连路由"><a href="#直连路由" class="headerlink" title="直连路由"></a>直连路由</h2><ul>
+<li>直连路由指向本地直连网络的路由，由设备自动生成。</li>
+<li>当路由器为路由转发的最后一跳路由器时，IP报文匹配直连路由，路由器转发IP报文到目的主机。</li>
+<li>使用直连路由进行路由转发时，报文的目的IP和路由器接口IP在一个网段之中。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/5.png"></p>
+<ul>
+<li>并不是所有接口生成的直连路由都会出现在路由表中，直连路由出现在路由表中的前提是该接口的物理状态、协议状态都为UP。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/6.png"></p>
+<h2 id="静态路由"><a href="#静态路由" class="headerlink" title="静态路由"></a>静态路由</h2><h3 id="静态路由定义"><a href="#静态路由定义" class="headerlink" title="静态路由定义"></a>静态路由定义</h3><p>通过手工配置一条路由，加入到设备路由表中，相当于人工加入一条寻址路径，帮助设备进行路由转发。</p>
+<h3 id="静态路由应用场景"><a href="#静态路由应用场景" class="headerlink" title="静态路由应用场景"></a>静态路由应用场景</h3><p>当设备中缺少路由条目时，无法进行报文的路由转发，此时就需要配置静态路由。</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/17.png"></p>
+<h3 id="静态路由配置"><a href="#静态路由配置" class="headerlink" title="静态路由配置"></a>静态路由配置</h3><p>1.关联下一跳IP的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; nexthop-address</span><br></pre></td></tr></table></figure>
+<p>2.关联出接口的方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; interface-type interface-number</span><br></pre></td></tr></table></figure>
+<p>3.关联出接口和下一跳IP方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; interface-type interface-number [ nexthop-address ]</span><br></pre></td></tr></table></figure>
+<p>在创建静态路由时，可以同时指定出接口和下一跳。对于不同的出接口类型，也可以只指定出接口或只指定下一跳。</p>
+<p>对于点到点接口（如串口)，<strong>必须指定出接口</strong>。<br>对于广播接口（如以太网接口）和VT ( Virtual-template)接口，<strong>必须指定下一跳。</strong></p>
+<h3 id="静态路由配置举例"><a href="#静态路由配置举例" class="headerlink" title="静态路由配置举例"></a>静态路由配置举例</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/18.png"></p>
+<p>RTA的配置如下:<br>[RTA] ip route-static 20.1.1.0 255.255.255.0 10.0.0.2<br>RTC的配置如下:<br>[RTC] ip route-static 10.0.0.0 255.255.255.0 S1/0/0</p>
+<h3 id="缺省路由"><a href="#缺省路由" class="headerlink" title="缺省路由"></a>缺省路由</h3><ul>
+<li>缺省路由是一种特殊的路由，当报文没有在路由表中找到匹配的具体路由表项时才使用的路由。如果报文的目的地址不能与路由表的任何目的地址相匹配，那么该报文将选取缺省路由进行转发。</li>
+<li>缺省路由在路由表中的形式为0.0.0.0/0，缺省路由也被叫做<strong>默认路由</strong>。</li>
+<li>缺省路由通常用在出口路由器上，为了将报文路由到运营商路由器上，减少大量的静态路由的配置。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/19.png"></p>
+<h3 id="缺省路由应用场景"><a href="#缺省路由应用场景" class="headerlink" title="缺省路由应用场景"></a>缺省路由应用场景</h3><p>缺省路由一般用于企业网络出口，配置一条缺省路由让出口设备能够转发前往Internet上任意地址的IP报文。</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/20.png"></p>
+<h2 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h2><h3 id="动态路由和静态路由区别"><a href="#动态路由和静态路由区别" class="headerlink" title="动态路由和静态路由区别"></a>动态路由和静态路由区别</h3><p><strong>动态路由</strong></p>
+<ul>
+<li>自动发现、学习路由</li>
+<li>感知拓扑变更</li>
+</ul>
+<p><strong>静态路由</strong></p>
+<ul>
+<li>所有设备手动配置</li>
+<li>无法感知到链路变化</li>
+</ul>
+<h3 id="动态路由分类"><a href="#动态路由分类" class="headerlink" title="动态路由分类"></a>动态路由分类</h3><p><strong>按工作区域分类</strong></p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/21.png"></p>
+<p><strong>按工作机制及算法分类</strong></p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/22.png"></p>
+<h2 id="路由高级特性"><a href="#路由高级特性" class="headerlink" title="路由高级特性"></a>路由高级特性</h2><h3 id="路由递归"><a href="#路由递归" class="headerlink" title="路由递归"></a>路由递归</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/23.png"></p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/24.png"></p>
+<h3 id="等价路由"><a href="#等价路由" class="headerlink" title="等价路由"></a>等价路由</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/25.png"></p>
+<p>路由表中存在等价路由之后，前往该目的网段的IP报文路由器会通过所有有效的接口、下一跳转发，这种转发行为被称为负载分担。</p>
+<h3 id="浮动路由"><a href="#浮动路由" class="headerlink" title="浮动路由"></a>浮动路由</h3><p>确保路由的可靠性，引入浮动路由，一条路由转发路径不可达，可通过浮动路由选择另一跳路径进行转发。</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/26.png"></p>
+<h4 id="浮动路由切换使用示例"><a href="#浮动路由切换使用示例" class="headerlink" title="浮动路由切换使用示例"></a>浮动路由切换使用示例</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/27.png"></p>
+<h3 id="路由汇总"><a href="#路由汇总" class="headerlink" title="路由汇总"></a>路由汇总</h3><ul>
+<li>CIDR ( classless inter-domain routing，无类别域间路由）采用IP地址加掩码长度来标识网络和子网，而不是按照传统A、B、C等类型对网络地址进行划分。</li>
+<li>CIDR容许任意长度的掩码长度，将IP地址看成连续的地址空间，可以使用任意长度的前缀分配，多个连续的前缀可以聚合成一个网络，该特性可以有效减少路由表条目数。</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/28.png"></p>
+<h3 id="路由汇总的需求"><a href="#路由汇总的需求" class="headerlink" title="路由汇总的需求"></a>路由汇总的需求</h3><ul>
+<li><p>子网划分、VLSM解决了地址空间浪费的问题，但同时也带了新的问题:路由表中的路由条目数量增加。</p>
+</li>
+<li><p>为减少路由条目数量可以使用路由汇总。</p>
+</li>
+<li><p>路由汇总将一组具有相同前缀的路由汇聚成一条路由，从而达到减小路由表规模以及优化设备资源利用率的目的。</p>
+</li>
+<li><p>路由汇总采用了CIDR的思想:将相同前缀的地址聚合成一个。</p>
+</li>
+</ul>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/30.png"></p>
+<h3 id="汇总计算"><a href="#汇总计算" class="headerlink" title="汇总计算"></a>汇总计算</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/31.png"></p>
+<p>基于一系列连续的、有规律的IP网段，如果需计算相应的汇总路由，且确保得出的汇总路由刚好“囊括”上述IP网段，则需保证汇总路由的掩码长度尽可能长。</p>
+<h3 id="汇总引发的问题"><a href="#汇总引发的问题" class="headerlink" title="汇总引发的问题"></a>汇总引发的问题</h3><h4 id="路由汇总带来的环路问题"><a href="#路由汇总带来的环路问题" class="headerlink" title="路由汇总带来的环路问题"></a>路由汇总带来的环路问题</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/32.png"></p>
+<h4 id="路由汇总带来的环路问题-解决方案"><a href="#路由汇总带来的环路问题-解决方案" class="headerlink" title="路由汇总带来的环路问题-解决方案"></a>路由汇总带来的环路问题-解决方案</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/33.png"></p>
+<h3 id="精确汇总"><a href="#精确汇总" class="headerlink" title="精确汇总"></a>精确汇总</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/34.png"></p>
+<ul>
+<li><p>为了让RTA能够到达RTB上的172.16.1.0/24-172.16.31.0/24网段，配置了一条静态的汇总路由，这条网段虽然优化了网络配置，但是汇总的范围太广，将RTC上的网段也包括在内，导致前往RTC上网段的流量到达RTA之后会被发往RTB,造成数据包的丢失，这种路由为不精确的路由。为此配置汇总路由时要尽量精确，刚好包括所有明细路由。</p>
+</li>
+<li><p>RTA-RTB的路由可汇总为172.16.0.0/19</p>
+</li>
+<li><p>RTA-RTC的路由可汇总为172.16.32.0/19</p>
+</li>
+</ul>
+<h2 id="黑洞路由和路由黑洞"><a href="#黑洞路由和路由黑洞" class="headerlink" title="黑洞路由和路由黑洞"></a>黑洞路由和路由黑洞</h2><h3 id="作用一：防止不存在的路由照成路由黑洞"><a href="#作用一：防止不存在的路由照成路由黑洞" class="headerlink" title="作用一：防止不存在的路由照成路由黑洞"></a>作用一：防止不存在的路由照成路由黑洞</h3><p>路由黑洞一般是在网络边界做汇总回程路由的时候产生的一种不太愿意出现的现象，就是汇总的时候有时会有一些网段并不在内网中存在，但是又包含在汇总后的网段中，如果在这个汇总的边界设备上同时还配置了缺省路由，就可能出现一些问题。这时，如果有数据包发向那些不在内网出现的网段（但是又包含在汇总网段）所在的路由器，根据最长匹配原则，并没有找到对应的路由，只能根据默认路由又回到原来的路由器，这就形成了环路，直到TTL值超时，丢弃。</p>
+<p>这是我们不愿意看到的现象，所以要有解决这个问题的方案，就是黑洞路由啦，其实就是一条特殊的静态路由，下一跳指向null 0口，一个不存在的口，结果就是将匹配这条路由的数据包丢弃…</p>
+<p>所以说，如果是精确汇总的话，就不会出现路由黑洞。举个例子</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/%E4%BE%8B%E5%AD%901.jpg"></p>
+<p>R1上有172.16.0.0/24、172.16.1.0/24、172.16.2.0/24三个网段，现对其进行了汇总：172.16.0.0/22</p>
+<p>　　这就出现了问题：并没有172.16.3.0/24这个网段，但是汇总后就出现了，并通告了给了R2。</p>
+<p>　　并且在R1上配置了一条默认路由：当有未知目的地址的数据包时，转发到R2。</p>
+<p>　　现在，R2收到一个目的地址在172.16.3.0/24网段的数据包，根据路由表172.16.0.0/22—&gt;R1  ，将该数据包转发到了R1，因为R1上并没有这个172.16.3.0/24网段，根据默认路由又发回了R2，形成了环路，直到TTL为0，才会被丢弃，这同时也耗费了这两个路由器的系统资源。</p>
+<p>　　解决方法：就是在汇总路由的时候加一条指向null0的路由（黑洞路由）：172.16.0.0/22 –&gt;null0</p>
+<p>　　相当于直接将这个数据包丢弃。</p>
+<p>　　一。</p>
+<p>　　黑洞就是做路由汇总时候引入的一个概念</p>
+<p>　　比如你有好多个c类地址：</p>
+<p>　　192.168.1.0/24 – 192.168.200.0/24</p>
+<p>　　那么对外公告路由的时候你可以选择进行路由汇总。</p>
+<p>　　汇总为192.168.0.0/16的路由</p>
+<p>　　但是路由汇总会产生“路由黑洞”问题</p>
+<p>　　因为192.168.201.0/24 – 192.168.254.0/24这段路由存在但却没有对应的主机。</p>
+<p>　　因此可能造成目的地址为192.168.201.0/24 – 192.168.254.0/24往你的路由器上转发但地址却不可达的情况（理论上要发送回icmp unreachable的）</p>
+<p>　　一个可行的办法是在汇总路由时就写好一条黑洞路由丢弃这些垃圾流量</p>
+<p>　　ip route 192.168.0.0 255.255.0.0 null 0</p>
+<p>  二、</p>
+<p>　　一般是在路由汇总的时候，有可能把一些本来没有的路由条目汇总了进来</p>
+<p>　　路由器处理这些本来不存在的路由条目的数据包的时候会占用路由器本身的资源</p>
+<p>　　这个时候如果大量的数据包涌向路由器，有可能变成DOS攻击</p>
+<p>　　所以就自动写出一条通往NULL0接口的路由，然后把那些垃圾数据包直接丢往NULL0，不要进行其他处理。</p>
+<p>　　黑洞路由与路由黑洞这两个概念容易混淆，为了方便区别，在此做了一下比较。</p>
+<p>　　黑洞路由，便是将所有无关路由吸入其中，使它们有来无回的路由。黑洞路由最大的好处是充分利用了路由器的包转发能力，对系统负载影响非常小。如果同样的功能用ACL（地址访问控制列表）实现，则流量增大时CPU利用率会明显增加。所以，一直是解决固定DOS攻击的最好办法。相当于洪水来临时，在洪水途经的路上附近挖一个不见底的巨大深坑，然后将洪水引入其中。当然，这只是个比喻，真要是洪水来的时候，正确的方法是―――跑！</p>
+<p>　　在路由器中配置路由黑洞完全是出于安全因素，设有黑洞的路器会默默地抛弃掉数据包而不指明原因。</p>
+<p>　　一个黑洞路由器是指一个不支持PMTU且被配置为不发送“Destination Unreachable–目的不可达”回应消息的路由器。</p>
+<p>　　可以这样看：</p>
+<p>　　如果一个路由器不支持PMTU并且配置为不发送ICMP Destination  Unreachable消息数据包，那么源主机可能发送一个永远得不到路由的大数据包。因为路由器没有给源主机发回应消息，主机不能确定PMTU就是问题的所在。但如果源主机端启用了PMTU，则源主机在重试几次大的MTU之后，如果还收不到路由器的应答，那源主机自动将PMTU设置为576bytes.</p>
+<p>　　在Windows 2000下PMTU启用设置是—</p>
+<p>​        HKEY_LOCAL_MACHINESYSTEMCurrentControlSetServicesTcpipParameters</p>
+<p>　　EnablePMTUBHDetect REG_DWORD 0（默认禁用）或1（启用）</p>
+<p>　　在Windows XP下也可以试一下。</p>
+<p>　　（NOTE：PMTU–Path Maximum Transfer Unit是指当一个要发送的数据包的大小与当前路径中的最小的MTU值一样）</p>
+<p>　　区别于黑洞路由的是，这是路由器自动总结生成总结路由后产生的副效果。</p>
+<p>　　无类域间路由协议例如EIGRP，网络192.168.1.0/24 和192.168.2.0/24  被汇聚成192.168.0.0/16的了，但后来如果连接192.168.1.X的接口down掉后，192.168.1.0/24  路由就丢失了，但192.168.0.0/16的汇总路由还存在，那么去192.168.1.0/24的流量就会被丢到null0接口，相对于丢弃，就形成路由黑洞.</p>
+<p>　　所以一般汇总指向的下一跳为NULL 0</p>
+<h3 id="作用二：防止链路故障造成路由黑洞"><a href="#作用二：防止链路故障造成路由黑洞" class="headerlink" title="作用二：防止链路故障造成路由黑洞"></a>作用二：防止链路故障造成路由黑洞</h3><p>黑洞路由：主要是指指向null接口的路由，null接口是一个虚拟的接口无法被配置ip地址，转发到该接口上的数据包都会被丢掉，所以对于所有可能因为中断故障产生路由回路的路由都加上一条黑洞路由。</p>
+<p>例如在配置有默认路由的环境中如果该路由器中的某一个路由项因为故障中断，那么很可能在两个路由器中造成路由环路</p>
+<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/%E4%BE%8B%E5%AD%902.png"></p>
+<p> 如图路由器1中分别有到192.168.1.0、192.168.2.0、10.106.1.0的直连路由，并且在路由器1中添加默认</p>
+<p> 路由下一跳为10.106.1.2</p>
+<p> 路由器2中除192.168.1.0的直连路由外添加默认路由下一跳为192.168.1.1</p>
+<p> 路由器3中除192.168.2.0的直连路由外添加默认路由下一跳为192.168.2.1</p>
+<p> 路由器4中除10.106.1.0的直连路由外添加汇聚路由：到192.168.0.0 255.255.0.0 的下一跳为10.106.1.1</p>
+<p> 以上的该网络如果在正常情况下回运行良好，但是如果当例如路由器3与路由器1的链接因为故障中断时</p>
+<p> 则该环境中就会出现路由环路，，如路由器2发送到路由器3 192.168.2.2的数据包会先到路由器1，但是路由器1</p>
+<p> 中由于到达192.168.2.0的路由已断所以会按照默认路由发送到路由器4，而路由器4又会按路由表发送到</p>
+<p> 路由器1，因此就会出现路由环路。</p>
+<p> 而解决这种路由环路的方法就是在路由器1上添加静态黑洞路由</p>
+<p> 如添加：ip route-static 192.168.0.0 255.255.0.0 null 0</p>
+<p> 则再即使当网络出现故障导致已有路由项丢失时也不会按照默认路由发出去导致出现循环，而是当查找不到有效路由后</p>
+<p> 数据包会被直接发送到null接口，等效于是直接丢掉数据包。</p>
+<p> 但是要注意：黑洞路由相当于是出现故障情况下的备用路由，所以可以把该条静态黑洞路由的优先级设置低一点（值大一点）</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/01/IP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/01/IP/" itemprop="url">网络层</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T18:26:57+08:00">
+                2021-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><h3 id="网络层协议"><a href="#网络层协议" class="headerlink" title="网络层协议"></a>网络层协议</h3><p>网络层经常被称为IP层。</p>
+<p><img src="/2021/05/01/IP/1.png"></p>
+<h3 id="IP协议"><a href="#IP协议" class="headerlink" title="IP协议"></a>IP协议</h3><p><strong>IP Internet Protocol</strong><br>Internet Protocol本身是一个协议文件的名称，主要是定义并阐述了IP报文的格式。<br>经常被提及的IP，一般不是特指Internet Protocol这个协议文件本身，而是泛指直接或间接与IP协议相关的任何内容。</p>
+<p><strong>作用</strong></p>
+<ul>
+<li>为网络层的设备提供逻辑地址</li>
+<li>负责数据包的寻址和转发</li>
+</ul>
+<p><strong>版本</strong></p>
+<ul>
+<li>lPv4 (IP Version 4)</li>
+<li>lPv6 (IP Version 6)</li>
+</ul>
+<h3 id="数据封装"><a href="#数据封装" class="headerlink" title="数据封装"></a>数据封装</h3><p><img src="/2021/05/01/IP/2.png"></p>
+<h3 id="IPv4报文格式"><a href="#IPv4报文格式" class="headerlink" title="IPv4报文格式"></a>IPv4报文格式</h3><p><img src="/2021/05/01/IP/3.png"></p>
+<h4 id="数据包分片"><a href="#数据包分片" class="headerlink" title="数据包分片"></a>数据包分片</h4><p>分片：将报文分割成多个片段的过程。</p>
+<p>网络中转发的IP报文的长度可以不同，但如果报文长度超过了数据链路所支持的最大长度，则报文就需要分割成若干个较小的片段才能够在链路上传输。</p>
+<p><img src="/2021/05/01/IP/4.png"></p>
+<h4 id="生存时间-Time-to-Live，TTL"><a href="#生存时间-Time-to-Live，TTL" class="headerlink" title="生存时间(Time to Live，TTL)"></a>生存时间(Time to Live，TTL)</h4><p>TTL字段设置了数据包可以经过的路由器数目。<br>一旦经过一个路由器，TTL值就会减1，当该字段值为0时，数据包将被丢弃。</p>
+<p><img src="/2021/05/01/IP/5.png"></p>
+<h4 id="协议号-Protocol"><a href="#协议号-Protocol" class="headerlink" title="协议号(Protocol)"></a>协议号(Protocol)</h4><p>IP报文头中的协议号字段标识了将会继续处理该报文的协议。<br>即指出此数据包携带的数据使用何种协议，以便目的主机的IP层将数据部分上报给哪个进程处理。</p>
+<ul>
+<li>TCP为6 UDP为17 ICMP为1</li>
+</ul>
+<p><img src="/2021/05/01/IP/6.png"></p>
+<h2 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h2><h3 id="IP地址表示"><a href="#IP地址表示" class="headerlink" title="IP地址表示"></a>IP地址表示</h3><p>一个IPv4地址有32 bit。<br>IPv4地址通常采用“点分十进制”表示。</p>
+<p><img src="/2021/05/01/IP/7.png"></p>
+<h3 id="lР地址构成"><a href="#lР地址构成" class="headerlink" title="lР地址构成"></a>lР地址构成</h3><p>网络部分：用来标识一个网络，代表IP地址所属网络。。<br>主机部分：用来区分一个网络内的不同主机，能唯一标识网段上的某台设备。<br>网络掩码区分一个IP地址中的网络部分及主机部分。</p>
+<p><img src="/2021/05/01/IP/8.png"></p>
+<h3 id="IP地址分类-有类编址"><a href="#IP地址分类-有类编址" class="headerlink" title="IP地址分类(有类编址)"></a>IP地址分类(有类编址)</h3><p>为了方便IP地址的管理及组网，IP地址分成五类:</p>
+<p><img src="/2021/05/01/IP/9.png"></p>
+<p>A/B/C类默认网络掩码</p>
+<ul>
+<li>A类:8 bit， 0.0.0.0~127.255.255.255/8。</li>
+<li>B类:16 bit，128.0.0.0~191.255.255.255/16。</li>
+<li>C类:24 bit，192.0.0.0~223.255.255.255/24</li>
+</ul>
+<h3 id="IP地址类型"><a href="#IP地址类型" class="headerlink" title="IP地址类型"></a>IP地址类型</h3><p>我们通常把一个网络号所定义的网络范围称为一个网段。</p>
+<p>网络地址:用于标识一个网络。</p>
+<p><img src="/2021/05/01/IP/10.png"></p>
+<p>广播地址:用于向该网络中的所有主机发送数据的特殊地址。</p>
+<p><img src="/2021/05/01/IP/11.png"></p>
+<p>可用地址:可分配给网络中的节点或网络设备接口的地址。</p>
+<p><img src="/2021/05/01/IP/12.png"></p>
+<p><strong>注意</strong></p>
+<ul>
+<li>网络地址和广播地址不能直接被节点或网络设备所使用。</li>
+<li>一个网段可用地址数量为:2的n次幂-2( n:主机部分的比特位数)</li>
+</ul>
+<h3 id="私网IP地址"><a href="#私网IP地址" class="headerlink" title="私网IP地址"></a>私网IP地址</h3><p>公网IP地址：IP地址是由IANA统一分配的，以保证任何一个IP地址在Internet上的唯一性。<br>公网IP地址：实际上一些网络不需要连接到Internet，比如一个大学的封闭实验室内的网络，只要同一网络中的网络设备的IP地址不冲突即可。在IP地址空间里，A、B、C三类地址中各预留了一些地址专门用于上述情况，称为私网IP地址。</p>
+<p><img src="/2021/05/01/IP/13.png"></p>
+<h3 id="特殊IP地址"><a href="#特殊IP地址" class="headerlink" title="特殊IP地址"></a>特殊IP地址</h3><p>IP地址空间中，有一些特殊的IP地址，这些IP地址有特殊的含义和作用，举例如下。</p>
+<p><img src="/2021/05/01/IP/14.png"></p>
+<h3 id="lPv4-vs-lPv6"><a href="#lPv4-vs-lPv6" class="headerlink" title="lPv4 vs lPv6"></a>lPv4 vs lPv6</h3><p>由全球IP地址分配机构，IANA (Internet Assigned Numbers Authority)管理的IPv4地址，于2011年完全用尽随着最后一个IPv4公网地址分配完毕，加上接入公网的用户及设备越来越多，IPv4地址枯竭的问题日益严重,这是当前IPv6替代IPv4的最大源动力。</p>
+<p><img src="/2021/05/01/IP/15.png"></p>
+<h2 id="子网划分"><a href="#子网划分" class="headerlink" title="子网划分"></a>子网划分</h2><h3 id="为什么要划分子网"><a href="#为什么要划分子网" class="headerlink" title="为什么要划分子网"></a>为什么要划分子网</h3><p><img src="/2021/05/01/IP/16.png"></p>
+<h3 id="如何进行子网划分-原网段分析"><a href="#如何进行子网划分-原网段分析" class="headerlink" title="如何进行子网划分-原网段分析"></a>如何进行子网划分-原网段分析</h3><p><img src="/2021/05/01/IP/17.png"></p>
+<h3 id="如何进行子网划分-向主机借位"><a href="#如何进行子网划分-向主机借位" class="headerlink" title="如何进行子网划分-向主机借位"></a>如何进行子网划分-向主机借位</h3><p><img src="/2021/05/01/IP/18.png"></p>
+<h3 id="如何进行子网划分-计算子网网络地址"><a href="#如何进行子网划分-计算子网网络地址" class="headerlink" title="如何进行子网划分-计算子网网络地址"></a>如何进行子网划分-计算子网网络地址</h3><p><img src="/2021/05/01/IP/19.png"></p>
+<h3 id="如何进行子网划分-计算子网广播地址"><a href="#如何进行子网划分-计算子网广播地址" class="headerlink" title="如何进行子网划分-计算子网广播地址"></a>如何进行子网划分-计算子网广播地址</h3><p><img src="/2021/05/01/IP/20.png"></p>
+<h2 id="ICMP协议"><a href="#ICMP协议" class="headerlink" title="ICMP协议"></a>ICMP协议</h2><p>lCMP：Internet Control Message Protocol<br>Internet控制消息协议是IP协议的辅助协议。用来在网络设备间传递各种差错和控制信息。</p>
+<p><img src="/2021/05/01/IP/21.png"></p>
+<h3 id="ICMP重定向"><a href="#ICMP重定向" class="headerlink" title="ICMP重定向"></a>ICMP重定向</h3><p>ICMP重定向报文是ICMP控制报文中的一种。</p>
+<p><img src="/2021/05/01/IP/ICMP%E9%87%8D%E5%AE%9A%E5%90%91.png"></p>
+<h3 id="ICMP差错检测"><a href="#ICMP差错检测" class="headerlink" title="ICMP差错检测"></a>ICMP差错检测</h3><p>ICMP Echo消息常用于诊断源和目的地之间的网络连通性，同时还可以提供其他信息，如报文往返时间等。</p>
+<p><img src="/2021/05/01/IP/22.png"></p>
+<h3 id="ICMP错误报告"><a href="#ICMP错误报告" class="headerlink" title="ICMP错误报告"></a>ICMP错误报告</h3><p>ICMP定义了各种错误消息，用于诊断网络连接性问题;根据这些错误消息，源设备可以判断出数据传输失败的原因。</p>
+<p><img src="/2021/05/01/IP/23.png"></p>
+<h2 id="IP地址基础配置命令"><a href="#IP地址基础配置命令" class="headerlink" title="IP地址基础配置命令"></a>IP地址基础配置命令</h2><p>1.进入接口视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] interface interface-type interface-number</span><br></pre></td></tr></table></figure>
+<p>通过此命令可以进入指定的接口视图，配置接口的相关属性。</p>
+<ul>
+<li>interface-type interface-number:指定接口类型和接口编号。接口类型和接口编号之间可以输入空格也可以不输入空格。</li>
+</ul>
+<p>2.配置接口的IP地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernetO&#x2F;0&#x2F;1] ip address ip-address &#123; mask | mask-length &#125;</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，通过此命令来给网络设备上的接口配置IP地址，实现网络的互连。</p>
+<ul>
+<li>ip-address:指定接口的IP地址，点分十进制形式。</li>
+<li>mask:指定子网掩码，点分十进制形式。</li>
+<li>mask-length:指定掩码长度，整数形式，取值范围是0~32。</li>
+</ul>
+<h2 id="网络IP地址规划"><a href="#网络IP地址规划" class="headerlink" title="网络IP地址规划"></a>网络IP地址规划</h2><p>IP地址规划要和网络结构、路由协议、流量规划、业务规则等结合起来考虑。IP地址的规划应尽可能和网络层次相对应，应该是自顶向下的一种规划。<br>IP地址规划的目标是∶易管理、易扩展、利用率高。</p>
+<p>参考规划原则:唯一性、连续性、扩展性、结构化、业务相关性</p>
+<p><img src="/2021/05/01/IP/24.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/" itemprop="url">以太网交换</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T09:34:21+08:00">
+                2021-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="以太网是什么？"><a href="#以太网是什么？" class="headerlink" title="以太网是什么？"></a>以太网是什么？</h2><p>以太网(Ethernet)最早是由Xerox(施乐)公司创建的局域网组网规范，1980年DEC、Intel和Xeox三家公司联合开发了初版Ethernet规范—DIX 1.0，1982年这三家公司又推出了修改版本DIX 2.0，并将其提交给EEE 802工作组，经IEEEE成员修改并通过后，成为IEEE的正式标准，并编号为IEEE 802.3。虽然Ethernet规范和IEEE 802.3规范并不完全相同，但一般认为Ethernet和正IEEE 802.3是兼容的。</p>
+<p>以太网是应用最广泛的局域网技术。根据传输速率的不同，以太网分为标准以太网(10Mbit/s)、快速以太网(100Mbis)千兆以太网(1000Mbs)和万兆以太网(10Gbit/s)，这些以太网都符合IEEE 802.3是兼容的。</p>
+<h3 id="1、标准以太网"><a href="#1、标准以太网" class="headerlink" title="1、标准以太网"></a>1、标准以太网</h3><p>标准以太网是最早期的以太网，其传输速率为10Mbts，也称为传统以太网。此种以太网的组网方式非常灵活，既可以使用粗、细缆组成总线网络，也可以使用双绞线组成星状网络，还可以同时使用同轴电缆和双绞线组成混合网络。这些网络都符合EE802.3标准，EEE802.3中规定的一些传统以太网物理层标准如下。</p>
+<p>①10 Base-2：使用细同轴电缆，最大网段长度为185m。</p>
+<p>②10 Base-5：使用粗同轴电缆，最大网段长度为500m。</p>
+<p>③10 Base-T：使用双纹线，最大网段长度为100m。</p>
+<p>④10 Boad-36：使用同轴电缆，最大网段长度为3600m。</p>
+<p>⑤10 Base-F：使用光纤，最大网段长度为2000m，传输速率为10Mb/s。</p>
+<p>以土标准中首部的数字代表传输速率，单位为Mbis；末尾的数字代表单段网线长度(基准单位为100m)；Base表示基带传输， Broad表示宽带传输。</p>
+<h3 id="2、快速以太网"><a href="#2、快速以太网" class="headerlink" title="2、快速以太网"></a>2、快速以太网</h3><p>随着网络的发展和各项网络技术的普及，标准以太网技术已难以满足人们对网络数据流量和速率的需求。1993年10月以前，人们只能选择价格昂贵、基于100Mbs光缆的FDD技术组建高标准网络，1993年10月， Grand Junction公司推出了世界上第一台快速以太网集线器FastSwitch10/100和百兆网络接口卡 Fast NIC 100，快速以太网技术正式得到应用。</p>
+<p>随后，Intel、3COM等公司也相继推出了自己的快速以太网设备，同时EEE802工作组对100Mbi/s以太网的各种标准进行了研究，并于1995年4月发布了IEEE 802.3u 100Base-T快速以太网标准，快速以太网时代到来。</p>
+<p>IEEE 802.3U标准基本保持了标准局域网的规定，包括帧格式、接口、介质访问控制方法</p>
+<p>( CSMA/CD)等，只是将数据传输速率从10Mbts提升到了100Mbit/s，又使用了一些新的物理层标准，具体如下所示。</p>
+<p>① 100 Base-1X：使用两对5类屏蔽或非屏蔽双绞线，一对用于发送数据，一对用于传输数据；使用RJ-45或DB9接口，节点与集线器的最大距离为100m，支持全双工。</p>
+<p>② 100 Base-T4：使用4对3类、4类或5类双绞线，3对用于发送数据，1对用于检测冲突信号；使用R-45连接器，最大网段长度为100m，不支持全双工。</p>
+<p>③ 100Base-FX：使用一对单模或多模光纤，一路用于发送数据，一路用于接收数据；最大网段长度为200m(使用单模光纤时可达2000m)，支持全双工。此种网络主要用于搭建主千网，以提升主干网络传输速率。</p>
+<h3 id="3、千兆以太网"><a href="#3、千兆以太网" class="headerlink" title="3、千兆以太网"></a>3、千兆以太网</h3><p>千兆以太网(GigabitEthernet)也称为吉比特以太网。1995年11月，IEEE 802.3工作组委任一个高速研究组，以研究将快速以太网速率增至1000Mbls的可行性和方法。1996年6月，IEEE标准委员会批准了千兆以太网方案授权申请，随后IEEE 802.3工作组成立了IEEE 802.3z工作委员会，该委员会建立了千兆以太网标准，该标准的主要规定如下：</p>
+<p>① 速率为1000Mbit/s的以太网在通信时的全双工/半双工操作。</p>
+<p>② 使用802.3以太网帧格式、CSMA/CD技术。</p>
+<p>③ 在一个冲突域中支持一个中继器。</p>
+<p>④ 向下兼容10Base-T和100Base-TIEEE 802.3。</p>
+<p>工作组为千兆以太网制定了一系列物理层标准，其中常用的标准如下。</p>
+<p>（1）1000 Base-SX：使用芯径为50m及625m、工作波长为850m的多模光纤，采用8B/10B编码方式，传输距离分别为260m和525m。此标准主要应用于建筑物中同一层的短距离主于网。</p>
+<p>（2）1000 Base-LX：使用芯径为50pm及625m、工作波长为850nm和芯径为5m、工作波长为1300nm的多模、单模光纤，传输距离分别为525m、550m和3000m。此标准主要应用于校园主干网。</p>
+<p>（3）1000 Base-CX：使用1500屏蔽双绞线，采用8B/10B编码方式，传输速率为1.25Gbis，传输距离为25m。此标准主要用于集群设备的连接，如一个交换机机房内的设备互联。</p>
+<p>（4）1000 Base-T：使用4对5类非屏蔽双绞线，采用PAM5编码方式，传输距离为100m。</p>
+<p>此标准主要用于同一层建筑的通信，从而可利用标准以太网或快速以太网已铺设的非屏蔽双绞线电缆。</p>
+<p>千兆以太网采用光纤作为上行链路，用于楼宇间的连接，原本被作为一种交换技术设计，之后被广泛应用于服务器的连接和主干网中。如今，千兆以太网已成为主流的网络技术，无论是大型企业还是中小型企业，在组建网络时都会把千兆以太网作为首选高速网络技术。</p>
+<h3 id="4、万兆以太网"><a href="#4、万兆以太网" class="headerlink" title="4、万兆以太网"></a>4、万兆以太网</h3><p>万兆以太网(10 Gigabit Ethernet，10GE)也称为10吉比特以太网，是继千兆以太网之后产生的高速以太网。在千兆以太网的IEEE 802.3Z规范通过后不久，IEEEE成立了高速研究组（High Speed Study Group，HssG)，该研究组主要致力于10GE的研究。</p>
+<p>10GE并非简单地将千兆以太网的速率提升了10倍，2002年6月，IEEE 802.3ae委员会制定了10GE的正式标准，该标准主要包括以下内容。</p>
+<p>① 兼容802.3标准中定义的最小和最大以太网帧长度。</p>
+<p>②仅支持全双工方式。</p>
+<p>③使用点对点链路和结构化布线组建星状局域网。</p>
+<p>④在 MAC/PLS服务接口上实现10Gbs的速度。</p>
+<p>⑤定义两种物理层规范，即局域网PHY和广域网PHY。</p>
+<p>⑥定义将 MAC/PLS的数据传输速率对应到广域网PHY数据传输速率的适配机制。</p>
+<p>⑦定义支持特定物理介质相关接口(PMD)的物理层规范，包括多模光纤和单模光纤以及相应传输距离;支持ISO/C11801第二版中定义的光纤介质类型等。</p>
+<p>⑧通过WAN界面子层，10Gbi/s也能被调整为较低的传输速率。</p>
+<p>此外，10Gbis不再使用铜线，只使用光纤作为传输媒介;不再使用 CSMA/CD协议。千兆以太网仍可使用已有的光纤通道技术，但10GE使用新开发的物理层。10GE常用的物理层规范如下。</p>
+<p>①10G Base-SR：SR表示” Short Reach”(短距离)，10GBase-SR仅用于短距离连接，该规范支持编码方式为64B/66B的短波(850mm)多模光纤，有效传输距离为2m~300m。</p>
+<p>② 10G Base-LR：LR表示“Long Reach”(长距离)，10 G Base-LR主要用于长距离连接，该规范支持编码方式为64B/66B的长波(1310mm)单模光纤，有效传输距离为2m~10km，最高可达25km。</p>
+<p>④ 10 G Base-ER：ER表示“ Extended Reach”(超长距离，10G Base-ER支持超长波（1550nm)单模光纤，有效传输距离为2m~40km。</p>
+<h2 id="IEEE802-3与以太网的关系"><a href="#IEEE802-3与以太网的关系" class="headerlink" title="IEEE802.3与以太网的关系"></a>IEEE802.3与以太网的关系</h2><p>以太网从历史的角度看有两个，第一个是由三家公司开发的DIX以太网标准。这个标准有两个版本，分别是1980年9月发布的1.0版本和1982年11月发布的2.0版本，这也是DIX的最后一个版本。在其后1985年IEEE在DIX以太网标准的基础上制定了IEEE 802.3标准。</p>
+<p>DIX与IEEE 802.3从工作机制上是一致的。但实际上，DIX以太网标准与IEEE 802.3有一些区别，DIX是把定义的OSI参考模型中的物理层和数据链路层所完成的功能，包括在一起了。它把LLC SUBLAYER(子层)和MAC SUBLAYER 媒介访问控制子层划分成了数据链路层的两个子层。目的是为了数据侦传输独立与所用的物理介质和介质访问控制方法。而IEEE 802.3规定了物理层和数据链路层中媒介访问控制子层的MAC部分，它只包括了第二层的一部分功能，而IEEE 802.2定义了逻辑链路控制子层LLC的功能。MAC与介质访问控制方法密切相关，而LLC子层与所有介质访问方法无关。LLC的隔离作用，使得网络层仅针对LLC这种接口工作，不必关心下面的介质类型及介质访问方法。而IEEE 802.3是针对以太网的标准，而IEEE 802.2并不属于以太网。所以说DIX与IEEE 802.3只是包括的范围不同，相应它们两中协议的帧格式也有一些差异。我们也可以这样的理解。</p>
+<p>通俗地说就是，以太网先出来，IEEE发现这个东西很有前途，就赶紧以它为原型制定了一个有线局域网标准叫做IEEE 802.3，这个标准与原始以太网基本一样，只有些许不同，所以我们常常不加区分地将二者等同。但鉴于本篇文章的目的就是为了搞清楚这些层次之间的关系，所以我们要严格地对二者进行区分，IEEE802.3和以太网是不一样的，前者只定义了物理层和链路层的MAC子层，后者包括链路和物理两层。</p>
+<p>链路层分为LLC和MAC，其中LLC叫做802.2，MAC+PHY叫做802.3，所以有如下公式：802.3+802.2=以太网</p>
+<p>以太网协议栈在OSI模型中的位置，如下图</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/OSI%E4%BD%8D%E7%BD%AE.png"></p>
+<p>IEEE 802中定义的服务和协议限定在OSI模型的最低两层（即物理层和数据链路层）。事实上，IEEE 802将OSI的数据链路层分为两个子层，分别是逻辑链路控制（LLC， Logical Link Control）和介质访问控制（MAC， Media Access Control），如下所示：</p>
+<ul>
+<li>数据链路层<ul>
+<li>逻辑链路控制子层</li>
+<li>介质访问控制子层</li>
+</ul>
+</li>
+<li>物理层</li>
+</ul>
+<p>从上面我们可以看出，以太网占了两层（物理层+完整链路层），而IEEE802.3占了一层（物理层+链路层中的MAC子层）。</p>
+<p>了解了以太网和IEEE802.3在OSI模型中的位置以后，下面来看看以太网的层次划分</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/1.png"></p>
+<p>其实在MAC（介质访问控制子层）上面还有一个LLC（逻辑链路控制子层），这两个部分共同构成了链路层。链路层通过MII（或者其它一些升级版的接口，如GMII等）将数据传送到物理层，物理层对这些数据进行处理并以差分信号的形式发送出去，下面解释了图中物理层的一些缩略词的含义：</p>
+<p>MII（media independent interface）：MII的实例应用，就是一种协议，用来将数据从数据链路层传输到物理层。<br>PCS（physical coding sublayer）：对要通过支撑体传送的信息进行编码。实际定义的子层有 4 个：100BASE-X、100BASE-T4、100BASE-T2 和 1000BASE-X。<br>PMA（physical media attachment）：用于给定的介质类型。其功能是：数据传送、冲突侦测、时钟同步等。<br>PMD（physical medium dependent）：就在 MDI 接口之前，用于为MDI和传送支撑体提供接口。<br>MDI（media dependent device）：用于将收发器连接到发送支撑的插头的总称。它可以是 10BASE2 网络中的 BNC 插头，或者双绞线网络的 RJ-45 插头，或者光纤连接器。<br>上面看了那么多是不是有点蒙，下面我们会以网卡为例将抽象与实际关联。</p>
+<h3 id="结合网卡硬件具体分析"><a href="#结合网卡硬件具体分析" class="headerlink" title="结合网卡硬件具体分析"></a>结合网卡硬件具体分析</h3><p>网卡的主要工作原理:发送数据时，计算机把要传输的数据并行写到网卡的缓存，网卡对要传输的数据进编码(10M以太网使用曼切斯特码，100M以太网使用差分曼切斯特码)，串行发到传输介质上.接收数据时，则相反。对于网卡而言，每块网卡都有一个唯一的网络节点地址，它是网卡生产厂家在生产时烧入ROM（只读存储芯片）中的，我们把它叫做MAC地址（物理地址），且保证绝对不会重复。MAC为48bit，前24比特由IEEE分配，是需要钱买的，后24bit由网卡生产厂家自行分配。</p>
+<p>网卡的功能主要有两个:</p>
+<p>将电脑的数据封装为帧，并通过网线(对无线网络来说就是电磁波)将数据发送到网络上去。<br>是接收网络上其它设备传过来的帧，并将帧重新组合成数据，发送到所在的电脑中。<br>网卡能接收所有在网络上传输的信号，但正常情况下只接受发送到该电脑的帧和广播帧，将其余的帧丢弃。然后，传送到系统CPU做进一步处理。当电脑发送数据时，网卡等待合适的时间将分组插入到数据流中。接收系统通知电脑消息是否完整地到达，如果出现问题，将要求对方重新发送。</p>
+<p>现在的网卡大多集成在主板上面了，不过为了说明结构组成，我们还是用上古时期的独立网卡来介绍其结构</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/2.png"></p>
+<p>以最常见的PCI接口的网卡为例，一块网卡主要由PCB线路板、主芯片、数据汞、金手指(总线插槽接口)、BOOTROM、EEPROM、晶振、RJ45接口、指示灯、固定片等等，以及一些二极管、电阻电容等组成。下面我们就来分别了解一下其中主要部件。</p>
+<p>主芯片</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/3.png"></p>
+<p>主芯片有两大类，一种是集成了MAC和PHY的，另一种是只有MAC的，前者对应着数据链路层和物理层，后者只对应数据链路层，需要单独的芯片来构成物理层。在二者分离的情况下，主芯片与PHY芯片之间就需要MII来进行通信</p>
+<p>网卡的主控制芯片是网卡的核心元件，一块网卡性能的好坏和功能的强弱多寡，主要就是看这块芯片的质量。</p>
+<p>bootroom</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/4.png"></p>
+<p>BOOTROM插座也就是常说的无盘启动ROM接口，其是用来通过远程启动服务构造无盘工作站的。远程启动服务(Remoteboot，通常也叫RPL)使通过使用服务器硬盘上的软件来代替工作站硬盘引导一台网络上的工作站成为可能。网卡上必须装有一个RPL(Remote Program Load远程初始程序加载)ROM芯片才能实现无盘启动，每一种RPL ROM芯片都是为一类特定的网络接口卡而制作的，它们之间不能互换。带有RPL的网络接口卡发出引导记录请求的广播(broadcasts)，服务器自动的建立一个连接来响应它，并加载MS-DOS启动文件到工作站的内存中。</p>
+<p>此外，在BOOTROM插槽中心一般还有一颗93C46、93LC46或93c56的EEPROM芯片(93C56是128<em>16bit的EEPROM，而93C46是64</em>16bit的EEPROM)，它相当于网卡的BIOS，里面记录了网卡芯片的供应商ID、子系统供应商ID、网卡的MAC地址、网卡的一些配置，如总线上PHY的地址，BOOTROM的容量，是否启用BOOTROM引导系统等内容。主板板载网卡的EEPROM信息一般集成在主板BIOS中。</p>
+<p>LED指示灯</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/5.png"></p>
+<p>一般来讲，每块网卡都具有1个以上的LED(Light Emitting Diode发光二极管)指示灯，用来表示网卡的不同工作状态，以方便我们查看网卡是否工作正常。典型的LED指示灯有Link/Act、Full、Power等。Link/Act表示连接活动状态，Full表示是否全双工(Full Duplex)，而Power是电源指示(主要用在USB或PCMCIA网卡上)等 。</p>
+<p>数据汞</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/6.png"></p>
+<p>数据汞是消费级PCI网卡上都具备的设备，数据汞也被叫做网络变压器或可称为网络隔离变压器。它在一块网卡上所起的作用主要有两个，一是传输数据，它把PHY送出来的差分信号用差模耦合的线圈耦合滤波以增强信号，并且通过电磁场的转换耦合到不同电平的连接网线的另外一端;一是隔离网线连接的不同网络设备间的不同电平，以防止不同电压通过网线传输损坏设备。除此而外，数据汞还能对设备起到一定的防雷保护作用。</p>
+<p>晶振</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/7.png"></p>
+<p>晶振是石英振荡器的简称，英文名为Crystal，它是时钟电路中最重要的部件，它的作用是向显卡、网卡、主板等配件的各分提供基准频率，它就像个标尺，工作频率不稳定会造成相关设备工作频率不稳定，自然容易出现问题。由于制造工艺不断提高，现在晶振的频率偏差、温度稳定性、老化率、密封性等重要技术指标都很好，已不容易出现故障，但在选用时仍可留意一下晶振的质量。</p>
+<p>网线接口</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/8.png"></p>
+<p>对应着MDI</p>
+<p>网卡上还剩一些组件，PMA，PCS和PMD没有提，自己去了解一下吧，而且并不是所有以太网解决方案都会包括完整的标准内容。</p>
+<h2 id="互联网和以太网的区别"><a href="#互联网和以太网的区别" class="headerlink" title="互联网和以太网的区别"></a>互联网和以太网的区别</h2><h3 id="互联网"><a href="#互联网" class="headerlink" title="互联网"></a>互联网</h3><p>互联网（Internet）是一个网络的网络，它是由从地方到全球范围内几百万个私人的，政府的，学术界的，企业的和政府的网络所构成，通过电子，无线和光纤网络技术等等一系列广泛的技术联系在一起。</p>
+<h3 id="以太网"><a href="#以太网" class="headerlink" title="以太网"></a>以太网</h3><p>以太网（Ethernet）是为了实现局域网通信而设计的一种数据链路层技术，它规定了包括物理层的连线、电子信号和介质访问层协议的内容。以太网是目前应用最普遍的局域网技术，取代了其他局域网标准如令牌环、FDDI和ARCNET。</p>
+<h3 id="二者区别"><a href="#二者区别" class="headerlink" title="二者区别"></a>二者区别</h3><p>1、简单地说，以太网是一直为了实现局域网通信而设计的一系列技术方案，包括物理层传输媒介和 CSMA/CD 协议等内容，而互联网是计算机网络。</p>
+<p>2、以太网很普及，电脑上的以太网接口，Wi-Fi 接口，以太网交换机、路由器上的千兆，万兆以太网口，还有网线，它们都是以太网的组成部分，以太网可以用在局域网、广域网、也可以用在互联网上，现在网络有以太网化的趋势，因为简单易用，造成很普及，然后就得到很好的研究，10兆带宽，100 兆，1000 兆，万兆…这就是它的速率升级图。</p>
+<p>而互联网则是由大大小小的运营商、公司、机构、用户连接起来网络的总称，里面包含以太网、ATM网、还有其它接口，如 E1/E3等等。</p>
+<h2 id="以太网协议"><a href="#以太网协议" class="headerlink" title="以太网协议"></a>以太网协议</h2><p>以太网是当今现有局域网(Local Area Network, LAN)采用的最通用的通信协议标准,定义了局域网中采用的电缆类型和信号处理方法。<br>以太网是建立在CSMA/CD (Carrier Sense Multiple Access/Collision Detection，载波监听多路访问/冲突检测)机制上的广播型网络。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%8F%E8%AE%AE.png"></p>
+<h3 id="冲突域"><a href="#冲突域" class="headerlink" title="冲突域"></a>冲突域</h3><p>冲突域是指连接在同一共享介质上的所有节点的集合。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%86%B2%E7%AA%81%E5%9F%9F.png"></p>
+<h3 id="广播域"><a href="#广播域" class="headerlink" title="广播域"></a>广播域</h3><p>广播报文所能到达的整个访问范围称为二层广播域，简称广播域。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B9%BF%E6%92%AD%E5%9F%9F.png"></p>
+<h3 id="以太网卡"><a href="#以太网卡" class="headerlink" title="以太网卡"></a>以太网卡</h3><p>网络接口卡(Network Interface Card,NIC)也称为“网卡”</p>
+<p>网络接口</p>
+<ul>
+<li>简称“网口”或“接口”或“端口”</li>
+</ul>
+<p>网卡</p>
+<ul>
+<li>每个网口都有一块网卡与之对应。</li>
+<li>计算机或交换机通过网卡来转发数据。</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/19.png"></p>
+<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><h3 id="以太网帧格式"><a href="#以太网帧格式" class="headerlink" title="以太网帧格式"></a>以太网帧格式</h3><ul>
+<li><p>以太网技术所使用的帧称为以太网帧(Ethernet Frame)，或简称以太帧。</p>
+</li>
+<li><p>以太帧的格式有两个标准:Ethernet_ll格式和IEEE 802.3格式。</p>
+</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B8%A7%E6%A0%BC%E5%BC%8F.png"></p>
+<h3 id="什么是MAC地址"><a href="#什么是MAC地址" class="headerlink" title="什么是MAC地址"></a>什么是MAC地址</h3><ul>
+<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡。</li>
+<li>一块网卡的MAC地址是具有全球唯一性的。</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80.png"></p>
+<h3 id="IP地址-vs-MAC地址"><a href="#IP地址-vs-MAC地址" class="headerlink" title="IP地址 vs MAC地址"></a>IP地址 vs MAC地址</h3><p>IP地址的特点:</p>
+<ul>
+<li>IP地址是唯一的</li>
+<li>IP地址可变</li>
+<li>基于网络拓扑进行IP地址分配</li>
+</ul>
+<p>MAC地址的特点:</p>
+<ul>
+<li>MAC地址是唯一的</li>
+<li>MAC地址不可变</li>
+<li>基于制造商进行MAC地址分配</li>
+</ul>
+<h3 id="MAC地址表示"><a href="#MAC地址表示" class="headerlink" title="MAC地址表示"></a>MAC地址表示</h3><p>一个MAC地址有48 bit，6 Byte。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E8%A1%A8%E7%A4%BA.png"></p>
+<h3 id="MAC地址构成及分类"><a href="#MAC地址构成及分类" class="headerlink" title="MAC地址构成及分类"></a>MAC地址构成及分类</h3><ul>
+<li>OUI( Organizationally Unique ldentifier ) :厂商代码，由IEEE分配，3 Byte，24 bit</li>
+<li>制造商分配:3 Byte，24 bit</li>
+</ul>
+<p><strong>MAC地址分类</strong></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB.png"></p>
+<h2 id="以太网交换机"><a href="#以太网交换机" class="headerlink" title="以太网交换机"></a>以太网交换机</h2><h3 id="MAC地址表"><a href="#MAC地址表" class="headerlink" title="MAC地址表"></a>MAC地址表</h3><ul>
+<li>每台交换机中都有一个MAC地址表，存放了MAC地址与交换机端口编号之间的映射关系。</li>
+</ul>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E8%A1%A8.png"></p>
+<h3 id="MAC地址表学习过程"><a href="#MAC地址表学习过程" class="headerlink" title="MAC地址表学习过程"></a>MAC地址表学习过程</h3><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/9.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/10.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/11.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/12.png"></p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/13.png"></p>
+<h3 id="交换机转发过程"><a href="#交换机转发过程" class="headerlink" title="交换机转发过程"></a>交换机转发过程</h3><h4 id="交换机的3种数据帧处理行为"><a href="#交换机的3种数据帧处理行为" class="headerlink" title="交换机的3种数据帧处理行为"></a>交换机的3种数据帧处理行为</h4><p>交换机对于从传输介质进入某一端口的帧的处理行为一共有3种:泛洪、转发和丢弃。</p>
+<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/14.png"></p>
+<h4 id="泛洪"><a href="#泛洪" class="headerlink" title="泛洪"></a>泛洪</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/15.png"></p>
+<h4 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/16.png"></p>
+<h4 id="丢弃"><a href="#丢弃" class="headerlink" title="丢弃"></a>丢弃</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/17.png"></p>
+<h2 id="数据封装过程"><a href="#数据封装过程" class="headerlink" title="数据封装过程"></a>数据封装过程</h2><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/18.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/30/VLAN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/30/VLAN/" itemprop="url">VLAN</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-30T14:47:09+08:00">
+                2021-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="为什么需要VLAN"><a href="#为什么需要VLAN" class="headerlink" title="为什么需要VLAN"></a>为什么需要VLAN</h2><p>　　1. 什么是VLAN?</p>
+<p>　　VLAN(Virtual LAN)，翻译成中文是“虚拟局域网”。LAN可以是由少数几台家用计算机构成的网络，也可以是数以百计的计算机构成的企业网络。VLAN所指的LAN特指使用路由器分割的网络——也就是广播域。</p>
+<p>　　在此让我们先复习一下广播域的概念。广播域，指的是广播帧(目标MAC地址全部为1)所能传递到的范围，亦即能够直接通信的范围。严格地说，并不仅仅是广播帧，多播帧(Multicast Frame)和目标不明的单播帧(Unknown Unicast Frame)也能在同一个广播域中畅行无阻。</p>
+<p>　　本来，二层交换机只能构建单一的广播域，不过使用VLAN功能后，它能够将网络分割成多个广播域。</p>
+<p>　　2.未分割广播域时……</p>
+<p>　　那么，为什么需要分割广播域呢?那是因为，如果仅有一个广播域，有可能会影响到网络整体的传输性能。具体原因，请参看附图加深理解。</p>
+<p><img src="/2021/04/30/VLAN/1.png"></p>
+<p>　　图中，是一个由5台二层交换机(交换机1～5)连接了大量客户机构成的网络。假设这时，计算机A需要与计算机B通信。在基于以太网的通信中，必须在数据帧中指定目标MAC地址才能正常通信，因此计算机A必须先广播“ARP请求(ARP Request)信息”，来尝试获取计算机B的MAC地址。</p>
+<p>　　交换机1收到广播帧(ARP请求)后，会将它转发给除接收端口外的其他所有端口，也就是Flooding了。接着，交换机2收到广播帧后也会Flooding。交换机3、4、5也还会Flooding。最终ARP请求会被转发到同一网络中的所有客户机上。</p>
+<p><img src="/2021/04/30/VLAN/2.png"></p>
+<p>　　请大家注意一下，这个ARP请求原本是为了获得计算机B的MAC地址而发出的。也就是说：只要计算机B能收到就万事大吉了。可是事实上，数据帧却传遍整个网络，导致所有的计算机都收到了它。如此一来，一方面广播信息消耗了网络整体的带宽，另一方面，收到广播信息的计算机还要消耗一部分CPU时间来对它进行处理。造成了网络带宽和CPU运算能力的大量无谓消耗。</p>
+<p>　　3. 广播信息是那么经常发出的吗?</p>
+<p>　　读到这里，您也许会问：广播信息真是那么频繁出现的吗?</p>
+<p>　　答案是：是的!实际上广播帧会非常频繁地出现。利用TCP/IP协议栈通信时，除了前面出现的ARP外，还有可能需要发出DHCP、RIP等很多其他类型的广播信息。</p>
+<p>　　ARP广播，是在需要与其他主机通信时发出的。当客户机请求DHCP服务器分配IP地址时，就必须发出DHCP的广播。而使用RIP作为路由协议时，每隔30秒路由器都会对邻近的其他路由器广播一次路由信息。RIP以外的其他路由协议使用多播传输路由信息，这也会被交换机转发(Flooding)。除了TCP/IP以外，NetBEUI、IPX和Apple Talk等协议也经常需要用到广播。例如在Windows下双击打开“网络计算机”时就会发出广播(多播)信息。(Windows XP除外……)</p>
+<p>　　总之，广播就在我们身边。下面是一些常见的广播通信：</p>
+<p>　　(1)ARP请求：建立IP地址和MAC地址的映射关系。</p>
+<p>　　(2)RIP：一种路由协议。</p>
+<p>　　(3)DHCP：用于自动设定IP地址的协议。</p>
+<p>　　(4)NetBEUI：Windows下使用的网络协议。</p>
+<p>　　(5)IPX：NovellNetware使用的网络协议。</p>
+<p>　　(6)Apple Talk：苹果公司的Macintosh计算机使用的网络协议。</p>
+<p>　　如果整个网络只有一个广播域，那么一旦发出广播信息，就会传遍整个网络，并且对网络中的主机带来额外的负担。因此，在设计LAN时，需要注意如何才能有效地分割广播域。</p>
+<p>　　4.广播域的分割与VLAN的必要性</p>
+<p>　　分割广播域时，一般都必须使用到路由器。使用路由器后，可以以路由器上的网络接口(LAN Interface)为单位分割广播域。</p>
+<p>　　但是，通常情况下路由器上不会有太多的网络接口，其数目多在1～4个左右。随着宽带连接的普及，宽带路由器(或者叫IP共享器)变得较为常见，但是需要注意的是，它们上面虽然带着多个(一般为4个左右)连接LAN一侧的网络接口，但那实际上是路由器内置的交换机，并不能分割广播域。</p>
+<p>　　况且使用路由器分割广播域的话，所能分割的个数完全取决于路由器的网络接口个数，使得用户无法自由地根据实际需要分割广播域。</p>
+<p>　　与路由器相比，二层交换机一般带有多个网络接口。因此如果能使用它分割广播域，那么无疑运用上的灵活性会大大提高。</p>
+<p>　　用于在二层交换机上分割广播域的技术，就是VLAN。通过利用VLAN，我们可以自由设计广播域的构成，提高网络设计的自由度。</p>
+<h2 id="实现VLAN的机制"><a href="#实现VLAN的机制" class="headerlink" title="实现VLAN的机制"></a>实现VLAN的机制</h2><p>　　1. 实现VLAN的机制</p>
+<p>　　在理解了“为什么需要VLAN”之后，接下来让我们来了解一下交换机是如何使用VLAN分割广播域的。</p>
+<p>　　首先，在一台未设置任何VLAN的二层交换机上，任何广播帧都会被转发给除接收端口外的所有其他端口(Flooding)。例如，计算机A发送广播信息后，会被转发给端口2、3、4。</p>
+<p><img src="/2021/04/30/VLAN/3.png"></p>
+<p>　　这时，如果在交换机上生成红、蓝两个VLAN;同时设置端口1、2属于红色VLAN、端口3、4属于蓝色VLAN。再从A发出广播帧的话，交换机就只会把它转发给同属于一个VLAN的其他端口——也就是同属于红色VLAN的端口2，不会再转发给属于蓝色VLAN的端口。</p>
+<p>　　同样，C发送广播信息时，只会被转发给其他属于蓝色VLAN的端口，不会被转发给属于红色VLAN的端口。</p>
+<p><img src="/2021/04/30/VLAN/4.png"></p>
+<p>　　就这样，VLAN通过限制广播帧转发的范围分割了广播域。上图中为了便于说明，以红、蓝两色识别不同的VLAN，在实际使用中则是用“VLAN ID”来区分的。</p>
+<p>　　2.直观地描述VLAN</p>
+<p>　　如果要更为直观地描述VLAN的话，我们可以把它理解为将一台交换机在逻辑上分割成了数台交换机。在一台交换机上生成红、蓝两个VLAN，也可以看作是将一台交换机换做一红一蓝两台虚拟的交换机。</p>
+<p><img src="/2021/04/30/VLAN/5.png"></p>
+<p>　　在红、蓝两个VLAN之外生成新的VLAN时，可以想象成又添加了新的交换机。</p>
+<p>　　但是，VLAN生成的逻辑上的交换机是互不相通的。因此，在交换机上设置VLAN后，如果未做其他处理，VLAN间是无法通信的。</p>
+<p>　　明明接在同一台交换机上，但却偏偏无法通信——这个事实也许让人难以接受。但它既是VLAN方便易用的特征，又是使VLAN令人难以理解的原因。</p>
+<p>　　3. 需要VLAN间通信时怎么办</p>
+<p>　　那么，当我们需要在不同的VLAN间通信时又该如何是好呢?</p>
+<p>　　请大家再次回忆一下：VLAN是广播域。而通常两个广播域之间由路由器连接，广播域之间来往的数据包都是由路由器中继的。因此，VLAN间的通信也需要路由器提供中继服务，这被称作“VLAN间路由”。</p>
+<p>　　VLAN间路由，可以使用普通的路由器，也可以使用三层交换机。其中的具体内容，等有机会再细说吧。在这里希望大家先记住不同VLAN间互相通信时需要用到路由功能。</p>
+<p>　　VLAN的访问链接(Access Link)</p>
+<p>　　1.交换机的端口类型</p>
+<p>　　交换机的端口，可以分为以下两种：</p>
+<p>　　(1)访问链接(Access Link)</p>
+<p>　　(2)汇聚链接(Trunk Link)</p>
+<p>　　接下来就让我们来依次学习这两种不同端口的特征。这一讲，首先学习“访问链接”。</p>
+<p>　　2.访问链接</p>
+<p>　　访问链接，指的是“只属于一个VLAN，且仅向该VLAN转发数据帧”的端口。在大多数情况下，访问链接所连的是客户机。</p>
+<p>　　通常设置VLAN的顺序是：</p>
+<p>　　(1)生成VLAN</p>
+<p>　　(2)设定访问链接(决定各端口属于哪一个VLAN)</p>
+<p>　　设定访问链接的手法，可以是事先固定的、也可以是根据所连的计算机而动态改变设定。前者被称为“静态VLAN”、后者自然就是“动态VLAN”了。</p>
+<p>　　● 静态VLAN——基于端口</p>
+<p>　　静态VLAN又被称为基于端口的VLAN(PortBased VLAN)。顾名思义，就是明确指定各端口属于哪个VLAN的设定方法。</p>
+<p><img src="/2021/04/30/VLAN/6.png"></p>
+<p>　　由于需要一个个端口地指定，因此当网络中的计算机数目超过一定数字(比如数百台)后，设定操作就会变得烦杂无比。并且，客户机每次变更所连端口，都必须同时更改该端口所属VLAN的设定——这显然不适合那些需要频繁改变拓补结构的网络。</p>
+<p>　　● 动态VLAN</p>
+<p>　　另一方面，动态VLAN则是根据每个端口所连的计算机，随时改变端口所属的VLAN。这就可以避免上述的更改设定之类的操作。动态VLAN可以大致分为3类：</p>
+<p>　　(1)基于MAC地址的VLAN(MAC Based VLAN)</p>
+<p>　　(2)基于子网的VLAN(Subnet Based VLAN)</p>
+<p>　　(3)基于用户的VLAN(User Based VLAN)</p>
+<p>　　其间的差异，主要在于根据OSI参照模型哪一层的信息决定端口所属的VLAN。</p>
+<p><img src="/2021/04/30/VLAN/VLAN%E9%97%B4%E5%88%92%E5%88%86.png"></p>
+<p>　　● 基于MAC地址的VLAN</p>
+<p>　　基于MAC地址的VLAN，就是通过查询并记录端口所连计算机上网卡的MAC地址来决定端口的所属。假定有一个MAC地址“A”被交换机设定为属于VLAN “10”，那么不论MAC地址为“A”的这台计算机连在交换机哪个端口，该端口都会被划分到VLAN 10中去。计算机连在端口1时，端口1属于VLAN 10;而计算机连在端口2时，则是端口2属于VLAN 10。</p>
+<p><img src="/2021/04/30/VLAN/7.png"></p>
+<p>　　由于是基于MAC地址决定所属VLAN的，因此可以理解为这是一种在OSI的第二层设定访问链接的办法。</p>
+<p>　　但是，基于MAC地址的VLAN，在设定时必须调查所连接的所有计算机的MAC地址并加以登录。而且如果计算机交换了网卡，还是需要更改设定。</p>
+<p>　　● 基于IP地址的VLAN</p>
+<p>　　基于子网的VLAN，则是通过所连计算机的IP地址，来决定端口所属VLAN的。不像基于MAC地址的VLAN，即使计算机因为交换了网卡或是其他原因导致MAC地址改变，只要它的IP地址不变，就仍可以加入原先设定的VLAN。</p>
+<p><img src="/2021/04/30/VLAN/8.png"></p>
+<p>　　因此，与基于MAC地址的VLAN相比，能够更为简便地改变网络结构。IP地址是OSI参照模型中第三层的信息，所以我们可以理解为基于子网的VLAN是一种在OSI的第三层设定访问链接的方法。</p>
+<p>　　基于用户的VLAN，则是根据交换机各端口所连的计算机上当前登录的用户，来决定该端口属于哪个VLAN。这里的用户识别信息，一般是计算机操作系统登录的用户，比如可以是Windows域中使用的用户名。这些用户名信息，属于OSI第四层以上的信息。</p>
+<p>　　总的来说，决定端口所属VLAN时利用的信息在OSI中的层面越高，就越适于构建灵活多变的网络。</p>
+<p>　　VLAN的汇聚链接(Trunk Link)</p>
+<p>　　1.需要设置跨越多台交换机的VLAN时……</p>
+<p>　　到此为止，我们学习的都是使用单台交换机设置VLAN时的情况。那么，如果需要设置跨越多台交换机的VLAN时又如何呢?</p>
+<p>　　在规划企业级网络时，很有可能会遇到隶属于同一部门的用户分散在同一座建筑物中的不同楼层的情况，这时可能就需要考虑到如何跨越多台交换机设置VLAN的问题了。假设有如下图所示的网络，且需要将不同楼层的A、C和B、D设置为同一个VLAN。</p>
+<p><img src="/2021/04/30/VLAN/9.png"></p>
+<p>　　这时最关键的就是“交换机1和交换机2该如何连接才好呢?”</p>
+<p>　　最简单的方法，自然是在交换机1和交换机2上各设一个红、蓝VLAN专用的接口并互联了。</p>
+<p><img src="/2021/04/30/VLAN/10.png"></p>
+<p>　　但是，这个办法从扩展性和管理效率来看都不好。例如，在现有网络基础上再新建VLAN时，为了让这个VLAN能够互通，就需要在交换机间连接新的网线。建筑物楼层间的纵向布线是比较麻烦的，一般不能由基层管理人员随意进行。并且，VLAN越多，楼层间(严格地说是交换机间)互联所需的端口也越来越多，交换机端口的利用效率低是对资源的一种浪费、也限制了网络的扩展。</p>
+<p>　　为了避免这种低效率的连接方式，人们想办法让交换机间互联的网线集中到一根上，这时使用的就是汇聚链接(Trunk Link)。</p>
+<p>　　2.何谓汇聚链接?</p>
+<p>　　汇聚链接(Trunk Link)指的是能够转发多个不同VLAN的通信的端口。</p>
+<p>　　汇聚链路上流通的数据帧，都被附加了用于识别分属于哪个VLAN的特殊信息。</p>
+<p>　　现在再让我们回过头来考虑一下刚才那个网络如果采用汇聚链路又会如何呢?用户只需要简单地将交换机间互联的端口设定为汇聚链接就可以了。这时使用的网线还是普通的UTP线，而不是什么其他的特殊布线。图例中是交换机间互联，因此需要用交叉线来连接。</p>
+<p>　　接下来，让我们具体看看汇聚链接是如何实现跨越交换机间的VLAN的。</p>
+<p>　　A发送的数据帧从交换机1经过汇聚链路到达交换机2时，在数据帧上附加了表示属于红色VLAN的标记。</p>
+<p>　　交换机2收到数据帧后，经过检查VLAN标识发现这个数据帧是属于红色VLAN的，因此去除标记后根据需要将复原的数据帧只转发给其他属于红色VLAN的端口。这时的转送，是指经过确认目标MAC地址并与MAC地址列表比对后只转发给目标MAC地址所连的端口。只有当数据帧是一个广播帧、多播帧或是目标不明的帧时，它才会被转发到所有属于红色VLAN的端口。</p>
+<p>　　蓝色VLAN发送数据帧时的情形也与此相同。</p>
+<p><img src="/2021/04/30/VLAN/11.png"></p>
+<p>　　通过汇聚链路时附加的VLAN识别信息，有可能支持标准的“IEEE 802.1Q”协议，也可能是Cisco产品独有的“ISL(Inter Switch Link)”。如果交换机支持这些规格，那么用户就能够高效率地构筑横跨多台交换机的VLAN。</p>
+<p>　　另外，汇聚链路上流通着多个VLAN的数据，自然负载较重。因此，在设定汇聚链接时，有一个前提就是必须支持100Mbps以上的传输速度。</p>
+<p>　　另外，默认条件下，汇聚链接会转发交换机上存在的所有VLAN的数据。换一个角度看，可以认为汇聚链接(端口)同时属于交换机上所有的VLAN。由于实际应用中很可能并不需要转发所有VLAN的数据，因此为了减轻交换机的负载、也为了减少对带宽的浪费，我们可以通过用户设定限制能够经由汇聚链路互联的VLAN。</p>
+<p>　　关于IEEE 802.1Q和ISL的具体内容，将在下一讲中提到。</p>
+<p>　　3.访问链接的总结</p>
+<p>　　综上所述，设定访问链接的手法有静态VLAN和动态VLAN两种，其中动态VLAN又可以继续细分成几个小类。</p>
+<p>　　其中基于子网的VLAN和基于用户的VLAN有可能是网络设备厂商使用独有的协议实现的，不同厂商的设备之间互联有可能出现兼容性问题;因此在选择交换机时，一定要注意事先确认。</p>
+<p>　　下表总结了静态VLAN和动态VLAN的相关信息。</p>
+<p>　　种类解说</p>
+<p>　　静态VLAN(基于端口的VLAN)将交换机的各端口固定指派给VLAN</p>
+<p>　　动态VLAN基于MAC地址的VLAN根据各端口所连计算机的MAC地址设定</p>
+<p>　　基于子网的VLAN根据各端口所连计算机的IP地址设定</p>
+<p>　　基于用户的VLAN根据端口所连计算机上登录用户设定</p>
+<p>　　VLAN的汇聚方式——IEEE802.1Q与ISL</p>
+<p>　　1.汇聚方式</p>
+<p>　　在交换机的汇聚链接上，可以通过对数据帧附加VLAN信息，构建跨越多台交换机的VLAN。</p>
+<p>　　附加VLAN信息的方法，最具有代表性的有：</p>
+<p>　　(1)IEEE 802.1Q</p>
+<p>　　(2)ISL</p>
+<p>　　现在就让我们看看这两种协议分别如何对数据帧附加VLAN信息。</p>
+<p>　　2.IEEE 802.1Q</p>
+<p>　　IEEE 802.1Q，俗称“Dot One Q”，是经过IEEE认证的对数据帧附加VLAN识别信息的协议。</p>
+<p>　　在此，请大家先回忆一下以太网数据帧的标准格式。</p>
+<p>　　IEEE 802.1Q所附加的VLAN识别信息，位于数据帧中“发送源MAC地址”与“类别域”(Type Field)之间。具体内容为2字节的TPID(Tag Protocol IDentifier)和2字节的TCI(Tag Control Information)，共计4字节。</p>
+<p>　　在数据帧中添加了4字节的内容，那么CRC值自然也会有所变化。这时数据帧上的CRC是插入TPID、TCI后，对包括它们在内的整个数据帧重新计算后所得的值。</p>
+<p><img src="/2021/04/30/VLAN/12.png"></p>
+<p><img src="/2021/04/30/VLAN/tag.png"></p>
+<p>　　而当数据帧离开汇聚链路时，TPID和TCI会被去除，这时还会进行一次CRC的重新计算。</p>
+<p>　　TPID字段在以太网报文中所处位置与不带VLAN Tag的报文中协议类型字段所处位置相同。TPID的值固定为0x8100，它标示网络帧承载的802.1Q类型，交换机通过它来确定数据帧内附加了基于IEEE 802.1Q的VLAN信息。而实质上的VLAN ID，是TCI中的12位元。由于总共有12位，因此最多可供识别4096个VLAN。</p>
+<p>　　基于IEEE 802.1Q附加的VLAN信息，就像在传递物品时附加的标签。因此，它也被称作“标签型VLAN”(Tagging VLAN)。</p>
+<p>　　3.ISL(Inter Switch Link)</p>
+<p>　　ISL，是Cisco产品支持的一种与IEEE 802.1Q类似的、用于在汇聚链路上附加VLAN信息的协议。</p>
+<p>　　使用ISL后，每个数据帧头部都会被附加26字节的“ISL包头(ISL Header)”，并且在帧尾带上通过对包括ISL包头在内的整个数据帧进行计算后得到的4字节CRC值。换而言之，就是总共增加了30字节的信息。</p>
+<p>　　在使用ISL的环境下，当数据帧离开汇聚链路时，只要简单地去除ISL包头和新CRC就可以了。由于原先的数据帧及其CRC都被完整保留，因此无需重新计算CRC。</p>
+<p><img src="/2021/04/30/VLAN/13.png"></p>
+<p>　　ISL有如用ISL包头和新CRC将原数据帧整个包裹起来，因此也被称为“封装型VLAN”(Encapsulated VLAN)。</p>
+<p>　　需要注意的是，不论是IEEE802.1Q的“Tagging VLAN”，还是ISL的“Encapsulated VLAN”，都不是很严密的称谓。不同的书籍与参考资料中，上述词语有可能被混合使用，因此需要大家在学习时格外注意。</p>
+<p>　　并且由于ISL是Cisco独有的协议，因此只能用于Cisco网络设备之间的互联。</p>
+<h2 id="VLAN间路由"><a href="#VLAN间路由" class="headerlink" title="VLAN间路由"></a>VLAN间路由</h2><p>1.VLAN间路由的必要性</p>
+<p>　　根据目前为止学习的知识，我们已经知道两台计算机即使连接在同一台交换机上，只要所属的VLAN不同就无法直接通信。接下来我们将要学习的就是如何在不同的VLAN间进行路由，使分属不同VLAN的主机能够互相通信。</p>
+<p>　　首先，先来复习一下为什么不同VLAN间不通过路由就无法通信。在LAN内的通信，必须在数据帧头中指定通信目标的MAC地址。而为了获取MAC地址，TCP/IP协议下使用的是ARP。ARP解析MAC地址的方法，则是通过广播。也就是说，如果广播报文无法到达，那么就无从解析MAC地址，亦即无法直接通信。</p>
+<p>　　计算机分属不同的VLAN，也就意味着分属不同的广播域，自然收不到彼此的广播报文。因此，属于不同VLAN的计算机之间无法直接互相通信。为了能够在VLAN间通信，需要利用OSI参照模型中更高一层——网络层的信息(IP地址)来进行路由。关于路由的具体内容，以后有机会再详细解说吧。</p>
+<p>　　路由功能，一般主要由路由器提供。但在今天的局域网里，我们也经常利用带有路由功能的交换机——三层交换机(Layer 3 Switch)来实现。接下来就让我们分别看看使用路由器和三层交换机进行VLAN间路由时的情况。</p>
+<p>2.使用路由器进行VLAN间路由</p>
+<p>　　在使用路由器进行VLAN间路由时，与构建横跨多台交换机的VLAN时的情况类似，我们还是会遇到“该如何连接路由器与交换机”这个问题。路由器和交换机的接线方式，大致有以下两种：</p>
+<p>　　(1)将路由器与交换机上的每个VLAN分别连接</p>
+<p>　　(2)不论VLAN有多少个，路由器与交换机都只用一条网线连接</p>
+<p>　　最容易想到的，当然还是“把路由器和交换机以VLAN为单位分别用网线连接”了。将交换机上用于和路由器互联的每个端口设为访问链接(Access Link)，然后分别用网线与路由器上的独立端口互联。如下图所示，交换机上有2个VLAN，那么就需要在交换机上预留2个端口用于与路由器互联;路由器上同样需要有2个端口;两者之间用2条网线分别连接。</p>
+<p><img src="/2021/04/30/VLAN/14.png"></p>
+<p>　　如果采用这个办法，大家应该不难想象它的扩展性很成问题。每增加一个新的VLAN，都需要消耗路由器的端口和交换机上的访问链接，而且还需要重新布设一条网线。而路由器，通常不会带有太多LAN接口的。新建VLAN时，为了对应增加的VLAN所需的端口，就必须将路由器升级成带有多个LAN接口的高端产品，这部分成本、还有重新布线所带来的开销，都使得这种接线法成为一种不受欢迎的办法。</p>
+<p>　　那么，第二种办法“不论VLAN数目多少，都只用一条网线连接路由器与交换机”呢?当使用一条网线连接路由器与交换机、进行VLAN间路由时，需要用到汇聚链接。</p>
+<p>　　具体实现过程为：首先将用于连接路由器的交换机端口设为汇聚链接(Trunk Link)，而路由器上的端口也必须支持汇聚链路。双方用于汇聚链路的协议自然也必须相同。接着在路由器上定义对应各个VLAN的“子接口”(Sub Interface)。尽管实际与交换机连接的物理端口只有一个，但在理论上我们可以把它分割为多个虚拟端口。</p>
+<p>　　VLAN将交换机从逻辑上分割成了多台，因而用于VLAN间路由的路由器，也必须拥有分别对应各个VLAN的虚拟接口。</p>
+<p><img src="/2021/04/30/VLAN/15.png"></p>
+<p>　　采用这种方法的话，即使之后在交换机上新建VLAN，仍只需要一条网线连接交换机和路由器。用户只需要在路由器上新设一个对应新VLAN的子接口就可以了。与前面的方法相比，扩展性要强得多，也不用担心需要升级LAN接口数不足的路由器或是重新布线。</p>
+<p>3.同一VLAN内的通信</p>
+<p>　　接下来，我们继续学习使用汇聚链路连接交换机与路由器时，VLAN间路由是如何进行的。如下图所示，为各台计算机以及路由器的子接口设定IP地址。</p>
+<p><img src="/2021/04/30/VLAN/16.png"></p>
+<p>　　红色VLAN(VLAN ID=1)的网络地址为192.168.1.0/24，蓝色VLAN(VLAN ID=2)的网络地址为192.168.2.0/24。各计算机的MAC地址分别为A/B/C/D，路由器汇聚链接端口的MAC地址为R。交换机通过对各端口所连计算机MAC地址的学习，生成如下的MAC地址列表。</p>
+<p>　　首先考虑计算机A与同一VLAN内的计算机B之间通信时的情形。</p>
+<p>　　计算机A发出ARP请求信息，请求解析B的MAC地址。交换机收到数据帧后，检索MAC地址列表中与收信端口同属一个VLAN的表项。结果发现，计算机B连接在端口2上，于是交换机将数据帧转发给端口2，最终计算机B收到该帧。收发信双方同属一个VLAN之内的通信，一切处理均在交换机内完成。</p>
+<p><img src="/2021/04/30/VLAN/17.png"></p>
+<p>4.不同VLAN间的通信</p>
+<p>　　接下来是这一讲的核心内容，不同VLAN间的通信。让我们来考虑一下计算机A与计算机C之间通信时的情况。</p>
+<p><img src="/2021/04/30/VLAN/18.png"></p>
+<p>　　计算机A从通信目标的IP地址(192.168.2.1)得出C与本机不属于同一个网段。因此会向设定的默认网关(DefaultGateway，GW)转发数据帧。在发送数据帧之前，需要先用ARP获取路由器的MAC地址。</p>
+<p>　　得到路由器的MAC地址R后，接下来就是按图中所示的步骤发送往C去的数据帧。①的数据帧中，目标MAC地址是路由器的地址R、但内含的目标IP地址仍是最终要通信的对象C的地址。这一部分的内容，涉及到局域网内经过路由器转发时的通信步骤，有机会再详细解说吧。</p>
+<p>　　交换机在端口1上收到①的数据帧后，检索MAC地址列表中与端口1同属一个VLAN的表项。由于汇聚链路会被看作属于所有的VLAN，因此这时交换机的端口6也属于被参照对象。这样交换机就知道往MAC地址R发送数据帧，需要经过端口6转发。</p>
+<p>　　从端口6发送数据帧时，由于它是汇聚链接，因此会被附加上VLAN识别信息。由于原先是来自红色VLAN的数据帧，因此如图中②所示，会被加上红色VLAN的识别信息后进入汇聚链路。路由器收到②的数据帧后，确认其VLAN识别信息，由于它是属于红色VLAN的数据帧，因此交由负责红色VLAN的子接口接收。</p>
+<p>　　接着，根据路由器内部的路由表，判断该向哪里中继。</p>
+<p>　　由于目标网络192.168.2.0/24是蓝色VLAN，，且该网络通过子接口与路由器直连，因此只要从负责蓝色VLAN的子接口转发就可以了。这时，数据帧的目标MAC地址被改写成计算机C的目标地址;并且由于需要经过汇聚链路转发，因此被附加了属于蓝色VLAN的识别信息。这就是图中③的数据帧。</p>
+<p>　　交换机收到③的数据帧后，根据VLAN标识信息从MAC地址列表中检索属于蓝色VLAN的表项。由于通信目标——计算机C连接在端口3上、且端口3为普通的访问链接，因此交换机会将数据帧去除VLAN识别信息后(数据帧④)转发给端口3，最终计算机C才能成功地收到这个数据帧。</p>
+<p>　　进行VLAN间通信时，即使通信双方都连接在同一台交换机上，也必须经过：“发送方——交换机——路由器——交换机——接收方”这样一个流程。</p>
+<p>　　三层交换机</p>
+<p>　　1.使用路由器进行VLAN间路由时的问题</p>
+<p>　　现在，我们知道只要能提供VLAN间路由，就能够使分属不同VLAN的计算机互相通信。但是，如果使用路由器进行VLAN间路由的话，随着VLAN之间流量的不断增加，很可能导致路由器成为整个网络的瓶颈。</p>
+<p>　　交换机使用被称为ASIC(ApplicationSpecified Integrated Circuit)的专用硬件芯片处理数据帧的交换操作，在很多机型上都能实现以缆线速度(Wired Speed)交换。而路由器，则基本上是基于软件处理的。即使以缆线速度接收到数据包，也无法在不限速的条件下转发出去，因此会成为速度瓶颈。就VLAN间路由而言，流量会集中到路由器和交换机互联的汇聚链路部分，这一部分尤其特别容易成为速度瓶颈。并且从硬件上看，由于需要分别设置路由器和交换机，在一些空间狭小的环境里可能连设置的场所都成问题。</p>
+<p>　　2.三层交换机(Layer 3 Switch)</p>
+<p>　　为了解决上述问题，三层交换机应运而生。三层交换机，本质上就是“带有路由功能的(二层)交换机”。路由属于OSI参照模型中第三层网络层的功能，因此带有第三层路由功能的交换机才被称为“三层交换机”。</p>
+<p>　　关于三层交换机的内部结构，可以参照下面的简图。</p>
+<p><img src="/2021/04/30/VLAN/19.png"></p>
+<p>　　在一台本体内，分别设置了交换机模块和路由器模块;而内置的路由模块与交换模块相同，使用ASIC硬件处理路由。因此，与传统的路由器相比，可以实现高速路由。并且，路由与交换模块是汇聚链接的，由于是内部连接，可以确保相当大的带宽。</p>
+<p>　　● 使用三层交换机进行VLAN间路由(VLAN内通信)</p>
+<p>　　在三层交换机内部数据究竟是怎样传播的呢?基本上，它和使用汇聚链路连接路由器与交换机时的情形相同。</p>
+<p>　　假设有如下图所示的4台计算机与三层交换机互联。当使用路由器连接时，一般需要在LAN接口上设置对应各VLAN的子接口;而三层交换机则是在内部生成“VLAN接口”(VLAN Interface)。VLAN接口，是用于各VLAN收发数据的接口。(注：在Cisco的Catalyst系列交换机上，VLAN Interface被称为SVI——Switched Virtual Interface)</p>
+<p><img src="/2021/04/30/VLAN/20.png"></p>
+<p>　　为了与使用路由器进行VLAN间路由对比，让我们同样来考虑一下计算机A与计算机B之间通信时的情况。首先是目标地址为B的数据帧被发到交换机;通过检索同一VLAN的MAC地址列表发现计算机B连在交换机的端口2上;因此将数据帧转发给端口2。</p>
+<p>　　● 使用三层交换机进行VLAN间路由(VLAN间通信)</p>
+<p>　　接下来设想一下计算机A与计算机C间通信时的情形。针对目标IP地址，计算机A可以判断出通信对象不属于同一个网络，因此向默认网关发送数据(Frame 1)。</p>
+<p>　　交换机通过检索MAC地址列表后，经由内部汇聚链接，将数据帧转发给路由模块。在通过内部汇聚链路时，数据帧被附加了属于红色VLAN的VLAN识别信息(Frame 2)。</p>
+<p>　　路由模块在收到数据帧时，先由数据帧附加的VLAN识别信息分辨出它属于红色VLAN，据此判断由红色VLAN接口负责接收并进行路由处理。因为目标网络192.168.2.0/24是直连路由器的网络、且对应蓝色VLAN;因此，接下来就会从蓝色VLAN接口经由内部汇聚链路转发回交换模块。在通过汇聚链路时，这次数据帧被附加上属于蓝色VLAN的识别信息(Frame 3)。</p>
+<p>　　交换机收到这个帧后，检索蓝色VLAN的MAC地址列表，确认需要将它转发给端口3。由于端口3是通常的访问链接，因此转发前会先将VLAN识别信息去除(Frame 4)。最终，计算机C成功地收到交换机转发来的数据帧。</p>
+<p><img src="/2021/04/30/VLAN/21.png"></p>
+<p>　　整体的流程，与使用外部路由器时的情况十分相似——都需要经过“发送方→交换模块→路由模块→交换模块→接收方”。</p>
+<h2 id="加速VLAN间通信的手段"><a href="#加速VLAN间通信的手段" class="headerlink" title="加速VLAN间通信的手段"></a>加速VLAN间通信的手段</h2><p>　　1.流(Flow)</p>
+<p>　　根据到此为止的学习，我们已经知道VLAN间路由，必须经过外部的路由器或是三层交换机的内置路由模块。但是，有时并不是所有的数据都需要经过路由器(或路由模块)。</p>
+<p>　　例如，使用FTP(File Transfer Protocol)传输容量为数MB以上的较大的文件时，由于MTU的限制，IP协议会将数据分割成小块后传输、并在接收方重新组合。这些被分割的数据，“发送的目标”是完全相同的。发送目标相同，也就意味着同样的目标IP地址、目标端口号(注：特别强调一下，这里指的是TCP/UDP端口)。自然，源IP地址、源端口号也应该相同。这样一连串的数据流被称为“流”(Flow)。</p>
+<p>　　只要将流最初的数据正确地路由以后，后继的数据理应也会被同样地路由。</p>
+<p>　　据此，后继的数据不再需要路由器进行路由处理;通过省略反复进行的路由操作，可以进一步提高VLAN间路由的速度。</p>
+<p><img src="/2021/04/30/VLAN/22.png"></p>
+<p>　　2.加速VLAN间路由的机制</p>
+<p>　　接下来，让我们具体考虑一下该如何使用三层交换机进行高速VLAN间路由。</p>
+<p>　　首先，整个流的第一块数据，照常由交换机转发→路由器路由→再次由交换机转发到目标所连端口。这时，将第一块数据路由的结果记录到缓存里保存下来。需要记录的信息有：</p>
+<p>　　(1)目标IP地址</p>
+<p>　　(2)源IP地址</p>
+<p>　　(3)目标TCP/UDP端口号</p>
+<p>　　(4)源TCP/UDP端口号</p>
+<p>　　(5)接收端口号(交换机)</p>
+<p>　　(6)转发端口号(交换机)</p>
+<p>　　(7)转发目标MAC地址</p>
+<p>　　等等。</p>
+<p>　　同一个流的第二块以后的数据到达交换机后，直接通过查询先前保存在缓存中的信息查出“转发端口号”后就可以转发给目标所连端口了。</p>
+<p>　　这样一来，就不需要再一次次经由内部路由模块中继，而仅凭交换机内部的缓存信息就足以判断应该转发的端口。</p>
+<p>　　这时，交换机会对数据帧进行由路由器中继时相似的处理，例如改写MAC地址、IP包头中的TTL和Check Sum校验码信息等。</p>
+<p><img src="/2021/04/30/VLAN/23.png"></p>
+<p>　　通过在交换机上缓存路由结果，实现了以缆线速度(Wired Speed)接收发送方传输来数据的数据、并且能够全速路由、转发给接收方。</p>
+<p>　　需要注意的是，类似的加速VLAN间路由的手法多由各厂商独有的技术所实现，并且该功能的称谓也因厂商而异。例如，在Cisco的Catalyst系列交换机上，这种功能被称为“多层交换”(Multi Layer Switching)。另外，除了三层交换机的内部路由模块，外部路由器中的某些机型也支持类似的高速VLAN间路由机制。</p>
+<h2 id="VLAN间路由举例"><a href="#VLAN间路由举例" class="headerlink" title="VLAN间路由举例"></a>VLAN间路由举例</h2><h3 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h3><ul>
+<li>通过使用路由器可以实现VLAN间通信。</li>
+<li>当路由器使用多臂的方式实现VLAN间的通信时，路由器的接口资源将受到极大的挑战，当VLAN数量特别多时，采用多臂路由的方式是不具备可行性的，并且此种方式的可扩展性并不高。</li>
+<li>当路由器采用单臂的方式实现VLAN间通信时，与多臂路由相比，是一种更佳的选择，因为单臂的可扩展性更高、更经济。</li>
+<li>但是单臂路由也存在一定的短板：（1）路由器与交换机之间的链路由于需承载所有VLAN间的通信数据，因此它的负载将变得非常高，尤其是当VLAN的数量特别多、VLAN间通信的流量特别大时，这段链路将变得不堪重负。（2）单臂链路也不具备冗余性，一旦链路发生故障，VLAN之间的通信也就无法再正常进行。</li>
+<li>使用三层交换机（Layer 3 Switch）也可以实现VLAN间通信，并且能优化上述问题。</li>
+</ul>
+<h3 id="三层交换机"><a href="#三层交换机" class="headerlink" title="三层交换机"></a>三层交换机</h3><ul>
+<li>三层交换机除了能够实现二层交换机所有功能，还支持路由功能。</li>
+<li>三层交换机除了拥有二层接口外，还拥有三层接口。</li>
+<li>VLANIF （VLAN Interface）VLAN接口就是一种非常重要的三层接口，这是一种逻辑接口，物理上并不存在。</li>
+<li>在一台三层交换机上创建了一个VLAN时，就可以将交换机的物理接口(比如GE0/0/1)加入到该VLAN中，此时这些物理接口都是二层接口。与此同时，还能在交换机上配置这个VLAN对应的VLANIF，也就是这个VLAN对应的三层接口。</li>
+<li>三层接口能够与同处于这个VLAN内的设备进行二层通信。另外VLANIF作为一个三层接口，拥有路由功能，可以进行IP地址配置，而通常情况下，这个IP地址会作为VLAN中设备的默认网关地址。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>如下图所示的网络拓扑中：</p>
+<ul>
+<li>交换机拥有两个VLAN，分别是VLAN 10及VLAN20，物理接口GE0/0/1, GE0/0/2及GE0/0/3都被配置为Access类型，其中GE0/0/1及GE0/0/2接口加入了VLAN10，而GE0/0/3接口则加入了VLAN20。</li>
+<li>VLANIF 10配置了IP地址192.168.10.254, VLANIF 20则配置了IP地址192.168.20.254。</li>
+<li>各VLAN内的PC都将其默认网关地址配置为相应VLAN的VLANIF IP地址。</li>
+<li>由于交换机配置了VLAN IF接口，那么三层交换机同时拥有交换模块以及路由模块。</li>
+</ul>
+<p><img src="/2021/04/30/VLAN/%E4%B8%BE%E4%BE%8B.png"></p>
+<h3 id="在三层交换机上，同网段二层数据交换"><a href="#在三层交换机上，同网段二层数据交换" class="headerlink" title="在三层交换机上，同网段二层数据交换"></a>在三层交换机上，同网段二层数据交换</h3><p>以PC1发送一份数据给PC2为例，大致过程如下：<br>（1）PC1构造单播数据帧：</p>
+<ul>
+<li>PC1的上层协议产生的数据载荷到了网络层，数据载荷被封装IP头部，在IP头部中，源IP地址是192.168.10.1，目的IP地址是192.168.10.2。</li>
+<li>数据载荷被封装好IP头部后，数据下发到网卡，继续为其进行数据链路层封装，将其封装成以太网数据帧，该数据帧的源MAC地址为PC1的网卡MAC地址，而目的MAC地址为192.168.10.2这个IP地址对应的MAC地址。</li>
+<li>PC1查询ARP表试图寻找相应的ARP表项，初始时PC1的ARP表中并没有相应的表项，因此PCl发送一个广播的ARP Request去请求PC2的MAC地址。</li>
+</ul>
+<p>（2）交换机处理PC1发送的广播ARP Request数据帧：</p>
+<ul>
+<li>ARP Request的广播数据帧到达了交换机的GE0/0/1接口后，会被打上VLAN10的Tag。</li>
+<li>交换机通过读取数据帧头部，发现这是一个广播数据帧，此时有三个动作：<br>a.将收到的ARP Request广播数据帧在所有加入VLAN10的端口上泛洪，b.将数据帧解封装，将数据帧帧中的源Mac地址、VLAN10、GE0/0/1形成一条新的Mac地址表项c 另外交换机通过数据帧头部的“类型”字段发现该帧内封装着一个ARP报文，将数据帧解封装后上送到自己的ARP协议模块，而ARP模块发现这个ARP报文请求的是192.168.10.2这个IP地址的MAC地址，该IP地址并非自己所有，因此它直接忽略这个数据帧。</li>
+</ul>
+<p>（3）PC2处理泛洪得到的广播ARP Request数据帧：</p>
+<ul>
+<li>交换机在VLAN10内泛洪了PC1发送的ARP Request，因此PC2会收到这个数据帧，它将记录相应的ARP表项（PC1的IP地址和Mac地址），</li>
+<li>通过解析ARP Request广播数据帧，发现该报文请求的IP地址就是自己，于是会发送一个单播的ARP Reply帧进行回应。</li>
+</ul>
+<p>（4）交换机处理PC2回应的单播ARP Reply数据帧：</p>
+<ul>
+<li>交换机收到这个数据帧，解析数据帧头部，将数据帧帧中的源Mac地址、VLAN10、GE0/0/2形成一条新的Mac地址表项</li>
+<li>另外解析数据帧头部后，通过查询MAC地址表并找到目的MAC地址所关联的出接口（通过PC1发送的广播ARP Request报文学习的Mac地址表项），将数据帧从GE0/0/1接口发出。</li>
+</ul>
+<p>（5）PC1处理交换机传递的单播ARP Reply数据帧：</p>
+<ul>
+<li>PC1收到了这个ARP Reply，解析数据帧，可以获知了192.168.10.2对应的MAC地址，形成相应的ARP表项（PC2的IP地址和Mac地址）</li>
+<li>PC1获取PC2的Mac地址后，可以继续封装单播数据帧，然后将单播数据帧从网卡发出。</li>
+</ul>
+<p>（6）交换机处理PC1发送的单播数据帧：</p>
+<ul>
+<li>交换机收到这个数据帧，发现这是一个单播数据帧，于是在MAC地址表中查询目的MAC地址，找到匹配的表项后（PC2回应的ARP Reply报文学习的Mac地址表项），将该帧从GE0/0/2接口发出。</li>
+</ul>
+<p>（7）PC2处理交换机传递的单播数据帧：</p>
+<ul>
+<li>PC2收到这个数据帧后，解析以太网头部，发现目的Mac地址正是自己网卡的Mac地址，通过数据帧头部的“类型”字段发现该帧内封装着一个IP数据报</li>
+<li>将IP数据报上送IP协议栈，继续继续IP头部，发现目的IP地址也是自己网卡的IP地址，通IP数据报头部中的“协议”字段发现数据报内还封装上层应用协议的数据</li>
+<li>将上层应用协议的数据上送给上层协议模块处理数据。</li>
+</ul>
+<h3 id="在三层交换机上，跨网段三层数据交换"><a href="#在三层交换机上，跨网段三层数据交换" class="headerlink" title="在三层交换机上，跨网段三层数据交换"></a>在三层交换机上，跨网段三层数据交换</h3><p>以PC1发送一份数据给PC3为例，大致过程如下:<br>（1）PC1构造单播数据帧：</p>
+<ul>
+<li>PC1的上层协议产生的数据载荷到了网络层，数据载荷被封装IP头部，源IP地址是192.168.10.1，目的IP地址是192.168.20.1。</li>
+<li>将数据帧下送到了PC1的网卡，网卡将其封装成以太网数据帧，由于数据包的目的IP地址与本机不在相同网段（PC2可以通过将IP地址与地址掩码做 &amp;操作，确定其IP网段范围），这意味着PC1需要先把报文发送到默认网关，因此数据帧的目的MAC地址需填写网关(192.168.10.254)的MAC地址。</li>
+<li>PC1在ARP表中查询192.168.10.254，发现并没有匹配的表项，因此它发送一个广播的ARP Request试图查询网关的MAC地址。</li>
+</ul>
+<p>（2）交换机处理广播ARP Request数据帧：</p>
+<ul>
+<li>广播ARP Request数据帧到达了交换机的GE0/0/1接口，会被打上VLAN10的Tag。</li>
+<li>交换机通过读取数据帧头部，发现这是一个广播数据帧，有三个动作：<br>a. 将广播报文在加入VLAN 10的端口上进行泛洪，b.将数据帧解封装，将数据帧帧中的源Mac地址、VLAN10、GE0/0/1形成一条新的Mac地址表项c 另外交换机通过数据帧头部的“类型”字段发现该帧内封装着一个ARP报文，将数据帧解封装后上送到自己的ARP协议模块，而ARP模块发现这个ARP报文请求的是192.168.10.254这个IP地址的MAC地址，恰好VLANIF 10的IP地址就是192.168.10.254，因此它直接发送一个ARP Reply对PCI进行回应。</li>
+</ul>
+<p>（3）PC1处理收到的ARP Reply报文：</p>
+<ul>
+<li>PC1收到了这个ARP Reply，获知了192.168.10.254对应的MAC地址，因此继续封装数据帧，然后将数据帧从网卡发出。</li>
+</ul>
+<p>（4）交换机处理收到的单播数据帧：</p>
+<ul>
+<li>交换机收到这个数据帧，发现这是一个单播数据帧，而且该帧的目的MAC地址正是本机的MAC地址，因此交换机将数据帧解封装，并将里面的数据上送到IP模块进行处理（通过数据帧头部的“类型”字段可以得知数据帧封装着一个IP数据报）。</li>
+<li>IP模块读取数据包的目的IP地址后，发现目的IP地址并非本机的IP地址，于是它在路由表中查询这个地址，结果发现有一条本地直连路由匹配（最长掩码匹配原则），而该直连路由的出接口是VLANIF20，因此交换机重新将这个数据包封装成帧。</li>
+<li>新的以太网帧头中，源MAC地址填写的是交换机的MAC地址，而目的MAC则需填写192.168.20.1的MAC地址，如果交换机的ARP表中没有相关的表项，那么它需要在VLAN20中发送广播ARPRequest去请求PC3的MAC地址（此过程和1-2过程类似，不在赘述），最后将封装好的数据帧从GE0/0/3接口发出。</li>
+</ul>
+<p>（5）PC3处理交换机传递的单播数据帧：</p>
+<ul>
+<li>PC3收到这个数据帧后，解析以太网帧头部，发现目的Mac地址正是自己网卡的Mac地址，通过数据帧头部的“类型”字段发现该帧内封装着一个IP数据报</li>
+<li>将IP数据报上送IP协议栈，继续继续IP头部，发现目的IP地址也是自己网卡的IP地址，通IP数据报头部中的“协议”字段发现数据报内还封装上层应用协议的数据</li>
+<li>将上层应用协议的数据上送给上层协议模块处理数据。</li>
+</ul>
+<h2 id="传统型路由器存在的意义"><a href="#传统型路由器存在的意义" class="headerlink" title="传统型路由器存在的意义"></a>传统型路由器存在的意义</h2><p>　　1.路由器的必要性</p>
+<p>　　三层交换机的价格，在问世之初非常昂贵，但是现在它们的价格已经下降了许多。目前国外一些廉价机型的售价，折合成人民币后仅为一万多元，而且还在继续下降中。</p>
+<p>　　既然三层交换机能够提供比传统型路由器更为高速的路由处理，那么网络中还有使用路由器的必要吗?</p>
+<p>　　答案是：“是”。</p>
+<p>　　使用路由器的必要性，主要表现在以下几个方面：</p>
+<p>　　(1)用于与WAN连接</p>
+<p>　　三层交换机终究是“交换机”。也就是说，绝大多数机型只配有LAN(以太网)接口。在少数高端交换机上也有用于连接WAN的串行接口或是ATM接口，但在大多数情况下，连接WAN还是需要用到路由器。</p>
+<p>　　(2)保证网络安全</p>
+<p>　　在三层交换机上，通过数据包过滤也能确保一定程度的网络安全。但是使用路由器所提供的各种网络安全功能，用户可以构建更为安全可靠的网络。</p>
+<p>　　路由器提供的网络安全功能中，除了最基本的数据包过滤功能外，还能基于IPSec构建VPN(VirtualPrivate Network)、利用RADIUS进行用户认证等等。</p>
+<p>　　(3)支持除TCP/IP以外的异构网络架构</p>
+<p>　　尽管TCP/IP已经成为当前网络协议架构的主流，但还有不少网络利用Novell Netware下的IPX/SPX或Macintosh下的AppleTalk等网络协议。三层交换机中，除了部分高端机型外基本上还只支持TCP/IP。因此，在需要使用除TCP/IP之外其他网络协议的环境下，路由器还是必不可少的。</p>
+<p>　　注：在少数高端交换机上，也能支持上述路由器的功能。例如Cisco的Catalyst 6500系列，就可以选择与WAN连接的接口模块;还有可选的基于IPSec实现VPN的模块;并且也能支持TCP/IP以外的其他网络协议。</p>
+<p>　　2.路由器和交换机配合构建LAN的实例</p>
+<p>　　下面让我们来看一个路由器和交换机搭配构建LAN的实例。</p>
+<p><img src="/2021/04/30/VLAN/24.png"></p>
+<p>　　利用在各楼层配置的二层交换机定义VLAN，连接TCP/IP客户计算机。各楼层间的VLAN间通信，利用三层交换机的高速路由加以实现。如果网络环境要求高可靠性，还可以考虑冗余配置三层交换机。</p>
+<p>　　与WAN的连接，则通过带有各种网络接口的路由器进行。并且，通过路由器的数据包过滤和VPN等功能实现网络安全。此外，使用路由器还能支持Novell Netware等TCP/IP之外的网络。</p>
+<p>　　只有在充分掌握了二层、三层交换机以及传统路由器的基础上，才能做到物竞其用，构筑出高效率、高性价比的网络。</p>
+<h2 id="使用VLAN设计局域网"><a href="#使用VLAN设计局域网" class="headerlink" title="使用VLAN设计局域网"></a>使用VLAN设计局域网</h2><p>　　1.使用VLAN设计局域网的特点</p>
+<p>　　通过使用VLAN构建局域网，用户能够不受物理链路的限制而自由地分割广播域。</p>
+<p>　　另外，通过先前提到的路由器与三层交换机提供的VLAN间路由，能够适应灵活多变的网络构成。</p>
+<p>　　但是，由于利用VLAN容易导致网络构成复杂化，因此也会造成整个网络的组成难以把握。</p>
+<p>　　可以这样说，在利用VLAN时，除了有“网络构成灵活多变”这个优点外，还搭配着“网络构成复杂化”这个缺点。</p>
+<p>　　下面，就让我们来看看具体的实例。</p>
+<p>　　2.不使用VLAN的局域网中网络构成的改变</p>
+<p>　　假设有如图所示的由1台路由器、2台交换机构成的“不使用VLAN构建”的网络。</p>
+<p><img src="/2021/04/30/VLAN/25.png"></p>
+<p>　　图中的路由器，带有2个LAN接口。左侧的网络是192.168.1.0/24，右侧是192.168.2.0/24。</p>
+<p>　　现在如果想将192.168.1.0/24这个网络上的计算机A转移到192.168.2.0/24上去，就需要改变物理连接、将A接到右侧的交换机上。</p>
+<p>　　并且，当需要新增一个地址为192.168.3.0/24的网络时，还要在路由器上再占用一个LAN接口并添置一台交换机。而由于这台路由器上只带了2个LAN接口，因此为了新增网络还必须将路由器升级为带有3个以上LAN接口的产品。</p>
+<p>　　3.使用VLAN的局域网中网络构成的改变</p>
+<p>　　接下来再假设有一个由1台路由器、2台交换机构成的“使用VLAN”的局域网。交换机与交换机、交换机与路由器之间均为汇聚链路;并且假设192.168.1.0/24对应红色VLAN、192.168.2.0/24对应蓝色VLAN。</p>
+<p><img src="/2021/04/30/VLAN/26.png"></p>
+<p>　　需要将连接在交换机1上192.168.1.0/24这个网段的计算机A转属192.168.2.0/24时，无需更改物理布线。只要在交换机上生成蓝色VLAN，然后将计算机A所连的端口1加入到蓝色VLAN中去，使它成为访问链接即可。</p>
+<p>　　然后，根据需要设定计算机A的IP地址、默认网关等信息就可以了。如果IP地址相关的设定是由DHCP获取的，那么在客户机方面无需进行任何设定修改，就可以在不同网段间移动。</p>
+<p>　　利用VLAN后，我们可以在免于改动任何物理布线的前提下，自由进行网络的逻辑设计。如果所处的工作环境恰恰需要经常改变网络布局，那么利用VLAN的优势就非常明显了。</p>
+<p>　　并且，当需要新增一个地址为192.168.3.0/24的网段时，也只需要在交换机上新建一个对应192.168.3.0/24的VLAN，并将所需的端口加入它的访问链路就可以了。</p>
+<p>　　如果网络环境中还需要利用外部路由器，则只要在路由器的汇聚端口上新增一个子接口的设定就可以完成全部操作，而不需要消耗更多的物理接口(LAN接口)。要使用的是三层交换机内部的路由模块，则只需要新设一个VLAN接口即可。</p>
+<p>　　网络环境的成长，往往是难以预测的，很可能经常会出现需要分割现有网络或是增加新网络的情况。而充分活用VLAN后，就可以轻易地解决这些问题。</p>
+<p>　　4.利用VLAN而导致的网络结构复杂化</p>
+<p>　　虽然利用VLAN可以灵活地构建网络，但是同时，它也带来了网络结构复杂化的问题。</p>
+<p>　　特别是由于数据流纵横交错，一旦发生故障时，准确定位并排除故障会比较困难。</p>
+<p>　　为了便于理解数据流向的复杂化，假设有下图所示的网络。计算机A向计算机C发送数据时，数据流的整体走向如下：</p>
+<p>　　计算机A→交换机1→路由器→交换机1→交换机2→计算机C</p>
+<p><img src="/2021/04/30/VLAN/27.png"></p>
+<p><img src="/2021/04/30/VLAN/28.png"></p>
+<p>　　首先计算机A向交换机1送出数据(①)，其后数据被转发给路由器(②)进行VLAN间路由。路由后的数据，再从汇聚链路返回交换机1(③)。由于通信目标计算机C并不直连在交换机1上，因此还需要经过汇聚链路转发到交换机2(④)。在交换机2上，数据最终被转发到C所连的端口2上，这才完成整个流程(⑤)。</p>
+<p>　　在这个例子中，仅由2台交换机构成网络，其数据流已经如此复杂，如果构建横跨多台交换机的VLAN的话，每个数据流的流向显然会更加难以把握。</p>
+<p>　　5. 网络的逻辑结构与物理结构</p>
+<p>　　为了对应日渐复杂化的数据流，管理员需要从“逻辑结构”与“物理结构”两方面入手，把握好网络的现状。</p>
+<p>　　物理结构，指的是从物理层和数据链路层观察到的网络的现状，表示了网络的物理布线形态和VLAN的设定等等。</p>
+<p>　　而逻辑结构，则表示从网络层以上的层面观察到的网络结构。下面我们就试着以路由器为中心分析一个IP网络的逻辑结构。</p>
+<p>　　还是先前的那个例子，描绘了布线形态和VLAN设定的“物理结构”如下图所示。</p>
+<p><img src="/2021/04/30/VLAN/29.png"></p>
+<p>　　分析这个物理结构并转换成以路由器为中心的逻辑结构后，会得到如下的逻辑结构图。当我们需要进行路由或是数据包过滤的设定时，都必须在逻辑结构的基础上进行。</p>
+<p><img src="/2021/04/30/VLAN/30.png"></p>
+<p>　　把握这两种网络结构图的区别是十分重要的，特别是在VLAN和三层交换机大行其道的现代企业级网络当中。</p>
+<h2 id="VLAN以太网二层接口类型"><a href="#VLAN以太网二层接口类型" class="headerlink" title="VLAN以太网二层接口类型"></a>VLAN以太网二层接口类型</h2><h3 id="Access接口"><a href="#Access接口" class="headerlink" title="Access接口"></a>Access接口</h3><p>接收数据帧</p>
+<ul>
+<li>Untagged数据帧,打上PVID，接收。</li>
+<li>Tagged数据帧，与PVID比较，相同则接收;不同则丢弃。</li>
+</ul>
+<p>发送数据帧</p>
+<ul>
+<li>VID与PVID比较，相同则剥离标签发送;不同则丢弃。</li>
+</ul>
+<p><img src="/2021/04/30/VLAN/Aceess.png"></p>
+<h3 id="Trunk接口"><a href="#Trunk接口" class="headerlink" title="Trunk接口"></a>Trunk接口</h3><p>接收数据帧</p>
+<ul>
+<li>Untagged数据帧，打上PVID，且VID在允许列表中，则接收;VID不在允许列表,则丢弃。</li>
+<li>Tagged数据帧，查看VID是否在允许列表中，在允许列表中，则接收;VID不在允许列表，则丢弃。</li>
+</ul>
+<p>发送数据帧</p>
+<ul>
+<li>VID在允许列表中，且VID与PVID一致，则剥离标签发送。</li>
+<li>VID在允许列表，但VID与PVID不一致，则直接带标签发送。</li>
+<li>不在允许列表中，则直接丢弃。</li>
+</ul>
+<p><img src="/2021/04/30/VLAN/Trunk.png"></p>
+<h3 id="Hybrid接口-前两者混合接口"><a href="#Hybrid接口-前两者混合接口" class="headerlink" title="Hybrid接口(前两者混合接口)"></a>Hybrid接口(前两者混合接口)</h3><p>接收数据帧</p>
+<ul>
+<li>Untagged数据帧，打上PVID，且VID在允许列表中，则接收;VID不在允许列表中，则丢弃。</li>
+<li>Tagged数据帧,查看VID是否在允许列表中，在允许列表中，则接收;VID不在允许列表，则丢弃。</li>
+</ul>
+<p>发送数据帧</p>
+<ul>
+<li>VID不在允许列表中，直接丢弃。</li>
+<li>VID在Untagged列表中，剥离标签发送。</li>
+<li>VID在Tagged列表中，带标签直接发送。</li>
+</ul>
+<p><img src="/2021/04/30/VLAN/Hybrid.png"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="/2021/04/30/VLAN/31.png"></p>
+<h2 id="VLAN基础配置命令"><a href="#VLAN基础配置命令" class="headerlink" title="VLAN基础配置命令"></a>VLAN基础配置命令</h2><p>1.创建VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] vlan vlan-id</span><br></pre></td></tr></table></figure>
+<p>通过此命令创建VLAN并进入VLAN视图，如果VLAN已存在，直接进入该VLAN的视图。</p>
+<p>vlan-id是整数形式，取值范围是1~4094。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] vlan batch &#123; vlan-id1 [ to vlan-id2 ] &#125;</span><br></pre></td></tr></table></figure>
+<p>通过此命令批量创建VLAN。其中:</p>
+<ul>
+<li>batch:指定批量创建的VLAN ID。</li>
+<li>vlan-id1:表示第一个VLAN的编号。</li>
+<li>vlan-id2:表示最后一个VLAN的编号。</li>
+</ul>
+<h3 id="Access接口配置命令"><a href="#Access接口配置命令" class="headerlink" title="Access接口配置命令"></a>Access接口配置命令</h3><p>1.配置接口类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port link-type access</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置接口的链路类型为Access。<br>2.配置Access接口的缺省VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port default vlan vlan-id</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置接口的缺省VLAN并同时加入这个VLAN。</p>
+<ul>
+<li>vlan-id:配置缺省VLAN的编号。整数形式，取值范围是1~4094。</li>
+</ul>
+<h3 id="Trunk接口配置命令"><a href="#Trunk接口配置命令" class="headerlink" title="Trunk接口配置命令"></a>Trunk接口配置命令</h3><p>1.配置接口类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port link-type trunk</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置接口的链路类型为Trunk。<br>2.配置Trunk接口加入指定VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port trunk allow-pass vlan &#123; &#123; vlan-id1 [ to vlan-id2 ] &#125;| all &#125;</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置Trunk类型接口加入的VLAN。<br>3.(可选)配置Trunk接口的缺省VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port trunk pvid vlan vlan-id</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置Trunk类型接口的缺省VLAN。</p>
+<h3 id="Hybrid接口配置命令"><a href="#Hybrid接口配置命令" class="headerlink" title="Hybrid接口配置命令"></a>Hybrid接口配置命令</h3><p>1.配置接口类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] port link-type hybrid</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置接口的链路类型为Hybrid。<br>2.配置Hybrid接口加入指定VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port hybrid untagged vlan &#123; &#123; vlan-id1 [ to vlan-id2 ] &#125; | all &#125;</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置Hybrid类型接口加入的VLAN，这些VLAN的帧以Untagged方式通过接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port hybrid tagged vlan &#123; &#123; vlan-id1 [ to vlan-id2] &#125; | all &#125;</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置Hybrid类型接口加入的VLAN，这些VLAN的帧以Tagged方式通过接口。<br>3.(可选)配置Hybrid接口的缺省VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Huawei-GigabitEthernet0&#x2F;0&#x2F;1] port hybrid pvid vlan vlan-id</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，配置Hybrid类型接口的缺省VLAN。</p>
+<h3 id="基于MAC地址划分VLAN配置命令"><a href="#基于MAC地址划分VLAN配置命令" class="headerlink" title="基于MAC地址划分VLAN配置命令"></a>基于MAC地址划分VLAN配置命令</h3><p>1.关联MAC地址与VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-vlan10] mac-vlan mac-address mac-address [ mac-address-mask | mac-address-mask-length ]</span><br></pre></td></tr></table></figure>
+<p>通过此命令配置MAC地址与VLAN关联。</p>
+<ul>
+<li>mac-address:指定与VLAN关联的MAC地址。格式为H-H-H。其中H为4位的十六进制数，可以输入1~4位，如00e0、fcO1。当输入不足4位时，表示前面的几位为0，如:输入e0，等同于O0e0。MAC地址不可设置为O000-0000-0000、FFFF-FFFF-FFFF和组播地址。</li>
+<li>mac-address-mask:指定MAC地址掩码。格式为H-H-H，其中H为1至4位的十六进制数。</li>
+<li> mac-address-mask-length:指定MAC地址掩码长度。整数形式，取值范围是1~48。</li>
+</ul>
+<p>2.使能MAC地址与VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] mac-vlan enable</span><br></pre></td></tr></table></figure>
+<p>通过此命令使能接口的MAC VLAN功能。</p>
+<h2 id="VLAN间路由子接口配置命令"><a href="#VLAN间路由子接口配置命令" class="headerlink" title="VLAN间路由子接口配置命令"></a>VLAN间路由子接口配置命令</h2><p><img src="/2021/04/30/VLAN/%E5%AD%90%E6%8E%A5%E5%8F%A3.png"></p>
+<h2 id="VLANIF接口接口配置"><a href="#VLANIF接口接口配置" class="headerlink" title="VLANIF接口接口配置"></a>VLANIF接口接口配置</h2><p><img src="/2021/04/30/VLAN/VLANIF.png"></p>
+<h2 id="二层接口和三层接口对比"><a href="#二层接口和三层接口对比" class="headerlink" title="二层接口和三层接口对比"></a>二层接口和三层接口对比</h2><table>
+<thead>
+<tr>
+<th>二层接口(Layer2 Interface )</th>
+<th>三层接口(Layer3 Interface )</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>二层接口不能配置IP地址</td>
+<td>三层接口可以配置IP地址</td>
+</tr>
+<tr>
+<td>二层接口不具备MAC地址</td>
+<td>三层接口具备MAC地址</td>
+</tr>
+<tr>
+<td>当二层接口收到数据帧时，设备在其MAC地址表中查询该帧的目的MAC地址，找到匹配的MAC地址表项后按照该表项的指示转发帧;如果没有找到匹配的MAC地址表项，则将帧进行泛洪。</td>
+<td>三层接口收到数据帧后，如果数据帧的目的MAC地址与设备的本地MAC地址相同，则将数据帧解除封装，然后在路由表中查询数据包的目的IP地址，找到匹配的路由表项后按照该表项的指示转发包;如果没有找到匹配的表项，则将包丢弃。</td>
+</tr>
+<tr>
+<td>典型的二层接口如二层交换机（只具备二层交换能力的交换机)的物理接口;大部分三层交换机（同时具备二层及三层交换能力的交换机）的物理接口缺省为二层接口。</td>
+<td>典型的三层接口如路由器的三层接口。某些三层交换机的物理接口可以切换成三层模式。此外除了物理三层接口，还存在逻辑三层接口，例如交换机的VLANIF，或者网络设备上的逻辑子接口，如GEO/0/1.10。</td>
+</tr>
+<tr>
+<td>二层接口并不隔离广播域，当二层接口收到广播帧时，会将数据帧进行泛洪。</td>
+<td>三层接口隔离广播域，当三层接口收到广播帧时，缺省不会进行泛洪，而是直接终结。</td>
+</tr>
+</tbody></table>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/" itemprop="url">网络管理与运维</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-29T18:24:58+08:00">
+                2021-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="网络管理与运维"><a href="#网络管理与运维" class="headerlink" title="网络管理与运维"></a>网络管理与运维</h2><h3 id="什么是网络管理？"><a href="#什么是网络管理？" class="headerlink" title="什么是网络管理？"></a>什么是网络管理？</h3><p>网络管理是通过对网络中设备的管理，保证设备工作正常，使通信网络正常地运行，以提供高效、可靠和安全的通信服务，是通信网络生命周期中的重要一环。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86.png"></p>
+<h3 id="网络管理基本功能"><a href="#网络管理基本功能" class="headerlink" title="网络管理基本功能"></a>网络管理基本功能</h3><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD.png"></p>
+<p>OSI定义了网络管理的五大功能模型:</p>
+<ul>
+<li><p>配置管理(Configuration Management )∶配置管理负责监控网络的配置信息，使网络管理人员可以生成、查询和修改硬件、软件的运行参数和条件，并可以进行相关业务的配置。</p>
+</li>
+<li><p>性能管理（ Performance Management )︰性能管理以网络性能为准则，保证在使用较少网络资源和具有较小<br>时延的前提下，网络能够提供可靠、连续的通信能力。</p>
+</li>
+<li><p>故障管理(（ Fault Management)︰故障管理的主要目标是确保网络始终可用，并在发生故障时尽快将其修复。</p>
+</li>
+<li><p>安全管理( Security Management ):安全管理可以保护网络和系统免受未经授权的访问和安全攻击。</p>
+</li>
+<li><p>计费管理(Accounting Management):记录用户使用网络资源的情况并核收费用，同时也统计网络的利用率。</p>
+</li>
+</ul>
+<h3 id="网络管理方式"><a href="#网络管理方式" class="headerlink" title="网络管理方式"></a>网络管理方式</h3><p>网络管理方式分为传统网络管理与和基于iMaster NCE的网络管理。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F.png"></p>
+<h2 id="传统网络管理"><a href="#传统网络管理" class="headerlink" title="传统网络管理"></a>传统网络管理</h2><h3 id="通过CLI或Web进行管理"><a href="#通过CLI或Web进行管理" class="headerlink" title="通过CLI或Web进行管理"></a>通过CLI或Web进行管理</h3><p>当网络规模较小时，CLI和Web方式是常见的网络管理方式。</p>
+<ul>
+<li>网络管理员可以通过HTTPS、Telnet、Console等方式登录设备后，对设备逐一进行管理。</li>
+<li>这种管理方式不需要在网络中安装任何程序或部署服务器，成本较低。</li>
+<li>网络管理员自身需要熟练掌握网络理论知识、各设备厂商网络配置命令。</li>
+<li>当网络规模较大，网络拓扑较为复杂时，这种方式的局限性较大。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%B8%80%E5%AF%B9%E4%B8%80.png"></p>
+<h3 id="基于SNMP的集中式管理"><a href="#基于SNMP的集中式管理" class="headerlink" title="基于SNMP的集中式管理"></a>基于SNMP的集中式管理</h3><p>SNMP ( Simple Network Management Protocol，简单网络管理协议）是广泛用于TCP/IP网络的网络管理标准协议，传输层使用UDP协议，提供了一种通过运行网络管理软件的中心计算机，即NMS ( Network Management Station，网络管理工作站）来管理网元的方法。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%B8%80%E5%AF%B9%E5%A4%9A.png"></p>
+<h3 id="SNMP典型架构"><a href="#SNMP典型架构" class="headerlink" title="SNMP典型架构"></a>SNMP典型架构</h3><ul>
+<li>在基于SNMP进行管理的网络中，NMS是整个网络的网管中心，在它之上运行管理进程。每个被管理设备需要运行代理(Agent )进程。管理进程和代理进程利用SNMP报文进行通信。</li>
+<li>NMS是一个采用SNMP协议对网络设备进行管理/监控的系统，运行在NMS服务器上。</li>
+<li>被管理设备是网络中接受NMS管理的设备。</li>
+<li>代理进程运行于被管理设备上，用于维护被管理设备的信息数据并响应来自NMS的请求，把管理数据汇报给发送请求的NMS。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84.png"></p>
+<h3 id="SNMP的信息交互"><a href="#SNMP的信息交互" class="headerlink" title="SNMP的信息交互"></a>SNMP的信息交互</h3><ul>
+<li>NMS和被管理设备的信息交互分为两种:<ol>
+<li>NMS通过SNMP协议给被管理设备发送修改配置信息请求或<br>查询配置信息请求。被管理设备上运行的代理进程根据NMS的请求消息做出响应。</li>
+<li>被管理设备可以主动向NMS上报告警信息( Trap )以便网络管理员及时发现故障。</li>
+</ol>
+</li>
+<li>被管理对象(Managed object ) :每一个设备可能包含多个被管理对象，被管理对象可以是设备中的某个硬件，也可以是在硬件、软件（如路由选择协议）上配置的参数集合。</li>
+<li>SNMP规定通过MIB ( Management Information Base,管理信息库）去描述可管理实体的一组对象。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E4%BF%A1%E6%81%AF%E4%BA%A4%E4%BA%92.png"></p>
+<h3 id="MIB"><a href="#MIB" class="headerlink" title="MIB"></a>MIB</h3><ul>
+<li>MIB是一个数据库，指明了被管理设备所维护的变量（即能够被代理进程查询和设置的信息）。MIB在数据库中定义了被管理设备的一系列属性:<ul>
+<li>对象标识符(Object IDentifier，OID )</li>
+<li>对象的状态</li>
+<li>对象的访问权限</li>
+<li>对象的数据类型等</li>
+</ul>
+</li>
+<li>MIB给出了一个数据结构，包含了网络中所有可能的被管理对象的集合。因为数据结构与树相似，MIB又被称为对象命名树。</li>
+</ul>
+<h3 id="常见MIB节点"><a href="#常见MIB节点" class="headerlink" title="常见MIB节点"></a>常见MIB节点</h3><ul>
+<li>用于查询或修改的节点:</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E6%9F%A5%E8%AF%A2.png"></p>
+<ul>
+<li>用于告警通知的节点：</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E5%91%8A%E8%AD%A6.png"></p>
+<h3 id="SNMP管理模型"><a href="#SNMP管理模型" class="headerlink" title="SNMP管理模型"></a>SNMP管理模型</h3><p>查询/修改操作:</p>
+<ul>
+<li>NMS作为管理者，向代理进程发送SNMP请求报文。</li>
+<li>代理进程通过设备端的MIB找到所要查询或修改的信息，<br>向NMS发送SNMP响应报文。</li>
+</ul>
+<p>告警操作:</p>
+<ul>
+<li>口设备端的模块由于达到模块定义的告警触发条件，通过<br>代理进程向NMS发送消息，告知设备侧出现的情况，这样便于网络管理人员及时对网络中出现的情况进行处理。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E7%AE%A1%E7%90%86%E6%A8%A1%E5%9E%8B.png"></p>
+<h3 id="SNMP版本"><a href="#SNMP版本" class="headerlink" title="SNMP版本"></a>SNMP版本</h3><h4 id="SNMPv1"><a href="#SNMPv1" class="headerlink" title="SNMPv1"></a>SNMPv1</h4><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v1.png"></p>
+<h4 id="SNMPv2"><a href="#SNMPv2" class="headerlink" title="SNMPv2"></a>SNMPv2</h4><ul>
+<li><p>对SNMPv1版本报文类型进行优化，GetBulk报文进行打包操作。</p>
+</li>
+<li><p>SNMP使用UDP传输，可能造成丢包情况，因此收到告警信息后必须回复一个确认，否则一只发送告警信息。</p>
+</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v2.png"></p>
+<h4 id="SNMPv3"><a href="#SNMPv3" class="headerlink" title="SNMPv3"></a>SNMPv3</h4><ul>
+<li>SNMPv3与SNMPv1和SNMPv2c的工作机制基本一致但添加了</li>
+<li>报头数据和安全参数。SNMPv3报文具有身份验证和加密处理的功能。</li>
+<li>SNMPv3适用于各种规模的网络，安全性极高。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/v3.png"></p>
+<h3 id="SNMP小结"><a href="#SNMP小结" class="headerlink" title="SNMP小结"></a>SNMP小结</h3><ul>
+<li><p>SNMP的特点如下∶<br>1.简单:SNMP采用轮询机制，提供基本的功能集，适合快速、低价格的场景使用，而且SNMP以UDP报文为承载，因而得到绝大多数设备的支持。</p>
+<p>2.强大:SNMP的目标是保证管理信息在任意两点传送，便于管理员在网络上的任何节点检索信息，进行故障排查。</p>
+</li>
+<li><p>SNMPv1版本适用于小型网络。组网简单、安全性要求不高或网络环境比较安全且比较稳定的网络，比如校园网，小型企业网。</p>
+</li>
+<li><p>SNMPv2c版本适用于大中型网络。安全性要求不高或者网络环境比较安全，但业务比较繁忙，有可能发生流量拥塞的网络。</p>
+</li>
+<li><p>SNMPv3版本作为推荐版本，适用于各种规模的网络。尤其是对安全性要求较高，只有合法的管<br>理员才能对网络设备进行管理的网络。</p>
+</li>
+</ul>
+<h3 id="SNMP基础配置"><a href="#SNMP基础配置" class="headerlink" title="SNMP基础配置"></a>SNMP基础配置</h3><p>1.使能SNMP代理功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent</span><br></pre></td></tr></table></figure>
+<p>2.配置SNMP的版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent sys-info version [v1 | v2c | v3]</span><br></pre></td></tr></table></figure>
+<p>用户可以根据自己的需求配置对应的SNMP版本，但设备侧使用的协议版本必须与网管侧一致。<br>3.创建或者更新MIB视图的信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent mib-view view-name &#123; exclude | include &#125; subtree-name [mask mask]</span><br></pre></td></tr></table></figure>
+<p>4.增加一个新的SNMP组，将该组用户映射到SNMP视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent group v3 group-name &#123; authentication | noauth | privacy ]&#125; [ read-view view-name|write-view view-name | notify-view view-name ]</span><br></pre></td></tr></table></figure>
+<p>该命令用于SNMPv3版本中创建SNMP组，指定认证加密方式、只读视图、读写视图、通知视图。是安全性需求较高的网管网络中的必需指令。<br>5.为一个SNMP组添加一个新用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent usm-user v3 user-name group group-name</span><br></pre></td></tr></table></figure>
+<p>6.配置SNMPv3用户认证密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent usm-user v3 user-name authentication-mode &#123; md5 I sha l sha2-256 &#125;</span><br></pre></td></tr></table></figure>
+<p>7.配置SNMPv3用户加密密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent usm-user v3 user-name privacy-mode &#123; aes128 | des56 &#125;</span><br></pre></td></tr></table></figure>
+<p>8.配置设备发送Trap报文的参数信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent target-host trap-paramsname paramsname v3 securityname securityname&#123; authentication | noauthnopriv \ privacy &#125;</span><br></pre></td></tr></table></figure>
+<p>9.配置Trap报文的目的主机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent target-host trap-hostname hostname address ipv4-address trap-paramsname paramsname</span><br></pre></td></tr></table></figure>
+<p>10．打开设备的所有告警开关</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent trap enable</span><br></pre></td></tr></table></figure>
+<p>注意该命令只是打开设备发送Trap告警的功能，要与snmp-agent target-host协同使用，由snmp-agent target-host指定Trap告警发送给哪台设备。<br>11．配置发送告警的源接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] snmp-agent trap source interface-type interface-number</span><br></pre></td></tr></table></figure>
+<p>注意Trap告警无论从哪个接口发出都必须有一个发送的源地址，因此源接口必须是已经配置了IP地址的接口。</p>
+<h3 id="SNMP配置举例（网络设备侧）"><a href="#SNMP配置举例（网络设备侧）" class="headerlink" title="SNMP配置举例（网络设备侧）"></a>SNMP配置举例（网络设备侧）</h3><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E9%85%8D%E7%BD%AE1.png"></p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/SNMP%E9%85%8D%E7%BD%AE2.png"></p>
+<h2 id="基于华为iMaster-NCE的网络管理"><a href="#基于华为iMaster-NCE的网络管理" class="headerlink" title="基于华为iMaster NCE的网络管理"></a>基于华为iMaster NCE的网络管理</h2><h3 id="网络产业的变革与挑战"><a href="#网络产业的变革与挑战" class="headerlink" title="网络产业的变革与挑战"></a>网络产业的变革与挑战</h3><ul>
+<li>伴随5G和云时代的到来，VR/AR、直播、无人驾驶等各类创新性业务大量涌现，整个ICT产业迸发出蓬勃生机。与此同时，整个网络的流量也呈现出爆炸式增长，华为GIV ( Global Industry Vision，全球产业展望)预计，2025年新增的数据量将达到180 ZB。业务的动态复杂性也使得整个网络复杂度不断攀升。</li>
+<li>整体来看，这些问题的源头都指向了现有的网络系统，只有通过构建自动化、智能化的以用户体验为中心的网络系统才能有效应对。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E8%B0%83%E6%95%B4.png"></p>
+<h3 id="华为iMaster-NCE"><a href="#华为iMaster-NCE" class="headerlink" title="华为iMaster NCE"></a>华为iMaster NCE</h3><p>华为iMaster NCE是一款集管理、控制、分析和Al智能功能于一体的网络自动化与智能化平台。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/NCE.png"></p>
+<h3 id="NETCONF简介"><a href="#NETCONF简介" class="headerlink" title="NETCONF简介"></a>NETCONF简介</h3><p>NETCONF ( Network Configuration Protocol，网络配置协议），提供一套管理网络设备的机制。用户可以使用这套机制增加、修改、删除网络设备的配置，获取网络设备的配置和状态信息。</p>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/NETCONF.png"></p>
+<h3 id="NETCONF的优势"><a href="#NETCONF的优势" class="headerlink" title="NETCONF的优势"></a>NETCONF的优势</h3><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>NETCONF</th>
+<th>SNMP</th>
+<th>CLI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>接口类型</td>
+<td>机机接口:接口定义完善、规范、标准，便于接口控制和使用。</td>
+<td>机机接口</td>
+<td>人机接口</td>
+</tr>
+<tr>
+<td>操作效率</td>
+<td>高:基于对象建模，对象操作一次交互即可，支持过滤、批量等操作。</td>
+<td>中</td>
+<td>低</td>
+</tr>
+<tr>
+<td>扩展能力</td>
+<td>可以扩展协议私有能力。</td>
+<td>弱</td>
+<td>一般</td>
+</tr>
+<tr>
+<td>事务处理</td>
+<td>支持:试运行、出错回滚、配置回退等事务处理机制。</td>
+<td>不支持</td>
+<td>部分支持</td>
+</tr>
+<tr>
+<td>安全传输</td>
+<td>多种安全协议:SSH，TLS，BEEP/TLS,SOAP/HTTP/TLS</td>
+<td>仅SNMPv3支持</td>
+<td>支持SSH</td>
+</tr>
+</tbody></table>
+<h3 id="一次典型NETCONF交互"><a href="#一次典型NETCONF交互" class="headerlink" title="一次典型NETCONF交互"></a>一次典型NETCONF交互</h3><p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/%E4%BA%A4%E4%BA%92.png"></p>
+<h3 id="YANG语言概述"><a href="#YANG语言概述" class="headerlink" title="YANG语言概述"></a>YANG语言概述</h3><ul>
+<li>YANG ( Yet Another Next Generation )是一种数据建模语言，实现了NETCONF数据内容的标准化。</li>
+<li>YANG模型定义了数据的层次化结构，可用于基于NETCONF的操作。建模对象包括配置、状态数据、远程过程调用和通知。它可以对NETCONF客户端和服务器端之间发送的所有数据进行一个完整的描述。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG.png"></p>
+<h3 id="YANG与XLM"><a href="#YANG与XLM" class="headerlink" title="YANG与XLM"></a>YANG与XLM</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><ul>
+<li>在NETCONF客户端（例如网管平台/SDN控制器）加载YANG文件。</li>
+<li>通过YANG文件将数据转换为XML格式的NETCONF消息发送到设备。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG%E4%B8%8EXML.png"></p>
+<h4 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h4><ul>
+<li>在NETCONF服务器（例如路由器/交换机等）加载YANG文件</li>
+<li>通过YANG文件将接收到的XML格式的NETCONF消息转换为数据并做后续处理。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/YANG%E4%B8%8EXML1.png"></p>
+<h3 id="Telemetry基本概述"><a href="#Telemetry基本概述" class="headerlink" title="Telemetry基本概述"></a>Telemetry基本概述</h3><ul>
+<li>Telemetry也作Network Telemetry，即网络遥测技术，是一项远程地从物理设备或虚拟设备上高速采集数据的技术。</li>
+<li>设备通过推模式 ( Push Mode)周期性地主动向采集器上送设备的接口流量统计、CPU或内存数据等信息，相对传统拉模式(Pull Mode )的一问一答式交互，提供了更实时更高速的数据采集功能。</li>
+</ul>
+<p><img src="/2021/04/29/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E4%B8%8E%E8%BF%90%E7%BB%B4/Telemetry.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/NAT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1635,1785 +3316,11 @@ Group ID:组播组ID。
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/" itemprop="url">以太网链路聚合与交换机堆叠、集群</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-25T19:02:07+08:00">
-                2021-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="网络可靠性的需求"><a href="#网络可靠性的需求" class="headerlink" title="网络可靠性的需求"></a>网络可靠性的需求</h2><p>网络的可靠性指当设备或者链路出现单点或者多点故障时保证网络服务不间断的能力。</p>
-<p>网络的可靠性可以从单板、设备、链路多个层面实现。</p>
-<h3 id="单板可靠性"><a href="#单板可靠性" class="headerlink" title="单板可靠性"></a>单板可靠性</h3><ul>
-<li>框式交换机由机框、电源模块、风扇模块、主控板(MPU)、交换网板( SFU)、线路板(LPU)构成。</li>
-<li>以S1270OE-8为例，设备提供8个线路板槽位、4个交换网板槽位、2个主控板槽位、6个电源模块槽位、4个风扇模块槽位。</li>
-<li>框式交换机配置多个主控板、交换网板可保证设备自身的可靠性，单个槽位的交换网板、主控板损坏不影响设备的正常运行。</li>
-<li>框式交换机的线路板损坏后，该板卡上的接口无法正常转发数据。</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E5%8D%95%E6%9D%BF%E5%8F%AF%E9%9D%A0%E6%80%A7.png" alt="单板可靠性"></p>
-<h3 id="设备可靠性"><a href="#设备可靠性" class="headerlink" title="设备可靠性"></a>设备可靠性</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E8%AE%BE%E5%A4%87%E5%8F%AF%E9%9D%A0%E6%80%A7.png" alt="设备可靠性"></p>
-<h3 id="链路可靠性"><a href="#链路可靠性" class="headerlink" title="链路可靠性"></a>链路可靠性</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E9%93%BE%E8%B7%AF%E5%8F%AF%E9%9D%A0%E6%80%A7.png" alt="链路可靠性"></p>
-<h2 id="链路聚合技术"><a href="#链路聚合技术" class="headerlink" title="链路聚合技术"></a>链路聚合技术</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><ul>
-<li><p>设备之间存在多条链路时，由于STP的存在，实际只会有一条链路转发流量，设备间链路带宽无法得到提升。</p>
-</li>
-<li><p>以太网链路聚合Eth-Trunk:简称链路聚合，通过将多个物理接口捆绑成为一个逻辑接口，可以在不进行硬件升级的条件下，达到增加链路带宽的目的。</p>
-</li>
-<li><p>链路聚合模式分为手工模式和LACP模式。</p>
-</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/Eth-Trunk.png" alt="Eth-Trunk"></p>
-<h3 id="链路聚合基本术语"><a href="#链路聚合基本术语" class="headerlink" title="链路聚合基本术语"></a>链路聚合基本术语</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E5%9F%BA%E6%9C%AC%E6%9C%AF%E8%AF%AD.png" alt="基本术语"></p>
-<h3 id="链路聚合手工模式"><a href="#链路聚合手工模式" class="headerlink" title="链路聚合手工模式"></a>链路聚合手工模式</h3><h4 id="手工模式概述"><a href="#手工模式概述" class="headerlink" title="手工模式概述"></a>手工模式概述</h4><ul>
-<li>手工模式: Eth-Trunk的建立、成员接口的加入均由手动配置，双方系统之间不使用LACP进行协商。</li>
-<li>正常情况下所有链路都是活动链路，该模式下所有活动链路都参与数据的转发，平均分担流量，如果某条活动链路故障，<br>链路聚合组自动在剩余的活动链路中平均分担流量。</li>
-<li>有些低端、老旧设备不支持LACP协议。当聚合的两端设备中存在一个不支持LACP协议时，可以使用手工模式。设备两端使用的链路聚合模式必须相同。</li>
-</ul>
-<h4 id="手工模式缺陷"><a href="#手工模式缺陷" class="headerlink" title="手工模式缺陷"></a>手工模式缺陷</h4><ol>
-<li><p>为了使链路聚合接口正常工作，必须保证本端链路聚合接口中所有成员接口的对端接口：</p>
-<ul>
-<li>属于同一设备</li>
-<li>加入同一链路聚合接口</li>
-</ul>
-<p>手工模式下，设备间没有报文交互，因此只能通过管理员人工确认。</p>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E6%89%8B%E5%B7%A5%E6%A8%A1%E5%BC%8F%E7%BC%BA%E9%99%B71.png" alt="手工模式缺陷1"></p>
-<blockquote>
-<p>如图，若不满足条件导致数据转发错误</p>
-</blockquote>
-</li>
-<li><p>手动模式下，因为设备间没有报文交互，因此只能通过管理员人工通过物理层状态判断对端接口是否正常工作。</p>
-</li>
-</ol>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E6%89%8B%E5%B7%A5%E6%A8%A1%E5%BC%8F%E7%BC%BA%E9%99%B72.png" alt="手工模式缺陷2"></p>
-<h3 id="链路聚合LACP模式"><a href="#链路聚合LACP模式" class="headerlink" title="链路聚合LACP模式"></a>链路聚合LACP模式</h3><h4 id="LACP模式概述"><a href="#LACP模式概述" class="headerlink" title="LACP模式概述"></a>LACP模式概述</h4><ul>
-<li>LACP模式:采用LACP协议的一种链路聚合模式。设备间通过链路聚合控制协议数据单元( Link Aggregation ControlProtocol Data Unit，LACPDU )进行交互，通过协议协商确保对端是同一台设备、同一个聚合接口的成员接口。</li>
-<li>LACPDU报文中包含设备优先级、MAC地址、接口优先级、接口号等。</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/LACPDU.png" alt="LACPDU"></p>
-<h4 id="LACPDU报文字段含义"><a href="#LACPDU报文字段含义" class="headerlink" title="LACPDU报文字段含义"></a>LACPDU报文字段含义</h4><h5 id="系统优先级"><a href="#系统优先级" class="headerlink" title="系统优先级"></a>系统优先级</h5><ul>
-<li><p>LACP模式下，两端设备所选择的活动接口数目必须保持一致，否则链路聚合组就无法建立。此时可以通过设备优先级使其中一端成为主动端，另一端（被动端）根据主动端选择活动接口。</p>
-</li>
-<li><p>系统LACP优先级默认32768，越小越优，通常保持默认。当优先级—致时LACP会通过比较MAC地址选择主动端MAC地址越小越优。</p>
-</li>
-</ul>
-<h5 id="接口优先级"><a href="#接口优先级" class="headerlink" title="接口优先级"></a>接口优先级</h5><ul>
-<li><p>选出主动端后，两端都会以主动端的接口优先级来选择活动接口，优先级高的接口将优先被选为活动接口。接口LACP优先级值越小，优先级越高。</p>
-</li>
-<li><p>接口LACP优先级默认为32768，越小越优，通常保持默认，当优先级一致时LACP会通过接口编号选择活动接口,越小越优。</p>
-</li>
-</ul>
-<h3 id="最大活动接口数"><a href="#最大活动接口数" class="headerlink" title="最大活动接口数"></a>最大活动接口数</h3><ul>
-<li>LACP模式支持配置最大活动接口数目，当成员接口数目超过最大活动接口数目时会通过比较接口优先级、接口号选举出较优的接口成为活动接口，其余的则成为备份端口（非活动接口)，同时对应的链路分别成为活动链路、非活动链路。交换机只会从活动接口中发送、接收报文。</li>
-<li>当活动链路中出现链路故障时，可以从非活动链路中找出一条优先级最高（接口优先级、接口编号比较）的链路替换故障链路，实现总体带宽不发生变化、业务的不间断转发。</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E6%95%85%E9%9A%9C%E9%80%89%E5%8F%96%E8%A7%84%E5%88%99.png" alt="故障选取规则"></p>
-<h3 id="链路聚合活动链路的选取过程"><a href="#链路聚合活动链路的选取过程" class="headerlink" title="链路聚合活动链路的选取过程"></a>链路聚合活动链路的选取过程</h3><ol>
-<li>sw1、sw2配置LACP模式的链路聚合。两端都设置最大活跃接口数为2。</li>
-<li>通过LACPDU选举出优先级较高的交换机SW1，作为LACP协商过程的主动端。</li>
-</ol>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E9%80%89%E5%8F%96%E8%BF%87%E7%A8%8B1.png" alt="选取过程1"></p>
-<ol start="3">
-<li>sW1在本端通过比较接口优先级、接口编号选举出活动接口，其中1、2号接口在相同的接口优先级下拥有更小的接口编号，成为活动接口。</li>
-</ol>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E9%80%89%E5%8F%96%E6%B5%81%E7%A8%8B2.png" alt="选取流程2"></p>
-<ol start="4">
-<li>SW1通过LACPDU将本端活动端口选举结果告知对端。</li>
-</ol>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E9%80%89%E5%8F%96%E6%B5%81%E7%A8%8B3.png" alt="选取流程3"></p>
-<ol start="5">
-<li>SW2依据SW1的选举结果，明确本端的活动接口，同时对应的链路成为活动链路。</li>
-</ol>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E9%80%89%E5%8F%96%E6%B5%81%E7%A8%8B4.png" alt="选取流程4"></p>
-<ol start="6">
-<li>至此，Eth-Trunk的活动链路选举过程完成。</li>
-</ol>
-<h3 id="负载分担"><a href="#负载分担" class="headerlink" title="负载分担"></a>负载分担</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E8%B4%9F%E8%BD%BD%E5%88%86%E6%8B%85.png" alt="负载分担"></p>
-<h4 id="负载分担模式"><a href="#负载分担模式" class="headerlink" title="负载分担模式"></a>负载分担模式</h4><ul>
-<li><p>Eth-trunk支持基于报文的IP地址或MAC地址来进行负载分担，可以配置不同的模式（本地有效，对出方向报文生效)将数据流分担到不同的成员接口上。</p>
-</li>
-<li><p>常见的模式有:源IP、源MAC、目的IP、目的MAC、源目IP、源目MAC。</p>
-</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E8%B4%9F%E8%BD%BD%E5%88%86%E6%8B%85%E6%A8%A1%E5%BC%8F.png" alt="负载分担模式"></p>
-<h3 id="链路聚合使用场景"><a href="#链路聚合使用场景" class="headerlink" title="链路聚合使用场景"></a>链路聚合使用场景</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF1.png" alt="使用场景"></p>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF2.png" alt="使用场景"></p>
-<h3 id="链路聚合配置命令"><a href="#链路聚合配置命令" class="headerlink" title="链路聚合配置命令"></a>链路聚合配置命令</h3><p>1.创建链路聚合组</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] interface eth-trunk trunk-id</span><br></pre></td></tr></table></figure>
-<p>创建Eth-Trunk接口，并进入Eth-Trunk接口视图。</p>
-<p>2.配置链路聚合模式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Eth-Trunk1] mode &#123;lacp &#x2F; manual load-balance &#125;</span><br></pre></td></tr></table></figure>
-<p>Mode lacp配置链路聚合模式为lacp模式，mode manual load-balance配置链路聚合模式为手工模式。注意:需要保持两端链路聚合模式一致。</p>
-<p>3.将接口加入链路聚合组中（以太网接口视图)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] eth-trunk trunk-id</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，把接口加入到Eth-Trunk中。</p>
-<p>4.将接口加入链路聚合组中（ Eth-Trunk视图)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Eth-Trunk1] trunkport interface-type &#123; interface-number&#125;</span><br></pre></td></tr></table></figure>
-<p>在Eth-Trunk视图中将接口加入到链路聚合组中。3、4两种方式都可以将接口加入到链路聚合组中。</p>
-<p>5．使能允许不同速率端口加入同一Eth-Trunk接口的功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Eth-Trunk1] mixed-rate link enable</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，设备未使能允许不同速率端口加入同一Eth-Trunk接口的功能，只能相同速率的接口加入到同一个Eth-Trunk接口中。</p>
-<p>6.配置系统LACP优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] lacp priority priority</span><br></pre></td></tr></table></figure>
-<p>系统LACP优先级值越小优先级越高，缺省情况下，系统LACP优先级为32768。</p>
-<p>7.配置接口LACP优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] lacp priority priority</span><br></pre></td></tr></table></figure>
-<p>在接口视图下配置接口LACP优先级。缺省情况下，接口的LACP优先级是32768。接口优先级取值越小，接口的LACP优先级越高。<br>只有在接口已经加入到链路聚合中才可以配置该命令。</p>
-<p>8.配置最大活动接口数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Eth-Trunk1] max active-linknumber inumber&#125;</span><br></pre></td></tr></table></figure>
-<p>配置时需注意保持本端和对端的最大活动接口数一致，只有LACP模式支持配置最大活动接口数。</p>
-<p>9.配置最小活动接口数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Eth-Trunk1] least active-linknumber inumber&#125;</span><br></pre></td></tr></table></figure>
-<p>本端和对端设备的活动接口数下限阈值可以不同，手动模式、LACP模式都支持配置最小活动接口数。<br>配置最小活动接口数目的是为了保证最小带宽，当前活动链路数目小于下限阈值时，Eth-Trunk接口的状态转为Down。</p>
-<h3 id="链路聚合配置案例"><a href="#链路聚合配置案例" class="headerlink" title="链路聚合配置案例"></a>链路聚合配置案例</h3><ol>
-<li><p>手工模式</p>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E6%89%8B%E5%B7%A5%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B.png" alt="手工模式配置案例"></p>
-</li>
-<li><p>LACP模式</p>
-</li>
-</ol>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/LACP%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B1.png" alt="LACP模式配置案例1"></p>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/LACP%E6%A8%A1%E5%BC%8F%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B2.png" alt="LACP模式配置案例2"></p>
-<h2 id="堆叠、集群"><a href="#堆叠、集群" class="headerlink" title="堆叠、集群"></a>堆叠、集群</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><ul>
-<li>堆叠（iStack )︰多台支持堆叠特性的交换机通过堆叠线缆连接在一起，从逻辑上变成一台交换设备，作为一个整体参与数据转发。</li>
-<li>集群(Cluster Switch System，CSS )∶将两台支持集群特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。</li>
-<li>集群只支持两台设备，一般框式交换机支持CSS，盒式设备支持iStack。</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4.png" alt="堆叠、集群"></p>
-<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4%E7%9A%84%E4%BC%98%E5%8A%BF.png" alt="堆叠、集群的优势"></p>
-<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A81.png" alt="堆叠、集群的实际应用"></p>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A82.png" alt="堆叠、集群的实际应用"></p>
-<ul>
-<li>两台设备组成集群，虚拟成单一的逻辑设备。简化后的组网不再需要使用MSTP、VRRP等协议，简化了网络配置，同时依靠跨设备的链路聚合，实现快速收敛，提高了可靠性。</li>
-</ul>
-<h2 id="三种技术结合的推荐架构"><a href="#三种技术结合的推荐架构" class="headerlink" title="三种技术结合的推荐架构"></a>三种技术结合的推荐架构</h2><p>核心层</p>
-<ul>
-<li>核心使用CSS集群组网，上下行采用Eth-Trunk，构建高可靠、无环的网络。</li>
-</ul>
-<p>汇聚层</p>
-<ul>
-<li>汇聚交换机采用iStack，上下行采用Eth-Trunk，构建高可靠、无环的网络。</li>
-</ul>
-<p>接入层</p>
-<ul>
-<li>地理位置接近的接入设备（如一个楼宇内的接入交换机）使用iStack虚拟化成为一台逻辑上的设备，端口数量充足，简化了管理。</li>
-<li>使用Eth-Trunk和汇聚层互联，逻辑上网络结构简单，不再需要使用STP、VRRP。具有高可靠性、高上行带宽、快速收敛的优势。</li>
-</ul>
-<p><img src="/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/%E6%8E%A8%E8%8D%90%E6%9E%B6%E6%9E%84.png" alt="推荐架构"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/ACL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/25/ACL/" itemprop="url">ACL</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-25T12:18:52+08:00">
-                2021-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="ACL产生背景"><a href="#ACL产生背景" class="headerlink" title="ACL产生背景"></a>ACL产生背景</h2><p>提供一个工具，实现浏览的过滤。</p>
-<p><img src="/2021/04/25/ACL/ACL%E4%BA%A7%E7%94%9F%E8%83%8C%E6%99%AF.png" alt="ACL产生背景"></p>
-<h2 id="ACL概述"><a href="#ACL概述" class="headerlink" title="ACL概述"></a>ACL概述</h2><p>访问控制列表ACL（Access Control List）是由一条或多条规则组成的集合。所谓规则，是指描述报文匹配条件的判断语句，这些条件可以是报文的源地址、目的地址、端口号等。</p>
-<p> ACL本质上是一种报文过滤器，规则是过滤器的滤芯。设备基于这些规则进行报文匹配，可以过滤出特定的报文，并根据应用ACL的业务模块的处理策略来允许或阻止该报文通过。</p>
-<p>ACL技术总是与防火墙、路由策略、QoS、流量过滤、NAT等其他技术结合使用。</p>
-<h2 id="ACL的基本概念及其工作原理"><a href="#ACL的基本概念及其工作原理" class="headerlink" title="ACL的基本概念及其工作原理"></a>ACL的基本概念及其工作原理</h2><h3 id="ACL组成"><a href="#ACL组成" class="headerlink" title="ACL组成"></a>ACL组成</h3><p>ACL由若千条permit或deny语句组成。每条语句就是该ACL的一条规则，每条语句中的permit或deny就是与这条规则相对应的处理动作。</p>
-<p><img src="/2021/04/25/ACL/ACL%E7%BB%84%E6%88%90.png" alt="ACL组成"></p>
-<h3 id="规则编号"><a href="#规则编号" class="headerlink" title="规则编号"></a>规则编号</h3><ul>
-<li>规则编号(Rule ID ) :<br>一个ACL中的每一条规则都有一个相应的编号。</li>
-<li>步长( Step ) :<br>步长是系统自动为ACL规则分配编号时，每个相邻规则编号之间的差值，缺省值为5。步长的作用是为了方便后续在旧规则之间，插入新的规则。</li>
-<li>Rule ID分配规则:<br>系统为ACL中首条未手工指定编号的规则分配编号时，使用步长值（例如步长=5，首条规则编号为5)作为该规则的起始编号;为后续规则分配编号时(若无指定规则编号)，则使用大于当前ACL内最大规则编号且是步长整数倍的最小整数作为规则编号。</li>
-</ul>
-<p><img src="/2021/04/25/ACL/ACL%E8%A7%84%E5%88%99%E7%BC%96%E5%8F%B7.png" alt="ACL规则编号"></p>
-<h3 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h3><ul>
-<li><p>通配符（Wildcard）是一个32比特长度的数值，用于指示IP地址中，哪些比特位需要严格匹配，哪些比特位无需匹配。</p>
-</li>
-<li><p>匹配规则为：“0”表示“匹配”；“1”表示“随机分配”</p>
-<p>特殊的通配符</p>
-<ul>
-<li><p>精确匹配192.168.1.1这个IP地址</p>
-<p>192.168.1.1 0.0.0.0 = 192.168.1.1 0</p>
-</li>
-<li><p>匹配所有IP地址<br>0.0.0.0 255.255.255 = any</p>
-</li>
-</ul>
-</li>
-<li><p>通配符通常采用类似网络掩码的点分十进制形式表示，但是含义却与网络掩码完全不同。</p>
-</li>
-</ul>
-<p><img src="/2021/04/25/ACL/ACL%E9%80%9A%E9%85%8D%E7%AC%A6.png" alt="ACL通配符"></p>
-<h3 id="ACL分类与标识"><a href="#ACL分类与标识" class="headerlink" title="ACL分类与标识"></a>ACL分类与标识</h3><ul>
-<li>基于ACL规则定义方式的分类</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>分类</th>
-<th>编号范围</th>
-<th>规则定义描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>基本ACL</td>
-<td>2000~2999</td>
-<td>仅使用报文的源IP地址、分片信息和生效时间段信息来定义规则。</td>
-</tr>
-<tr>
-<td>高级ACL</td>
-<td>3000~3999</td>
-<td>可使用IPv4报文的源IP地址、目的IP地址、IP协议类型、ICMP类型、TCP源/目的端口号、UDP源/目的端口号、生效时间段等来定义规则。</td>
-</tr>
-<tr>
-<td>二层ACL</td>
-<td>4000~4999</td>
-<td>使用报文的以太网帧头信息来定义规则，如根据源MAC地址、目的MAC地址、二层协议类型等。</td>
-</tr>
-<tr>
-<td>用户自定义ACL</td>
-<td>5000~5999</td>
-<td>使用报文头、偏移位置、字符串掩码和用户自定义字符串来定义规则。</td>
-</tr>
-<tr>
-<td>用户ACL</td>
-<td>6000~6999</td>
-<td>既可使用IPv4报文的源IP地址或源UCL ( User Control List )组，也可使用目的IP地址或目的UCL组、IP协议类型、ICMP类型、TCP源端口/目的端口、UDP源端口/目的端口号等来定义规则。</td>
-</tr>
-</tbody></table>
-<ul>
-<li>基于ACL标识方法的分类</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>分类</th>
-<th>规则定义描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>数字型ACL</td>
-<td>传统的ACL标识方法。创建ACL时，指定一个唯一的数字标识该ACL。</td>
-</tr>
-<tr>
-<td>命名型ACL</td>
-<td>通过名称代替编号来标识ACL。</td>
-</tr>
-</tbody></table>
-<h3 id="基本ACL与高级ACL"><a href="#基本ACL与高级ACL" class="headerlink" title="基本ACL与高级ACL"></a>基本ACL与高级ACL</h3><ul>
-<li>基本ACL</li>
-</ul>
-<p><img src="/2021/04/25/ACL/%E5%9F%BA%E6%9C%ACACL.png" alt="基本ACL"></p>
-<ul>
-<li>高级ACL</li>
-</ul>
-<p><img src="/2021/04/25/ACL/%E9%AB%98%E7%BA%A7ACL.png" alt="高级ACL"></p>
-<h3 id="ACL的匹配机制"><a href="#ACL的匹配机制" class="headerlink" title="ACL的匹配机制"></a>ACL的匹配机制</h3><p><img src="/2021/04/25/ACL/ACL%E5%8C%B9%E9%85%8D%E6%9C%BA%E5%88%B6.png" alt="ACL匹配机制"></p>
-<h3 id="ACL匹配位置"><a href="#ACL匹配位置" class="headerlink" title="ACL匹配位置"></a>ACL匹配位置</h3><p>入站(Inbound)及出站(Outbound)方向</p>
-<p><img src="/2021/04/25/ACL/ACL%E5%8C%B9%E9%85%8D%E6%96%B9%E5%90%91.png" alt="ACL匹配方向"></p>
-<h2 id="ACL应用规则"><a href="#ACL应用规则" class="headerlink" title="ACL应用规则"></a>ACL应用规则</h2><ol>
-<li><p>“3P”原则</p>
-<p>在路由器上应用ACL时，可以为每种协议（Per Protocol）、每个方向（Per Direction）</p>
-<p>和每个接口（Per Interface）配置一个ACL，一般称为“3P原则”。</p>
-<p>（1）一个ACL只能基于一种协议，因此每种协议都需要配置单独的ACL。</p>
-<p>（2）经过路由器接口的数据有进（ln）和出（Out）两个方向，因此在接口上配置访问控制列表也有进（In）和出（Out）两个方向。每个接口可以配置进方向的ACL，也可以配置出方向的ACL，或者两者都配置，但是一个ACL只能控制一个方向。</p>
-<p>（3）一个ACL只能控制一个接口上的数据流量，无法同时控制多个接口上的数据流量。</p>
-</li>
-<li><p>语句顺序决定了对数据的控制顺序</p>
-<p>ACL的语句是一种自上而下的逻辑排列关系。数据匹配过程中是依次对语句进行比较，一旦匹配成功则按照当前语句控制策略处理，不再与之后的语句进行比较。因此，正确的语句顺序才能得到所需的控制效果。</p>
-</li>
-<li><p>至少有一条允许（Permit）语句</p>
-<p>所有ACL的最后一条语句都是隐式拒绝语句，表示当所有语句都无法匹配时，将拒绝数据通过并自动丢弃数据，以防数据意外进入网络。因此，在写“拒绝（deny）”的ACL时，一定至少要有一条允许（Permit）语句，否则配置ACL的接口将拒绝任何数据通过，影响正常的网络通信。</p>
-</li>
-<li><p>最有限制性的语句应该放在ACL的靠前位置</p>
-<p>最有限制性的语句放在ACL的靠前位置，可以首先过滤掉很多不符合条件的数据，节省后面语句的比较时间，从而提高路由器的工作效率。 </p>
-</li>
-</ol>
-<h2 id="ACL基础配置命名"><a href="#ACL基础配置命名" class="headerlink" title="ACL基础配置命名"></a>ACL基础配置命名</h2><p>1.创建基本ACL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl [ number ] acl-number [ match-order config ]</span><br></pre></td></tr></table></figure>
-<p>使用编号(2000~2999）创建一个数字型的基本ACL，并进入基本ACL视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl name acl-name &#123; basic | acl-number &#125; [ match-order config]</span><br></pre></td></tr></table></figure>
-<p>使用名称创建一个命名型的基本ACL，并进入基本ACL视图。</p>
-<p>2.配置基本ACL的规则</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-acl-basic-2000] rule [ rule-id ] &#123; deny | permit &#125; [ source &#123; source-address source-wildcard| any &#125; time-range time-name ]</span><br></pre></td></tr></table></figure>
-<p>在基本ACL视图下，通过此命令来配置基本ACL的规则。</p>
-<p>3.创建高级ACL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl [ number ] acl-number [ match-order config ]</span><br></pre></td></tr></table></figure>
-<p>使用编号（ 3000~3999 )创建一个数字型的高级ACL，并进入高级ACL视图。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl name acl-name &#123; advance | acl-number &#125; [ match-order config ]</span><br></pre></td></tr></table></figure>
-<p>使用名称创建一个命名型的高级ACL，进入高级ACL视图。</p>
-<p>4.配置高级ACL的规则</p>
-<p>根据IP承载的协议类型不同，在设备上配置不同的高级ACL规则。对于不同的协议类型，有不同的参数组合。<br>当参数protocol为lP时，高级ACL的命令格式为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rule [ rule-id ] &#123; deny | permit &#125; ip [ destination &#123; destination-address destination-wildcard| any &#125; &#x2F; source &#123; source-addresssource-wildcard | any &#125; &#x2F; time-range time-name| [ dscp dscp | [ tos tos | precedence precedence]]]</span><br></pre></td></tr></table></figure>
-<p>在高级ACL视图下，通过此命令来配置高级ACL的规则。<br>当参数protocol为TCP时，高级ACL的命令格式为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rule [ rule-id] &#123; deny | permit &#125; &#123; protocol-number| tcp &#125; [ destination &#123; destination-address destination-wildcard l any &#125;ldestination-port &#123; eq port | gt port | t port | range port-start port-end &#125; | source &#123; source-address source-wildcard| any &#125; lsource-port &#123; eq port | gt port | lt port | range port-start port-end &#125; | tcp-flag &#123; ack l fin &#x2F; syn &#125; * &#x2F; time-range time-name ]*</span><br></pre></td></tr></table></figure>
-<p>在高级ACL视图下，通过此命令来配置高级ACL的规则。</p>
-<p>5.接口视图下应用ACL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEtherneto&#x2F;0&#x2F;1] traffic-filter &#123; inbound | outbound &#125; acl acl-number</span><br></pre></td></tr></table></figure>
-
-<p>在设备接口的入方向或出方向配置ACL</p>
-<h2 id="ACL配置案例"><a href="#ACL配置案例" class="headerlink" title="ACL配置案例"></a>ACL配置案例</h2><p>案例1——-拒绝某台机器访问<br>按照下图所示拓扑结构，禁止主机pc2与pc1通信，而允许所有其他流量</p>
-<p> <img src="/2021/04/25/ACL/ACL%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B.png" alt="ACL配置案例"></p>
-<p>配置思路:<br>    ①在路由器上配置两个端口,设置好ip地址<br>    ②配置好主机的ip/子网掩码/网关<br>    ③在路由器上添加一条访问控制权限,基本acl 2000<br>    ④把这条acl限制规则应用到g0/0/1的端口上(可以称作监听端口)</p>
-<p>R1配置:</p>
-<p>[Huawei]interface GigabitEthernet 0/0/0                      //为0端口配置ip<br>[Huawei-GigabitEthernet0/0/0] ip address 192.168.1.254 24<br>[Huawei]acl 2000               //进入acl 2000 列表<br>[Huawei-acl-basic-2000]rule deny source 192.168.2.1 0      //定义一条规则 deny代表拒绝 source代表来源 0代表仅此一台<br>[Huawei]interface GigabitEthernet 0/0/1<br>[Huawei-GigabitEthernet0/0/1]ip address 192.168.2.254 24<br>[Huawei-GigabitEthernet0/0/1]traffic-filter inbound acl 2000               //用端口1来监听这条规则</p>
-<p>测试:</p>
-<ol>
-<li>pc1 ping pc3 ,    通信成功</li>
-<li>pc1 ping pc2,     通信失败</li>
-<li>pc2 ping pc3,     通信成功</li>
-</ol>
-<hr>
-<p>案例2——拒绝所有机器访问<br>还是刚才的案例,将</p>
-<p>[Huawei-acl-basic-2000]rule deny source 192.168.2.1 0</p>
-<p>更改为</p>
-<p>[Huawei-acl-basic-2000]rule deny any 即可</p>
-<hr>
-<p>案例3——-仅允许某台机器访问<br>实验要求:仅允许pc2访问pc1</p>
-<blockquote>
-<p>根据acl规则4:最有限制性的语句应该放在ACL的靠前位置 和规则3: 至少有一条允许（Permit）语句</p>
-</blockquote>
-<p>配置如下:<br>[Huawei]interface GigabitEthernet 0/0/0                      //为0端口配置ip<br>[Huawei-GigabitEthernet0/0/0] ip address 192.168.1.254 24<br>[Huawei]acl 2000               //进入acl 2000 列表<br>[Huawei-acl-basic-2000]rule permit source 192.168.2.1 0      //定义一条规则 permit代表拒绝 source代表来源 0代表仅此一台<br>[Huawei-acl-basic-2000]rule deny any             // 拒绝所有访问<br>[Huawei]interface GigabitEthernet 0/0/1<br>[Huawei-GigabitEthernet0/0/1]ip address 192.168.2.254 24<br>[Huawei-GigabitEthernet0/0/1]traffic-filter inbound acl 2000               //用端口1来监听这条规则</p>
-<hr>
-<p>案例4———-拒绝访问ftp或者http服务<br>实验要求: 禁止pc2访问pc1的ftp服务，禁止pc3访问pc1的www服务，所有主机的其他服务不受限制</p>
-<blockquote>
-<p>ftp与http都是基于tcp协议的,所以我们可以拒绝tcp协议来限制</p>
-</blockquote>
-<p>R1配置:<br>[Huawei]acl 3000            //拒绝tcp为高级控制,所以3000起<br>[Huawei-acl-adv-3000]rule deny tcp source 192.168.2.1 0 destination 192.168.1.1     //destination代表目的地地址<br>[Huawei-acl-adv-3000]rule deny tcp source 192.168.2.2 0 destination 192.168.1.1<br>[Huawei]interface g0/0/1<br>[Huawei-GigabitEthernet0/0/1]traffic-filter inbound acl 3000 //在接口中应用acl</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/24/AAA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/24/AAA/" itemprop="url">AAA</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-24T19:11:49+08:00">
-                2021-04-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AAA概述"><a href="#AAA概述" class="headerlink" title="AAA概述"></a>AAA概述</h2><p>AAA是Authentication (认证)、Authorization(授权）和Accounting(计费）的简称，是网络安全的一种管理机制，提供了认证、授权、计费三种安全功能。</p>
-<p><img src="/2021/04/24/AAA/AAA%E6%A6%82%E8%BF%B0.png" alt="AAA概述"></p>
-<h2 id="AAA基本架构"><a href="#AAA基本架构" class="headerlink" title="AAA基本架构"></a>AAA基本架构</h2><p>AAA常见网络架构中包括用户、NAS ( Network Access Server )、AAA服务器(AAA Server ) 。</p>
-<ul>
-<li>NAS负责集中收集和管理用户的访问请求。</li>
-<li>在NAS上会创建多个域来管理用户。不同的域可以关联不同的AAA方案。AAA方案包含认证方案，授权方案，计费方案。</li>
-<li>当收到用户接入网络的请求时，NAS会根据用户名来判断用户所在的域，根据该域对应的AAA方案对用户进行管控。</li>
-</ul>
-<p><img src="/2021/04/24/AAA/AAA%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84.png" alt="AAA基本架构"></p>
-<h2 id="Authentication-认证"><a href="#Authentication-认证" class="headerlink" title="Authentication (认证)"></a>Authentication (认证)</h2><p>AAA支持的认证方式有:不认证，本地认证，远端认证。</p>
-<ul>
-<li>不认证：对用户非常信任，不对其进行合法检查，一般情况下不采用这种方式。 </li>
-<li>本地认证：将用户信息配置在网络接入服务器上。本地认证的优点是速度快，可以为运营降低成本，缺点是存储信息量受设备硬件条件限制。 </li>
-<li>远端认证：将用户信息配置在认证服务器上。支持通过 RADIUS（Remote Authentication Dial In User Service）协议或 HWTACACS（HuaWei Terminal Access Controller Access Control System）协议进行远端认证。 </li>
-</ul>
-<p><img src="/2021/04/24/AAA/%E8%AE%A4%E8%AF%81.png" alt="认证"></p>
-<h2 id="Authorization-授权）"><a href="#Authorization-授权）" class="headerlink" title="Authorization(授权）"></a>Authorization(授权）</h2><p>AAA支持的授权方式有:不授权，本地授权，远端授权。</p>
-<ul>
-<li><p>不授权：不对用户进行授权处理。 </p>
-</li>
-<li><p>本地授权：根据网络接入服务器为本地用户账号配置的相关属性进行授权。 </p>
-</li>
-<li><p>HWTACACS 授权：由 HWTACACS 服务器对用户进行授权。 </p>
-</li>
-<li><p>if-authenticated 授权：如果用户通过了认证，而且使用的认证</p>
-<p>模式是本地或远端认证，则用户授权通过。 </p>
-</li>
-<li><p>RADIUS 认证成功后授权：RADIUS 协议的认证和授权是绑定在一起的，不能单独使用 RADIUS 进行授权。 </p>
-</li>
-</ul>
-<p>授权信息包括:所属用户组、所属VLAN、ACL编号等。</p>
-<p><img src="/2021/04/24/AAA/%E6%8E%88%E6%9D%83.png" alt="授权"></p>
-<h2 id="Accounting-计费）"><a href="#Accounting-计费）" class="headerlink" title="Accounting(计费）"></a>Accounting(计费）</h2><p>计费功能用于<strong>监控授权用户的网络行为和网络资源的使用情况</strong></p>
-<p>AAA支持的计费方式有:不计费，远端计费。</p>
-<ul>
-<li> 不计费：不对用户计费。 </li>
-<li>远端计费：支持通过 RADIUS 服务器或 HWTACACS 服务器进行远端计费。 </li>
-</ul>
-<h2 id="AAA实现-RADIUS-协议"><a href="#AAA实现-RADIUS-协议" class="headerlink" title="AAA实现-RADIUS 协议"></a>AAA实现-RADIUS 协议</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>远程认证拨号用户服务 RADIUS（Remote Authentication Dial-In User Service）是一种分布式的、客 户端/服务器结构的信息交互协议，能保护网络不受未授权访问的干扰，常应用在既要求较高安全 性、又允许远程用户访问的各种网络环境中。该协议定义了基于 UDP 的 RADIUS 帧格式及其消息 传输机制，并规定 UDP 端口 1812、1813 分别作为认证、计费端口。<br>RADIUS 最初仅是针对拨号用户的 AAA 协议，后来随着用户接入方式的多样化发展，RADIUS 也 适应多种用户接入方式，如以太网接入、ADSL 接入。它通过认证授权来提供接入服务，通过计费 来收集、记录用户对网络资源的使用。 </p>
-<h3 id="RADIUS服务器"><a href="#RADIUS服务器" class="headerlink" title="RADIUS服务器"></a>RADIUS服务器</h3><p>RADIUS 服务器一般运行在中心计算机或工作站上，维护相关的用户认证和网络服务访问信息，负 责接收用户连接请求并认证用户，然后给客户端返回所有需要的信息（如接受/拒绝认证请求）。</p>
-<p>RADIUS 服务器通常要维护三个数据库：</p>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%95%B0%E6%8D%AE%E5%BA%93.png" alt="RADIUS数据库"></p>
-<p>“Users”：用于存储用户信息（如用户名、口令以及使用的协议、IP 地址等配置信息）。<br>“Clients”：用于存储 RADIUS 客户端的信息（如接入设备的共享密钥、IP 地址等）。<br>“Dictionary”：用于存储 RADIUS 协议中的属性和属性值含义的信息。 </p>
-<h3 id="RADIUS客户端"><a href="#RADIUS客户端" class="headerlink" title="RADIUS客户端"></a>RADIUS客户端</h3><p>RADIUS 客户端一般位于网络接入服务器 NAS（Network Access Server）设备上，可以遍布整个网 络，负责传输用户信息到指定的 RADIUS 服务器，然后根据从服务器返回的信息进行相应处理（如 接受/拒绝用户接入）。<br>网络接入服务器作为 RADIUS 协议的客户端，实现以下功能：<br>      标准 RADIUS 协议及扩充属性，包括 RFC2865、RFC2866。<br>      华为扩展的私有属性。<br>      对 RADIUS 服务器状态的主动探测功能。<br>      计费结束报文的本地缓存重传功能。</p>
-<p>​      RADIUS 服务器的自动切换功能。 </p>
-<h3 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h3><p>RADIUS 客户端和 RADIUS 服务器之间认证消息的交互是通过共享密钥的参与来完成的，并且共 享密钥不能通过网络来传输，增强了信息交互的安全性。另外，为防止用户密码在不安全的网络上 传递时被窃取，在传输过程中对密码进行了加密。 </p>
-<h3 id="认证和计费消息流程"><a href="#认证和计费消息流程" class="headerlink" title="认证和计费消息流程"></a>认证和计费消息流程</h3><ul>
-<li>用户登录网络接入服务器时，会将用户名和密码发送给该网络接入服务器； </li>
-<li>该网络接入服务器中的 RADIUS 客户端接收用户名和密码，并向 RADIUS 服务器发送认证请求； </li>
-<li>RADIUS 服务器接收到合法的请求后，完成认证，并把所需的用户授权信息返回给客户端； 对于非法的请求，RADIUS 服务器返回认证失败的信息给客户端。 </li>
-<li>计费的消息流程和认证/授权的消息流程类似。 </li>
-</ul>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%B5%81%E7%A8%8B.png" alt="RADIUS流程"></p>
-<h2 id="AAA实现-HWTACACS-协议"><a href="#AAA实现-HWTACACS-协议" class="headerlink" title="AAA实现-HWTACACS 协议"></a>AAA实现-HWTACACS 协议</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>HW 终端访问控制器控制系统协议 HWTACACS（Huawei Terminal Access Controller Access Control System）是在 TACACS（RFC 1492）基础上进行了功能增强的安全协议。该协议与 RADIUS 协议 类似，采用客户端/服务器模式实现 NAS 与 HWTACACS 服务器之间的通信。<br>HWTACACS 协议主要用于点对点协议 PPP（Point-to-Point Protocol）和虚拟私有拨号网络 VPDN （Virtual Private Dial-up Network）接入用户及终端用户的认证、授权和计费。其典型应用是对需要 登录到设备上进行操作的终端用户进行认证、授权、计费。设备作为 HWTACACS 的客户端，将 用户名和密码发给 HWTACACS 服务器进行验证。用户验证通过并得到授权之后可以登录到设备 上进行操作。 </p>
-<h3 id="HWTACACS-协议和-RADIUS-协议的比较"><a href="#HWTACACS-协议和-RADIUS-协议的比较" class="headerlink" title="HWTACACS 协议和 RADIUS 协议的比较"></a>HWTACACS 协议和 RADIUS 协议的比较</h3><table>
-<thead>
-<tr>
-<th>HWTACACS</th>
-<th>RADIUS</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>使用TCP，网络传输更可靠</td>
-<td>使用UDP</td>
-</tr>
-<tr>
-<td>除了标准的HWTACACS报文头,对报文主体全部进行加密</td>
-<td>只是对认证报文中的密码字段进行加密</td>
-</tr>
-<tr>
-<td>认证与授权分离</td>
-<td>认证与授权一起处理</td>
-</tr>
-<tr>
-<td>适于进行安全控制</td>
-<td>适于进行计费</td>
-</tr>
-<tr>
-<td>支持对设备上的配置命令进行授权使用</td>
-<td>不支持</td>
-</tr>
-</tbody></table>
-<h3 id="HWTACACS-的基本消息交互流程"><a href="#HWTACACS-的基本消息交互流程" class="headerlink" title="HWTACACS 的基本消息交互流程"></a>HWTACACS 的基本消息交互流程</h3><p>下面以 Telnet 用户为例，说明使用 HWTACACS 对用户进行认证、授权和计费的过程。</p>
-<p><img src="/2021/04/24/AAA/HWTACACS%E8%BF%87%E7%A8%8B.png" alt="HWTACACS过程"></p>
-<blockquote>
-<p>HWTACACS 协议与其他厂商支持的 TACACS+协议都实现了认证、授权、计费的功能。HWTACACS 和 TACACS+的认证流程与实现方式是一致的，HWTACACS 协议能够完全兼容 TACACS+协议。 </p>
-</blockquote>
-<h2 id="AAA基于域的用户管理"><a href="#AAA基于域的用户管理" class="headerlink" title="AAA基于域的用户管理"></a>AAA基于域的用户管理</h2><p>一个域是由属于同一个域的用户构成的群体。<br>NAS 设备对用户的管理是基于域的，每个接入用户都属于一个域。用户所属的域是由用户登录时提供的用户名决定的。</p>
-<p><img src="/2021/04/24/AAA/AAA%E5%9F%9F.png" alt="AAA域"></p>
-<blockquote>
-<p>用户的认证、授权、计费都是在相应的域视图下应用预先配置的认证、授权、计费方案来实现的。 AAA 有缺省的认证、授权、计费方案，分别为本地认证、本地授权、本地计费。如果用户所属的 域下未应用任何认证、授权、计费方案，系统将使用缺省的认证、授权、计费方案。 </p>
-</blockquote>
-<h2 id="AAA配置命令"><a href="#AAA配置命令" class="headerlink" title="AAA配置命令"></a>AAA配置命令</h2><p>1．进入AAA视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] aaa</span><br></pre></td></tr></table></figure>
-<p>从系统视图进入AAA视图进行配置<br>2. 创建认证方案</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
-<p>创建认证方案并进入相应的认证方案视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-authentication-scheme-name] authentication-mode &#123; hwtacacs &#x2F; local | radius &#125;</span><br></pre></td></tr></table></figure>
-<p>配置认证方式，local指定认证方式为本地认证。缺省情况下，认证方式为本地认证。<br>3. 创建domain并绑定认证方案</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] domain domain-name</span><br></pre></td></tr></table></figure>
-<p>创建domain并进入相应的domain视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa-domain-name] authentication-scheme authentication-scheme-name</span><br></pre></td></tr></table></figure>
-<p>在相应的domain视图下绑定认证方案<br>4. 创建用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password cipher password</span><br></pre></td></tr></table></figure>
-<p>创建本地用户，并配置本地用户的密码:<br>如果用户名中带域名分隔符，如@，则认为@前面的部分是用户名，后面部分是域名·如果没有@，则整个字符串为用户名，域为默认域。<br>5. 配置用户接入类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name service-type &#123; &#123; terminal | telnet | ftp | ssh &#x2F; snmp | http ]&#x2F; ppp | none &#125;</span><br></pre></td></tr></table></figure>
-<p>设置本地用户的接入类型。缺省情况下，本地用户关闭所有的接入类型。<br>6. 配置用户级别</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name privilege level level</span><br></pre></td></tr></table></figure>
-<p>指定本地用户的权限级别。</p>
-<ol start="7">
-<li>显示历史用户登录记录</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]display aaa offline-record all</span><br></pre></td></tr></table></figure>
-
-<h2 id="AAA配置案例"><a href="#AAA配置案例" class="headerlink" title="AAA配置案例"></a>AAA配置案例</h2><h3 id="AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）"><a href="#AAA-Radius进行认证、授权、计费（使用UDP端口1812和1813）" class="headerlink" title="AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）"></a>AAA+Radius进行认证、授权、计费（使用UDP端口1812和1813）</h3><p>下述拓扑中用户处于huawei域中，通过出口设备LSW1去访问Internet，LSW2作为运营商边界设备负责对用户访问internet的权限进行控制，执行AAA认证，认证模式采用Radius服务器认证和计费，现在需要实现ISP对huawei域内的企业用户进行Radius认证，必须在LSW2上配置AAA认证和Radius模板来完成对接入用户的控制。</p>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
-<p>在LSW2上的配置如下：</p>
-<p>一、配置AAA认证方案</p>
-<p>[Huawei]aaa</p>
-<p>[Huawei-aaa]authentication-scheme ren_zheng                          配置AAA认证方案名为ren_zheng</p>
-<p>[Huawei-aaa-authen-aaa]authentication-mode radius local        配置AAA认证模式为先Radius，如无响应则本地认证</p>
-<p>[Huawei-aaa-authen-aaa]quit</p>
-<p>[Huawei-aaa]accounting-scheme ji_fei                                       配置AAA计费方案名为ji_fei</p>
-<p>[Huawei-aaa-accounting-ji_fei]accounting-mode radius             配置AAA计费模式为Radius服务器计费</p>
-<p>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline         配置当开始计费失败时，将用户离线</p>
-<p>[Huawei-aaa-accounting-ji_fei]quit</p>
-<p>二、配置Radius模板</p>
-<p>[Huawei]radius-server template huawei_use                              配置Raduis模板名为huawei_use</p>
-<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.254 1812    主radius认证服务地址和端口</p>
-<p>[Huawei-radius-huawei_use]radius-server authentication 192.168.1.253 1812 secondary  备用认证服务器</p>
-<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1812         主radius计费服务地址和端口</p>
-<p>[Huawei-radius-huawei_use]radius-server accounting 192.168.1.253 1813 secondary       备用计费服务器</p>
-<p>[Huawei-radius-huawei_use]radius-server shared-key cipher hello      配置设备与Radius通信的共享秘钥为hello</p>
-<p>[Huawei-radius-huawei_use]radius-server retransmit 2 timeout 5       配置设备向Radius服务器发送请求报文的超时重传次数为2s，间隔为5s</p>
-<p>[Huawei-radius-huawei_use]quit</p>
-<p>三、在AAA用户域绑定要使用的AAA认证和Radius模板</p>
-<p>[Huawei]aaa</p>
-<p>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei</p>
-<p>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng     在域中绑定AAA认证方案</p>
-<p>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案</p>
-<p>[Huawei-aaa-domain-huawei]radius-server huawei_use                   在域中绑定Radius模板</p>
-<p>[Huawei-aaa-domain-huawei]quit</p>
-<p>四、检查命令：</p>
-<p><strong>[Huawei]display radius-server configuration template huawei_use</strong></p>
-<hr>
-<p>  Server-template-name             :  huawei_use<br>  Protocol-version                 :  standard<br>  Traffic-unit                     :  B<br>  Shared-secret-key                :  aaYOZ$V^P35NZPO3JBXBHA!!<br>  Timeout-interval(in second)      :  5<br>  Primary-authentication-server    :  192.168.1.254  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Primary-accounting-server        :  192.168.1.254  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-authentication-server  :  192.168.1.253  :1812 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Secondary-accounting-server      :  192.168.1.253  :1813 :-LoopBack:NULL   Source-IP:0.0.0.0<br>  Retransmission                   :  2<br>  Domain-included                  :  YES<br>  NAS-IP-Address                   :  0.0.0.0</p>
-<p>Calling-station-id MAC-format    :  xxxx-xxxx-xxxx</p>
-<hr>
-<p>[Huawei]</p>
-<p><strong>[Huawei]display domain name huawei</strong></p>
-<hr>
-<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name      : ren_zheng<br>  Accounting-scheme-name           : ji_fei<br>  Authorization-scheme-name       : -<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : huawei_use<br>  HWTACACS-server-template        : -</p>
-<hr>
-<p>[Huawei]</p>
-<h3 id="AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"><a href="#AAA-HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）" class="headerlink" title="AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）"></a>AAA+HWTACACS进行认证、授权、计费（默认所有使用TCP端口49）</h3><p>拓扑图如下:</p>
-<p><img src="/2021/04/24/AAA/RADIUS%E6%A1%88%E4%BE%8B.png" alt="RADIUS案例"></p>
-<p>在LSW2上的配置如下：</p>
-<p>一、配置AAA认证方案</p>
-<p>[Huawei]aaa<br>[Huawei-aaa]authentication-scheme ren_zheng                              配置AAA认证方案名为ren_zheng<br>[Huawei-aaa-authen-aaa]authentication-mode hwtacacs local        配置AAA认证模式为先hwtacacs，如无响应则本地认证<br>[Huawei-aaa-authen-aaa]authentication-super hwtacacs super       接入用户进行提权时，先进行hwtacacs认证，如无响应再本地认证<br>[Huawei-aaa-authen-aaa]quit<br>[Huawei]aaa<br>[Huawei-aaa]authorization-scheme shou_quan                             配置AAA授权方案名为ren_zheng<br>[Huawei-aaa-author-aaa]authorization-mode hwtacacs local        配置AAA授权模式为先hwtacacs，如无响应则本地授权</p>
-<p>[Huawei-aaa-author-aaa]quit</p>
-<p>[Huawei-aaa]accounting-scheme ji_fei                                    配置AAA计费方案名为ji_fei<br>[Huawei-aaa-accounting-ji_fei]accounting-mode hwtacacs     配置AAA计费模式为hwtacacs服务器计费<br>[Huawei-aaa-accounting-ji_fei]accounting start-fail offline      配置当开始计费失败时，将用户离线<br>[Huawei-aaa-accounting-ji_fei]accounting relaltime 3              配置对用户进行实时计费，计费间隔为3min<br>[Huawei-aaa-accounting-ji_fei]quit</p>
-<p>二、配置hwtacacs模板</p>
-<p>[Huawei]hwtacacs-server template huawei_use                       配置hwtacacs模板名为huawei_use<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.254 49    主hwtacacs认证服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authentication 192.168.1.253 49 secondary     备用认证服务器<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49      主hwtacacs授权服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server authorization 192.168.1.253 49 secondary       备用授权服务器</p>
-<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49         主hwtacacs计费服务地址和端口<br>[Huawei-hwtacacs-huawei_use]hwtacacs-server accounting 192.168.1.253 49 secondary          备用计费服务器</p>
-<p>[Huawei-hwtacacs-huawei_use]hwtacacs-server shared-key cipher hello      配置设备与hwtacacs通信的共享秘钥为hello</p>
-<p>[Huawei-hwtacacs-huawei_use]quit<br>三、在AAA用户域绑定要使用的AAA认证和hwtacacs模板</p>
-<p>[Huawei]aaa<br>[Huawei-aaa]domain huawei                   配置AAA域，名称huawei<br>[Huawei-aaa-domain-huawei]authentication-scheme ren_zheng    在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]authorization-scheme shou_quan     在域中绑定AAA认证方案<br>[Huawei-aaa-domain-huawei]accounting-scheme ji_fei                   在域中绑定AAA计费方案<br>[Huawei-aaa-domain-huawei]hwtacacs-server huawei_use              在域中绑定hwtacacs模板</p>
-<p>[Huawei-aaa-domain-huawei]quit</p>
-<p>四、检查命令：</p>
-<p><strong>[Huawei]display hwtacacs-server template huawei_use</strong></p>
-<hr>
-<p> HWTACACS-server template name   : huawei_use<br>  Primary-authentication-server  : 192.168.1.254:49:-<br>  Primary-authorization-server    : 192.168.1.254:49-<br>  Primary-accounting-server       : 192.168.1.254:49:-<br>  Secondary-authentication-server : 192.168.1.253:49:-<br>  Secondary-authorization-server   : 192.168.1.253:49:-<br>  Secondary-accounting-server      : 192.168.1.253:49:-<br>  Current-authentication-server   : 192.168.1.254:49:-<br>  Current-authorization-server     : 192.168.1.254:49:-<br>  Current-accounting-server        : 192.168.1.254:49:-<br>  Source-IP-address               : 0.0.0.0<br>  Shared-key                      : hello<br>  Quiet-interval(min)             : 5<br>  Response-timeout-Interval(sec)  : 5<br>  Domain-included                 : Yes<br>  Traffic-unit                    : B</p>
-<p>  Total 1,1 printed</p>
-<hr>
-<p>[Huawei]</p>
-<p><strong>[Huawei]display domain name huawei</strong></p>
-<hr>
-<p>  Domain-name                     : huawei<br>  Domain-state                      : Active<br>  Authentication-scheme-name     : ren_zheng<br>  Accounting-scheme-name          : ji_fei<br>  Authorization-scheme-name       : shou_quan<br>  Service-scheme-name              : -<br>  RADIUS-server-template          : -<br>  HWTACACS-server-template        : huawei_use</p>
-<hr>
-<p>[Huawei]</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/23/ospf/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/23/ospf/" itemprop="url">OSPF</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-23T19:37:08+08:00">
-                2021-04-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>路由协议OSPF全称为Open Shortest Path First，也就开放的最短路径优先协议，因为OSPF是由IETF开发的，它的使用不受任何厂商限制，所有人都可以使用，所以称为开放的，而最短路径优先（SPF）只是OSPF的核心思想，其使用的算法是Dijkstra算法，最短路径优先并没有太多特殊的含义，并没有任何一个路由协议是最长路径优先的，所有协议，都会选最短的。</p>
-<ul>
-<li>OSPF的流量使用IP协议号89。</li>
-<li>OSPF工作在单个AS，是个绝对的内部网关路由协议（Interior Gateway Protocol，即IGP）。</li>
-<li>OSPF对网络没有跳数限制，支持 Classless Interdomain Routing (CIDR)和Variable-Length Subnet Masks (VLSMs)，没有自动汇总功能，但可以手工在任意比特位汇总，并且手工汇总没有任何条件限制，可以汇总到任意掩码长度。</li>
-<li>OSPF支持认证，并且支持明文和MD5认证；OSPF不可以通过Offset list来改变路由的metric。</li>
-<li>OSPF并不会周期性更新路由表，而采用增量更新，即只在路由有变化时，才会发送更新，并且只发送有变化的路由信息；事实上，OSPF是间接设置了周期性更新路由的规则，因为所有路由都是有刷新时间的，当达到刷新时间阀值时，该路由就会产生一次更新，默认时间为1800秒，即30分钟，所以OSPF路由的定期更新周期默认为30分钟。</li>
-<li>OSPF所有路由的管理距离(Ddministrative Distance)为110，OSPF只支持等价负载均衡。</li>
-<li>目前针对IPv4协议使用的是OSPF version 2 ( RFC2328 );针对IPv6协议使用OSPF version 3 ( RFC2740 )。</li>
-<li>距离矢量路由协议的根本特征就是自己的 路由表是完全从其它路由器学来的，并且将收到的路由条目一丝不变地放进自己的路由表，运行距离矢量路由协议的路由器之间交换的是路由表，距离矢量路由协议 是没有大脑的，路由表从来不会自己计算，总是把别人的路由表拿来就用；而OSPF完全抛弃了这种不可靠的算法，OSPF是典型的链路状态路由协议，路由器之间交换的并不是路由表，而是链路状态（LS，Link State）信息，OSPF通过获得网络中所有的链路状态信息，从而计算出到达每个目标精确的网络路径。</li>
-</ul>
-<h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><h3 id="Router-id"><a href="#Router-id" class="headerlink" title="Router-id"></a>Router-id</h3><p>必须给每一个OSPF路由器定义一个身份，就相当于人的名字，这就是Router-ID，并且Router-ID在网络中绝对不可以有重名，否则路由器收到的链路状态，就无法确定发起者的身份，也就无法通过链路状态信息确定网络位置，OSPF路由器发出的链路状态都会写上自己的Router-ID，可以理解为该链路状态的签名，不同路由器产生的链路状态，签名绝不会相同。<br>每一台OSPF路由器只有一个Router-ID，Router-ID使用IP地址的形式来表示，确定Router-ID的方法为：<br>1 .手工指定Router-ID。<br>2 .路由器上活动Loopback接口中IP地址最大的，也就是数字最大的，如C类地址优先于B类地址，一个非活动的接口的IP地址是不能被选为Router-ID的。<br>3 .如果没有活动的Loopback接口，则选择活动物理接口IP地址最大的。</p>
-<blockquote>
-<p>如果一台路由器收到一条链路状态，无法到达该Router-ID的位置，就无法到达链路状态中的目标网络。<br>Router-ID只在OSPF启动时计算，或者重置OSPF进程后计算。</p>
-</blockquote>
-<h3 id="度量值-Cost"><a href="#度量值-Cost" class="headerlink" title="度量值-Cost"></a>度量值-Cost</h3><p>OSPF使用接口的带宽来计算Metric，每一个激活了OSPF的接口都会维护一个接口Cost值，缺省时，接口Cost值=（100Mbit/s） /（ 接口带宽）。其中100 Mbit/s为OSPF指定的缺省参考值，该值是可配置的。</p>
-<p>因为Cost值必须为整数，所以即使是一个1000 Mbit/s（1GBbit/s）的接口，Cost值和100Mbit/s一样，为1。如果路由器要经过两个接口才能到达目标网络，那么很显然，两个接口的Cost值要累加起来，才算是到达目标网络的Metric值，所以OSPF路由器计算到达目标网络的Metric值，必须将沿途中所有接口的Cost值累加起来，在累加时，同EIGRP一样，只计算出接口，不计算进接口。<br>接口带宽</p>
-<ul>
-<li>OSPF会自动计算接口上的Cost值，但也可以通过手工指定该接口的Cost值，手工指定的优先于自动计算的值。</li>
-<li>OSPF计算的Cost，同样是和接口带宽成反比，带宽越高，Cost值越小。到达目标相同Cost值的路径，可以执行负载均衡，最多6条链路同时执行负载均衡。</li>
-</ul>
-<p><img src="/2021/04/23/ospf/cost%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png" alt="cost计算方法"></p>
-<h4 id="度量值修改举例"><a href="#度量值修改举例" class="headerlink" title="度量值修改举例"></a>度量值修改举例</h4><p><img src="/2021/04/23/ospf/5.png"></p>
-<h3 id="链路（Link）"><a href="#链路（Link）" class="headerlink" title="链路（Link）"></a>链路（Link）</h3><p>OSPF路由器之间的连接类型，例如帧中继和以太网。</p>
-<h3 id="链路状态（Link-State）"><a href="#链路状态（Link-State）" class="headerlink" title="链路状态（Link-State）"></a>链路状态（Link-State）</h3><p>链路状态（LSA）就是OSPF接口上的描述信息，例如接口上的IP地址，子网掩码，网络类型，Cost值等等，OSPF路由器之间交换的并不是路由表，而是链路状态（LSA），OSPF通过获得网络中所有的链路状态信息，从而计算出到达每个目标精确的网络路径。OSPF路由器会将自己所有的链路状态毫不保留地全部发给邻居，邻居将收到的链路状态全部放入链路状态数据库（Link-State Database），邻居再发给自己的所有邻居，并且在传递过程种，绝对不会有任何更改。通过这样的过程，最终，网络中所有的OSPF路 由器都拥有网络中所有的链路状态，并且所有路由器的链路状态应该能描绘出相同的网络拓朴。</p>
-<h3 id="OSPF三大表项"><a href="#OSPF三大表项" class="headerlink" title="OSPF三大表项"></a><strong>OSPF三大表项</strong></h3><h4 id="邻居表"><a href="#邻居表" class="headerlink" title="邻居表"></a>邻居表</h4><p>OSPF有三张重要的表项，OSPF邻居表、LSDB和OSPF路由表。对于OSPF的邻居表，需要了解：</p>
-<p>▫OSPF在传递链路状态信息之前，需先建立OSPF邻居关系。</p>
-<p>▫OSPF的邻居关系通过交互Hello报文建立。</p>
-<p>▫OSPF邻居表显示了OSPF路由器之间的邻居状态，使用display ospf peer查看。</p>
-<p><img src="/2021/04/23/ospf/1.png"></p>
-<h4 id="LSDB"><a href="#LSDB" class="headerlink" title="LSDB"></a>LSDB</h4><p>对于OSPF的LSDB，需要了解：</p>
-<p>▫LSDB会保存自己产生的及从邻居收到的LSA信息，本例中R1的LSDB包含了三条LSA。</p>
-<p>▫Type标识LSA的类型，AdvRouter标识发送LSA的路由器。</p>
-<p>▫使用命令行display ospf lsdb查看LSDB表。</p>
-<p><img src="/2021/04/23/ospf/2.png"></p>
-<h4 id="OSPF路由表"><a href="#OSPF路由表" class="headerlink" title="OSPF路由表"></a>OSPF路由表</h4><p>对于OSPF的路由表，需要了解：</p>
-<p>▫OSPF路由表和路由器路由表是两张不同的表。本例中OSPF路由表有三条路由。</p>
-<p>▫OSPF路由表包含Destination、Cost和NextHop等指导转发的信息。</p>
-<p>▫使用命令display ospf routing查看OSPF路由表。</p>
-<p><img src="/2021/04/23/ospf/3.png"></p>
-<h3 id="OSPF区域"><a href="#OSPF区域" class="headerlink" title="OSPF区域"></a>OSPF区域</h3><h4 id="OSPF区域存在作用"><a href="#OSPF区域存在作用" class="headerlink" title="OSPF区域存在作用"></a>OSPF区域存在作用</h4><p>因为OSPF路由器之间会将所有的链路状态（LSA）相互交换，毫不保留，当网络规模达到一定程度时，LSA将形成一个庞大的数据库，势必会给OSPF计算带来巨大的压力；为了能够降低OSPF计算的复杂程度，缓存计算压力，OSPF采用分区域计算，将网络中所有OSPF路由器划分成不同的区域，每个区域负责各自区域精确的LSA传递与路由计算，然后再将一个区域的LSA简化和汇总之后转发到另外一个区域，这样一来，在区域内部，拥有网络精确的LSA，而在不同区域，则传递简化的LSA。区域的划分为了能够尽量设计成无环网络，所以采用了Hub-Spoke的拓朴架构，也就是采用核心与分支的拓朴。</p>
-<p><img src="/2021/04/23/ospf/OSPF%E5%8C%BA%E5%9F%9F.png" alt="OSPF区域"></p>
-<h4 id="OSPF区域命名和分类"><a href="#OSPF区域命名和分类" class="headerlink" title="OSPF区域命名和分类"></a>OSPF区域命名和分类</h4><p>区域的命名可以采用整数数字，如1、2、3、4，也可以采用IP地址的形式，0.0.0.1、0.0.0.2，因为采用了Hub-Spoke的架构，所以必须定义出一个核心，然后其它部分都与核心相连，OSPF的区域0就是所有区域的核心，称为BackBone 区域（骨干区域），而其它区域称为Normal 区域（常规区域），在理论上，所有的常规区域应该直接和骨干区域相连，常规区域只能和骨干区域交换LSA，常规区域与常规区域之间即使直连也无法互换LSA，如上图中Area 1、Area 2、Area 3、Area 4只能和Area 0互换LSA，然后再由Area 0转发，Area 0就像是一个中转站，两个常规区域需要交换LSA，只能先交给Area 0，再由Area 0转发，而常规区域之间无法互相转发。</p>
-<h4 id="OSPF区域划分规则"><a href="#OSPF区域划分规则" class="headerlink" title="OSPF区域划分规则"></a>OSPF区域划分规则</h4><p>OSPF区域是基于路由器的接口划分的，而不是基于整台路由器划分的，一台路由器可以属于单个区域，也可以属于多个区域。</p>
-<h3 id="OSPF路由器类型"><a href="#OSPF路由器类型" class="headerlink" title="OSPF路由器类型"></a>OSPF路由器类型</h3><h4 id="区域内部路由器-Internal-Router，IR"><a href="#区域内部路由器-Internal-Router，IR" class="headerlink" title="区域内部路由器(Internal Router，IR)"></a>区域内部路由器(Internal Router，IR)</h4><p>区域内部路由器指路由器本身及与其相连接的网络都属干同一个OSPF 区域。这种路由器只有一个单一的链路拓扑数据库,因为它们只属于一个区域。</p>
-<p>区域内部路由器上仅运行其所属区域的OSPF运算法则。</p>
-<h4 id="区域边界路由器-Area-Border-Router-，ABR"><a href="#区域边界路由器-Area-Border-Router-，ABR" class="headerlink" title="区域边界路由器(Area Border Router ，ABR)"></a>区域边界路由器(Area Border Router ，ABR)</h4><p>区域边界路由器连接于多个OSPF 区域,所以在一个OSPF 网络中有可能有多个ABR。因此,ABR需要维护多个链路状态数据库实例。ABR为每个区域创建一个汇总数据库,并将其发送到骨干区域中。</p>
-<p>那些位于一个或多个OSPF 区域边界并且连接这些区域与骨干网络的路由器叫作区域边界路由器。它们既属于OSPF 区域又属于其他附属区域。ABR 会向骨干区域发送LSA，<strong>ABR必须与骨干区域连接</strong>。</p>
-<h4 id="自治系统边界路由器-Autonomous-System-Boundary-Router-，ASBR"><a href="#自治系统边界路由器-Autonomous-System-Boundary-Router-，ASBR" class="headerlink" title="自治系统边界路由器(Autonomous System Boundary Router ，ASBR)"></a>自治系统边界路由器(Autonomous System Boundary Router ，ASBR)</h4><p>与多个自治系统相连的OSPF路由器成为自治系统边界路由器。ASBR在其所属自治系统内部通告得到的外部路由信息。自治系统内的路由器知道如何到达本自治系统的ASBR。一般情况下,ASBR 既运行OSPF 协议,也运行其他协议。ASBR 所存在的区域必须是非末节区域。</p>
-<h4 id="骨千路由器（-Border-Router，BR"><a href="#骨千路由器（-Border-Router，BR" class="headerlink" title="骨千路由器（ Border Router，BR)"></a>骨千路由器（ Border Router，BR)</h4><p>如果路由器所有的接口只与骨干区域相连接,这种路由器就被称为骨干路由器(BR)。BR没有与其他区域连接的接口,否则就成了ABR。</p>
-<p>该类路由器至少有一个接口属于骨干区域。因此,所有的ABR和位于Area0的内部路由器都是骨干路由器。</p>
-<blockquote>
-<p>可以配置任何OSPF路由器成为ABR或ASBR。</p>
-</blockquote>
-<p><img src="/2021/04/23/ospf/%E8%B7%AF%E7%94%B1%E5%99%A8%E8%A7%92%E8%89%B2.png" alt="路由器角色"></p>
-<h3 id="OSPF路由类型和选择策略"><a href="#OSPF路由类型和选择策略" class="headerlink" title="OSPF路由类型和选择策略"></a>OSPF路由类型和选择策略</h3><h4 id="区域内部路由（Intra-Area-Route）"><a href="#区域内部路由（Intra-Area-Route）" class="headerlink" title="区域内部路由（Intra-Area Route）"></a>区域内部路由（Intra-Area Route）</h4><p>区域内部路由指目的地址在同一个OSPF 区城之内的路由选择。路由器(类型1)和网络(类型2)链路状态通告（LSA)描述OSPF 区域内拓扑。在OSPF 路由表中,这些区域内部路由条目表示为“O”。</p>
-<h4 id="区域间路由（Inter-Area-Route或Summary-Route）"><a href="#区域间路由（Inter-Area-Route或Summary-Route）" class="headerlink" title="区域间路由（Inter-Area Route或Summary Route）"></a>区域间路由（Inter-Area Route或Summary Route）</h4><p>区域间路由指目的地址需要穿过两个或多个OSPF 区域但仍然属于同一个自治系统。网络汇总(类型3)LSA用于描述这种拓扑。当报文在两个非骨干区域间路由的时候，需要使用骨干区域做转发。例如:</p>
-<p>(1）从源路由器到区域边界路由器之间需要使用区域内部路径。</p>
-<p>(2）从源区域到目的区域需要经过骨干区域。</p>
-<p>(3）从目的区域的边界路由器到目的地址之间需要使用区域内部路径。</p>
-<p>这三种路由放在一起就形成了区域间路由,在路由表中用“OIA”来表示。</p>
-<h4 id="外部路由（External-Route）"><a href="#外部路由（External-Route）" class="headerlink" title="外部路由（External Route）"></a>外部路由（External Route）</h4><p>外部路由是指通过非OSPF 协议获得或从自治系统外获得的路由信息。最常见的情况就是通过其他路由协议的重发布。由于外部路由往往很重要,所以必须保证整个OSPF自治系统都能访问到这些信息。自治系统边界服务器(ASBR)不会汇总这些外部路由信息,但会在整个自治系统中进行浜泛除了末节区域之外的所有路由器都会收到这些信息。</p>
-<p>OSPF中使用的外部路由类型如下。<br>(1)El路由:E1路由的度量值是内部加外部的OSPF 度量值总和。例如,如果报文是发往另外一个自治系统的,那么El路由就获得远端自治系统的度量再加上所有内部OSPF度量值。在路由表中用“O E1”来表示。<br>(2)E2路由:E2路由是OSPF外部路由的默认值。这种路由的度量值并不加上内部OSPF 度量值。无论处于哪个自治系统中,都只采用远程AS的度量。例如,如果分组是去往另一个自治系统，E2路由只是加在目的自治系统的度量值。在路由表中用“O E2”来表示。</p>
-<h4 id="路由选择策略"><a href="#路由选择策略" class="headerlink" title="路由选择策略"></a>路由选择策略</h4><p>当存在多种路由可以到达同一目的地时，OSPF将根据先后顺序来选择要使用的路由，所有路由的先后顺序为：<br>Intra-Area — Inter-Area — External E1 — External E2，即 O — O IA — O E1 — O E2。</p>
-<blockquote>
-<p>一台路由器可以运行多个OSPF进程，不同进程的OSPF，可视为没有任何关系，如需要获得相互的路由信息，需要重分布。<br>每个OSPF进程可以有多个区域，而路由器的链路状态数据库是分进程和分区域存放的。</p>
-</blockquote>
-<h3 id="邻居（Neighbor）"><a href="#邻居（Neighbor）" class="headerlink" title="邻居（Neighbor）"></a>邻居（Neighbor）</h3><p>OSPF只有邻居之间才会交换LSA，路由器会将链路状态数据库中所有的内容毫不保留地发给所有邻居，要想在OSPF路由器之间交换LSA，必须先形成OSPF邻居，OSPF邻居靠发送Hello包来建立和维护，Hello包会在启动了OSPF的接口上周期性发送，在不同的网络中，发送Hello包的间隔也会不同，当超过4倍的Hello时间，也就是Dead时间过后还没有收到邻居的Hello包，邻居关系将被断开。<br>两台OSPF路由器必须满足4个条件，才能形成OSPF邻居，4个必备条件如下：<br><strong>1.Area-id（区域号码）</strong><br>即路由器之间必须配置在相同的OSPF区域，否则无法形成邻居。<br><strong>2.Hello and Dead Interval（Hello时间与Dead时间）</strong><br>即路由器之间的Hello时间和Dead时间必须一致，否则无法形成邻居。<br><strong>3.Authentication（认证）</strong><br>路由器之间必须配置相同的认证密码，如果密码不同，则无法形成邻居。<br><strong>4.Stub Area Flag（末节标签）</strong><br>路由器之间的末节标签必须一致，即处在相同的末节区域内，否则无法形成邻居。</p>
-<blockquote>
-<p>OSPF只能使用接口的Primary地址建立邻居，不能使用Secondary建立邻居。<br>路由器双方接口要么都为手工配置地址（Numbered），要么都为借用地址（Unnumbered），否则无法建立邻居。</p>
-</blockquote>
-<h3 id="邻接（Adjacency）"><a href="#邻接（Adjacency）" class="headerlink" title="邻接（Adjacency）"></a>邻接（Adjacency）</h3><p>两台OSPF路由器能够形成邻居，但并不一定能相互交换LSA，只要能交换LSA，关系则称为邻接（Adjacency）。邻居之间只交换Hello包，而邻接（Adjacency）之间不仅交换Hello包，还要交换LSA。</p>
-<h3 id="DR-BDR"><a href="#DR-BDR" class="headerlink" title="DR/BDR"></a>DR/BDR</h3><h4 id="存在意义"><a href="#存在意义" class="headerlink" title="存在意义"></a>存在意义</h4><p>当多台OSPF路由器连到同一个多路访问网段时，如果每两台路由器之间都相互交换LSA，那么该网段将充满着众多LSA条目，为了能够尽量减少LSA的传播数量，通过在多路访问网段中选择出一个核心路由器，称为DR（Designated Router），网段中所有的OSPF路由器都和DR互换LSA，这样一来，DR就会拥有所有的LSA，并且将所有的LSA转发给每一台路由器；DR就像是该网段的LSA中转站，所有的路由器都与该中转站互换LSA，如果DR失效后，那么就会造成LSA的丢失与不完整，所以在多路访问网络中除了选举出DR之外，还会选举出一台路由器作为DR的备份，称为BDR（Backup Designated Router），BDR在DR不可用时，代替DR的工作，而既不是DR，也不是BDR的路由器称为Drother，事实上，Dother除了和DR互换LSA之外，同时还会和BDR互换LSA。</p>
-<p><img src="/2021/04/23/ospf/DR%E5%92%8CBDR.png" alt="DR与BDR"></p>
-<p>上图中R1被选为DR，R2被选为BDR，而R3和R4为Drother，R3同时和R1与R2互换LSA，R4也同时和R1与R2互换LSA，但R3与R4却不能互换LSA。<br>其实不难看出，DR与BDR并没有任何本质与功能的区别，只有在多路访问的网络环境，才需要DR和BDR，DR与BDR的选举是在一个二层网段内选举的，即在多个路由器互连的接口范围内，与OSPF区域没有任何关系，一个区域可能有多个多路访问网段，那么就会存在多个DR和BDR，但一个多路访问网段，只能有一个DR和BDR。</p>
-<h4 id="选举原则"><a href="#选举原则" class="headerlink" title="选举原则"></a>选举原则</h4><p><strong>比较接口优先级</strong><br>选举优先级最高的成为DR，优先级数字越大，表示优先级越高，被选为DR的几率就越大，次优先级的为BDR，优先级范围是0-255，默认为1，优先级为0表示没有资格选举DR和BDR。<br><strong>Route-Id大小</strong><br>如果在优先级都相同的情况下，Route-Id 最大的成为DR，其次是BDR，数字越大，被选为DR的几率就越大。</p>
-<blockquote>
-<p>因为所有路由器都能与DR和BDR互换LSA，所以所有路由器都与DR和BDR是邻接（Adjacency）关系，而Drother与Drother之间无法互换LSA，所以Drother与Drother之间只是邻居关系。</p>
-</blockquote>
-<p>在一个多路访问网络中，选举DR和BDR是有时间限制的，该时间为Wait时间，默认为4倍的Hello时间，即与Dead时间相同，如果OSPF路由器在超过Wait时间后也没有其它路由器与自己竞争DR与BDR的选举，那么就选自己为DR；当一个多路访问网络中选举出DR与BDR之后，在DR与BDR没有失效的情况下，不会进行重新选举，也就是在选举出DR与BDR之后，即使有更高优先级的路由器加入网络，也不会影响DR与BDR的角色，在越出选举时间（Wait时间）后，只有DR与BDR失效后，才会重新选举。DR失效后，会同时重新选举DR与BDR，而在BDR失效后，只会重新选举BDR。</p>
-<h4 id="数据包处理原则"><a href="#数据包处理原则" class="headerlink" title="数据包处理原则"></a>数据包处理原则</h4><p>所有OSPF路由器，包括DR与BDR，都能够接收和传递目标地址为224.0.0.5的数据包。<br>只有DR和BDR才能接收和传递目标地址为224.0.0.6的数据包。<br>由此可见，Drother路由器将数据包发向目标地址224.0.0.6，只能被DR和BDR接收，其它Drother不能接收；而DR和BDR将数据包发向目标地址224.0.0.5，可以被所有路由器接收。</p>
-<h2 id="OSPF报文格式和类型"><a href="#OSPF报文格式和类型" class="headerlink" title="OSPF报文格式和类型"></a>OSPF报文格式和类型</h2><h3 id="报文格式"><a href="#报文格式" class="headerlink" title="报文格式"></a>报文格式</h3><p>•OSPF一共定义了5种类型的报文，不同类型的OSPF报文有相同的头部格式。</p>
-<p>•OSPF报文直接采用IP封装，在报文的IP头部中，协议号为89。</p>
-<p><img src="/2021/04/23/ospf/4.png"></p>
-<h3 id="数据包类型"><a href="#数据包类型" class="headerlink" title="数据包类型"></a>数据包类型</h3><p>OSPF的5种数据包类型：</p>
-<ol>
-<li><p>hello 包  </p>
-<p>Hello包是用来建立和维护OSPF邻居的，要交换LSA，必须先通过Hello包建立OSPF邻居。</p>
-</li>
-<li><p>DBD包 （Database Description Packets ） -数据库描述包</p>
-<p>描述本地LSDB的摘要信息，用于两台设备进行数据库同步。</p>
-<p>邻居建立之后，并不会立刻就将自己链路状态数据库中所有的LSA全部发给邻居，而是将LSA的基本描述信息发给邻居，这就是Database Description Packets （DBD），是LSA的目录信息，相当于书的目录，邻居在看完DBD之后，就能知道哪些LSA是需要邻居发送给自己的。</p>
-</li>
-<li><p>LSR（Link-state Request）链路状态请求</p>
-<p>用于向对方请求所需要的LSA。设备只有在OSPF邻居双方成功交换DD报文后才会向对方发出LSR报文。</p>
-<p>邻居在看完发来的LSA描述信息（DBD）之后，就知道哪些LSA是需要邻居发送给自己的，自己就会向邻居发送LSA请求（LSR），告诉邻居自己需要哪些LSA。</p>
-</li>
-<li><p>LSU（Link-state update）链路状态更新</p>
-<p>用于向对方发送其所需要的LSA。</p>
-<p>当邻居收到其它路由器发来的LSA请求（LSR）之后，就知道对方需要哪些LSA，然后根据LSR，将完整的LSA内容全部发给邻居，以供计算路由表。</p>
-</li>
-<li><p>LSAck（Link-state Ack） 链路状态确认</p>
-<p>通知邻居已经收到其发送的LSA。</p>
-</li>
-</ol>
-<p><img src="/2021/04/23/ospf/ospf%E6%95%B0%E6%8D%AE%E5%8C%85%E5%B0%81%E8%A3%85.png" alt="ospf数据包封装"></p>
-<h2 id="OSPF-LSDB（链路状态数据库）同步过程"><a href="#OSPF-LSDB（链路状态数据库）同步过程" class="headerlink" title="OSPF LSDB（链路状态数据库）同步过程"></a>OSPF LSDB（链路状态数据库）同步过程</h2><p>路由器从启动OSPF进程，到根据链路状态数据库计算出路由表，同样需要经历一系列的启动过程，总共有8种可能的启动过程，但并不是一定会经历这8个过程，具体过程如下：</p>
-<p><strong>Down → Attempt → Init → Two-way → Exstart → Exchange → Loading → Full</strong></p>
-<h3 id="Down"><a href="#Down" class="headerlink" title="Down"></a>Down</h3><p>路由器刚刚启动OSPF进程，还没有从任何路由器收到任何数据包，Hello包也没有收到，在此进程，可以向外发送Hello包，以试图发现邻居。</p>
-<h3 id="Attempt"><a href="#Attempt" class="headerlink" title="Attempt"></a>Attempt</h3><p>因为OSPF使用组播发送数据包，如使用组播发送Hello包，如果Hello包不能发出去被其它路由器收到，就不能和其它路由器建立OSPF邻居；在一些组播不能发送的网络中，例如帧中继这样的非广播网络环境，组播不能够传递，在这种情况下，就需要指定OSPF使用单播向邻居发送Hello包，以此试图和指定的邻居建立OSPF邻居关系，在此状态下，OSPF称为Attempt状态。</p>
-<h3 id="Init"><a href="#Init" class="headerlink" title="Init"></a>Init</h3><p>只是OSPF路由器一方收到了另一方的Hello，但并没有双方都交换Hello，也就是对方的Hello中还没有将自己列为邻居。</p>
-<h3 id="Two-way"><a href="#Two-way" class="headerlink" title="Two-way"></a>Two-way</h3><p>双方都已经交换了Hello信息，并且从Hello中看到对方已经将自己列为邻居，此状态，就表示OSPF邻居关系已经建立，并且如果是需要选举DR和BDR的话，也已经选举出来，但OSPF邻居之间并不一定就会交换LSA，如果不需要交换LSA，则永远停留在此状态，如果需要形成邻接并互相交换LSA，则状态继续往下进行。（比如Drother与Drother之间将永远停留在Two-way状态，因为Drother与Drother之间不需要交换LSA。）</p>
-<p><img src="/2021/04/23/ospf/%E9%82%BB%E5%B1%85%E7%9A%84%E5%BB%BA%E7%AB%8B.png" alt="邻居的建立"></p>
-<h3 id="Exstart"><a href="#Exstart" class="headerlink" title="Exstart"></a>Exstart</h3><p>因为在OSPF邻居之间交换完整的LSA之前，会先发送Database Description Packets （DBD），Link-state Request （LSR）等数据包，邻居之间是谁先发，谁后发，需要确定顺序，在Exstart状态，就是确定邻居之间的主从关系（Master—Slave关系），Router-ID数字大的为主路由器，另一端为从路由器，由主路由器先向从路由器发送信息。在选举DR与BDR的网络环境中，并不一定DR就是主路由器，BDR就是从路由器，因为DR和BDR可以通过调整接口优先级来控制，所以DR也许是因为优先级比BDR高，而Router-ID并不比BDR高。</p>
-<blockquote>
-<p>在任何网络环境下，OSPF在交换LSA之前，都需要确定主从关系。</p>
-</blockquote>
-<h3 id="Exchange"><a href="#Exchange" class="headerlink" title="Exchange"></a>Exchange</h3><p>就是交换Database Description Packets （DBD）的过程，DBD只是LSA的简单描述，只包含LSA的一些头部信息，收到DBD的路由器会和自己的链路状态数据库作对比，确定需要哪些LSA的完整信息，就会发送LSR请求给邻居。</p>
-<p><img src="/2021/04/23/ospf/DBD%E6%8A%A5%E6%96%87%E4%BA%A4%E4%BA%92.png" alt="DBD报文交互"></p>
-<h3 id="Loading"><a href="#Loading" class="headerlink" title="Loading"></a>Loading</h3><p>邻居根据收到的LSR（Link-State Request），向对方回复Link-state update（LSU）。</p>
-<h3 id="Full"><a href="#Full" class="headerlink" title="Full"></a>Full</h3><p>等到OSPF都收到了邻居回复的所有Link-state update（LSU），那么此时的数据库状态就变成了收敛状态，此状态就是Full状态，但此时只是数据库已经同步，但路由表却还在计算当中。</p>
-<blockquote>
-<p>除了Two-way和Full这两个状态，邻居停留在任何状态，都是不正常。</p>
-</blockquote>
-<p><img src="/2021/04/23/ospf/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8C%E6%AD%A5.png" alt="LSDB同步"></p>
-<h2 id="OSPF网络类型（Network-Type）"><a href="#OSPF网络类型（Network-Type）" class="headerlink" title="OSPF网络类型（Network Type）"></a>OSPF网络类型（Network Type）</h2><p>OSPF是一个在各方面都考虑比较周全的路由协议，也会因此将该协议变得更为复杂化，OSPF并不像RIP与EIGRP那样，RIP与EIGRP在运行时，并不考虑OSI模型在二层所定义的内容，即并不关心二层的链路介质类型，而OSPF在运行时，必须考虑链路层的类型，称为OSPF网络类型（Network Type），对于不同二层介质类型，OSPF将有不同的操作和运行过程，网络类型，可分为如下几种：</p>
-<ul>
-<li>点到点（Point-To-Point）</li>
-<li>点到多点（Point-To-Multipoint ）</li>
-<li>广播（Broadcast ）</li>
-<li>非广播（Non-Broadcast ）</li>
-<li>点到多点非广播（Point-To-Multipoint Non-Broadcast）</li>
-</ul>
-<p>对于不同的网络类型，将会影响到OSPF的Hello时间与Dead时间，关系到DR与BDR的选举与否，影响到OSPF邻居是自动建立还是手工建立，总结如下:</p>
-<table>
-<thead>
-<tr>
-<th>网络类型</th>
-<th>Hello时间</th>
-<th>选举DR/BDR</th>
-<th>邻居建立方式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>点到点(p2p)</td>
-<td>10s</td>
-<td>否</td>
-<td>自动</td>
-</tr>
-<tr>
-<td>点到多点(p2mp)</td>
-<td>30s</td>
-<td>否</td>
-<td>自动</td>
-</tr>
-<tr>
-<td>广播(Boradcast)</td>
-<td>10s</td>
-<td>是</td>
-<td>自动</td>
-</tr>
-<tr>
-<td>非广播(Non-B)</td>
-<td>30s</td>
-<td>是</td>
-<td>手工</td>
-</tr>
-<tr>
-<td>点到多点非广播(p2mp-Non-B)</td>
-<td>30s</td>
-<td>否</td>
-<td>手工</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>OSPF网络类型（Network Type）是根据二层链路层的介质决定的，但也可以手工定义网络类型，因此可以在各类型之间手工切换。<br>OSPF邻居的成功建立，并不要求双方网络类型一致，但双方网络类型不一致，将可能导致链路状态数据库中的条目无法进入路由表。</p>
-</blockquote>
-<h2 id="OSPF链路类型（Link-Type）"><a href="#OSPF链路类型（Link-Type）" class="headerlink" title="OSPF链路类型（Link Type）"></a>OSPF链路类型（Link Type）</h2><p>OSPF确实因为考虑问题的全面，而导致路由协议的复杂，OSPF不仅因为不同的二层链路层介质定义了不同的OSPF网络类型（Network Type），还因为链路上的邻居，而定义了OSPF链路类型（Link Type） 。</p>
-<p>OSPF网络类型（Network Type）是完全根据二层链路层的介质决定的，而OSPF链路类型（Link Type）不仅受二层链路层介质的影响，还受到链路中OSPF邻居的影响，同时还影响到LSA，因此变得复杂。</p>
-<blockquote>
-<p>OSPF链路类型（Link Type）不会影响人们操作OSPF，所以可以选择不深入理解OSPF链路类型（Link Type），但OSPF网络类型（Network Type）却影响到OSPF的操作，OSPF网络类型（Network Type）必须理解和牢记。<br>OSPF链路类型（Link Type）与OSPF网络类型（Network Type）没有对应关系，没有因果关系.</p>
-</blockquote>
-<p>OSPF链路类型（Link Type）分为以下几种：</p>
-<h3 id="Stub-Network-Link"><a href="#Stub-Network-Link" class="headerlink" title="Stub Network Link"></a>Stub Network Link</h3><p>在一个网段中只有一台OSPF路由器的情况下，该网段被OSPF链路类型定义为Stub Network Link；因为一个网段中只有一台OSPF路由器，所以在这个网段就不可能有OSPF邻居，一个接口被通告进OSPF，无论其二层链路是什么介质，只要在该接口上没有OSPF邻居，那么就是Stub Network Link；Loopback接口永远被定义为Stub Network Link，默认使用32位掩码表示，无论将Loopback接口改为哪种OSPF网络类型（Network Type），始终改变不了它的OSPF链路类型（Link Type）属性，但可以改变它在LSA中的掩码长度。</p>
-<h3 id="Point-To-Point-Link"><a href="#Point-To-Point-Link" class="headerlink" title="Point-To-Point Link"></a>Point-To-Point Link</h3><p>OSPF网络类型（Network Type）为Point-To-Point的接口，OSPF链路类型（Link Type）为Point-To-Point Link，但Loopback接口除外；而网络类型为点到多点（Point-To-Multipoint）的接口，同样链路类型也为Point-To-Point Link。</p>
-<p>Point-To-Point Link可以是手工配置的地址（Numbered），也可以是借用的地址（Unnumbered），也可以是物理接口或逻辑子接口。</p>
-<h3 id="Transit-Link"><a href="#Transit-Link" class="headerlink" title="Transit Link"></a>Transit Link</h3><p>拥有两台或两台以上OSPF路由器的链路，简单理解为有邻居的OSPF接口就是Transit Link，但网络类型为Point-To-Point和点到多点（Point-To-Multipoint）的接口除外，因为它们被定义为Point-To-Point Link。</p>
-<h3 id="Virtual-link"><a href="#Virtual-link" class="headerlink" title="Virtual link"></a>Virtual link</h3><p>就是OSPF虚链路（Virtual Link），但希奇的是，虚链路（Virtual Link）被定义为手工配置的地址（Numbered）的Point-To-Point Link。</p>
-<h2 id="OSPF外部路由"><a href="#OSPF外部路由" class="headerlink" title="OSPF外部路由"></a>OSPF外部路由</h2><p>OSPF同其它路由协议一样，可以将其它外部协议的路由信息或其它OSPF进程的路由信息重分布进自己的域内，这样的路由在OSPF域内就是OSPF外部路由（External Route），在路由表中的表示方法和OSPF自己的路由会有所不同，因为OSPF外部路由可以分为两类，分为Type 2和Type  1，所以在路由表中分别表示为OE2和OE1。</p>
-<p>OE2与OE1在路由条目上没有任何区别，只是对于路由的Metric值计算有区别；类型为OE2的外部路由，在该路由进入OSPF之前的Metric值为多少，进入OSPF域后，所有OSPF路由器看到关于该路由的Metric值全部相同，不会再为该路由增加任何Metric值，OE2默认Metric值为20。而OE1的路由在OSPF路由器上的Metric值包含该路由进入OSPF域之前的Metric值，再加上在OSPF域内传递的Metric值，也就是到达外部路由的Metric值为到达ASBR的Metric值再加上进入OSPF域之前的Metric值之和，不同OSPF路由器看到OE1的路由的Metric值可能会有不同。如下图：<br> <img src="/2021/04/23/ospf/ospf%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B11.png" alt="ospf_oe1_oe2"><br>  在上图中，R5将EIGRP重分布进OSPF，如果使用OE2类型重分布进OSPF，并且取默认Metric值20，那么OSPF域内的路由器R1，R2，R3，R4，R5看到外部路由的Metric值全部都为20，不会有任何变化。如果使用OE1类型重分布进OSPF，并且取默认Metric值20，那么OSPF域内的路由器在计算Metric值时，还会在原有Metric值的基础上，再加上到达ASBR（R5）所需的Metric值，假设R1选择从R3到R5再到外部路由，那么R1到外部路由的Metric值为20+1+10=31，所以使用OE2时，R1到外部路由的Metric值为20，而在使用OE1时，R1到外部路由的Metric值为31。</p>
-<p>所以必须给每一个OSPF路由器定义一个身份，就相当于人的名字，这就是Router-ID，并且Router-ID在网络中绝对不可以有重名，否则路由器收到的链路状态，就无法确定发起者的身份，也就无法通过链路状态信息确定网络位置，OSPF路由器发出的链路状态都会写上自己的Router-ID，可以理解为该链路状态的签名，不同路由器产生的链路状态，签名绝不会相同。</p>
-<p>之前说过，每一台OSPF路由器都有一个Router-ID，在自己产生LSA时，都会在LSA中写上自己的Router-ID，表示LSA的身份，类似于签名，如果一台路由器收到一条链路状态，无法到达该Router-ID的位置，就无法到达链路状态中的目标网络。其实，在同区域内，每台OSPF路由器的Router-ID对于每一台路由器都是可达的，因为同区域内会有精确的LSA信息，包含Router-ID，但需要说明，同区域路由器的Router-ID并不是单独通过LSA来通告的，而是通过精确的LSA计算出来的，也就是说Router-ID的位置是推算出来的，但您放心，这不会有错；因为同区域路由器的Router-ID都有精确的路径信息，所以网络是通畅的，然而，不同区域的OSPF路由器，Router-ID是不知道的，也可以理解为Router-ID不会跨区域传递，那么是否就意味着不同区域的路由是不可达的呢？答案当然是可达的，只要同区域所有路由器可达，那么不同区域自然就是可达的，理由是，不同区域是通过ABR相连的，因为ABR连接着不同区域，所以只要各个区域路由器和ABR是通的，那么不同区域当然可以实现网络连通，所以，ABR在将一个区域的LSA转发至另一个区域时，产生该LSA的Router-ID就不再是原来的Router-ID，会被修改为ABR的Router-ID，这样一来，和ABR相通的路由器只要到达ABR，就能到达其它区域；如下图所示：<br> <img src="/2021/04/23/ospf/ospf%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B12.png" alt="ospf_abr"><br> 上图中，R2和R3是ABR，Area 0一定拥有全网的LSA，R2可以在Area 0与Area 2之间转发LSA，而R3可以在Area  0与Area 1之间转发LSA，但是对于其它区域的路由，R1无法到达，因为R1只有Area  2每台路由器的Router-ID，R4的情况同样如此；最终结果是，R2在将Area 0的LSA转发给Area  2时，已经将所有LSA的Router-ID改成了自己的，所以所有的路由对于R1来说，只要交给ABR（R2）即可，因为R2能够全网可达，在Area 1也是一样，R3在将Area 0的LSA转发给Area  1时，已经将所有LSA的Router-ID改成了自己的，所以所有的路由对于R4来说，只要交给ABR（R3）即可，由此可见，OSPF中，不同区域之间的路由互通，是由于ABR在转发区域是的LSA时，将LSA的Router-ID改成了自己的Router-ID，才使得该区域可以与其它区域通信，如果没有ABR这种自动修改Router-ID的行为，那么OSPF不同区域间将会无法通信。</p>
-<p>对于外部路由，执行重分布的路由器同样需要在LSA中写上自己的Router-ID，其实就是ASBR的Router-ID，因为外部路由会在多个OSPF区域之间传递，所以会被多个ABR转发，而ABR在转发外部路由的LSA时，是没有权限修改LSA的Router-ID，这样一来，外部路由的Router-ID在所有OSPF路由器上都不会改变，永远是ASBR的Router-ID，最终造成的结果是只有与ASBR同在一个区域的路由器才能到达外部路由，因为只有与ASBR同在一个区域的路由器才知道如何到达ASBR的Router-ID，而其它区域的路由器对此却无能为力；为了能够让OSPF所有区域都能与外部路由连通，在ABR将外部路由从ASBR所在的区域转发至其它区域时，需要发送单独的LSA来告知如何到达ASBR的Router-ID，因为ABR将外部路由的LSA告诉了其它区域，是有义务让它们与外部路由可达的，所以额外发送了单独的LSA来告知如何到达ASBR的Router-ID；从这里也可以看出，任何一个ASBR所在区域外的其它区域，都必须靠ABR通告一条通往ASBR 的Router-ID的LSA，此LSA就是后面将会详细解释的LSA 类型的第4类。如下图：<br> <img src="/2021/04/23/ospf/ospf%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B13.png" alt="ospf_asbr"></p>
-<p> 在上图中，因为ASBR（R4）将外部路由（EIGRP）重分布进OSPF后，自己的Router-ID对于Area  1的所有路由器是可达的，但对于Area 2和Area 0中的路由器是不可达的，所以在ABR将外部路由的LSA发向Area 0和Area  2时，会额外通过单独的LSA 4将ASBR（R4）的Router-ID发向这些区域。</p>
-<p>OSPF外部路由有许多是需要理解的地方，外部LSA的Forward  Address是一个其它LSA没有的特征，每一条外部LSA都带有一个Forward  Address，该地址是用来告诉收到此LSA的路由器如何到达外部路由，那么一条外部路由的LSA，Forward  Address究竟该是什么地址呢？在ASBR的路由表中，外部路由的下一跳地址是什么，那么在外部路由的LSA中Forward  Address就是什么，但是OSPF内部路由器是通过Forward Address来到达外部路由的，如果它们连这个Forward  Address都到达不了，比如Forward Address本身就是外部路由而不包含在OSPF进程中，那么可想而知，Forward  Address的意义等于0，所以，如果ASBR的路由表中，外部路由的下一跳地址是OSPF进程自己的路由，那么外部路由LSA的Forward  Address就是该地址，所有OSPF内部路由器则通过该地址去往外部路由，但如果ASBR的路由表中，外部路由的下一跳地址不在OSPF进程中，那么该地址对于其它所有OSPF路由器都不可达，这时，ASBR就将外部路由LSA的Forward Address设置为0.0.0.0，当Forward  Address为0.0.0.0时，所有OSPF路由器通过外部LSA的Router-ID去往外部路由；如下图所示：<br> <img src="/2021/04/23/ospf/ospf%E5%A4%96%E9%83%A8%E8%B7%AF%E7%94%B14.png" alt="ospf_forward_address"><br>  在上图中，当R5（ASBR）将外部路由EIGRP重分布进OSPF时，因为R5到达外部路由的下一跳地址是56.1.1.6，如果该地址的网段被通告进OSPF进程，那么此时外部路由的Forward  Address就是56.1.1.6，所有OSPF路由器通过去往地址56.1.1.6来去往外部路由；但如果该地址并不在OSPF进程中，那么外部路由的Forward Address就是0.0.0.0，则所有OSPF路由器通过去往ASBR（R5）的Router-ID去往外部路由。</p>
-<blockquote>
-<p><strong>重分布外部路由时，默认类型为O E2，如果通过两个ASBR能到达相同的外部路由，选择O E1的优先，其次是O  E2，但如果都为O E1或O E2，则选择到达Forward Address最小Metric的路径优先，如果Forward  Address都为0.0.0.0，最后选择到达ASBR最小Metric的路径优先，但如果Forward  Address地址一个为0.0.0.0，一个为真实地址，统一比较到ASBR的Metric。</strong></p>
-</blockquote>
-<h2 id="OSPF末节区域"><a href="#OSPF末节区域" class="headerlink" title="OSPF末节区域"></a>OSPF末节区域</h2><p>如果路由增加，就意味着LSA的增加，有时，在一个末梢网络中，许多路由信息是多余的，并不需要通告进来，因为一个OSPF区域内的所有路由器都能够通过该区域的ABR去往其它OSPF区域或者OSPF以外的外部网络，既然一个区域的路由器只要知道去往ABR，就能去往区域外的网络，所以可以过滤掉区域外的路由进入某个区域，这样的区域称为OSPF末节区域（Stub Area）；一个末节区域的所有路由器虽然可以从ABR去往区域外的网络，但路由器上还是得有指向ABR的路由，所以末节区域的路由器只需要有默认路由，而不需要明细路由，即可与区域外的网络通信，根据末节区域过滤掉区域外的不同路由，可将末节区域分为如下四类：</p>
-<ul>
-<li>Stub Area（末节区域）</li>
-<li>Totally Stub Area（完全末节区域）</li>
-<li>Not-so-Stubby Area（NSSA）</li>
-<li>Totally Not-so-Stubby Area（Totally NSSA）</li>
-</ul>
-<p>各类型的特征如下：</p>
-<h3 id="Stub-Area（末节区域）"><a href="#Stub-Area（末节区域）" class="headerlink" title="Stub Area（末节区域）"></a>Stub Area（末节区域）</h3><p>在Stub Area（末节区域）下，ABR将过滤掉所有外部路由进入末节区域，同时，末节区域内的路由器也不可以将外部路由重分布进OSPF进程，即末节区域内的路由器不可以成为ASBR，但其它OSPF区域的路由（Inter-Area Route）可以进入末节区域，由于没有去往外部网络的路由，所以ABR会自动向末节区域内发送一条指向自己的默认路由，如下图：</p>
-<p><img src="/2021/04/23/ospf/StubArea.png" alt="Stub Area"></p>
-<h3 id="Totally-Stub-Area（完全末节区域）"><a href="#Totally-Stub-Area（完全末节区域）" class="headerlink" title="Totally Stub Area（完全末节区域）"></a>Totally Stub Area（完全末节区域）</h3><p>在Totally Stub Area（完全末节区域）下，ABR将过滤掉所有外部路由和其它OSPF区域的路由（Inter-Area Route）进入完全末节区域，同时，末节区域内的路由器也不可以将外部路由重分布进OSPF进程，即完全末节区域内的路由器不可以成为ASBR，由于没有去往外部网络的路由，所以ABR会自动向完全末节区域内发送一条指向自己的默认路由，如下图：</p>
-<p><img src="/2021/04/23/ospf/TotallyStubArea.png" alt="Totally Stub Area"></p>
-<blockquote>
-<p>可以发现，末节区域与完全末节区域的不同之处在于，末节区域可以允许其它OSPF区域的路由（Inter-Area Route）进入，而完全末节区域却不可以。</p>
-</blockquote>
-<h3 id="Not-so-Stubby-Area（NSSA）"><a href="#Not-so-Stubby-Area（NSSA）" class="headerlink" title="Not-so-Stubby Area（NSSA）"></a>Not-so-Stubby Area（NSSA）</h3><p>在Not-so-Stubby Area（NSSA）下，ABR将过滤掉所有外部路由进入末节区域，同时也允许其它OSPF区域的路由（Inter-Area Route）进入NSSA区域，并且路由器还可以将外部路由重分布进OSPF进程，即NSSA区域内的路由器可以成为ASBR，由于自身可以将外部网络的路由重分布进OSPF进程，所以ABR不会自动向NSSA区域内发送一条指向自己的默认路由，但可以手工向NSSA域内发送默认路由，并且只可在ABR上发送默认路由；如下图：</p>
-<p><img src="/2021/04/23/ospf/Not-so-StubbyArea.png" alt="Not-so-Stubby Area"></p>
-<blockquote>
-<p>NSSA与末节区域的最大区别在于，NSSA区域可以允许自身将外部路由重分布进OSPF，而末节区域则不可以。</p>
-</blockquote>
-<h3 id="Totally-Not-so-Stubby-Area（Totally-NSSA）"><a href="#Totally-Not-so-Stubby-Area（Totally-NSSA）" class="headerlink" title="Totally Not-so-Stubby Area（Totally NSSA）"></a>Totally Not-so-Stubby Area（Totally NSSA）</h3><p>在Totally Not-so-Stubby Area（Totally NSSA）下，ABR将过滤掉所有外部路由和其它OSPF区域的路由（Inter-Area Route）进入Totally NSSA区域，但路由器可以将外部路由重分布进OSPF进程，即Totally NSSA区域内的路由器可以成为ASBR，由于没有去往其它OSPF区域的路由，所以ABR会自动向Totally NSSA内发送一条指向自己的默认路由，如下图：</p>
-<p><img src="/2021/04/23/ospf/TotallyNot-so-StubbyArea.png" alt="Totally Not-so-Stubby Area"></p>
-<blockquote>
-<p>Totally NSSA与NSSA的区别在于，NSSA区域可以允许其它OSPF区域的路由（Inter-Area Route）进入，而Totally NSSA区域却不可以，但Totally NSSA区域的ABR会自动向Totally NSSA区域内发送一条指向自己的默认路由。</p>
-</blockquote>
-<p><strong>总结各区域的特征如下：</strong></p>
-<table>
-<thead>
-<tr>
-<th>区域类型</th>
-<th>接收区域间路由</th>
-<th>ABR是否发送默认路由</th>
-<th>是否可以重分布外部路由</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Stub Area</td>
-<td>是</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td>Totally Stub Area</td>
-<td>否</td>
-<td>是</td>
-<td>否</td>
-</tr>
-<tr>
-<td>NSSA</td>
-<td>是</td>
-<td>否</td>
-<td>是</td>
-</tr>
-<tr>
-<td>Totally NSSA</td>
-<td>否</td>
-<td>是</td>
-<td>是</td>
-</tr>
-</tbody></table>
-<blockquote>
-<ul>
-<li>在末节区域下，ABR自动发出的默认路由，Metric值默认为1，可通过命令area area-id default-cost cost修改，默认路由除了默认的Cost值以外，还会累加真实接口的Cost值。</li>
-</ul>
-</blockquote>
-<ul>
-<li>骨干区域不能配置为任何末节区域。</li>
-<li>当将某个区域配置为末节区域后，则区域中所有路由器都必须配置为末节区域，因为配置为末节区域的路由器上所有接口发出的Hello包中都会有末节标签，所有如果对方没有末节标签，则不能成为邻居。</li>
-</ul>
-<h2 id="OSPF-LSA类型"><a href="#OSPF-LSA类型" class="headerlink" title="OSPF LSA类型"></a>OSPF LSA类型</h2><p>OSPF由于有着多种区域类型，多种网络类型，多种链路类型，多种路由器身份，所以LSA（Link-State Advertisements）也是多样的。<br>在详细讲解LSA之前，需要重点说明，只有同一个区域内的LSA，才是精确的，区域外的LSA，并不一定包含所有必备的信息，因此，所有LSA知识信息，并不一定可以套用到每一类LSA。</p>
-<p>OSPF中共有11类LSA，而在CCIE的要求中，只需要理解1、2、3、4、5、7共6类即可，这些LSA会因为区域类型，网络类型，链路类型，路由器身份的不同而不同，以下是详细介绍：</p>
-<h3 id="类型-1-（Router-Link）"><a href="#类型-1-（Router-Link）" class="headerlink" title="类型 1 （Router Link）"></a>类型 1 （Router Link）</h3><p>类型1的LSA是任何一台OSPF路由器都会产生的，每一台OSPF路由器的每一个OSPF接口都会有自己的链路状态，但是每台OSPF路由器只能产生一条类型1的LSA，即使有多个OSPF接口，也只有一条类型1的LSA，因为所有OSPF接口的链路状态是被打包成一条类型1的LSA发送的。<br>一个区域正是由于LSA 1的存在，才有精确的路由表，一个区域如果只有LSA 1，同样可以正常通信。LSA 1 只能在单个区域内传递，ABR不能将LSA 1转到发另外一个区域，并且没有任何权利修改LSA 1。</p>
-<h3 id="类型-2-（Network-Link）"><a href="#类型-2-（Network-Link）" class="headerlink" title="类型 2 （Network Link）"></a>类型 2 （Network Link）</h3><p>类型2的LSA只有在需要选举DR/BDR的网络类型中才会产生，并且只是DR产生，BDR没有权利产生，LSA 2与LSA 1没有任何关联，没有任何依存关系，是相互独立的。</p>
-<h3 id="类型-3-（Summary-Link）"><a href="#类型-3-（Summary-Link）" class="headerlink" title="类型 3 （Summary Link）"></a>类型 3 （Summary Link）</h3><p>类型3的LSA就是将一个区域的LSA发向另一个区域时的汇总和简化，ABR其实就是将LSA 1汇总和简化，变成LSA 3后再发到另一个区域的，如果是详细完整的LSA 1，是绝不允许的，LSA 3是LSA 1的缩略版。</p>
-<h3 id="类型-4-（ASBR-Summary-Link）"><a href="#类型-4-（ASBR-Summary-Link）" class="headerlink" title="类型 4 （ASBR Summary Link）"></a>类型 4 （ASBR Summary Link）</h3><p>对于外部路由，执行重分布的路由器ASBR在LSA中写上自己的Router-ID，然后传递到多个OSPF区域，所以会被多个ABR转发，而ABR在转发外部路由的LSA时，是没有权限修改LSA的Router-ID，这样一来，外部路由的Router-ID在所有OSPF路由器上都不会改变，永远是ASBR的Router-ID，最终造成的结果是只有与ASBR同在一个区域的路由器才能到达外部路由，因为只有与ASBR同在一个区域的路由器才知道如何到达ASBR的Router-ID，而其它区域的路由器对此却无能为力；为了能够让OSPF所有区域都能与外部路由连通，在ABR将外部路由从ASBR所在的区域转发至其它区域时，需要发送单独的LSA来告知如何到达ASBR的Router-ID，因为ABR将外部路由的LSA告诉了其它区域，是有义务让它们与外部路由可达的，所以额外发送了单独的LSA来告知如何到达ASBR的Router-ID；这个单独的LSA就是类型4的LSA，LSA 4是包含的ASBR 的Router-ID，只要不是ASBR所在的区域，都需要ABR发送LSA 4来告知如何去往ASBR。</p>
-<h3 id="类型-5-（External-Link）"><a href="#类型-5-（External-Link）" class="headerlink" title="类型 5 （External Link）"></a>类型 5 （External Link）</h3><p>类型5的LSA就是外部路由重分布进OSPF时产生的，并且是由ASBR产生的，LSA中包含ASBR的Router-ID，任何路由器都不允许更改该Router-ID，LSA 5中还包含Forward Address，对于LSA 5 的Metric值计算与选路规则也有所不同，详细信息请见OSPF外部路由部分。</p>
-<h3 id="类型-7-（NSSA-Link）"><a href="#类型-7-（NSSA-Link）" class="headerlink" title="类型 7 （NSSA Link）"></a>类型 7 （NSSA Link）</h3><p>因为NSSA区域可以将外部路由重分布进OSPF进程，而NSSA不是一般的常规区域，所以在NSSA将外部路由重分布进OSPF时，路由信息使用类型7来表示，LSA 7由NSSA区域的ASBR产生，LSA 7也只能在NSSA区域内传递，如果要传递到NSSA之外的其它区域，需要同时连接NSSA与其它区域的ABR将LSA 7 转变成LSA 5后再转发。</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>范围</th>
-<th>通告者</th>
-<th>携带的信息</th>
-<th>link-id</th>
-<th>通告者ID</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>LSA1 router</td>
-<td>设备所在区域</td>
-<td>该区域的每台设备</td>
-<td>本地直连拓扑</td>
-<td>通告者的RID</td>
-<td>该区域的每台设备</td>
-</tr>
-<tr>
-<td>LSA2 network</td>
-<td>设备所在区域</td>
-<td>DR</td>
-<td>MA网段部分的拓扑</td>
-<td>DR的接口ip</td>
-<td>DR的RID</td>
-</tr>
-<tr>
-<td>LSA3 Summary</td>
-<td>整个OSPF域</td>
-<td>ABR</td>
-<td>O IA 域间路由</td>
-<td>O IA 路由条目的网络号</td>
-<td>ABR；经过下一台ABR时，修改为新的ABR RID</td>
-</tr>
-<tr>
-<td>LSA4 asbr-summary</td>
-<td>ASBR所在区域外的整个OSPF域</td>
-<td>ABR</td>
-<td>ASBR位置</td>
-<td>ASBR RID</td>
-<td>ABR（与ASBR在同一区域）经过下一台ABR时，修改为</td>
-</tr>
-<tr>
-<td>LSA5 External</td>
-<td>整个OSPF域</td>
-<td>ASBR</td>
-<td>O E1/2 域外路由</td>
-<td>O E1/2 路由条目的网络号</td>
-<td>ASBR-默认在传播过程中不修改</td>
-</tr>
-<tr>
-<td>LSA7nssa-external</td>
-<td>单个NSSA区域</td>
-<td>ASBR</td>
-<td>O N1/2域外路由</td>
-<td>O N1/2路由条目的网络号</td>
-<td>ASBR-在传递出该NSSA区域后，被新的ASBR转换为5类</td>
-</tr>
-</tbody></table>
-<h2 id="OSPF虚链路（Virtual-Link）"><a href="#OSPF虚链路（Virtual-Link）" class="headerlink" title="OSPF虚链路（Virtual Link）"></a>OSPF虚链路（Virtual Link）</h2><p>因为OSPF采用了区域化的设计，并且区域也采用了Hub-Spoke的架构，所有区域中定义出一个核心，然后其它部分都与核心相连，OSPF的区域0就是所有区域的核心，称为BackBone 区域（骨干区域），而其它Normal 区域（常规区域）应该直接和骨干区域相连，常规区域只能和骨干区域交换LSA，常规区域与常规区域之间即使直连也无法互换LSA，但在某些情况下，某些常规区域无法与骨干区域直连，这时便无法得到其它区域的路由，因此，设计了将骨干区域的范围通过虚拟的方法进行扩展到相邻常规区域的位置，因而让不能直接与骨干区域相连的区域，最终可以与骨干区域直连，这种对骨干虚拟的扩展和拉伸就是OSPF虚链路（Virtual Link）能实现的；因为某些常规区域不能与骨干区域直连而只能与其它常规区域直连，所以OSPF虚链路（Virtual Link）通过将相邻的常规区域虚拟为骨干区域，从而让那些不能与骨干区域直连的常规区域也能获得其它OSPF区域的路由。与骨干区域相邻的常规区域被扩展后，该区域被称为Transit Area，理论上Transit Area不应该为末节区域；在扩展后，原本为常规区域的Transit Area，将变成骨干区域，所以路由将从Inter-Area Route转变为Intra-Area Route，路由表示形式也将从O IA改变为O的形式；在进行OSPF虚链路扩展时，是将Transit Area中与骨干区域直连的ABR和连接另一个常规区域的ABR相连，连接这两个ABR时，使用双方的Router-ID来连接。如下图：</p>
-<p><img src="/2021/04/23/ospf/VirtualLink1.png" alt="Virtual Link1"></p>
-<p>在上图中，区域2只能与区域1直连，而无法与骨干区域直连，在这种情况下，由于常规区域与常规区域之间即使直连也无法互换LSA，所以R3虽然是ABR，但因为没有连接骨干区域，最后不可能将任何区域的LSA发进区域2，最终导致区域2无法外其它区域通信，在这种情况下，需要通过OSPF虚链路将骨干区域的范围扩展到相邻的区域1，如下图：</p>
-<p><img src="/2021/04/23/ospf/VirtualLink2.png" alt="Virtual Link2"></p>
-<p>在进行OSPF虚链路扩展后，区域1被虚拟成了骨干区域，而这时的R3等同于连接骨干区域和区域2的ABR，所以可以将自己所有的LSA发进区域2。在扩展OSPF虚链路时，是通过连接R2（ABR）与R3（ABR）的Router-ID 来建立的。<br>因为OSPF虚链路（Virtual Link）能将骨干区域扩展到相邻的常规区域，从而将常规区域虚拟为骨干区域，所以在某些情况下，如公司合并，或者为了备份骨干区域，可能出现骨干区域被常规区域所隔离，如下图：</p>
-<p><img src="/2021/04/23/ospf/VirtualLink3.png" alt="Virtual Link3"></p>
-<p>图中骨干区域被区域1分割为两部分，将使得骨干区域自己的路由无法相互传递，在使用OSPF虚链路后，可以将区域1也扩展为骨干区域，如下图：</p>
-<p><img src="/2021/04/23/ospf/VirtualLink4.png" alt="Virtual Link4"></p>
-<p>在经过OSPF虚链路将区域1也扩展为骨干区域后，可见所有的区域都变成了骨干区域，从而使网络中骨干区域能够收到另外一边被分割的骨干区域的路由，并且最后骨干区域自己的路由都为Intra-Area Route，但Area 1与骨干区域的路由将仍然为O IA。</p>
-<blockquote>
-<p>OSPF虚链路必须是在两个拥有共同区域的ABR之间建立的，其中必须至少有一个ABR是连接骨干的。<br>OSPF虚链路被认为是骨干区域的一个接口，一条链路，也需要建立OSPF邻居，但在邻居建立之后，链路上是没有Hello包传递的。</p>
-</blockquote>
-<h2 id="OSPF认证"><a href="#OSPF认证" class="headerlink" title="OSPF认证"></a>OSPF认证</h2><p>同RIP和EIGRP一样，出于安全考虑，OSPF也使用了认证，OSPF同时支持明文和MD5认证，在启用OSPF认证后，Hello包中将携带密码，双方Hello包中的密码必须相同，才能建立OSPF邻居关系，需要注意，空密码也是密码的一种。</p>
-<p>当OSPF邻居的一方在接口上启用认证后，从该接口发出的Hello包中就会带有密码，双方的Hello包中拥有相同的密码时，邻居方可建立；一台OSPF路由器可能有多个OSPF接口，也可能多个接口在多个OSPF区域，只要在接口上输入OSPF认证的命令后，便表示开启了OSPF认证，可以在每个接口上一个一个启用，也可以一次性开启多个接口的认证，如果需要开启多个接口的认证功能，那么认证的命令就并非直接在接口上输入，而是到OSPF进程模式下输入，并且是对某个区域全局开启的，当在进程下对某个区域开启OSPF认证后，就表示在属于该区域的所有接口上开启了认证。所以，在进程下对区域配置认证，是快速配置多个接口认证的方法，与在多个接口上一个一个开启，没有本质区别。因为OSPF虚链路被认为是骨干区域的一个接口，一条链路，所以在OSPF进程下对骨干区域开启认证后，不仅表示开启了区域0下所有接口的认证，同时也开启了OSPF虚链路的认证，但OSPF虚链路在建立后，并没有Hello包的传递，所以认证在没有重置OSPF进程的情况下，是不会生效的。</p>
-<h2 id="OSPF汇总路由"><a href="#OSPF汇总路由" class="headerlink" title="OSPF汇总路由"></a>OSPF汇总路由</h2><p>在OSPF同区域内，LSA是绝对不允许以任何形式或任何手段更改的，但在一个区域与另一个区域之间，LSA可以被ABR修改后传递，从而得知，在同一个区域内，OSPF路由是不能被汇总的，而是当路由从一个区域被ABR转发到另外一个区域时，就可以执行路由汇总，并且汇总必须是在ABR上执行的，但该汇总不对OSPF外部路由生效；在将外部路由重分布进OSPF时，也可以执行路由汇总，此时的汇总必须在ASBR上配置。<br>为了防止路由黑洞，需要在执行路由汇总的路由器上将汇总由指向空接口（null0），在IOS 12.1(6)以后的版本，配置汇总后会自动产生指向空接口的路由，但在IOS 12.1(6)及以前的版本需要手工创建。</p>
-<blockquote>
-<p>OSPF RFC (1583)并没有规定一个区域适合多少台路由器，一个网段多少个邻居，或如何布署网络。</p>
-</blockquote>
-<h2 id="OSPF命令配置"><a href="#OSPF命令配置" class="headerlink" title="OSPF命令配置"></a>OSPF命令配置</h2><ol>
-<li>(系统视图）创建并运行OSPF进程</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ospf [ process-id \ router-id router-id ]</span><br></pre></td></tr></table></figure>
-
-<p>porcess-id用于标识OSPF进程，默认进程号为1。OSPF支持多进程，在同一台设备上可以运行多个不同的OSPF进程，它们之间互不影响，彼此独立。router-id用于手工指定设备的ID号。如果没有通过命令指定ID号，系统会从当前接口的IP地址中自动选取一个作为设备的ID号。</p>
-<ol start="2">
-<li>( OSPF视图）创建并进入OSPF区域</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] area area-id</span><br></pre></td></tr></table></figure>
-
-<p>area命令用来创建OSPF区域，并进入OSPF区域视图。<br>area-id可以是十进制整数或点分十进制格式。采取整数形式时，取值范围是0~4294967295。</p>
-<ol start="3">
-<li><p>(OSPF区域视图）指定运行OSPF的接口</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ospf-1-area-0.0.0.0] network network-address wildcard-mask</span><br></pre></td></tr></table></figure>
-
-<p>network命令用来指定运行OSPF协议的接口和接口所属的区域。network-address为接口所在的网段地址。wildcard-mask为IP地址的反码，相当于将IP地址的掩码反转（0变1，1变0)，例如0.0.0.255表示掩码长度24 bit。</p>
-</li>
-<li><p>（接口视图）配置OSPF接口开销</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GE1&#x2F;0&#x2F;1] ospf cost cost</span><br></pre></td></tr></table></figure>
-<p>ospf cost命令用来配置接口上运行OSPF协议所需的开销。缺省情况下，OSPF会根据该接口的带宽自动计算其开销值cost取值范围是1~65535。</p>
-</li>
-<li><p>(OSPF视图）设置OSPF带宽参考值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ospf-1] bandwidth-reference value</span><br></pre></td></tr></table></figure>
-<p>bandwidth-reference命令用来设置通过公式计算接口开销所依据的带宽参考值。value取值范围是1~2147483648,单位是Mbit/s，缺省值是100Mbit/s。</p>
-</li>
-<li><p>（接口视图)设置接口在选举DR时的优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] ospf dr-priority priority</span><br></pre></td></tr></table></figure>
-<p>ospf dr-priority命令用来设置接口在选举DR时的优先级。priority值越大，优先级越高，取值范围是0~255。缺省为1，值为0代表不参与选举。</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/21/stp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/21/stp/" itemprop="url">STP</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-21T21:00:22+08:00">
-                2021-04-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-STP协议概述"><a href="#1-STP协议概述" class="headerlink" title="1.STP协议概述"></a>1.STP协议概述</h3><h5 id="生成树协议产生背景"><a href="#生成树协议产生背景" class="headerlink" title="生成树协议产生背景"></a>生成树协议产生背景</h5><p>生成树协议STP（Spanning Tree Protocol)可以在提高可靠性的同时又能避免环路带来的各种问题。</p>
-<p>现网中越来越多的交换机与主机之间互联，如果交换机之间仅使用一条链路进行连接，链路出现故障时，可能导致业务中断。因此使用冗余链路来防止单点故障产生导致网络中断，但引入冗余链路的时候，也引入环路。当然，环路的产生也有可能是人为误操作造成的（如将链路连到本交换机上），因此提出了STP协议用于破除交换机之间的环路，来保证交换机设备的安全和网络可靠性。</p>
-<h5 id="环路带来的问题"><a href="#环路带来的问题" class="headerlink" title="环路带来的问题"></a>环路带来的问题</h5><ol>
-<li><p>网络风暴</p>
-<p>根据交换机的转发原则，如果交换机从一个端口上接收到的是一个广播帧，或者是一个目的MAC地址未知的单播帧，则会将这个帧向除源端口之外的所有其他端口转发。如果交换网络中有环路，则这个帧会被无限转发，此时便会形成广播风暴，网络中也会充斥着重复的数据帧。如下图主机A给主机B发送单播帧，SWB的MAC表上没有目的MAC地址为主机B的地址，因此将从其它两个端口发出，结果将造成两个方向的环路第一条为B-A-C-B，第二条为B-C-A-B，SWB将收到两个相同的单播帧，若MAC表不改变，则循环将一次循环，将造成网络风暴，导致网络带宽占用或设备损坏。若主机A发送广播帧同理。</p>
-<p><img src="/2021/04/21/stp/%E7%BD%91%E7%BB%9C%E9%A3%8E%E6%9A%B4.png" alt="网络风暴"></p>
-</li>
-<li><p>MAC地址表震荡</p>
-<p>交换机是根据所接收到的数据帧的源地址和接收端口生成MAC地址表项的。 主机A向外发送一个单播帧，假设此单播帧的目的MAC地址在网络中所有交换机的MAC地址表中都暂时不存在。SWB收到此数据帧之后，在MAC地址表中生成一个MAC地址表项，00-01-02-03-04-AA，对应端口为G0/0/3，并将其从G0/0/1和G0/0/2端口转发。此例仅以SWB从G0/0/1端口转发此帧为例进行说明。 SWA接收到此帧后，由于MAC地址表中没有对应此帧目的MAC地址的表项，所以SWA会将此帧从G0/0/2转发出去。 SWC接收到此帧后，由于MAC地址表中也没有对应此帧目的MAC地址的表项，所以SWC会将此帧从G0/0/2端口发送回SWB，也会发给主机B。 SWB从G0/0/2接口接收到此数据帧之后，会在MAC地址表中删除原有的相关表项，生成一个新的表项，00-01-02-03-04-AA，对应端口为G0/0/2。此过程会不断重复，从而导致MAC地址表震荡。        </p>
-<p><img src="/2021/04/21/stp/MAC%E5%9C%B0%E5%9D%80%E5%81%8F%E7%A7%BB.png" alt="MAC地址表震荡"></p>
-</li>
-</ol>
-<h3 id="2-STP协议BUPD报文"><a href="#2-STP协议BUPD报文" class="headerlink" title="2.STP协议BUPD报文"></a>2.STP协议BUPD报文</h3><p>为了计算生成树，交换机之间需要交换相关的信息和参数，这些信息和参数被封装在BPDU（Bridge Protocol Data Unit，网桥协议数据单元）中。 </p>
-<ul>
-<li><p>BPDU有两种类型：</p>
-<ul>
-<li><p>配置BPDU (Configuration BPDU)</p>
-<p>配置BPDU包含了桥ID、路径开销和端口ID等参数。STP协议通过在交换机之间传递配置BPDU来选举根交换机，以及确定每个交换机端口的角色和状态。在初始化过程中，每个桥都主动发送配置BPDU。</p>
-<p>在网络拓扑稳定以后，只有根桥主动发送配置BPDU，其他交换机在收到上游传来的配置BPDU后，才会发送自己的配置BPDU。</p>
-</li>
-<li><p>TCN BUPD (Topology Change Notification BUPD)    </p>
-<p>TCN BPDU是指下游交换机感知到拓扑发生变化时向上游发送的拓扑变化通知。 </p>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="BPDU报文字段相关概念"><a href="#BPDU报文字段相关概念" class="headerlink" title="BPDU报文字段相关概念"></a>BPDU报文字段相关概念</h5><ol>
-<li><p>BID(Bridge ID,桥ID)</p>
-<ul>
-<li><p>IEEE 802.1D标准中规定BID由16位的桥优先级（ Bridge Priority )与桥MAC地址构成。</p>
-<p>桥优先级（取值范围0～65535），默认值为32768，步长为4096。</p>
-</li>
-<li><p>每一台运行STP的交换机都拥有一个唯一的BID。</p>
-</li>
-<li><p>BID桥优先级占据高16bit，其余的低48bit是桥MAC地址。在STP网络中，BID最小的设备会被选举为根桥。</p>
-</li>
-</ul>
-</li>
-<li><p>RPC(Root Path cost,根路径开销)</p>
-<p>一台设备从某个接口到达根桥的RPC等于从根桥到该设备沿途所有<strong>入方向</strong>接口的Cost累加。</p>
-<p>或者是从该设备到根桥沿途所有<strong>出方向</strong>接口的Cost累加。</p>
-<p><img src="/2021/04/21/stp/RPC%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png" alt="RPC计算方法"></p>
-<p>cost(开销):交换机上每个接口都有对应的cost值</p>
-<ul>
-<li><p>接口的Cost主要用于计算根路径开销，也就是到达根的开销。</p>
-</li>
-<li><p>接口的缺省Cost除了与其速率、工作模式有关，还与交换机使用的STP Cost计算方法有关。</p>
-</li>
-<li><p>接口带宽越大，则Cost值越小。</p>
-</li>
-<li><p>用户也可以根据需要通过命令调整接口的Cost。</p>
-</li>
-</ul>
-<p><img src="/2021/04/21/stp/Cost%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95.png" alt="cost计算方法" title="cost计算方法"></p>
-</li>
-<li><p>PID(Port ID,接口ID)</p>
-<ul>
-<li>接口ID由两部分构成的，高8 bit是接口优先级，低8 bit是接口编号。</li>
-<li>激活STP的接口会维护一个缺省的接口优先级（取值范围0到240），在华为交换机上，该值为128，步长为16。</li>
-</ul>
-</li>
-<li><p>Flags</p>
-<p>由8位组成。最低位为TC（Topology Change）标志位，最高位位TCA（Topology Change Acknowledge）标志位；其他6位保留。</p>
-</li>
-<li><p>Message Age</p>
-<p>从根桥发送到当前交换机接收到BPDU的总时间，包括传输延时等。如果配置BPDU是根桥发出的，则Message Age为0。实际实现中，配置BPDU报文每经过一个交换机，Message Age增加1。</p>
-</li>
-<li><p>Max Age</p>
-<p>最大寿命，当一段时间未收到任何BPDU，生存期到达最大寿命时，网桥认为该接口连接的链路发生故障。默认20s。</p>
-<p>可在根桥上通过命令人为改动这个值，Max Age通过配置BPDU报文的传递，可以保证Max Age在整网中一致。非根桥设备收到配置BPDU报文后，会将报文中的Message Age和Max Age进行比较：如果Message Age小于等于Max Age，则该非根桥设备会继续转发配置BPDU报文。如果Message Age大于Max Age，则该配置BPDU报文将被老化掉。该非根桥设备将直接丢弃该配置BPDU，并认为是网络直径过大，导致了根桥连接失败。</p>
-</li>
-<li><p>Hello Time</p>
-<p>根桥生成配置BPDU的周期，默认时间为2s，指运行STP协议的设备发送配置BPDU的时间间隔，用于检测链路是否存在故障。交换机每隔Hello Time时间会向周围的交换机发送配置BPDU报文，以确认链路是否存在故障。当网络拓扑稳定后，该值只有在根桥上修改才有效。</p>
-</li>
-<li><p>Forward Delay</p>
-<p>端口状态迁移的延时。（配置BPDU传播到全网的最大时延，默认为15s）</p>
-</li>
-</ol>
-<h5 id="配置BPDU报文格式"><a href="#配置BPDU报文格式" class="headerlink" title="配置BPDU报文格式"></a>配置BPDU报文格式</h5><p><img src="/2021/04/21/stp/%E9%85%8D%E7%BD%AEBPDU%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png"></p>
-<h5 id="配置BPDU转发过程"><a href="#配置BPDU转发过程" class="headerlink" title="配置BPDU转发过程"></a>配置BPDU转发过程</h5><p><img src="/2021/04/21/stp/%E9%85%8D%E7%BD%AEBPDU%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.png" alt="配置BPDU转发过程"></p>
-<h3 id="3-STP根桥和端口角色"><a href="#3-STP根桥和端口角色" class="headerlink" title="3.STP根桥和端口角色"></a>3.STP根桥和端口角色</h3><h5 id="根桥"><a href="#根桥" class="headerlink" title="根桥"></a>根桥</h5><ul>
-<li>在一个广播域中有且只有一个根桥（Root Bridge）</li>
-<li>STP的主要作用之一是在整个交换网络中计算出一棵无环的“树”( STP树)</li>
-<li>根桥是一个STP交换网络中的“树根”</li>
-<li>STP开始工作后，会在交换网络中选举一个根桥，作为无环拓扑的“树根”</li>
-</ul>
-<h5 id="端口角色"><a href="#端口角色" class="headerlink" title="端口角色"></a>端口角色</h5><p>STP中定义了三种端口角色：指定端口，根端口和预备端口。 </p>
-<ul>
-<li><p>指定端口(Designated port,DP)</p>
-<p>非根桥去往根桥开销最小的接口，接收BPDU，转发数据，学习MAC</p>
-<p>指定端口是交换机向所连网段转发配置BPDU的端口，每个网段有且只能有一个指定端口。</p>
-<p>一般情况下(除非根桥在物理上存在环路)，根桥的每个端口总是指定端口。</p>
-</li>
-<li><p>根端口(Root port,RP)</p>
-<p>链路上去往根桥开销最小的接口，发送BPDU，转发数据，学习MAC</p>
-<p>在一个运行STP协议的交换机上最多只有一个根端口，但根桥上没有根端口。</p>
-</li>
-<li><p>非指定端口(Non-designated port,N-DP)</p>
-<p>非根桥去往根桥开销次优的接口，接收BPDU，不转发数据，不学习MAC，RP的备份接口</p>
-<p>如果一个端口既不是指定端口也不是根端口，则此端口为预备端口。预备端口将被阻塞。                                                                                                     </p>
-</li>
-</ul>
-<h3 id="4-STP工作过程"><a href="#4-STP工作过程" class="headerlink" title="4.STP工作过程"></a>4.STP工作过程</h3><ol>
-<li><p>在交换网络中选举一个根桥</p>
-<ul>
-<li><p>STP在交换网络中开始工作后，每个交换机都会向网络中发送配置BPDU。配置BPDU中包含交换机自己的桥ID。</p>
-<p>交换机启动后就自动开始进行生成树收敛计算。默认情况下，所有交换机启动时都认为自己是根桥，自己的所有端口都为指定端口，这样BPDU报文就可以通过所有端口转发。对端交换机收到BPDU报文后，会比较BPDU中的根桥ID和自己的桥ID。如果收到的BPDU报文中的桥ID优先级低，接收交换机会继续通告自己的配置BPDU报文给邻居交换机。如果收到的BPDU报文中的桥ID优先级高，则交换机会修改自己的BPDU报文的根桥ID字段，宣告新的根桥。</p>
-</li>
-<li><p>网络中拥有最小桥ID的交换机成为根桥。</p>
-<p>桥ID由16位的桥优先级（Bridge  Priority）和48位的MAC地址构成。在STP网络中，桥优先级是可以配置的，取值范围是0～65535，默认值为32768。优先级最高的设备（数值越小越优先）会被选举为根桥。如果优先级相同，则会比较MAC地址，MAC地址越小则越优先。</p>
-</li>
-<li><p>在一个连续的STP交换网络中只会存在一个根桥。·</p>
-</li>
-<li><p>根桥的角色是可抢占的。</p>
-</li>
-<li><p>为了确保交换网络的稳定，建议提前规划STP组网，并将规划为根桥的交换机的桥优先级设置为最小值0。</p>
-</li>
-</ul>
-</li>
-<li><p>在每台非根桥上选举一个根接口</p>
-<ul>
-<li><p>每一台非根桥交换机都会在自己的接口中选举出一个接口。</p>
-<p>非根交换机在选举根端口时分别依据该端口的根路径开销、对端BID（Bridge ID）、对端PID（Port ID）和本端PID。</p>
-<ol>
-<li><p>比较根路径开销</p>
-<p>根端口的确定需要比较RPC。当网桥从一个端口接收到配置BPDU后，首先获取其中的RPC，和接收端口的链路开销相加，得到此端口的RPC，每个收到配置BPDU的端口都进行同样的计算。然后比较各端口的RPC，拥有最小RPC值的端口即为本网桥的根端口。</p>
-</li>
-<li><p>RPC相同，比较对端BID</p>
-<p>如果有两个或两个以上的端口计算得到的累计路径开销相同，那么选择收到发送者BID最小的那个端口作为根端口。</p>
-</li>
-<li><p>对端BID相同，比较对端PID</p>
-<p> 如果两个或两个以上的端口连接到同一台交换机上，则选择发送者PID最小的那个端口作为根端口。</p>
-</li>
-<li><p>对端PID相同，比较本段PID</p>
-<p>如果两个或两个以上的端口通过Hub连接到同一台交换机的同一个接口上，则选择本交换机的这些端口中的PID最小的作为根端口。</p>
-</li>
-</ol>
-</li>
-<li><p>非根桥交换机上有且只会有一个根接口。</p>
-</li>
-<li><p>当非根桥交换机有多个接口接入网络中时，根接口是其收到最优配置BPDU的接口。</p>
-</li>
-<li><p>可以形象地理解为，根接口是每台非根桥上“朝向”根桥的接口。</p>
-</li>
-</ul>
-</li>
-<li><p>在每条链路上选举一个指定接口</p>
-<ul>
-<li><p>每条链路只有一个指定端口</p>
-<p>在网段上抑制其他端口（无论是自己的还是其他设备的）发送BPDU报文的端口，就是该网段的指定端口。</p>
-</li>
-<li><p>在每条链路上选举一个指定接口时分别依据该端口的累计路径开销、本端BID（Bridge ID）、本端PID（Port ID）</p>
-<p>（比较端口发送的配置BPDU和接收的配置BPDU，如果发送的配置BPDU优于接收到的配置BPDU，表明端口在本Physical Segment上拥有最优的配置BPDU，则该端口为指定端口。）</p>
-<ol>
-<li><p>比较累计路径开销</p>
-<p>累计路径开销最小的端口就是指定端口。</p>
-</li>
-<li><p>累计路径开销相同，比较本端BID</p>
-<p>如果累计路径开销相同，则比较端口所在交换机的桥ID，所在桥ID小的端口被选举为指定端口。</p>
-</li>
-<li><p>前两者选举不出来比较本端PID</p>
-<p>如果通过累计路径开销和所在桥ID选举不出来，则比较端口ID，端口ID最小的被选举为指定端口。</p>
-</li>
-</ol>
-</li>
-<li><p>一般情况下，根桥的所有接口都是指定接口。</p>
-</li>
-</ul>
-</li>
-<li><p>非指定接口被阻塞</p>
-<ul>
-<li>一台交换机上，既不是根接口，又不是指定接口的接口被称为非指定接口。</li>
-<li>STP操作的最后一步是阻塞网络中的非指定接口。这一步完成后，网络中的二层环路就此消除。</li>
-</ul>
-</li>
-</ol>
-<h3 id="5-STP接口状态及转换"><a href="#5-STP接口状态及转换" class="headerlink" title="5.STP接口状态及转换"></a>5.STP接口状态及转换</h3><h5 id="STP接口状态"><a href="#STP接口状态" class="headerlink" title="STP接口状态"></a>STP接口状态</h5><table>
-<thead>
-<tr>
-<th>状态名称</th>
-<th>状态描述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>禁用(Disable)</td>
-<td>该接口不能收发BPDU，也不能收发业务数据帧，例如接口为down</td>
-</tr>
-<tr>
-<td>阻塞(Blocking)</td>
-<td>该接口被STP阻塞。处于阻塞状态的接口不能发送BPDU，但是会持续侦听BPDU，而且不能收发业务数据帧，也不会进行MAC地址学习</td>
-</tr>
-<tr>
-<td>侦听(Listening)</td>
-<td>当接口处于该状态时，表明STP初步认定该接口为根接口或指定接口，但接口依然处于STP计算的过程中，此时接口可以收发BPDU，但是不能收发业务数据帧,也不会进行MAC地址学习</td>
-</tr>
-<tr>
-<td>学习(Learning)</td>
-<td>当接口处于该状态时，会侦听业务数据帧（但是不能转发业务数据帧），并且在收到业务数据帧后进行MAC地址学习</td>
-</tr>
-<tr>
-<td>转发(Forwarding)</td>
-<td>处于该状态的接口可以正常地收发业务数据帧，也会进行BPDU处理。接口的角色需是根接口或指定接口才能进入转发状态</td>
-</tr>
-</tbody></table>
-<h5 id="STP接口状态转换"><a href="#STP接口状态转换" class="headerlink" title="STP接口状态转换"></a>STP接口状态转换</h5><p><img src="/2021/04/21/stp/%E6%8E%A5%E5%8F%A3%E7%8A%B6%E6%80%81%E8%BF%81%E7%A7%BB%E5%9B%BE.png" alt="接口状态转换图"></p>
-<h3 id="6-拓扑变化及其收敛时间"><a href="#6-拓扑变化及其收敛时间" class="headerlink" title="6.拓扑变化及其收敛时间"></a>6.拓扑变化及其收敛时间</h3><h5 id="拓扑变化-根桥故障"><a href="#拓扑变化-根桥故障" class="headerlink" title="拓扑变化-根桥故障"></a>拓扑变化-根桥故障</h5><ol>
-<li>SWA根桥发生故障，停止发送BPDU报文。</li>
-<li>SWB等待Max Age计时器( 20 s)超时，从而导致已经收到的BPDU报文失效，又接收不到根桥发送的新的BPDU报文，从而得知上游出现故障。</li>
-<li>非根桥会互相发送配置BPDU，重新选举新的根桥。</li>
-<li>经过重新选举后，SWC的A端口经过两个Forward Delay( 15 s )时间恢复转发状态。</li>
-</ol>
-<ul>
-<li>非根桥会在BPDU老化之后开始根桥的重新选举。</li>
-<li>根桥故障会导致50 s左右的恢复时间。</li>
-</ul>
-<p><img src="/2021/04/21/stp/%E6%A0%B9%E6%A1%A5%E6%95%85%E9%9A%9C.png" alt="根桥故障"></p>
-<h5 id="拓扑变化-直连链路故障"><a href="#拓扑变化-直连链路故障" class="headerlink" title="拓扑变化-直连链路故障"></a>拓扑变化-直连链路故障</h5><p>当交换机SWB网络稳定时检测到根端口的链路发生故障，则其备用端口会经过两倍的Forward Delay ( 15s )时间进入用户流量转发状态。</p>
-<ul>
-<li>SW2检测到直连链路物理故障后，会将预备端口转换为根端口。</li>
-<li>直连链路故障，备用端口会经过30s后恢复转发状态。</li>
-</ul>
-<p><img src="/2021/04/21/stp/%E7%9B%B4%E8%BF%9E%E9%93%BE%E8%B7%AF%E6%95%85%E9%9A%9C.png" alt="直连链路故障"></p>
-<h5 id="拓扑变化-非直连链路故障"><a href="#拓扑变化-非直连链路故障" class="headerlink" title="拓扑变化-非直连链路故障"></a>拓扑变化-非直连链路故障</h5><ol>
-<li><p>SWB与SWA之间的链路发生了某种故障（非物理层故障），SWB因此一直收不到来自SWA的BPDU报文。</p>
-</li>
-<li><p>Max Age（20 s）定时器超时后，SWB、SWC几乎同时会收到对方发来的BPDU。</p>
-<p>SWB的Max Age定时器超时后，SWB会认为根桥SWA不再有效，并认为自己是根桥，于是开始发送自己的BPDU报文给SWC，通知SWC自己作为新的根桥。在此期间，由于SWC的Alternate端口再也不能收到包含原根桥ID的BPDU报文。其Max Age定时器超时后，SWC会切换Alternate端口为指定端口并且转发来自其根端口的BPDU报文给SWB。</p>
-</li>
-<li><p>经过STP重新计算后，SWB放弃宣称自己是根桥并重新确定端口角色</p>
-<ul>
-<li><p>非直连链路故障后，SWC的备用端口恢复到转发状态，需要经过两个Forward Delay( 15 s )时间恢复转发状态。</p>
-<p>SWC接口的状态转换：blocking–&gt;Listening–&gt;Learning–&gt; forwarding</p>
-</li>
-<li><p>非直连故障会导致50s左右的恢复时间（Mac Age+Forward Delay+Forward Delay）。</p>
-</li>
-</ul>
-</li>
-</ol>
-<p><img src="/2021/04/21/stp/%E9%9D%9E%E7%9B%B4%E8%BF%9E%E9%93%BE%E8%B7%AF%E6%95%85%E9%9A%9C.png" alt="非直连链路故障"></p>
-<h5 id="拓扑变化导致MAC地址表错误"><a href="#拓扑变化导致MAC地址表错误" class="headerlink" title="拓扑变化导致MAC地址表错误"></a>拓扑变化导致MAC地址表错误</h5><p>如图，SWC的根端口发生故障，导致生成树拓扑重新收敛，在生成树拓扑完成收敛之后,从主机A到主机B的帧仍然不能到达目的地。这是因为交换机依赖MAC地址表转发数据帧,缺省情况下，MAC地址表项的老化时间是300秒。若SWB的MAC地址表不及时更新将导致数据丢失。</p>
-<p><img src="/2021/04/21/stp/MAC%E5%9C%B0%E5%9D%80%E8%A1%A8%E9%94%99%E8%AF%AF.png" alt="MAC地址表错误"></p>
-<h5 id="拓扑变化导致MAC地址表错误解决过程"><a href="#拓扑变化导致MAC地址表错误解决过程" class="headerlink" title="拓扑变化导致MAC地址表错误解决过程"></a>拓扑变化导致MAC地址表错误解决过程</h5><p>拓扑变化过程中，根桥通过TCN BPDU报文获知生成树拓扑里发生了故障。根桥生成TC用来通知其他交换机加速老化现有的MAC地址表项。</p>
-<ul>
-<li><p>TCN BPDU在网络拓扑变化的时候产生。报文格式:协议标识、版本号和类型。</p>
-<p>TCN BPDU产生条件</p>
-<ul>
-<li>网桥上有端口转变为Forwarding状态，且该网桥至少包含一个指定端口。</li>
-<li>网桥上有端口从Forwarding状态或Learning状态转变为Blocking状态。</li>
-</ul>
-</li>
-<li><p>拓扑变化:会使用到配置BPDU中Flags的TCA和TC位。</p>
-</li>
-</ul>
-<p>拓扑变更以及MAC地址表项更新的具体过程如下：</p>
-<ol>
-<li><p>SWC感知到网络拓扑发生变化后，会不间断地向SWB发送TCN BPDU报文。</p>
-</li>
-<li><p>SWB收到SWC发来的TCN BPDU报文后，会把配置BPDU报文中的Flags的TCA位设置1，然后发送给SWC，告知SWC停止发送TCN BPDU报文。</p>
-<p>网桥发送TCN BPDU的周期位Hello Time，即当网桥发送TCN BPDU后，如果Hello  Time时间内没有收到TCA置位的配置BPDU，则网桥会重复发送TCN BPDU。如果网桥在Hello  Time时间内收到TCA置位的配置BPDU，则网桥停止从根端口发送TCN BPDU。</p>
-</li>
-<li><p>SWB向根桥转发TCN BPDU报文。</p>
-</li>
-<li><p>SWA给SWB发送TCA置位的BPDU，告知SWB停止发送TCN BPDU报文。</p>
-</li>
-<li><p>SWA把配置BPDU报文中的Flags的TC位设置为1后发送，通知下游设备修改MAC地址表项的老化时间。</p>
-<p>根桥在之后的Max Age+Forward Delay时间内，将发送配置的BPDU中的TC置位，当网桥收到根桥发送的TC置位的BPDU后，会将自身的MAC地址老化时间由300s缩短为Forward Delay（默认15 s）。</p>
-</li>
-<li><p>最多等待15秒之后，SWB中的错误MAC地址表项会被自动清除。此后，SWB就能重新开始MAC表项的学习及转发操作。</p>
-</li>
-</ol>
-<p><img src="/2021/04/21/stp/%E4%BF%AE%E6%94%B9MAC%E8%A1%A8%E6%B5%81%E7%A8%8B.png" alt="修改MAC表流程"></p>
-<h3 id="7-STP协议的不足"><a href="#7-STP协议的不足" class="headerlink" title="7.STP协议的不足"></a>7.STP协议的不足</h3><p>STP为了避免临时环路的产生，每一个端口在确认位根端口或指定端口后仍然需要等待30s的时间才能进入转发状态。在此30s时间内，端口不能进行数据的转发，这对于一些对时延敏感的应用是不可接受的。</p>
-<p>此外，对于拓扑不稳定的网络，经常需要重新进行STP计算，某些端口可能会长期处于阻塞状态而导致网络长时间的中断。</p>
-<p>STP定义了TCN BPDU，可以使得网络拓扑变化时，在50s之内实现收敛。</p>
-<p>TCN BPDU产生的条件之一是网桥有端口转变为Forwarding状态，且该网桥至少包含一个指定端口。</p>
-<p>当网络中有大量的用户主机时，由于用户主机位置不固定，可能会频繁地上下线，这样会使得交换机频繁发送TCN BPDU，导致网桥MAC地址老化时间长期保持为15s。MAC地址频繁的刷新会导致网络充斥大量由未知单播造成的广播报文，严重影响网络中的应用。</p>
-<h3 id="8-STP相关配置命令"><a href="#8-STP相关配置命令" class="headerlink" title="8.STP相关配置命令"></a>8.STP相关配置命令</h3><p>1．配置生成树工作模式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp mode &#123; stp | rstp | mstp &#125;</span><br></pre></td></tr></table></figure>
-<p>交换机支持STP、RSTP和MSTP (Multiple Spanning Tree Protocol)三种生成树工作模式，默认情况工作在MSTP模式。<br>2.（可选）配置根桥</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp root primary</span><br></pre></td></tr></table></figure>
-<p>配置当前设备为根桥。缺省情况下，交换机不作为任何生成树的根桥。配置后该设备优先级数值自动为0，并且不能更改设备优先级。<br>3.（可选）备份根桥</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp root secondary</span><br></pre></td></tr></table></figure>
-<p>配置当前交换机为备份根桥。缺省情况下，交换机不作为任何生成树的备份根桥。配置后该设备优先级数值为4096,并且不能更改设备优先级。<br>4.（可选）配置交换机的STP优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp priority priority</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，交换机的优先级取值是32768。<br>5.（可选）配置接口路径开销</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp pathcost-standard &#123; dot1d-1998 | dot1t | legacy &#125;</span><br></pre></td></tr></table></figure>
-<p>配置接口路径开销计算方法。缺省情况下，路径开销值的计算方法为IEEE 802.1t ( dot1t)标准方法。同一网络内所有交换机的接口路径开销应使用相同的计算方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;1] stp cost cost</span><br></pre></td></tr></table></figure>
-<p>设置当前接口的路径开销值。<br>6.（可选）配置接口优先级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-intf] stp priority priority</span><br></pre></td></tr></table></figure>
-<p>配置接口的优先级。缺省情况下，交换机接口的优先级取值是128。<br>7.启用STP/RSTP/MSTP</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] stp enable</span><br></pre></td></tr></table></figure>
-<p>使能交换机的STP/RSTP/MSTP功能。缺省情况下，设备的STP/RSTP/MSTP功能处于启用状态。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -3463,7 +3370,7 @@ Group ID:组播组ID。
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3476,7 +3383,7 @@ Group ID:组播组ID。
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

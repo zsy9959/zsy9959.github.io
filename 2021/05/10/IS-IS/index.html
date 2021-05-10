@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-IS-IS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。 •随着TCP&#x2F;IP协议的流行，为了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IS-IS">
+<meta property="og:url" content="http://example.com/2021/05/10/IS-IS/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。 •随着TCP&#x2F;IP协议的流行，为了">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/1.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/2.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/3.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/4.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/5.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/6.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/7.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/8.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/9.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/10.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/11.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/12.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/13.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/14.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/15.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/16.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/17.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/18.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/19.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/20.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/21.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/22.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/23.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/24.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/25.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/26.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/27.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/28.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/29.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/31.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/32.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/33.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/34.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/35.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/36.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/37.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/38.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/39.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/40.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/41.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/42.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/43.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/44.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/45.png">
+<meta property="og:image" content="http://example.com/2021/05/10/IS-IS/46.png">
+<meta property="article:published_time" content="2021-05-10T08:36:30.000Z">
+<meta property="article:modified_time" content="2021-05-10T09:54:25.719Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-IS-IS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/10/IS-IS/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/10/IS-IS/"/>
+
+
+
+
+
+  <title>IS-IS | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/IS-IS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IS-IS</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T16:36:30+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。</p>
+<p>•随着TCP/IP协议的流行，为了提供对IP路由的支持，IETF在RFC1195中对IS-IS进行了扩充和修改，使它能够同时应用在TCP/IP和OSI（Open System Interconnect，开放式系统互联）环境中，我们将扩展后的IS-IS称为集成IS-IS。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IS-IS的基本概念</p>
+<p>▫描述IS-IS的工作原理</p>
+<p>▫描述IS-IS与OSPF的差异</p>
+<p>▫实现IS-IS的常用配置</p>
+<h1 id="IS-IS的基本概念"><a href="#IS-IS的基本概念" class="headerlink" title="IS-IS的基本概念"></a>IS-IS的基本概念</h1><h2 id="IS-IS概述"><a href="#IS-IS概述" class="headerlink" title="IS-IS概述"></a>IS-IS概述</h2><p>IS-IS是ISO定义的OSI协议栈中的CLNS（ConnectionLess Network Service，无连接网络服务）的一部分。</p>
+<p><img src="/2021/05/10/IS-IS/1.png"></p>
+<blockquote>
+<p>•IS-IS是一种链路状态路由协议，IS-IS与OSPF在许多方面非常相似，例如运行IS-IS协议的直连设备之间通过发送Hello报文发现彼此，然后建立邻接关系，并交互链路状态信息。</p>
+<p>•CLNS由以下三个部分组成：</p>
+<p>​    ▫CLNP：类似于TCP/IP中的IP协议。</p>
+<p>​    ▫IS-IS：类似于TCP/IP中的OSPF。</p>
+<p>​    ▫ES-IS：类似于TCP/IP中的ARP，ICMP等。</p>
+<p>•ES：End System，终端系统，类似于IP网络环境中的主机。</p>
+<p>•ES-IS：End System to Intermediate System，终端系统到中间系统。</p>
+<p>•IP网络环境中不涉及CLNP以及ES-IS，因此本课程不做详细介绍。</p>
+</blockquote>
+<h2 id="NSAP"><a href="#NSAP" class="headerlink" title="NSAP"></a>NSAP</h2><p>•NSAP（Network Service Access Point，网络服务访问点）是OSI协议栈中用于定位资源的地址，主要用于提供网络层和上层应用之间的接口。NSAP包括IDP及DSP，如下图所示：</p>
+<p><img src="/2021/05/10/IS-IS/2.png"></p>
+<p>•IDP（Initial Domian Part）相当于IP地址中的主网络号。它是由ISO规定，并由AFI（Authority and Format Identifier）与IDI（Initial Domain Identifier）两部分组成。AFI表示地址分配机构和地址格式，IDI用来标识域。</p>
+<p>•DSP（Domian Specific Part）相当于IP地址中的子网号和主机地址。它由High Order DSP、System ID和SEL三个部分组成。High Order DSP用来分割区域，System ID用来区分主机，SEL（NSAP Selector）用来指示服务类型。</p>
+<h2 id="NET"><a href="#NET" class="headerlink" title="NET"></a>NET</h2><p>•NET（Network Entity Title，网络实体名称）是OSI协议栈中设备的网络层信息，主要用于路由计算，由区域地址（Area ID）和System ID组成，可以看作是特殊的NSAP（SEL为00的NSAP）。</p>
+<p>•NET的长度与NSAP的相同，最长为20Byte，最短为8Byte。</p>
+<p>•在IP网络中运行IS-IS时，只需配置NET，根据NET地址设备可以获取到Area ID以及System ID。</p>
+<p><img src="/2021/05/10/IS-IS/3.png"></p>
+<blockquote>
+<p>•Area ID由IDP和DSP中的High Order DSP组成，既能够标识路由域，也能够标识路由域中的区域。因此，它们一起被称为区域地址，相当于OSPF中的区域编号。</p>
+<p>​    ▫一般情况下，一个路由器只需要配置一个区域地址，且同一区域中所有节点的区域地址都要相同。为了支持区域的平滑合并、分割及转换，缺省情况下，一个IS-IS进程下最多可配置3个区域地址。</p>
+<p>•System ID用来在区域内唯一标识主机或路由器。在设备的实现中，它的长度固定为6Byte。</p>
+</blockquote>
+<h2 id="NET的配置举例"><a href="#NET的配置举例" class="headerlink" title="NET的配置举例"></a>NET的配置举例</h2><p>•每台运行IS-IS的网络设备至少需拥有一个NET，当然，一台设备也可以同时配置多个NET，但是这些NET的System ID必须相同。</p>
+<p>•在华为的网络设备上，System ID的长度总是固定的6Byte。在一个IS-IS路由域中，设备的System ID必须唯一，为了便于管理，一般根据Router ID配置System ID。</p>
+<p><img src="/2021/05/10/IS-IS/4.png"></p>
+<h2 id="IS-IS和OSPF区域划分的区别"><a href="#IS-IS和OSPF区域划分的区别" class="headerlink" title="IS-IS和OSPF区域划分的区别"></a>IS-IS和OSPF区域划分的区别</h2><p>•IS-IS在自治系统内采用骨干区域与非骨干区域两级的分层结构：</p>
+<p>​    ▫Level-1路由器部署在非骨干区域。</p>
+<p>​    ▫Level-2路由器和Level-1-2路由器部署在骨干区域。</p>
+<p>•每一个非骨干区域都通过Level-1-2路由器与骨干区域相连。</p>
+<p>如图所示，IS-IS整个骨干区域不仅包括Area49.0002中的所有路由器，还包括其它区域的Level2和Level-1-2路由器。</p>
+<p><img src="/2021/05/10/IS-IS/5.png"></p>
+<blockquote>
+<p>•在学习OSPF过程中，我们已经体会到了多区域、层次化网络设计的好处。对于链路状态路由协议而言，运行了该协议的设备会向网络中通告链路状态信息，同时也收集网络中所泛洪的链路状态信息后加以存储，并最终以这些信息为基础进行计算，从而得到路由信息。如果不采用多区域部署的方式，那么随着网络的规模逐渐增大，网络中泛洪的链路状态信息势必会越来越多，所有设备都将承受更重的负担，路由计算机收敛将逐渐变得更加缓慢，这也使得网络的扩展性变差。</p>
+<p>•以上拓扑结构图可以体现IS-IS与OSPF的不同点：</p>
+<p>​    ▫在IS-IS中，每个路由器都只属于一个区域；而在OSPF中，一个路由器的不同接口可以属于不同的区域。</p>
+<p>​    ▫在IS-IS中，单个区域没有骨干与非骨干区域的概念；而在OSPF中，Area0被定义为骨干区域。</p>
+<p>​    ▫在IS-IS中，Level-1和Level-2级别的路由都采用SPF算法，分别生成最短路径树SPT（Shortest Path Tree）；而在OSPF中，只有在同一个区域内才使用SPF算法，区域之间的路由需要通过骨干区域来转发。</p>
+</blockquote>
+<h2 id="IS-IS路由器的分类-1"><a href="#IS-IS路由器的分类-1" class="headerlink" title="IS-IS路由器的分类 (1)"></a>IS-IS路由器的分类 (1)</h2><p><strong>Level-1路由器</strong></p>
+<p>▫Level-1路由器（例如图中的R1）是一种IS-IS区域内部路由器，它只与属于同一区域的Level-1和Level-1-2路由器形成邻接关系，这种邻接关系称为Level-1邻接关系。Level-1路由器无法与Level-2路由器建立邻接关系。</p>
+<p>▫Level-1路由器只负责维护Level-1的链路状态数据库LSDB，该LSDB只包含本区域的路由信息。值得一提的是，Level-1路由器必须通过Level-1-2路由器接入IS-IS骨干区域从而访问其他区域。</p>
+<p><img src="/2021/05/10/IS-IS/6.png"></p>
+<h2 id="IS-IS路由器的分类-2"><a href="#IS-IS路由器的分类-2" class="headerlink" title="IS-IS路由器的分类 (2)"></a>IS-IS路由器的分类 (2)</h2><p><strong>Level-2路由器</strong></p>
+<p>▫Level-2路由器（例如图中的R4、R5、R6、R7）是IS-IS骨干路由器，它可以与同一或者不同区域的Level-2路由器或者Level-1-2路由器形成邻接关系。Level-2路由器维护一个Level-2的LSDB，该LSDB包含整个IS-IS域的所有路由信息。</p>
+<p>▫所有Level-2级别（即形成Level-2邻接关系）的路由器组成路由域的骨干网，负责在不同区域间通信。路由域中Level-2级别的路由器必须是物理连续的，以保证骨干网的连续性。</p>
+<p><img src="/2021/05/10/IS-IS/7.png"></p>
+<h2 id="IS-IS路由器的分类-3"><a href="#IS-IS路由器的分类-3" class="headerlink" title="IS-IS路由器的分类 (3)"></a>IS-IS路由器的分类 (3)</h2><p><strong>Level-1-2路由器</strong></p>
+<p>▫Level-1-2路由器与OSPF中的ABR非常相似，它也是IS-IS骨干网络的组成部分。</p>
+<p>▫Level-1-2路由器维护两个LSDB，Level-1的LSDB用于区域内路由，Level-2的LSDB用于区域间路由。</p>
+<p>▫同时属于Level-1和Level-2的路由器称为Level-1-2路由器（例如图中的R2和R3），它可以与同一区域的Level-1和Level-1-2路由器形成Level-1邻接关系，也可以与其他区域的Level-2和Level-1-2路由器形成Level-2的邻接关系。</p>
+<p><img src="/2021/05/10/IS-IS/8.png"></p>
+<blockquote>
+<p>•在华为路由器上配置IS-IS时，缺省时，路由器全局Level为Level-1-2，当然，可以通过命令修改该设备的类型。</p>
+</blockquote>
+<h2 id="IS-IS支持的网络类型"><a href="#IS-IS支持的网络类型" class="headerlink" title="IS-IS支持的网络类型"></a>IS-IS支持的网络类型</h2><p>IS-IS会自动根据接口的数据链路层封装决定该接口的缺省网络类型， IS-IS支持两种类型的网络：</p>
+<p>▫广播（Broadcast）： 如Ethernet。</p>
+<p>▫点到点（P2P）： 如PPP、 HDLC等。</p>
+<p><img src="/2021/05/10/IS-IS/9.png"></p>
+<blockquote>
+<p>•对于NBMA网络，需对其配置子接口，并注意子接口类型应配置为P2P。</p>
+</blockquote>
+<h2 id="IS-IS开销值"><a href="#IS-IS开销值" class="headerlink" title="IS-IS开销值"></a>IS-IS开销值</h2><p>•IS-IS使用Cost（开销）作为路由度量值，Cost值越小，则路径越优。IS-IS链路的Cost与设备的接口有关，与OSPF类似，每一个激活了IS-IS的接口都会维护接口Cost。然而与OSPF不同的是，IS-IS接口的Cost在缺省情况下并不与接口带宽相关（在实际部署时，IS-IS也支持根据带宽调整Cost值），无论接口带宽多大，缺省时Cost为10。</p>
+<p>•一条IS-IS路径的Cost等于本路由器到达目标网段沿途的所有链路的Cost总和。</p>
+<p>•IS-IS有三种方式来确定接口的开销，按照优先级由高到低分别是：</p>
+<p>​    ▫接口开销：为单个接口设置开销。</p>
+<p>​    ▫全局开销：为所有接口设置开销。</p>
+<p>​    ▫自动计算开销：根据接口带宽自动计算开销。</p>
+<p><img src="/2021/05/10/IS-IS/10.png"></p>
+<blockquote>
+<p>•在早期的ISO10589中，使能IS-IS的接口下最大只能配置值为63的开销值，此时IS-IS的开销类型为narrow。但是在大型网络设计中，较小的度量范围不能满足实际需求。RFC3784中规定，使能IS-IS的接口开销值可以扩展到16777215，此时IS-IS的开销类型为wide。</p>
+<p>•缺省时，华为路由器采用的开销类型是narrow。</p>
+<p>•narrow类型下使用的TLV：</p>
+<p>​    ▫128号TLV（IP Internal Reachability TLV）：用来携带路由域    内的IS-IS路由信息。</p>
+<p>​    ▫130号TLV（IP External Reachability TLV）：用来携带路由域    外的IS-IS路由信息。</p>
+<p>​    ▫2号TLV(IS Neighbors TLV)：用来携带邻居信息。</p>
+<p>•wide类型下使用的TLV：</p>
+<p>​    ▫135号TLV(Extended IP Reachability TLV)：用来替换原有的IP     reachability TLV，携带IS-IS路由信息，它扩展了路由开销值的    范围，并可以携带sub TLV。</p>
+<p>​    ▫22号TLV（IS Extended Neighbors TLV）：用来携带邻居信息</p>
+</blockquote>
+<h2 id="IS-IS报文格式"><a href="#IS-IS报文格式" class="headerlink" title="IS-IS报文格式"></a>IS-IS报文格式</h2><p>•IS-IS报文是直接封装在数据链路层的帧结构中的。</p>
+<p>•PDU（Protocol Data Unit，协议数据单元）可以分为两个部分，报文头（IS-IS Header）和变长字段部分（Variable Length Fields ）。</p>
+<p>•其中IS-IS Header又可分为通用头部（PDU Common Header）和专用头部（PDU Specific Header）。对于所有PDU来说，通用报头都是相同的，但专用报头根据PDU类型不同而有所差别。</p>
+<p><img src="/2021/05/10/IS-IS/11.png"></p>
+<h2 id="IS-IS通用头部详解"><a href="#IS-IS通用头部详解" class="headerlink" title="IS-IS通用头部详解"></a>IS-IS通用头部详解</h2><p><strong>重要字段解释：</strong></p>
+<p>•Intradomain Routing Protocol Discriminator：域内路由选择协议鉴别符，固定为0x83。</p>
+<p>•Length Indicator：IS-IS头部的长度（包括通用头部和专用头部），以Byte为单位。</p>
+<p>•Version/Protocol ID Extension：版本/协议标识扩展，固定为0x01。</p>
+<p>•System ID Length：NSAP地址或NET中System ID区域的长度。值为0时，表示System ID区域的长度为6Byte。</p>
+<p>•R（Reserved）：保留，固定为0。</p>
+<p>•Version：固定为0x01。</p>
+<p>•Max.Areas：支持的最大区域个数。设置为1～254的整数，表示该IS-IS进程实际所允许的最大区域地址数；设置为0，表示该IS-IS进程最大只支持3个区域地址数。</p>
+<p><img src="/2021/05/10/IS-IS/12.png"></p>
+<h2 id="IS-IS报文类型概述"><a href="#IS-IS报文类型概述" class="headerlink" title="IS-IS报文类型概述"></a>IS-IS报文类型概述</h2><p>•IS-IS的PDU有4种类型：IIH(IS-IS Hello)，LSP（ Link State PDU，链路状态报文），CSNP（Complete Sequence Number PDU，全序列号报文），PSNP（Partial Sequence Number PDU，部分序列号报文）。</p>
+<p>•IIH：用于建立和维持邻接关系， 广播网络中的Level-1 IS-IS路由器使用Level-1 LAN IIH； 广播网络中的Level-2 IS-IS路由器使用Level-2 LAN IIH； 点到点网络中则使用P2P IIH。</p>
+<p>•LSP：用于交换链路状态信息。LSP分为两种，Level-1 LSP、Level-2 LSP。</p>
+<p>•SNP：通过描述全部或部分链路数据库中的LSP来同步各LSDB，从而维护LSDB的完整与同步。SNP包括CSNP和PSNP，进一步又可分为Level-1 CSNP、 Level-2 CSNP、 Level-1 PSNP和Level-2 PSNP。</p>
+<p><img src="/2021/05/10/IS-IS/13.png"></p>
+<h2 id="IS-IS常见的TLV"><a href="#IS-IS常见的TLV" class="headerlink" title="IS-IS常见的TLV"></a>IS-IS常见的TLV</h2><p>•TLV的含义是：类型（TYPE），长度（LENGTH），值（VALUE）。实际上是一个数据结构，这个结构包含了这三个字段。</p>
+<p>•使用TLV结构构建报文的好处是灵活性和扩展性好。采用TLV使得报文的整体结构固定，增加新特性只需要增加新TLV即可，不需要改变整个报文的整体结构。</p>
+<p><img src="/2021/05/10/IS-IS/14.png"></p>
+<blockquote>
+<p>•TLV也称为CLV（Code-Length-Value）。</p>
+</blockquote>
+<h1 id="IS-IS工作原理"><a href="#IS-IS工作原理" class="headerlink" title="IS-IS工作原理"></a>IS-IS工作原理</h1><h2 id="邻接关系建立"><a href="#邻接关系建立" class="headerlink" title="邻接关系建立"></a>邻接关系建立</h2><h3 id="IS-IS邻接关系建立原则"><a href="#IS-IS邻接关系建立原则" class="headerlink" title="IS-IS邻接关系建立原则"></a>IS-IS邻接关系建立原则</h3><p>•IS-IS按如下原则建立邻接关系：</p>
+<p>​    ▫只有同一层次的相邻路由器才有可能成为邻接。</p>
+<p>​    ▫对于Level-1路由器来说，Area ID必须一致。</p>
+<p>​    ▫链路两端IS-IS接口的网络类型必须一致。</p>
+<p>​    ▫链路两端IS-IS接口的地址必须处于同一网段（默认情况下）。</p>
+<p>•由于IS-IS是直接运行在数据链路层上的协议，并且最早设计是给CLNP使用的，IS-IS邻接关系的形成与IP地址无关。但在实际的部署中，在IP网络上运行IS-IS时，需要检查对方的IP地址的。如果接口配置了从IP，那么只要双方有某个IP（主IP或者从IP）在同一网段，就能建立邻接，不一定要主IP相同。</p>
+<blockquote>
+<p>•通过将以太网接口模拟成点到点接口，可以建立点到点链路邻接关系。</p>
+<p>•当链路两端IS-IS接口的地址不在同一网段时，如果配置接口对接收的Hello报文不作IP地址检查，也可以建立邻接关系。</p>
+<p>​    ▫对于点到点接口，可以配置接口忽略IP地址检查。</p>
+<p>​    ▫对于以太网接口，需要将以太网接口模拟成点到点接口，然后    才可以配置接口忽略IP地址检查。</p>
+<p>•一般情况下，一个接口只需配置一个主IP地址，但在有些特殊情况下需要配置从IP地址。比如，一台路由器通过一个接口连接了一个物理网络，但该物理网络的计算机分别属于2个不同的网络，为了使路由器与物理网络中的所有计算机通信，就需要在该接口上配置一个主IP地址和一个从IP地址。路由器的每个三层接口可以配置多个IP地址，其中一个为主IP地址，其余为从IP地址，每个三层接口最多可配置31个从IP地址。</p>
+</blockquote>
+<h3 id="IIH"><a href="#IIH" class="headerlink" title="IIH"></a>IIH</h3><p>IIH报文用于建立和维持邻接关系，广播网络中的Level-1 IS-IS路由器使用Level-1 LAN IIH；广播网络中的Level-2 IS-IS路由器使用Level-2 LAN IIH；点到点网络中则使用P2P IIH。</p>
+<p><strong>Reserved/Circuit</strong> <strong>Type</strong>：表示路由器的类型（01表示L1，10表示L2，11表示L1/L2）。 </p>
+<p>Source ID ：发出Hello报文的路由器的System ID。 </p>
+<p><strong>Holding Time</strong> ： 保持时间。在此时间内如果没有收到邻接发来的Hello报文，则中止已建立的邻接关系。 </p>
+<p><strong>Priority</strong> <strong>：</strong>选举DIS的优先级，取值范围为0～127。数值越大，优先级越高。该字段只在广播网中的Hello消息(LAN IIH消息)携带；点到点网络的Hello消息(P2P IIH消息)没有此字段，也没有此字段之前的R保留位。 </p>
+<p><strong>LAN ID</strong> <strong>：</strong> 包括DIS的System ID和伪节点ID。该字段只在广播网中的Hello消息(LAN IIH消息)携带；点到点网络的Hello消息(P2P IIH消息)没有此字段。 </p>
+<p><strong>Local Circuit ID</strong> ：本地链路ID。该字段只在点到点网络的Hello消息(P2P IIH消息)携带；广播网中的Hello消息(LAN IIH消息)没有此字段。 </p>
+<p><img src="/2021/05/10/IS-IS/15.png"></p>
+<h3 id="广播网络中的邻接关系建立过程"><a href="#广播网络中的邻接关系建立过程" class="headerlink" title="广播网络中的邻接关系建立过程"></a>广播网络中的邻接关系建立过程</h3><p>两台运行IS-IS的路由器在交互协议报文实现路由功能之前必须首先建立邻接关系。在不同类型的网络上，IS-IS的邻接建立方式并不相同。在广播网络中，使用三次握手建立邻接关系。</p>
+<p>R1及R2通过千兆以太接口互联，这两台直连的Level-1路由器建立邻接关系的过程如下：</p>
+<ol>
+<li><p>在Down状态下，R1组播发送Level-1 LAN IIH，此报文中邻接列表为空。</p>
+</li>
+<li><p>R2收到此报文后，将邻接状态标识为Initial。然后，R2再向R1回复Level-1 LAN IIH ，此报文中标识R1为R2的邻接。</p>
+</li>
+<li><p>R1收到此报文后，将自己与R2的邻接状态标识为Up。然后R1再向R2发送一个标识R2为R1邻接的Level-1 LAN IIH 。</p>
+</li>
+<li><p>R2收到此报文后，将自己与R1的邻接状态标识为Up。这样，两个路由器成功建立了邻接关系。</p>
+</li>
+<li><p>广播网络中需要选举DIS，在邻接关系建立后，路由器会等待两个Hello报文间隔，再进行DIS的选举。</p>
+</li>
+</ol>
+<p><img src="/2021/05/10/IS-IS/16.png"></p>
+<blockquote>
+<p>•Level-1 IIH和Level-2 IIH发送的组播地址分别为01-80-C2-00-00-14、01-80-C2-00-00-15。</p>
+<p>•Down：邻接关系的初始状态。</p>
+<p>•Initial：收到IIH，但是报文中的邻接列表未包含路由器自身的System ID。</p>
+<p>•UP：收到IIS，且邻接列表中包含路由器自身的System ID。</p>
+</blockquote>
+<h3 id="DIS与伪节点"><a href="#DIS与伪节点" class="headerlink" title="DIS与伪节点"></a>DIS与伪节点</h3><p>•在广播网络中，IS-IS需要在所有的路由器中选举一个路由器作为DIS（Designated Intermediate System）。</p>
+<p>•DIS用来创建和更新伪节点（Pseudonodes），并负责生成伪节点的LSP，用来描述这个网络上有哪些网络设备。伪节点是用来模拟广播网络的一个虚拟节点，并非真实的路由器。在IS-IS中，伪节点用DIS的System ID和Circuit ID（非0值）标识。</p>
+<p><img src="/2021/05/10/IS-IS/17.png"></p>
+<h3 id="IS-IS中的DIS与OSPF中的DR"><a href="#IS-IS中的DIS与OSPF中的DR" class="headerlink" title="IS-IS中的DIS与OSPF中的DR"></a>IS-IS中的DIS与OSPF中的DR</h3><p>•Level-1和Level-2的DIS是分别选举的，用户可以为不同级别的DIS选举设置不同的优先级。</p>
+<p>•DIS的选举规则如下：</p>
+<p>​    ▫DIS优先级数值最大的被选为DIS。</p>
+<p>​    ▫如果优先级数值最大的路由器有多台，则其中MAC地址最大的路由    器会成为DIS。</p>
+<p>•DIS发送Hello PDU的时间间隔是普通路由器的1/3，这样可以确保DIS出现故障时能够被更快速地被发现。</p>
+<p>•IS-IS中DIS与OSPF协议中DR（Designated Router）的区别：</p>
+<p>​    ▫在IS-IS广播网中，优先级为0的路由器也参与DIS的选举，在OSPF中优先级为0的路由器则不参与DR的选举。</p>
+<p>​    ▫在IS-IS广播网中，当有新的路由器加入，并符合成为DIS的条件时，这个路由器会被选中成为新的DIS，原有的伪节点被删除。此更改会引起一组新的LSP泛洪。而在OSPF中，当一台新路由器加入后，即使它的DR优先级值最大，也不会立即成为该网段中的DR。</p>
+<p>​    ▫在IS-IS广播网中，同一网段上的同一级别的路由器之间都会形成邻接关系，包括所有的非DIS路由器之间也会形成邻接关系。而在OSPF中，路由器只与DR和BDR建立邻接关系。</p>
+<h3 id="点到点网络中的邻接关系建立过程"><a href="#点到点网络中的邻接关系建立过程" class="headerlink" title="点到点网络中的邻接关系建立过程"></a>点到点网络中的邻接关系建立过程</h3><p>•点到点网络中，邻接关系的建立使用两次握手方式：只要路由器收到对端发来的Hello报文，就单方面宣布邻接为Up状态，建立邻接关系。</p>
+<p>•两次握手机制存在明显的缺陷，华为设备在点到点网络中使用IS-IS时，默认使用三次握手建立邻接关系。此方式通过三次发送P2P IIH最终建立起邻接关系。</p>
+<p><img src="/2021/05/10/IS-IS/18.png"></p>
+<h2 id="链路状态数据库同步"><a href="#链路状态数据库同步" class="headerlink" title="链路状态数据库同步"></a>链路状态数据库同步</h2><h3 id="LSP"><a href="#LSP" class="headerlink" title="LSP"></a>LSP</h3><p>•IS-IS链路状态报文LSP用于交换链路状态信息。LSP分为两种：Level–1 LSP和Level–2 LSP。Level–1 LSP由Level-1路由器传送，Level–2 LSP由Level-2路由器传送，Level-1-2路由器则可传送以上两种LSP。</p>
+<p>•两类LSP有相同的报文格式。</p>
+<p><strong>Remaining Lifetime</strong> : LSP的生存时间，以秒为单位。 </p>
+<p><strong>LSP ID</strong>:由三部分组成，System ID、伪节点ID和LSP分片后的编号。 </p>
+<p><strong>Sequence Number</strong>: LSP的序列号。在路由器启动时所发送的第一个LSP报文中的序列号为1，以后当需要生成新的LSP时，新LSP的序列号在前一个LSP序列号的基础上加1。更高的序列号意味着更新的LSP。</p>
+<p><strong>Checksum</strong>： LSP的校验和。 </p>
+<p><strong>ATT（Attachment）</strong>：由Level-1-2路由器产生，用来指明始发路由器是否与其它区域相连。虽然此标志位也存在于Level-1和Level-2的LSP中，但实际上此字段只和Level-1-2路由器始发的L1 LSP有关。</p>
+<p><strong>OL（LSDB Overload，1bit）</strong>：过载标志位。设置了过载标志位的LSP虽然还会在网络中扩散，但是在计算通过超载路由器的路由时不会被采用。即对路由器设置过载位后，其它路由器在进行SPF计算时不会考虑这台路由器。当路由器内存不足时，系统自动在发送的LSP报文中设置过载标志位。 </p>
+<p>**IS Type(2bit)**：生成LSP的路由器的类型。用来指明是Level-1还是Level-2路由器（01表示Level-1，11表示Level-2）。 </p>
+<p><img src="/2021/05/10/IS-IS/19.png"></p>
+<h3 id="IS-IS的LSDB"><a href="#IS-IS的LSDB" class="headerlink" title="IS-IS的LSDB"></a>IS-IS的LSDB</h3><p><img src="/2021/05/10/IS-IS/20.png"></p>
+<blockquote>
+<p>•伪节点ID：当该参数不为零时，表示该LSP为伪节点生成。</p>
+<p>•分片号：当IS-IS要发布的链路状态协议数据报文PDU（Protocol Data Unit）中的信息量太大时，IS-IS路由器将会生成多个LSP分片，用来携带更多的IS-IS信息。分片号用来区分不同的LSP分片。</p>
+</blockquote>
+<h3 id="查看非伪节点的LSP"><a href="#查看非伪节点的LSP" class="headerlink" title="查看非伪节点的LSP"></a>查看非伪节点的LSP</h3><p><img src="/2021/05/10/IS-IS/21.png"></p>
+<blockquote>
+<p>•AREA ADDR：该LSP来源的区域号</p>
+<p>•INTF ADDR：该LSP中描述的接口地址</p>
+<p>•NBR ID：该LSP中描述的邻接信息</p>
+<p>•IP-Internal：该LSP中描述的网段信息</p>
+</blockquote>
+<h3 id="查看伪节点LSP"><a href="#查看伪节点LSP" class="headerlink" title="查看伪节点LSP"></a>查看伪节点LSP</h3><p><img src="/2021/05/10/IS-IS/22.png"></p>
+<h3 id="CSNP"><a href="#CSNP" class="headerlink" title="CSNP"></a>CSNP</h3><p>CSNP包含该设备LSDB中所有的LSP摘要，路由器通过交互 CSNP来判断是否需要同步LSDB。</p>
+<p>▫在广播网络上，CSNP由DIS定期发送（缺省的发送周期为10秒）。</p>
+<p>▫在点到点网络上，CSNP只在第一次建立邻接关系时发送。</p>
+<p><img src="/2021/05/10/IS-IS/23.png"></p>
+<h3 id="PSNP"><a href="#PSNP" class="headerlink" title="PSNP"></a>PSNP</h3><p>PSNP只包含部分LSP的摘要信息（与CSNP不同）：</p>
+<p>▫当发现LSDB不同步时，PSNP来请求邻居发送新的LSP。</p>
+<p>▫在点到的网络中，当收到LSP时，使用PSNP对收到的LSP进行确认。</p>
+<p><img src="/2021/05/10/IS-IS/24.png"></p>
+<h3 id="广播网络中LSP的同步过程"><a href="#广播网络中LSP的同步过程" class="headerlink" title="广播网络中LSP的同步过程"></a>广播网络中LSP的同步过程</h3><p>广播网络中新加入路由器与DIS同步LSDB数据库的过程：</p>
+<ol>
+<li><p>新加入的路由器R3首先发送IIH报文，与该广播域中的路由器建立邻接关系。建立邻接关系之后，R3等待LSP刷新定时器超时，然后将自己的LSP发往组播地址（Level-1：01-80-C2-00-00-14；Level-2：01-80-C2-00-00-15）。这样网络上所有的邻接都将收到该LSP。</p>
+</li>
+<li><p>该网段中的DIS会把收到R3的LSP加入到LSDB中，并等待CSNP报文定时器超时并发送CSNP报文。</p>
+</li>
+<li><p>R3收到DIS发来的CSNP报文，对比自己的LSDB数据库，然后向DIS发送PSNP报文请求自己没有的LSP。</p>
+</li>
+<li><p>DIS收到该PSNP报文请求后向R3发送对应的LSP进行LSDB的同步。 </p>
+</li>
+</ol>
+<p><img src="/2021/05/10/IS-IS/25.png"></p>
+<h3 id="点到点网络中LSP的同步过程"><a href="#点到点网络中LSP的同步过程" class="headerlink" title="点到点网络中LSP的同步过程"></a>点到点网络中LSP的同步过程</h3><p>点到点网络上LSDB数据库的同步过程：</p>
+<p>•R1先与R2建立邻接关系。</p>
+<p>•建立邻接关系之后，R1与R2会先发送CSNP给对端设备。如果对端的LSDB与CSNP没有同步，则发送PSNP请求索取相应的LSP。</p>
+<p>•假设R2向R1索取相应的LSP。</p>
+<ol>
+<li><p>R1发送R2请求的LSP的同时启动LSP重传定时器，并等待R2发送的PSNP作为收到LSP的确认。</p>
+</li>
+<li><p>如果在接口LSP重传定时器超时后，R1没有收到R2发送的PSNP报文作为应答。</p>
+</li>
+<li><p>则R1重新发送该LSP。</p>
+</li>
+<li><p>R2收到LSP后，发送PSNP进行确认。</p>
+</li>
+</ol>
+<p><img src="/2021/05/10/IS-IS/26.png"></p>
+<h3 id="LSP的处理机制"><a href="#LSP的处理机制" class="headerlink" title="LSP的处理机制"></a>LSP的处理机制</h3><p>IS-IS通过交互LSP实现链路状态数据库同步，路由器收到LSP后，按照以下原则处理：</p>
+<p>•若收到的LSP比本地LSP的更优，或者本地没有收到的LSP：</p>
+<p>​    ▫在广播网络中：将其加入数据库，并组播发送新的LSP。</p>
+<p>​    ▫在点到点网络中：将其加入数据库，并发送PSNP报文来确认收到此    LSP，之后将这新的LSP发送给除了发送该LSP的邻居以外的邻居。</p>
+<p>•若收到的LSP和本地LSP无法比较出优劣，则不处理该LSP。</p>
+<p><img src="/2021/05/10/IS-IS/27.png"></p>
+<blockquote>
+<p>•LSP产生的原因，IS-IS路由域内的所有路由器都会产生LSP，以下事件会触发一个新的LSP：</p>
+<p>​    ▫邻接Up或Down</p>
+<p>​    ▫IS-IS相关接口Up或Down</p>
+<p>​    ▫引入的IP路由发生变化</p>
+<p>​    ▫区域间的IP路由发生变化</p>
+<p>​    ▫接口被赋了新的metric值</p>
+<p>​    ▫周期性更新（刷新间隔15min）</p>
+</blockquote>
+<h2 id="路由计算"><a href="#路由计算" class="headerlink" title="路由计算"></a>路由计算</h2><h3 id="Level-1路由器的路由计算"><a href="#Level-1路由器的路由计算" class="headerlink" title="Level-1路由器的路由计算"></a>Level-1路由器的路由计算</h3><p>•R1是Level-1路由器，只维护Level-1 LSDB，该LSDB中包含同属一个区域的R2及R3以及R1自己产生的Level-1 LSP。</p>
+<p>•R1根据LSDB中的Level-1 LSP计算出Area 49.0001内的拓扑，以及到达区域内各个网段的路由信息。</p>
+<p>•R2及R3作为Area 49.0001内的Level-1-2路由器，会在它们向该区域下发的Level-1 LSP中设置ATT标志位，用于向区域内的Level-1路由器宣布可以通过自己到达其他区域。 R1作为Level-1路由器，会根据该ATT标志位，计算出指向R2或R3的默认路由。</p>
+<p><img src="/2021/05/10/IS-IS/28.png"></p>
+<h3 id="Level-1路由器的次优路径的问题"><a href="#Level-1路由器的次优路径的问题" class="headerlink" title="Level-1路由器的次优路径的问题"></a>Level-1路由器的次优路径的问题</h3><p>缺省时， R1只能通过指向R2或R3的默认路由到达区域外部，但是R1距离R2和R3路由器的Cost值相等，那么当R1发送数据包到192.168.20.0/24时，就有可能选择路径2，导致出现次优路径。</p>
+<p><img src="/2021/05/10/IS-IS/29.png"></p>
+<h3 id="路由渗透"><a href="#路由渗透" class="headerlink" title="路由渗透"></a>路由渗透</h3><p>•缺省情况下，Level-1-2路由器不会将到达其他区域的路由通告本Level-1区域中。</p>
+<p>•通过路由渗透，可以将区域间路由通过Leve-1-2路由器传递到Level-1区域，此时Leve-1路由器可以学习到其他区域的详细路由，从而计算出最优路径。</p>
+<p><img src="/2021/05/10/IS-IS/31.png"></p>
+<h3 id="Level-1-2路由器的路由计算"><a href="#Level-1-2路由器的路由计算" class="headerlink" title="Level-1-2路由器的路由计算"></a>Level-1-2路由器的路由计算</h3><p>•R2及R3都维护Level-1 LSDB，它们能够通过这些LSDB中的LSP计算出Area 49.0001的路由。</p>
+<p>•R2及R3都维护Level-2 LSDB，它们能够通过这些LSDB中的LSP计算出Area 49.0002的路由。</p>
+<p>•R2及R3将到达Area 49.0001的路由以Level-2 LSP的形式发送到Area 49.0002。</p>
+<p><img src="/2021/05/10/IS-IS/32.png"></p>
+<h3 id="Level-2路由器的路由计算"><a href="#Level-2路由器的路由计算" class="headerlink" title="Level-2路由器的路由计算"></a>Level-2路由器的路由计算</h3><p>R4及R5作为Level-2路由器，只会维护Level-2 LSDB，它们能够根据该LSDB计算出到达全网各个网段的路由。</p>
+<p><img src="/2021/05/10/IS-IS/33.png"></p>
+<h1 id="IS-IS的基本配置"><a href="#IS-IS的基本配置" class="headerlink" title="IS-IS的基本配置"></a>IS-IS的基本配置</h1><h2 id="IS-IS协议的基本配置-1"><a href="#IS-IS协议的基本配置-1" class="headerlink" title="IS-IS协议的基本配置 (1)"></a>IS-IS协议的基本配置 (1)</h2><p><img src="/2021/05/10/IS-IS/34.png"></p>
+<h2 id="IS-IS协议的基本配置-2"><a href="#IS-IS协议的基本配置-2" class="headerlink" title="IS-IS协议的基本配置 (2)"></a>IS-IS协议的基本配置 (2)</h2><p><img src="/2021/05/10/IS-IS/35.png"></p>
+<h2 id="IS-IS协议的基本配置-3"><a href="#IS-IS协议的基本配置-3" class="headerlink" title="IS-IS协议的基本配置 (3)"></a>IS-IS协议的基本配置 (3)</h2><p><img src="/2021/05/10/IS-IS/36.png"></p>
+<h2 id="案例：IS-IS配置"><a href="#案例：IS-IS配置" class="headerlink" title="案例：IS-IS配置"></a>案例：IS-IS配置</h2><p><img src="/2021/05/10/IS-IS/37.png"></p>
+<p><strong>组网需求</strong></p>
+<p>如图所示，现网中有5台路由器。用户希望在这5台路由器实现网络互联，并且因为R1性能相对较低，所以还要使这台路由器处理相对较少的数据信息。同时用户希望R1可以选择最优路径访问192.168.10.0/24和192.168.20.0/24网段。</p>
+<p><strong>配置思路</strong></p>
+<p>在各路由器上配置IS-IS基本功能，实现网络互联。其中，配置R1为Level-1路由器，可以使这台路由器维护相对少量的数据信息。同时，配置R2和R3为Level-1/2路由器与R4和R5这两台Level-2路由器互联。</p>
+<h3 id="案例：R1、R2及R3的配置"><a href="#案例：R1、R2及R3的配置" class="headerlink" title="案例：R1、R2及R3的配置"></a>案例：R1、R2及R3的配置</h3><p><img src="/2021/05/10/IS-IS/38.png"></p>
+<h3 id="案例：R4和R5的配置"><a href="#案例：R4和R5的配置" class="headerlink" title="案例：R4和R5的配置"></a>案例：R4和R5的配置</h3><p><img src="/2021/05/10/IS-IS/39.png"></p>
+<h3 id="案例：配置验证-查看设备的IS-IS邻接表"><a href="#案例：配置验证-查看设备的IS-IS邻接表" class="headerlink" title="案例：配置验证 (查看设备的IS-IS邻接表)"></a>案例：配置验证 (查看设备的IS-IS邻接表)</h3><p><img src="/2021/05/10/IS-IS/40.png"></p>
+<blockquote>
+<p>•System Id字段：描述邻接的系统ID</p>
+<p>•Interface字段：描述通过该路由器哪个端口与邻接建立邻接关系</p>
+<p>•Type：描述与该邻接的邻接关系类型</p>
+<p>•PRI：描述该邻接对应端口的DIS优先级</p>
+</blockquote>
+<h3 id="案例：配置验证-查看设备的IS-IS路由表-1"><a href="#案例：配置验证-查看设备的IS-IS路由表-1" class="headerlink" title="案例：配置验证 (查看设备的IS-IS路由表) (1)"></a>案例：配置验证 (查看设备的IS-IS路由表) (1)</h3><p><img src="/2021/05/10/IS-IS/41.png"></p>
+<h3 id="案例：配置验证-查看设备的IS-IS路由表-2"><a href="#案例：配置验证-查看设备的IS-IS路由表-2" class="headerlink" title="案例：配置验证 (查看设备的IS-IS路由表) (2)"></a>案例：配置验证 (查看设备的IS-IS路由表) (2)</h3><p><img src="/2021/05/10/IS-IS/42.png"></p>
+<h2 id="路由渗透配置"><a href="#路由渗透配置" class="headerlink" title="路由渗透配置"></a>路由渗透配置</h2><p><img src="/2021/05/10/IS-IS/43.png"></p>
+<h2 id="路由渗透验证"><a href="#路由渗透验证" class="headerlink" title="路由渗透验证"></a>路由渗透验证</h2><p>通过查看R1的路由表，我们可以看到新增了两条明细路由192.168.10.0/24以及192.168.20.0/24，两条路由的开销值均为30，当有数据包经由R1到达这两个网段时，不会产生次优路径。</p>
+<p><img src="/2021/05/10/IS-IS/44.png"></p>
+<h2 id="IS-IS认证的分类"><a href="#IS-IS认证的分类" class="headerlink" title="IS-IS认证的分类"></a>IS-IS认证的分类</h2><p>•IS-IS认证是基于网络安全性的要求而实现的一种认证手段，通过在IS-IS报文中增加认证字段对报文进行认证。当本地路由器接收到远端路由器发送过来的IS-IS报文，如果发现认证密码不匹配，则将收到的报文进行丢弃，达到自我保护的目的。</p>
+<p>•根据报文的种类，认证可以分为以下三类：</p>
+<p>▫接口认证：在接口视图下配置，对Level-1和Level-2的Hello报文进行认证。</p>
+<p>▫区域认证：在IS-IS进程视图下配置，对Level-1的CSNP、PSNP和LSP报文进行认证。</p>
+<p>▫路由域认证：在IS-IS进程视图下配置，对Level-2的CSNP、PSNP和LSP报文进行认证。</p>
+<p>•根据报文的认证方式，可以分为以下四类：</p>
+<p>▫简单认证：将配置的密码直接加入报文中，这种加密方式安全性较其他两种方式低。</p>
+<p>▫MD5认证：通过将配置的密码进行MD5算法加密之后再加入报文中，提高密码的安全性。</p>
+<p>▫Keychian认证：通过配置随时间变化的密码链表来进一步提升网络的安全性。</p>
+<p>▫HMAC-SHA256认证：通过将配置的密码进行HMAC-SHA256算法加密之后再加入报文中，提高密码的安全性。</p>
+<h2 id="IS-IS认证详解"><a href="#IS-IS认证详解" class="headerlink" title="IS-IS认证详解"></a>IS-IS认证详解</h2><p><strong>接口认证</strong></p>
+<p>▫Hello报文使用的认证密码保存在接口下，发送带认证TLV的认证报文，互相连接的路由器接口必须配置相同的口令。</p>
+<p><strong>区域认证</strong></p>
+<p>▫区域内的每一台L1路由器都必须使用相同的认证模式和具有共同的钥匙串。</p>
+<p><strong>路由域认证</strong></p>
+<p>▫IS-IS域内的每一台L2和L1/L2类型的路由器都必须使用相同模式的认证，并使用共同的钥匙串。</p>
+<p>▫对于区域和路由域认证，可以设置为SNP和LSP分开认证。</p>
+<ul>
+<li>本地发送的LSP报文和SNP报文都携带认证TLV，对收到的LSP报文和SNP报文都进行认证检查。</li>
+<li>本地发送的LSP报文携带认证TLV，对收到的LSP报文进行认证检查；发送的SNP报文携带认证TLV，但不对收到的SNP报文进行检查。</li>
+<li>本地发送的LSP报文携带认证TLV，对收到的LSP报文进行认证检查；发送的SNP报文不携带认证TLV，也不对收到的SNP报文进行认证检查。</li>
+<li>本地发送的LSP报文和SNP报文都携带认证TLV，对收到的LSP报文和SNP报文都不进行认证检查。</li>
+</ul>
+<h2 id="IS-IS认证的配置-1"><a href="#IS-IS认证的配置-1" class="headerlink" title="IS-IS认证的配置 (1)"></a>IS-IS认证的配置 (1)</h2><p><img src="/2021/05/10/IS-IS/45.png"></p>
+<h2 id="IS-IS认证的配置-2"><a href="#IS-IS认证的配置-2" class="headerlink" title="IS-IS认证的配置 (2)"></a>IS-IS认证的配置 (2)</h2><p><img src="/2021/05/10/IS-IS/46.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）关于OSPF与IS-IS，说法正确的有？ (   )</p>
+<p><strong>A.OSPF及IS-IS都是链路状态路由协议。</strong></p>
+<p><strong>B.OSPF仅仅支持IP网络，而集成IS-IS支持CLNP及IP网络。</strong></p>
+<p><strong>C.OSPF使用区域号0标识骨干区域。</strong></p>
+<p><strong>D.IS-IS骨干区域由Level-2及Level-1-2路由器组成。</strong></p>
+<p>2.（多选题）关于Level-1路由器说法正确的有？(   )</p>
+<p><strong>A.Level-1路由器只能和相同区域的IS-IS路由器建立邻接关系。</strong></p>
+<p>B.Level-1路由器可以和同区域的Level-2路由器建立邻接关系。</p>
+<p><strong>C.缺省情况下，Level-1路由器只能通过缺省路由到达区域外部。</strong></p>
+<p><strong>D.Level-1路由器的LSDB中只存在Level-1 LSP。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本课程介绍了IS-IS的基本概念。每一台运行IS-IS的路由器都至少有一个NET地址。IS-IS采用分层架构，所有Level-2和Level-1-2路由器共同构成了骨干区域，同一区域的Level-1路由器构成了普通区域。IS-IS协议有四种报文类型，分别是IIH、CSNP、PSNP、LSP。</p>
+<p>•Level-1路由器只维护区域内的LSDB，Level-1路由通过离自己最近的Level-1-2路由器到达区域外部，为了避免次优路径，可以在Level-1-2路由器上部署路由渗透的特性。</p>
+<p>•IS-IS支持三种认证类型，分别是接口认证、区域认证、路由域认证。</p>
+<p>•IS-IS协议与OSPF协议都是链路路由状态协议，两者都需要维护LSDB，随着网络规模的不断扩大，巨大的LSDB会导致路由器整体性能下降，因此对于这两种路由协议而言，面对更大规模的组网时，需要进行多区域的网络设计。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-IS-IS/" rel="tag"># IP-IS-IS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/" rel="next" title="OSPF特殊区域及其它特性">
+                <i class="fa fa-chevron-left"></i> OSPF特殊区域及其它特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/" rel="prev" title="BGP基础">
+                BGP基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IS-IS%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.</span> <span class="nav-text">IS-IS的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">IS-IS概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSAP"><span class="nav-number">3.2.</span> <span class="nav-text">NSAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NET"><span class="nav-number">3.3.</span> <span class="nav-text">NET</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NET%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">3.4.</span> <span class="nav-text">NET的配置举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%92%8COSPF%E5%8C%BA%E5%9F%9F%E5%88%92%E5%88%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.5.</span> <span class="nav-text">IS-IS和OSPF区域划分的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB-1"><span class="nav-number">3.6.</span> <span class="nav-text">IS-IS路由器的分类 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB-2"><span class="nav-number">3.7.</span> <span class="nav-text">IS-IS路由器的分类 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB-3"><span class="nav-number">3.8.</span> <span class="nav-text">IS-IS路由器的分类 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E6%94%AF%E6%8C%81%E7%9A%84%E7%BD%91%E7%BB%9C%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.9.</span> <span class="nav-text">IS-IS支持的网络类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%BC%80%E9%94%80%E5%80%BC"><span class="nav-number">3.10.</span> <span class="nav-text">IS-IS开销值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.11.</span> <span class="nav-text">IS-IS报文格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E9%80%9A%E7%94%A8%E5%A4%B4%E9%83%A8%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.12.</span> <span class="nav-text">IS-IS通用头部详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">3.13.</span> <span class="nav-text">IS-IS报文类型概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%B8%B8%E8%A7%81%E7%9A%84TLV"><span class="nav-number">3.14.</span> <span class="nav-text">IS-IS常见的TLV</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IS-IS%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">IS-IS工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B"><span class="nav-number">4.1.</span> <span class="nav-text">邻接关系建立</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IS-IS%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E5%8E%9F%E5%88%99"><span class="nav-number">4.1.1.</span> <span class="nav-text">IS-IS邻接关系建立原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IIH"><span class="nav-number">4.1.2.</span> <span class="nav-text">IIH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">4.1.3.</span> <span class="nav-text">广播网络中的邻接关系建立过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DIS%E4%B8%8E%E4%BC%AA%E8%8A%82%E7%82%B9"><span class="nav-number">4.1.4.</span> <span class="nav-text">DIS与伪节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IS-IS%E4%B8%AD%E7%9A%84DIS%E4%B8%8EOSPF%E4%B8%AD%E7%9A%84DR"><span class="nav-number">4.1.5.</span> <span class="nav-text">IS-IS中的DIS与OSPF中的DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E5%88%B0%E7%82%B9%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E9%82%BB%E6%8E%A5%E5%85%B3%E7%B3%BB%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">4.1.6.</span> <span class="nav-text">点到点网络中的邻接关系建立过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8C%E6%AD%A5"><span class="nav-number">4.2.</span> <span class="nav-text">链路状态数据库同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LSP"><span class="nav-number">4.2.1.</span> <span class="nav-text">LSP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IS-IS%E7%9A%84LSDB"><span class="nav-number">4.2.2.</span> <span class="nav-text">IS-IS的LSDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%9D%9E%E4%BC%AA%E8%8A%82%E7%82%B9%E7%9A%84LSP"><span class="nav-number">4.2.3.</span> <span class="nav-text">查看非伪节点的LSP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E4%BC%AA%E8%8A%82%E7%82%B9LSP"><span class="nav-number">4.2.4.</span> <span class="nav-text">查看伪节点LSP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSNP"><span class="nav-number">4.2.5.</span> <span class="nav-text">CSNP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PSNP"><span class="nav-number">4.2.6.</span> <span class="nav-text">PSNP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E7%BD%91%E7%BB%9C%E4%B8%ADLSP%E7%9A%84%E5%90%8C%E6%AD%A5%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.7.</span> <span class="nav-text">广播网络中LSP的同步过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E5%88%B0%E7%82%B9%E7%BD%91%E7%BB%9C%E4%B8%ADLSP%E7%9A%84%E5%90%8C%E6%AD%A5%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.8.</span> <span class="nav-text">点到点网络中LSP的同步过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSP%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.9.</span> <span class="nav-text">LSP的处理机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97"><span class="nav-number">4.3.</span> <span class="nav-text">路由计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Level-1%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97"><span class="nav-number">4.3.1.</span> <span class="nav-text">Level-1路由器的路由计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Level-1%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E6%AC%A1%E4%BC%98%E8%B7%AF%E5%BE%84%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">4.3.2.</span> <span class="nav-text">Level-1路由器的次优路径的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B8%97%E9%80%8F"><span class="nav-number">4.3.3.</span> <span class="nav-text">路由渗透</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Level-1-2%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97"><span class="nav-number">4.3.4.</span> <span class="nav-text">Level-1-2路由器的路由计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Level-2%E8%B7%AF%E7%94%B1%E5%99%A8%E7%9A%84%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97"><span class="nav-number">4.3.5.</span> <span class="nav-text">Level-2路由器的路由计算</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IS-IS%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">IS-IS的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE-1"><span class="nav-number">5.1.</span> <span class="nav-text">IS-IS协议的基本配置 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE-2"><span class="nav-number">5.2.</span> <span class="nav-text">IS-IS协议的基本配置 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%8D%8F%E8%AE%AE%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE-3"><span class="nav-number">5.3.</span> <span class="nav-text">IS-IS协议的基本配置 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9AIS-IS%E9%85%8D%E7%BD%AE"><span class="nav-number">5.4.</span> <span class="nav-text">案例：IS-IS配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9AR1%E3%80%81R2%E5%8F%8AR3%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">5.4.1.</span> <span class="nav-text">案例：R1、R2及R3的配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9AR4%E5%92%8CR5%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">5.4.2.</span> <span class="nav-text">案例：R4和R5的配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81-%E6%9F%A5%E7%9C%8B%E8%AE%BE%E5%A4%87%E7%9A%84IS-IS%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="nav-number">5.4.3.</span> <span class="nav-text">案例：配置验证 (查看设备的IS-IS邻接表)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81-%E6%9F%A5%E7%9C%8B%E8%AE%BE%E5%A4%87%E7%9A%84IS-IS%E8%B7%AF%E7%94%B1%E8%A1%A8-1"><span class="nav-number">5.4.4.</span> <span class="nav-text">案例：配置验证 (查看设备的IS-IS路由表) (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%EF%BC%9A%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81-%E6%9F%A5%E7%9C%8B%E8%AE%BE%E5%A4%87%E7%9A%84IS-IS%E8%B7%AF%E7%94%B1%E8%A1%A8-2"><span class="nav-number">5.4.5.</span> <span class="nav-text">案例：配置验证 (查看设备的IS-IS路由表) (2)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B8%97%E9%80%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">5.5.</span> <span class="nav-text">路由渗透配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%B8%97%E9%80%8F%E9%AA%8C%E8%AF%81"><span class="nav-number">5.6.</span> <span class="nav-text">路由渗透验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%AE%A4%E8%AF%81%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">5.7.</span> <span class="nav-text">IS-IS认证的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%AE%A4%E8%AF%81%E8%AF%A6%E8%A7%A3"><span class="nav-number">5.8.</span> <span class="nav-text">IS-IS认证详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%AE%A4%E8%AF%81%E7%9A%84%E9%85%8D%E7%BD%AE-1"><span class="nav-number">5.9.</span> <span class="nav-text">IS-IS认证的配置 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E8%AE%A4%E8%AF%81%E7%9A%84%E9%85%8D%E7%BD%AE-2"><span class="nav-number">5.10.</span> <span class="nav-text">IS-IS认证的配置 (2)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
