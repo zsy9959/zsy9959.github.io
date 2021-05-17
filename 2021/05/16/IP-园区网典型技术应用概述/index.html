@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-13-园区网典型技术应用概述," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•工厂、政府机关、商场、写字楼、校园、公园等，这些场所内为了实现数据互通而搭建的网络都可以称之为园区网。园区有大有小，有行业属性的不同，相应地，园区网络也变化多样。但是，无论如何变化，园区网络一般划分为出口层、核心层、汇聚层及接入层。 •本课程主要介绍园区网络的总体架构、网络各层次中所使用的常用技术及协议、典型的组网场景。 目标▫描述大型园区网络的典型架构。 ▫描述常用以太网交换技术。 ▫描述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-园区网典型技术应用概述">
+<meta property="og:url" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•工厂、政府机关、商场、写字楼、校园、公园等，这些场所内为了实现数据互通而搭建的网络都可以称之为园区网。园区有大有小，有行业属性的不同，相应地，园区网络也变化多样。但是，无论如何变化，园区网络一般划分为出口层、核心层、汇聚层及接入层。 •本课程主要介绍园区网络的总体架构、网络各层次中所使用的常用技术及协议、典型的组网场景。 目标▫描述大型园区网络的典型架构。 ▫描述常用以太网交换技术。 ▫描述">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/1.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/2.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/3.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/4.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/5.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/6.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/7.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/8.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/9.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/10.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/11.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/12.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/13.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/14.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/15.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/16.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/17.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/18.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/19.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/20.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/21.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/22.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/23.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/24.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/25.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/26.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/27.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/28.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/29.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/30.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/31.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/32.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/33.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/34.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/35.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/36.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/37.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/38.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/39.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/40.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/41.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/42.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/43.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/44.png">
+<meta property="article:published_time" content="2021-05-16T12:09:50.000Z">
+<meta property="article:modified_time" content="2021-05-17T06:02:14.427Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-13-园区网典型技术应用概述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/16/IP-园区网典型技术应用概述/"/>
+
+
+
+
+
+  <title>IP-园区网典型技术应用概述 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-园区网典型技术应用概述</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:09:50+08:00">
+                2021-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•工厂、政府机关、商场、写字楼、校园、公园等，这些场所内为了实现数据互通而搭建的网络都可以称之为园区网。园区有大有小，有行业属性的不同，相应地，园区网络也变化多样。但是，无论如何变化，园区网络一般划分为出口层、核心层、汇聚层及接入层。</p>
+<p>•本课程主要介绍园区网络的总体架构、网络各层次中所使用的常用技术及协议、典型的组网场景。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述大型园区网络的典型架构。</p>
+<p>▫描述常用以太网交换技术。</p>
+<p>▫描述WLAN常见应用场景。</p>
+<p>▫描述园区网络可靠性的常用技术。</p>
+<p>▫描述园区网络网络服务与管理的常用技术。</p>
+<p>▫描述园区网络安全的常用技术。</p>
+<p>▫描述园区网络常用的VPN技术。</p>
+<h1 id="1-园区网络架构与常见技术概述"><a href="#1-园区网络架构与常见技术概述" class="headerlink" title="1.园区网络架构与常见技术概述"></a>1.<strong>园区网络架构与常见技术概述</strong></h1><h2 id="“城市，除了马路，都是园区”"><a href="#“城市，除了马路，都是园区”" class="headerlink" title="“城市，除了马路，都是园区”"></a>“城市，除了马路，都是园区”</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/1.png"></p>
+<h2 id="什么是园区网络？"><a href="#什么是园区网络？" class="headerlink" title="什么是园区网络？"></a>什么是园区网络？</h2><p>•园区网络一般是指企业或者机构的内部网络。</p>
+<p>•园区网络的主要目的是使企业或者机构的各项业务运作更有效率。</p>
+<p>•按规模可以将园区网络划分成：</p>
+<p>▫大型园区网络：终端用户数量/个 &gt; 2000；网元数量/个 &gt; 100。</p>
+<p>▫中型园区网络：2000 &gt; 终端用户数量/个 &gt; 200；100 &gt;网元数量/个 &gt; 25。</p>
+<p>▫小型园区网络：终端用户数量/个 &lt; 200；网元数量/个 &lt; 25。</p>
+<p>•有些企业还存在不同地域的办公分支机构，每个分支机构网络可看做一个单园区网络。</p>
+<h2 id="常见的行业园区网"><a href="#常见的行业园区网" class="headerlink" title="常见的行业园区网"></a>常见的行业园区网</h2><p>•企业园区网络</p>
+<p>▫关注网络可靠性、先进性，持续提升员工的办公体验，保障运营生产的效率和质量。</p>
+<p>•校园网络</p>
+<p>▫分为普教园区和高教园区。</p>
+<p>▫高教园区相对复杂，通常存在教研网、学生网，还可能有运营性的宿舍网络。</p>
+<p>▫网络可管理性、安全性要求高；对网络先进性亦有要求。</p>
+<p>•政务园区网络</p>
+<p>▫通常指政府机构的内部网络。</p>
+<p>▫安全要求极高，通常采用内网和外网隔离的措施保障涉密信息的绝对安全。</p>
+<p>•商业园区网络</p>
+<p>▫商场、超市、酒店、公园等。</p>
+<p>▫网络主要用于服务消费者，此外还包含服务内部办公的子网。</p>
+<p>▫提供上网服务，并构建商业智能化系统提升用户体验，降低运维成本，提升商业效率，实现价值转移。</p>
+<blockquote>
+<p>•为了满足不同行业园区的需求，园区网络架构会根据其服务的行业特点进行设计， 最终打造的是带有行业属性的园区网络方案。</p>
+</blockquote>
+<h2 id="园区网络典型架构"><a href="#园区网络典型架构" class="headerlink" title="园区网络典型架构"></a>园区网络典型架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/2.png"></p>
+<p>•<strong>核心层</strong>：是园区网骨干，是园区数据交换的核心，联接园区网的各个组成部分，如数据中心、管理中心、园区出口等。</p>
+<p>•<strong>汇聚层</strong>：处于园区网的中间层次，完成数据汇聚或交换的功能，可以提供一些关键的网络基本功能，如路由、安全等。</p>
+<p>•<strong>接入层</strong>：为终端用户提供园区网接入功能，是园区网的边界。</p>
+<p>•<strong>出口区</strong>：园区内部网络到外部网络的边界，用于实现内部用户接入到公网，外部用户（包括客户、合作伙伴、分支机构、远程用户等）接入到内部网络。</p>
+<p>•<strong>数据中心区</strong>：部署服务器和应用系统的区域，为企业内部和外部用户提供数据和应用服务。</p>
+<h2 id="园区网络主要协议-技术"><a href="#园区网络主要协议-技术" class="headerlink" title="园区网络主要协议/技术"></a>园区网络主要协议/技术</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/3.png"></p>
+<blockquote>
+<p>•NAT：Network Address Translation，网络地址转换。</p>
+<p>•LLDP：Link Layer Discovery Protocol，链路层发现协议。链路层发现协议是IEEE 802.1ab中定义的第二层发现协议。通过采用LLDP技术，在网络规模迅速扩大时，网管系统可以快速掌握二层网络拓扑信息、拓扑变化信息。</p>
+<p>•NETCONF：Network Configuration Protocol，网络配置协议。NETCONF是一种提供网络设备配置管理的协议，采用基于数据编码的可扩展标记语言配置数据以及协议信息，提供了安装、操作和删除网元配置的机制。</p>
+<p>•YANG：Yet Another Next Generation，通过NETCONF网络配置协议发送的数据的数据建模语言，可以用来建模网元的配置数据和状态数据。</p>
+<p>•SNMP：Simple Network Management Protocol，简单网络管理协议。</p>
+<p>•VRRP：Virtual Router Redundancy Protocol，虚拟路由冗余协议。</p>
+<p>•MSTP：Multiple Spanning Tree Protocol，多生成树协议。</p>
+</blockquote>
+<h1 id="2-以太网交换基础"><a href="#2-以太网交换基础" class="headerlink" title="2.以太网交换基础"></a>2.以太网交换基础</h1><h2 id="从TCP-IP对等模型说起"><a href="#从TCP-IP对等模型说起" class="headerlink" title="从TCP/IP对等模型说起"></a>从TCP/IP对等模型说起</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/4.png"></p>
+<p>•将网络的通信过程划分为小一些、简单一些的部件，有助于各个部件的开发、设计和故障排除。</p>
+<p>•通过网络组件的标准化，允许多个供应商进行开发。</p>
+<p>•通过定义在模型的每一层实现什么功能，鼓励产业的标准化。</p>
+<p>•允许各种类型的网络硬件和软件相互通信。</p>
+<h2 id="从园区网络到以太网二层交换"><a href="#从园区网络到以太网二层交换" class="headerlink" title="从园区网络到以太网二层交换"></a>从园区网络到以太网二层交换</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/5.png"></p>
+<p>•接入层为用户提供各种接入方式，是终端接入网络的第一层。</p>
+<p>•接入层通常由接入交换机组成，接入层交换机在网络中数量众多，安装位置分散，通常是简单的二层交换机。</p>
+<p>•如果终端层存在无线终端设备，接入层需要无线接入点AP设备，AP设备通过接入交换机接入网络。</p>
+<h2 id="什么是二层交换"><a href="#什么是二层交换" class="headerlink" title="什么是二层交换"></a>什么是二层交换</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/6.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/7.png"></p>
+<p>•二层交换是以太网交换机的基本功能。</p>
+<p>•二层交换指的是交换机根据数据帧的第二层头部中的目的MAC地址进行帧转发的行为。</p>
+<p>•每台交换机都维护一个MAC地址表，用于指导数据帧转发。</p>
+<p>•当交换机收到数据帧时，将在其MAC地址表中查询该帧的目的MAC地址，并根据匹配的表项执行相应的操作。此外，交换机收到数据帧时，还会进行源MAC地址学习。</p>
+<blockquote>
+<p>•二层交换设备工作在OSI模型的第二层，即数据链路层，它对数据包的转发是建立在MAC（Media Access Control ）地址基础之上的。</p>
+<p>•二层交换设备通过解析和学习以太网帧的源MAC来维护MAC地址与接口的对应关系（保存MAC与接口对应关系的表称为MAC表），通过其目的MAC来查找MAC表决定向哪个接口转发。</p>
+<p>•二层交换设备不同的接口发送和接收数据独立，各接口属于不同的冲突域，因此有效地隔离了网络中物理层冲突域，使得通过它互连的主机（或网络）之间不必再担心流量大小对于数据发送冲突的影响。</p>
+</blockquote>
+<h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/8.png"></p>
+<p>•VLAN（Virtual Local Area Network）即虚拟局域网，是将一个物理的LAN在逻辑上划分成多个广播域的通信技术。</p>
+<p>•一个VLAN中所有设备都是在同一广播域内，不同的VLAN为不同的广播域。</p>
+<p>•VLAN内的设备间可以直接通信，而VLAN间不能直接互通。</p>
+<p>•VLAN之间互相隔离，不同VLAN间需通过三层设备实现相互通信。</p>
+<p>•一个VLAN一般为一个逻辑子网。</p>
+<p>•VLAN中成员多基于交换机的端口分配，所谓的VLAN划分，通常指的是将交换机的接口添加到特定的VLAN中，从而该接口所连接的设备也加入到了该VLAN。</p>
+<h2 id="以太网二层接口类型概述"><a href="#以太网二层接口类型概述" class="headerlink" title="以太网二层接口类型概述"></a>以太网二层接口类型概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/9.png"></p>
+<p>交换机的以太网二层接口主要存在以下三种类型：</p>
+<p>•<strong>Access</strong>：常用来连接用户PC、服务器等终端设备的接口。Access接口所连接的这些设备的网卡往往只收发无标记帧。Access接口只能加入一个VLAN。</p>
+<p>•<strong>Trunk</strong>：Trunk接口允许多个VLAN的数据帧通过，这些数据帧通过802.1Q Tag实现区分。Trunk接口常用于交换机之间的互联，也用于连接路由器、防火墙等设备的子接口。</p>
+<p>•<strong>Hybrid</strong>：Hybrid接口与Trunk接口类似，也允许多个VLAN的数据帧通过，这些数据帧通过802.1Tag实现区分。用户可以灵活指定Hybrid接口在发送某个（或某些）VLAN的数据帧时是否携带Tag。</p>
+<h3 id="Access接口"><a href="#Access接口" class="headerlink" title="Access接口"></a>Access接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/10.png"></p>
+<blockquote>
+<p>•所有的二层接口无论其类型如何，都有一个缺省VLAN ID，这个缺省VLAN ID被称为PVID（Port Default VLAN ID），在华为的交换机上，PVID缺省为1。另外，出于提高数据帧处理效率的考虑，在交换机内部，数据帧一律携带Tag。 </p>
+</blockquote>
+<h3 id="Trunk接口"><a href="#Trunk接口" class="headerlink" title="Trunk接口"></a>Trunk接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/11.png"></p>
+<h3 id="Hybrid接口"><a href="#Hybrid接口" class="headerlink" title="Hybrid接口"></a>Hybrid接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/12.png"></p>
+<p>•Hybrid接口也能承载多个VLAN的数据，它与Trunk接口在数据帧的接收行为上大体相同，这里不再赘述。Trunk接口在发送数据帧时，仅当待发送的数据帧与发送接口的PVID相同时，数据帧的Tag才会被移除，除此之外，该接口发送出去的其他VLAN的数据帧都是携带Tag的。而Hybrid接口发送数据帧的行为则与Trunk接口不同。我们可以通过命令指定Hybrid接口在发送某个，或者某些VLAN的数据帧时不携带Tag。</p>
+<h3 id="VLAN划分方式总览"><a href="#VLAN划分方式总览" class="headerlink" title="VLAN划分方式总览"></a>VLAN划分方式总览</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/13.png"></p>
+<h3 id="实现VLAN之间的IP可达性"><a href="#实现VLAN之间的IP可达性" class="headerlink" title="实现VLAN之间的IP可达性"></a>实现VLAN之间的IP可达性</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/14.png"></p>
+<h2 id="以太网链路聚合"><a href="#以太网链路聚合" class="headerlink" title="以太网链路聚合"></a>以太网链路聚合</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/15.png"></p>
+<p>•<strong>链路聚合（Link Aggregation,LAG）</strong>是将多条物理链路捆绑在一起成为一条逻辑链路，从而增加链路带宽的技术。</p>
+<p>•完成聚合后的链路称为以太网聚合链路。</p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/16.png"></p>
+<blockquote>
+<p>•随着网络规模不断扩大，用户对骨干链路的带宽和可靠性提出越来越高的要求。在传统技术中，常用更换高速率的接口板或更换支持高速率接口板的设备的方式来增加带宽，但这种方案需要付出高额的费用，而且不够灵活。</p>
+<p>•采用链路聚合技术可以在不进行硬件升级的条件下，通过将多个物理接口捆绑为一个逻辑接口，达到增加链路带宽的目的。在实现增大带宽目的的同时，链路聚合采用备份链路的机制，可以有效的提高设备之间链路的可靠性。</p>
+<p>•LAG是指将若干条以太链路捆绑在一起所形成的逻辑链路，简写为Eth-Trunk。每个聚合组唯一对应着一个逻辑接口，这个逻辑接口称之为聚合接口或Eth-Trunk接口。</p>
+<p>•链路聚合技术主要有以下三个优势：</p>
+<p>▫增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</p>
+<p>▫提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</p>
+<p>▫负载分担：在一个链路聚合组内，可以实现在各成员活动链路上的负载分担。</p>
+</blockquote>
+<h2 id="生成树技术：防环-保证二层网络可靠性"><a href="#生成树技术：防环-保证二层网络可靠性" class="headerlink" title="生成树技术：防环+保证二层网络可靠性"></a>生成树技术：防环+保证二层网络可靠性</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/17.png"></p>
+<p>•解决交换网络中的环路问题</p>
+<p>•动态地适应根据网络拓扑变更</p>
+<p>•配合冗余链路，保证二层网络可靠性</p>
+<h1 id="3-无线接入"><a href="#3-无线接入" class="headerlink" title="3.无线接入"></a>3.无线接入</h1><h2 id="WLAN与主要网元"><a href="#WLAN与主要网元" class="headerlink" title="WLAN与主要网元"></a>WLAN与主要网元</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/18.png"></p>
+<h2 id="WLAN组网架构综述"><a href="#WLAN组网架构综述" class="headerlink" title="WLAN组网架构综述"></a>WLAN组网架构综述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/19.png"></p>
+<blockquote>
+<p>无线接入点 (AP, Access Point)</p>
+<p>▫一般支持FAT AP（胖AP）、FIT AP（瘦AP）和云管理AP三种工作模式，根据网络规划的需求，可以灵活地在多种模式下切换。</p>
+<p>▫FAT AP：适用于家庭，独立工作，需单独配置，功能较为单一，成本低。独立完成用户接入、认证、数据安全、业务转发和QoS等功能。</p>
+<p>▫FIT AP：适用于大中型企业，需要配合AC使用，由AC统一管理和配置，功能丰富，对网络维护人员的技能要求高。用户接入、AP上线、认证、路由、AP管理、安全协议、QoS等功能需要同AC配合完成。</p>
+<p>▫云管理：适用于中小型企业，需要配合云管理平台使用，由云管理平台统一管理和配置，功能丰富，即插即用，对网络维护人员的技能要求低。</p>
+<p>无线接入控制器 (AC, Access Controller)</p>
+<p>▫一般位于整个网络的汇聚层，提供高速、安全、可靠的WLAN业务。</p>
+<p>▫提供大容量、高性能、高可靠性、易安装、易维护的无线数据控制业务，具有组网灵活、绿色节能等优势。</p>
+</blockquote>
+<h2 id="AC-FIT-AP架构"><a href="#AC-FIT-AP架构" class="headerlink" title="AC+FIT AP架构"></a>AC+FIT AP架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/20.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/21.png"></p>
+<blockquote>
+<p>•AC和AP之间使用的通信协议是无线接入点控制和配置（Control And Provisioning of Wireless Access Points，CAPWAP）。CAPWAP协议定义的主要内容有：AP自动发现AC，AC对AP进行安全认证，AP从AC获取软件，AP从AC获得初始和动态配置等。通过该协议，AP和AC之间建立起CAPWAP隧道。CAPWAP隧道有两种：控制隧道和数据隧道。控制隧道主要传输控制报文（也称管理报文，是AC管理控制AP的报文）；数据隧道主要传输数据报文。CAPWAP隧道可以进行数据传输层安全（Datagram Transport Layer Security，DTLS）加密，因此传输的报文更加安全。</p>
+<p>•相比于FAT AP架构，AC+FIT AP架构的优点如下。</p>
+<p>▫配置与部署：通过AC进行集中地网络配置和管理，不再需要对每个AP进行单独配置操作，同时对整网AP进行信道、功率的自动调整，免去了烦琐的人工调整过程。</p>
+<p>▫安全性：由于FAT AP无法进行统一的升级操作，无法保证所有AP版本都有最新的安全补丁，而AC+FIT AP架构主要的安全能力是在AC上的，软件更新和安全配置仅需在AC上进行，从而可以快速进行全局安全设置；同时，为了防止加载恶意代码，设备会对软件进行数字签名认证，增强了更新过程的安全性。AC也实现了FAT AP架构无法支持的一些安全功能，包括病毒检测、统一资源定位地址（Uniform Resource Locater，URL）过滤、状态检测防火墙等高级安全特性。</p>
+<p>▫更新与扩展：架构的集中管理模式使得同一AC下的AP有着相同的软件版本。当需要更新时，先由AC获取更新包或补丁，然后由AC统一更新AP版本。AP和AC的功能拆分也减少了对AP版本的频繁更新，有关用户认证、网管和安全等功能的更新只需在AC上进行。</p>
+</blockquote>
+<h2 id="AC-FIT-AP架构-1"><a href="#AC-FIT-AP架构-1" class="headerlink" title="AC+FIT AP架构"></a>AC+FIT AP架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/22.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/23.png"></p>
+<h1 id="4-网络可靠性"><a href="#4-网络可靠性" class="headerlink" title="4.网络可靠性"></a>4.网络可靠性</h1><h2 id="使用VRRP实现网关冗余"><a href="#使用VRRP实现网关冗余" class="headerlink" title="使用VRRP实现网关冗余"></a>使用VRRP实现网关冗余</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/24.png"></p>
+<blockquote>
+<p>•虚拟路由冗余协议VRRP（Virtual Router Redundancy Protocol）通过把几台路由设备联合组成一台虚拟的路由设备，将虚拟路由设备的IP地址作为用户的默认网关实现与外部网络通信。当网关设备发生故障时，VRRP机制能够选举新的网关设备承担数据流量，从而保障网络的可靠通信。</p>
+<p>•通常，同一网段内的所有主机上都设置一条相同的、以网关为下一跳的缺省路由。主机发往其他网段的报文将通过缺省路由发往网关，再由网关进行转发，从而实现主机与外部网络的通信。当网关发生故障时，本网段内所有以网关为缺省路由的主机将无法与外部网络通信。增加出口网关是提高系统可靠性的常见方法，此时如何在多个出口之间进行选路就成为需要解决的问题。</p>
+<p>•VRRP的出现很好的解决了这个问题。VRRP能够在不改变组网的情况下，将多台路由设备组成一个虚拟路由器，通过配置虚拟路由器的IP地址为默认网关，实现默认网关的备份。</p>
+<ul>
+<li><strong>冗余备份</strong>：VRRP可以将多台路由设备配置为缺省网关路由器，当出现单点故障的时候通过备份链路进行业务传输，从而降低网络故障的可能性，保证用户的各种业务不中断传输。</li>
+<li><strong>负载分担</strong>：VRRP可以实现多台设备同时承担业务流量，从而减轻主用设备上数据流量的承载压力，在路由设备之间更均衡地分担流量。</li>
+<li><strong>联动功能</strong>：VRRP联动可以监视上行链路的故障。当上行接口或链路故障时，VRRP备份组的Master设备降低优先级，重新进行选举，确保Master路由器为最佳的VRRP路由设备，保证流量的正常转发。VRRP与BFD联动可以提高VRRP备份组中主备设备的切换速度。利用BFD检测速度快的特点，在Master设备和Backup设备之间建立BFD会话并与VRRP备份组进行绑定，实现Master设备和Backup设备之间的链路出现故障时，Backup设备迅速切换为Master，承担网络流量。</li>
+</ul>
+</blockquote>
+<h2 id="集群-堆叠简介"><a href="#集群-堆叠简介" class="headerlink" title="集群/堆叠简介"></a>集群/堆叠简介</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/25.png"></p>
+<p>•iStack（Intelligent Stack，智能堆叠），简称堆叠，是指将多台支持堆叠特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。iStack针对华为盒式交换机。</p>
+<p>•CSS（Cluster Switch System，集群交换机系统），又称为集群，是指将两台支持集群特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。CSS针对华为框式交换机。</p>
+<h2 id="堆叠与园区网络树形结构组网形态"><a href="#堆叠与园区网络树形结构组网形态" class="headerlink" title="堆叠与园区网络树形结构组网形态"></a>堆叠与园区网络树形结构组网形态</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/26.png"></p>
+<p>•堆叠iStack（Intelligent Stack），是指将多台支持堆叠特性的交换机设备组合在一起，从逻辑上组合成一台整体交换设备。</p>
+<p>•堆叠系统建立之前，每台交换机都是单独的实体，有自己独立的IP地址和MAC地址，对外体现为多台交换机，用户需要独立的管理所有的交换机；堆叠建立后堆叠成员对外体现为一个统一的逻辑实体，用户使用一个IP地址对堆叠中的所有交换机进行管理和维护，如图所示。通过交换机堆叠，可以实现网络大数据量转发和网络高可靠性，同时简化网络管理。</p>
+<h1 id="5-网络服务与网络管理"><a href="#5-网络服务与网络管理" class="headerlink" title="5.网络服务与网络管理"></a>5.网络服务与网络管理</h1><h2 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/27.png"></p>
+<blockquote>
+<p>•动态主机配置协议DHCP（Dynamic Host Configuration Protocol）是一种用于集中对用户IP地址进行动态管理和配置的技术。即使规模较小的网络，通过DHCP也可以使后续增加网络设备变得简单快捷。</p>
+<p>•DHCP允许计算机动态地获取IP地址，而不是静态为每台主机指定地址。</p>
+<p>•DHCP能够分配其他配置参数，例如客户端的启动配置文件，使客户端仅用一个消息就获取它所需要的所有配置信息。</p>
+<p>•DHCP协议由RFC 2131定义，采用客户端/服务器通信模式，由客户端（DHCP Client）向服务器（DHCP Server）提出配置申请，服务器返回为客户端分配的配置信息。</p>
+<p>•DHCP可以提供两种地址分配机制，网络管理员可以根据网络需求为不同的主机选择不同的分配策略。</p>
+<p>▫动态分配机制：通过DHCP为主机分配一个有使用期限（这个使用期限通常叫做租期）的IP地址。这种分配机制适用于主机需要临时接入网络或者空闲地址数小于网络主机总数且主机不需要永久连接网络的场景。</p>
+<p>▫静态分配机制：网络管理员通过DHCP为指定的主机分配固定的IP地址。相比手工静态配置IP地址，通过DHCP方式静态分配机制避免人工配置发生错误，方便管理员统一维护管理。</p>
+<p>•DHCP受益主要有以下两点：</p>
+<p>▫降低客户端的配置和维护成本</p>
+<p>▫集中管理</p>
+</blockquote>
+<h2 id="NTP"><a href="#NTP" class="headerlink" title="NTP"></a>NTP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/28.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/29.png"></p>
+<blockquote>
+<p>•网络时间协议NTP（Network Time Protocol）是TCP/IP协议族里面的一个应用层协议。NTP用于在一系列分布式时间服务器与客户端之间同步时钟。NTP的实现基于IP和UDP。NTP报文通过UDP传输，端口号是123。</p>
+<p>•随着网络拓扑的日益复杂，整个网络内设备的时钟同步将变得十分重要。如果依靠管理员手工修改系统时钟，不仅工作量巨大，而且时钟的准确性也无法得到保证。NTP的出现就是为了解决网络内设备系统时钟的同步问题。</p>
+<p>•NTP主要应用于网络中所有设备时钟需要保持一致的场合，比如：网络管理：对从不同路由器采集来的日志信息、调试信息进行分析时，需要以时间作为参照依据。</p>
+<p>▫计费系统：要求所有设备的时钟保持一致。</p>
+<p>▫多个系统协同处理同一个复杂事件：为保证正确的执行顺序，多个系统必须参考同一时钟。</p>
+<p>▫备份服务器和客户机之间进行增量备份：要求备份服务器和所有客户机之间的时钟同步。</p>
+<p>▫系统时间：某些应用程序需要知道用户登录系统的时间以及文件修改的时间。</p>
+<p>•交换机既可以作为NTP的服务器，也可以作为NTP的客户端。</p>
+</blockquote>
+<h2 id="LLDP"><a href="#LLDP" class="headerlink" title="LLDP"></a>LLDP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/30.png"></p>
+<blockquote>
+<p>•LLDP（Link Layer Discovery Protocol）是IEEE 802.1ab中定义的链路层发现协议。LLDP是一种标准的二层发现方式，可以将本端设备的管理地址、设备标识、接口标识等信息组织起来，并发布给自己的邻居设备，邻居设备收到这些信息后将其以标准的管理信息库MIB（Management Information Base）的形式保存起来，以供网络管理系统查询及判断链路的通信状况。</p>
+<p>•随着网络规模越来越大，网络设备种类繁多，并且各自的配置错综复杂，对网络管理能力的要求也越来越高。传统网络管理系统多数只能分析到三层网络拓扑结构，无法确定网络设备的详细拓扑信息、是否存在配置冲突等。因此需要有一个标准的二层信息交流协议。</p>
+<p>•LLDP提供了一种标准的链路层发现方式。通过LLDP获取的设备二层信息能够快速获取相连设备的拓扑状态；显示出客户端、交换机、路由器、应用服务器以及网络服务器之间的路径；检测设备间的配置冲突、查询网络失败的原因。企业网用户可以通过使用网管系统，对支持运行LLDP协议的设备进行链路状态监控，在网络发生故障的时候快速进行故障定位。</p>
+</blockquote>
+<h2 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/31.png"></p>
+<h2 id="NETCONF-YANG"><a href="#NETCONF-YANG" class="headerlink" title="NETCONF/YANG"></a>NETCONF/YANG</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/32.png"></p>
+<h1 id="6-网络安全"><a href="#6-网络安全" class="headerlink" title="6.网络安全"></a>6.网络安全</h1><h2 id="园区网络安全概述"><a href="#园区网络安全概述" class="headerlink" title="园区网络安全概述"></a>园区网络安全概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/33.png"></p>
+<h2 id="基于防火墙的安全区域划分及安全策略"><a href="#基于防火墙的安全区域划分及安全策略" class="headerlink" title="基于防火墙的安全区域划分及安全策略"></a>基于防火墙的安全区域划分及安全策略</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/34.png"></p>
+<p>•安全区域（Security Zone），或者简称为区域（Zone），是一个安全的概念，大部分的安全策略都基于安全区域实施。</p>
+<p>•一个安全区域是防火墙若干接口所连网络的集合，这些网络中的用户具有相同的安全属性。</p>
+<p>•将企业员工网络、公司服务器网络、外部网络划分到不同安全区域，对安全区域间的流量进行检测和保护。</p>
+<blockquote>
+<p>•在一台防火墙上不允许创建两个相同安全级别（Priority）的安全区域；</p>
+<p>•防火墙的接口必须加入一个安全区域，否则不能正常转发流量。</p>
+<p>•防火墙的一个接口只能属于一个安全区域。</p>
+<p>•防火墙的一个安全区域可以拥有多个接口。</p>
+<p>•系统自带的缺省安全区域不能删除，用户可以根据实际需求创建自定义的安全区域。</p>
+</blockquote>
+<h2 id="防火墙双机热备概述"><a href="#防火墙双机热备概述" class="headerlink" title="防火墙双机热备概述"></a>防火墙双机热备概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/35.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/36.png"></p>
+<h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/37.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/38.png"></p>
+<h1 id="7-VPN"><a href="#7-VPN" class="headerlink" title="7.VPN"></a>7.VPN</h1><h2 id="VPN技术应用场景"><a href="#VPN技术应用场景" class="headerlink" title="VPN技术应用场景"></a>VPN技术应用场景</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/39.png"></p>
+<p>•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、出差员工、合作单位等也需要访问公司总部的网络资源，一般采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。</p>
+<p>•VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。</p>
+<p>•VPN是一类技术的统称，不同的VPN技术拥有不同的特性和实现方式，常见的VPN技术包括IPSec VPN、GRE VPN、L2TP VPN、MPLS VPN等。</p>
+<blockquote>
+<p>•IPSec：IP Security， 因特网协议安全协议。</p>
+<p>•GRE：Generic Routing Encapsulation， 通用路由封装协议。</p>
+<p>•L2TP：Layer 2 Tunneling Protocol， 二层隧道协议。</p>
+<p>•MPLS：Multiprotocol Label Switching，多协议标签交换协议。</p>
+</blockquote>
+<h1 id="8-组播"><a href="#8-组播" class="headerlink" title="8.组播"></a>8.组播</h1><h2 id="组播应用场景"><a href="#组播应用场景" class="headerlink" title="组播应用场景"></a>组播应用场景</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/40.png"></p>
+<p>•企业存在一些公告信息，例如天气、值班表、机房注意事项、宣传视频等，为方便公司员工和来访人员及时获取这些信息，通常采用在公司人员密集处布置显示屏的方式。</p>
+<p>•每一块显示屏显示的内容一致，这是典型的点到多点通信的场景。如果采用单播的方式传递信息，网络中的设备性能及链路带宽都会面临一定程度的浪费。</p>
+<p>•组播技术有效地满足了单点发送、多点接收的需求，实现了IP网络中点到多点业务数据的高效传送，能够大量节约网络带宽、降低网络负载。</p>
+<blockquote>
+<p>•单播（Unicast）是在一台源IP主机和一台目的IP主机之间进行。网络上绝大部分的数据都是以单播的形式传输的，例如电子邮件收发、网上银行都是采用单播实现的。</p>
+<ul>
+<li>在单播通信中每一个数据包都有确切的目的IP地址；对于同一份数据，如果存在多个接收者，Server需发送与接收者数目相同的单播数据包；当接收者增加到成百上千时，将极大加重Server创建相同数据和发送多份相同拷贝后所产生的消耗，网络中的设备性能及链路带宽都会面临一定程度的浪费；单播方式较适合用户稀少的网络，当用户量较大时很难保证网络传输质量。</li>
+</ul>
+<p>•广播（Broadcast）是在一台源IP主机和网络中所有其它的IP主机之间进行，属于一对所有的通讯方式，所有主机都可以接收到（不管是否需要）。</p>
+<ul>
+<li>广播数据包被限制在广播域中；一旦有设备发送广播数据，则广播域内所有设备都会收到这个数据包，并且不得不耗费资源去处理，大量的广播数据包将消耗网络的带宽及设备资源；广播方式只适合共享网段，且信息安全性和有偿服务得不到保障。</li>
+</ul>
+<p>•组播（Multicast）是在一台源IP主机和多台（一组）IP主机之间进行，中间的网络设备根据接收者的需要，有选择性地对数据进行复制和转发。</p>
+</blockquote>
+<h2 id="组播网络基本架构"><a href="#组播网络基本架构" class="headerlink" title="组播网络基本架构"></a>组播网络基本架构</h2><p>组播网络大体可以分为三个部分：</p>
+<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
+<p>▫组播转发网络：形成无环的组播转发路径，该转发路径也被称为组播分发树（Multicast Distribution Tree）。</p>
+<p>▫成员端网络：让组播网络感知组播组成员位置与加入的组播组。</p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/41.png"></p>
+<blockquote>
+<p>•组播源（Source）：组播流量的发送者，例如多媒体服务器。组播源无需运行任何组播协议，只需简单 地将组播数据发送出来即可。 </p>
+<p>•组播接收者（Receiver）：也被称为组播组成员，是期望接收特定组播组流量的设备，例如运行多媒体直播客户端软件的PC。</p>
+<p>•组播组（Multicast Group）：用IP组播地址进行标识的一个集合。任何用户主机（或其他接收设备），加入一个组播组，就成为了该组成员，可以识别并接收发往该组播组的组播数据。</p>
+<p>•组播路由器（Multicast Router）：支持组播、运行组播协议的网络设备，实际上不仅仅路由器能够支持 组播，交换机、防火墙等设备也能够支持组播（取决于设备型号），路由器仅是一个代表。</p>
+<p>•第一跳路由器（First-Hop Router）：组播转发路径上，与组播源相连且负责转发该组播源发出的组播数据的PIM路由器。</p>
+<p>•最后一跳路由器（Last-Hop Router）：组播转发路径上，与组播组成员相连且负责向该组成员转发组播数据的PIM路由器。</p>
+<p>•IGMP（Internet Group Management Protocol，因特网组管理协议），是TCP/IP协议族中负责IP组播成员管理的协议，它用来在接收者和与其直接相邻的组播路由器之间建立、维护组播组成员关系。</p>
+</blockquote>
+<h1 id="9-IPv6"><a href="#9-IPv6" class="headerlink" title="9.IPv6"></a>9.IPv6</h1><h2 id="IPv6概述"><a href="#IPv6概述" class="headerlink" title="IPv6概述"></a>IPv6概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/42.png"></p>
+<p>•IPv4协议是目前广泛部署的因特网协议。在因特网发展初期，IPv4以其协议简单、易于实现、互操作性好的优势而得到快速发展。但随着因特网的迅猛发展， IPv4地址空间不足的问题日趋明显，IPv6取代IPv4势在必行。</p>
+<p>•IPv6（Internet Protocol Version 6）是网络层协议的第二代标准协议，也被称为IPng（IP Next Generation）。它是Internet工程任务组IETF（Internet Engineering Task Force）设计的一套规范，是IPv4（Internet Protocol Version 4）的升级版本。</p>
+<p>•IPv6地址长度为128 bit，海量的地址空间，满足物联网等新兴业务、有利于业务演进及扩展。</p>
+<h2 id="ICMPv6"><a href="#ICMPv6" class="headerlink" title="ICMPv6"></a>ICMPv6</h2><p>•ICMPv6 （Internet Control Message Protocol for IPv6）是IPv6的基础协议之一。</p>
+<p>•ICMPv6报文被广泛应用于其它协议中，包括NDP、PathMTU发现机制等。</p>
+<p>•ICMPv6控制着IPv6中的地址自动配置、地址解析、地址冲突检测、路由选择、以及差错控制等关键环节。</p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/43.png"></p>
+<blockquote>
+<p>•NDP：Neighbor Discovery Protocol，邻居发现协议。</p>
+</blockquote>
+<h2 id="IPv6路由"><a href="#IPv6路由" class="headerlink" title="IPv6路由"></a>IPv6路由</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/44.png"></p>
+<p>IPv6网络支持静态路由和动态路由协议：</p>
+<ul>
+<li><p>静态路由：</p>
+<ul>
+<li>IPv6静态路由的配置方式和IPv4静态路由的配置方式相同。</li>
+</ul>
+</li>
+<li><p>动态路由协议：</p>
+<ul>
+<li>OSPFv3</li>
+<li>IS-IS</li>
+<li>BGP4+</li>
+</ul>
+</li>
+</ul>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下关于交换机二层接口的描述，正确的是？(   )</p>
+<p><strong>A.交换机的二层接口类型有Access、Trunk、Hybrid。</strong></p>
+<p><strong>B.Access接口只能加入一个VLAN。</strong></p>
+<p><strong>C.缺省情况下，Trunk接口允许VLAN1的流量通过，而且在发送时不携带VLAN Tag。</strong></p>
+<p>**D.在Hybrid接口上可通过命令指定接口在发送特定VLAN的流量时，是否携带VLAN Tag。 **</p>
+<p>2.（多选题）以太网链路聚合技术有哪些优势？(   )</p>
+<p><strong>A.增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</strong></p>
+<p><strong>B.提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</strong></p>
+<p><strong>C.负载分担：在一个链路聚合组内，可以实现在各成员活动链路上的负载分担。</strong></p>
+<p>D.智能调优：可根据流量大小自动调整活动接口数量。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章系统地介绍了园区网络典型技术场景化应用：以太网交换基础、无线接入、网络可靠性、网络服务与网络管理、路由与网络可达性、网络安全、VPN。</p>
+<p>•受限于课程篇幅，本文无法将园区网络中所用的技术一一列举。通过本章的学习，读者已经了解园区网络的典型架构，以及典型技术在园区网络中的应用，有助于读者继续学习后续课程。</p>
+<p>•在后续的课程中，我们将深入探讨园区网络的关键技术，为将来学习园区网络解决方案打下扎实基础。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-13-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/" rel="tag"># IP-13-园区网典型技术应用概述</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/" rel="next" title="IP-流量过滤与转发路径控制">
+                <i class="fa fa-chevron-left"></i> IP-流量过滤与转发路径控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/" rel="prev" title="IP-交换机堆叠与集群">
+                IP-交换机堆叠与集群 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">1.园区网络架构与常见技术概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%80%9C%E5%9F%8E%E5%B8%82%EF%BC%8C%E9%99%A4%E4%BA%86%E9%A9%AC%E8%B7%AF%EF%BC%8C%E9%83%BD%E6%98%AF%E5%9B%AD%E5%8C%BA%E2%80%9D"><span class="nav-number">3.1.</span> <span class="nav-text">“城市，除了马路，都是园区”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%EF%BC%9F"><span class="nav-number">3.2.</span> <span class="nav-text">什么是园区网络？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E8%A1%8C%E4%B8%9A%E5%9B%AD%E5%8C%BA%E7%BD%91"><span class="nav-number">3.3.</span> <span class="nav-text">常见的行业园区网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">3.4.</span> <span class="nav-text">园区网络典型架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E4%B8%BB%E8%A6%81%E5%8D%8F%E8%AE%AE-%E6%8A%80%E6%9C%AF"><span class="nav-number">3.5.</span> <span class="nav-text">园区网络主要协议&#x2F;技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%9F%BA%E7%A1%80"><span class="nav-number">4.</span> <span class="nav-text">2.以太网交换基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8ETCP-IP%E5%AF%B9%E7%AD%89%E6%A8%A1%E5%9E%8B%E8%AF%B4%E8%B5%B7"><span class="nav-number">4.1.</span> <span class="nav-text">从TCP&#x2F;IP对等模型说起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E5%88%B0%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%8C%E5%B1%82%E4%BA%A4%E6%8D%A2"><span class="nav-number">4.2.</span> <span class="nav-text">从园区网络到以太网二层交换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%8C%E5%B1%82%E4%BA%A4%E6%8D%A2"><span class="nav-number">4.3.</span> <span class="nav-text">什么是二层交换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN"><span class="nav-number">4.4.</span> <span class="nav-text">VLAN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%8C%E5%B1%82%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%9E%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">4.5.</span> <span class="nav-text">以太网二层接口类型概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Access%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.5.1.</span> <span class="nav-text">Access接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trunk%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.5.2.</span> <span class="nav-text">Trunk接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hybrid%E6%8E%A5%E5%8F%A3"><span class="nav-number">4.5.3.</span> <span class="nav-text">Hybrid接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VLAN%E5%88%92%E5%88%86%E6%96%B9%E5%BC%8F%E6%80%BB%E8%A7%88"><span class="nav-number">4.5.4.</span> <span class="nav-text">VLAN划分方式总览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0VLAN%E4%B9%8B%E9%97%B4%E7%9A%84IP%E5%8F%AF%E8%BE%BE%E6%80%A7"><span class="nav-number">4.5.5.</span> <span class="nav-text">实现VLAN之间的IP可达性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88"><span class="nav-number">4.6.</span> <span class="nav-text">以太网链路聚合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%A0%91%E6%8A%80%E6%9C%AF%EF%BC%9A%E9%98%B2%E7%8E%AF-%E4%BF%9D%E8%AF%81%E4%BA%8C%E5%B1%82%E7%BD%91%E7%BB%9C%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">4.7.</span> <span class="nav-text">生成树技术：防环+保证二层网络可靠性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%97%A0%E7%BA%BF%E6%8E%A5%E5%85%A5"><span class="nav-number">5.</span> <span class="nav-text">3.无线接入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E4%B8%8E%E4%B8%BB%E8%A6%81%E7%BD%91%E5%85%83"><span class="nav-number">5.1.</span> <span class="nav-text">WLAN与主要网元</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E7%BB%84%E7%BD%91%E6%9E%B6%E6%9E%84%E7%BB%BC%E8%BF%B0"><span class="nav-number">5.2.</span> <span class="nav-text">WLAN组网架构综述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC-FIT-AP%E6%9E%B6%E6%9E%84"><span class="nav-number">5.3.</span> <span class="nav-text">AC+FIT AP架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC-FIT-AP%E6%9E%B6%E6%9E%84-1"><span class="nav-number">5.4.</span> <span class="nav-text">AC+FIT AP架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E7%BD%91%E7%BB%9C%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">6.</span> <span class="nav-text">4.网络可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8VRRP%E5%AE%9E%E7%8E%B0%E7%BD%91%E5%85%B3%E5%86%97%E4%BD%99"><span class="nav-number">6.1.</span> <span class="nav-text">使用VRRP实现网关冗余</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4-%E5%A0%86%E5%8F%A0%E7%AE%80%E4%BB%8B"><span class="nav-number">6.2.</span> <span class="nav-text">集群&#x2F;堆叠简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E5%8F%A0%E4%B8%8E%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%BB%84%E7%BD%91%E5%BD%A2%E6%80%81"><span class="nav-number">6.3.</span> <span class="nav-text">堆叠与园区网络树形结构组网形态</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E4%B8%8E%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">5.网络服务与网络管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP"><span class="nav-number">7.1.</span> <span class="nav-text">DHCP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NTP"><span class="nav-number">7.2.</span> <span class="nav-text">NTP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LLDP"><span class="nav-number">7.3.</span> <span class="nav-text">LLDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SNMP"><span class="nav-number">7.4.</span> <span class="nav-text">SNMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NETCONF-YANG"><span class="nav-number">7.5.</span> <span class="nav-text">NETCONF&#x2F;YANG</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8"><span class="nav-number">8.</span> <span class="nav-text">6.网络安全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%AD%E5%8C%BA%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%A6%82%E8%BF%B0"><span class="nav-number">8.1.</span> <span class="nav-text">园区网络安全概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%AE%89%E5%85%A8%E5%8C%BA%E5%9F%9F%E5%88%92%E5%88%86%E5%8F%8A%E5%AE%89%E5%85%A8%E7%AD%96%E7%95%A5"><span class="nav-number">8.2.</span> <span class="nav-text">基于防火墙的安全区域划分及安全策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E6%A6%82%E8%BF%B0"><span class="nav-number">8.3.</span> <span class="nav-text">防火墙双机热备概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NAT"><span class="nav-number">8.4.</span> <span class="nav-text">NAT</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-VPN"><span class="nav-number">9.</span> <span class="nav-text">7.VPN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">9.1.</span> <span class="nav-text">VPN技术应用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-%E7%BB%84%E6%92%AD"><span class="nav-number">10.</span> <span class="nav-text">8.组播</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">10.1.</span> <span class="nav-text">组播应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E7%BD%91%E7%BB%9C%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">10.2.</span> <span class="nav-text">组播网络基本架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-IPv6"><span class="nav-number">11.</span> <span class="nav-text">9.IPv6</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E6%A6%82%E8%BF%B0"><span class="nav-number">11.1.</span> <span class="nav-text">IPv6概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMPv6"><span class="nav-number">11.2.</span> <span class="nav-text">ICMPv6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E8%B7%AF%E7%94%B1"><span class="nav-number">11.3.</span> <span class="nav-text">IPv6路由</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">12.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">13.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

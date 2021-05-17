@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-19-PIM原理与配置," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•组播网络由组播源，组播组成员与组播路由器组成。  组播源的主要作用是发送组播数据。  组播组成员的主要作用是接收组播数据，因此需要通过IGMP让组播网络感知组成员位置与加组信息。  组播路由器的主要作用是将数据从组播源发送到组播组成员。组播数据转发需要依赖组播分发树，因此组播路由器需要通过协议来构建组播分发树。   •PIM（Protocol Independent Multicast，协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-PIM原理与配置">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•组播网络由组播源，组播组成员与组播路由器组成。  组播源的主要作用是发送组播数据。  组播组成员的主要作用是接收组播数据，因此需要通过IGMP让组播网络感知组成员位置与加组信息。  组播路由器的主要作用是将数据从组播源发送到组播组成员。组播数据转发需要依赖组播分发树，因此组播路由器需要通过协议来构建组播分发树。   •PIM（Protocol Independent Multicast，协议">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/39.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/40.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/41.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/42.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/43.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/44.png">
+<meta property="article:published_time" content="2021-05-17T04:21:24.000Z">
+<meta property="article:modified_time" content="2021-05-17T06:03:51.964Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-19-PIM原理与配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-PIM原理与配置/"/>
+
+
+
+
+
+  <title>IP-PIM原理与配置 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-PIM原理与配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T12:21:24+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•组播网络由组播源，组播组成员与组播路由器组成。</p>
+<ul>
+<li><p>组播源的主要作用是发送组播数据。</p>
+</li>
+<li><p>组播组成员的主要作用是接收组播数据，因此需要通过IGMP让组播网络感知组成员位置与加组信息。</p>
+</li>
+<li><p>组播路由器的主要作用是<strong>将数据从组播源发送到组播组成员</strong>。组播数据转发需要<strong>依赖组播分发树</strong>，因此组播路由器需要通过协议来<strong>构建组播分发树</strong>。</p>
+</li>
+</ul>
+<p>•PIM（Protocol Independent Multicast，协议无关组播）协议的主要作用就是<strong>构建组播分发树</strong>。</p>
+<p>•本章主要讲解PIM协议的基本概念，PIM-DM模式的工作原理与PIM-SM模式的工作原理。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述PIM的基本概念</p>
+<p>▫描述PIM-DM的基本工作原理</p>
+<p>▫实现PIM-DM的基本配置</p>
+<p>▫描述PIM-SM的基本工作原理</p>
+<p>▫实现PIM-SM的基本配置</p>
+<h1 id="1-PIM基础介绍"><a href="#1-PIM基础介绍" class="headerlink" title="1.PIM基础介绍"></a>1.PIM基础介绍</h1><h2 id="组播网络基本架构回顾"><a href="#组播网络基本架构回顾" class="headerlink" title="组播网络基本架构回顾"></a>组播网络基本架构回顾</h2><p>•组播网络大体可以分为三个部分：</p>
+<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
+<p>▫组播转发网络：<strong>形成无环的组播转发路径</strong>，该转发路径也被称为<strong>组播分发树（Multicast Distribution Tree）</strong>。</p>
+<p>▫成员端网络：通过<strong>IGMP</strong>协议，让组播网络<strong>感知组播组成员</strong>位置与加入的组播组。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<blockquote>
+<p>•成员端网络通过IGMP协议可以让组播网络感知组播组成员位置与加入的组播组。</p>
+<p>•组播转发网络形成组播分发树，需要组播路由协议的支持。</p>
+<p>•通过组播路由协议有多种，最常用的是PIM协议，也就是本节课的重点。</p>
+</blockquote>
+<h2 id="组播数据转发流程回顾"><a href="#组播数据转发流程回顾" class="headerlink" title="组播数据转发流程回顾"></a>组播数据转发流程回顾</h2><p>•组播数据转发基本流程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•《IGMP原理与配置》课程介绍了组播网络如何感知组播组成员的位置和所加组播组。</p>
+<p>•本课程将主要介绍如何形成组播分发树。</p>
+</blockquote>
+<h2 id="组播协议介绍回顾"><a href="#组播协议介绍回顾" class="headerlink" title="组播协议介绍回顾"></a>组播协议介绍回顾</h2><p>•组播网络需要基于多种组播协议才能建立转发路径：</p>
+<p>▫工作在成员端网络的主要是IGMP（Internet Group Management Protocol，因特网组管理协议）协议，用于告知组播网络，组成员的位置与所加组播组。</p>
+<p>▫工作在组播转发网络的协议主要是PIM，MSDP，MBGP。</p>
+<p>▪<strong>PIM</strong>（Protocol Independent Multicast，协议无关组播）协议主要作用是<strong>生成AS域内的组播分发树</strong>。</p>
+<p>▪MSDP（Multicast Source Discovery Protocol，组播源发现协议）主要作用是帮助生成AS域间的组播分发树。</p>
+<p>▪MBGP（Multicast BGP，组播BGP）主要作用是帮助跨域组播流进行RPF校验。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<blockquote>
+<p>•本课程主要介绍PIM协议的工作原理。</p>
+</blockquote>
+<h2 id="PIM协议介绍"><a href="#PIM协议介绍" class="headerlink" title="PIM协议介绍"></a>PIM协议介绍</h2><p>•PIM称为协议无关组播。协议无关指的是与单播路由协议无关，即PIM不需要维护专门的单播路由信息。作为组播路由解决方案，它直接利用单播路由表的路由信息，对组播报文执行RPF检查，检查通过后创建组播路由表项，从而转发组播报文。</p>
+<p>•目前在实际网络中，PIM主要有两种模式：</p>
+<p>▫**PIM-DM（PIM-Dense Mode，PIM密集模式）。</p>
+<p>▫<strong>PIM-SM（PIM-Sparse Mode，PIM稀疏模式）</strong> ，PIM-SM模式根据组播服务模型又可以分为：</p>
+<p>▪<strong>PIM-SM（ASM）</strong>：为任意源组播建立组播分发树。</p>
+<p>▪<strong>PIM-SM（SSM）</strong>：为指定源组播建立组播分发树。</p>
+<blockquote>
+<p>•PIM（Protocol Independent Multicast）协议无关组播，目前常用版本是PIMv2，PIM报文直接封装在IP报文中，协议号为103，PIMv2组播地址为224.0.0.13。</p>
+<p>•在PIM组播域中，以组播组为单位建立从组播源到组成员的点到多点的组播转发路径。由于组播转发路径呈现树型结构，也称为组播分发树（MDT，Multicast Distribution Tree）。</p>
+<p>•组播分发树的特点：</p>
+<p>▫无论网络中的组成员有多少，每条链路上相同的组播数据最多只有一份。被传递的组播数据在距离组播源尽可能远的分叉路口才开始复制和分发。</p>
+</blockquote>
+<h2 id="PIM-DM与PIM-SM使用场景"><a href="#PIM-DM与PIM-SM使用场景" class="headerlink" title="PIM-DM与PIM-SM使用场景"></a>PIM-DM与PIM-SM使用场景</h2><p>•PIM形成组播分发树主要有两种模式，即PIM-DM模式与PIM-SM模式，这两种模式分别用在不同的场景下：</p>
+<p>▫<strong>PIM-DM模式</strong>主要用在<strong>组成员较少且相对密集的组播网络中</strong>，该模式建立组播分发树的基本思路是“扩散-剪枝”，即将组播流量全网扩散，然后剪枝没有组成员的路径，最终形成组播分发树。</p>
+<p>▫<strong>PIM-SM模式</strong>主要用在<strong>组成员较多且相对稀疏的组播网络中</strong>，该模式建立组播分发树的基本思路是先收集组成员信息，然后再形成组播分发树。使用PIM-SM模式不需要全网泛洪组播，对现网的影响较小，因此<strong>现网多使用PIM-SM模式</strong>。</p>
+<h2 id="组播分发树的分类"><a href="#组播分发树的分类" class="headerlink" title="组播分发树的分类"></a>组播分发树的分类</h2><p>•通过PIM形成的组播分发树主要分为以下两种：</p>
+<p>▫以组播源为根，组播组成员为叶子的组播分发树称为<strong>SPT</strong>（Shortest Path Tree），<strong>在PIM-DM与PIM-SM中均有使用</strong>。</p>
+<p>▫以RP（Rendezvous Point）为根，组播组成员为叶子的组播分发树称为<strong>RPT</strong>（RP Tree），<strong>在PIM-SM中使用</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•SPT又被称为源树，SPT在PIM-DM模式与PIM-SM模式的组播网络中均有使用。</p>
+<p>•RPT又被称为共享树，RPT主要在PIM-SM模式的组播网络中被使用。</p>
+<p>•RP的作用将在《PIM-SM》章节讲解。</p>
+</blockquote>
+<h2 id="PIM路由表项"><a href="#PIM路由表项" class="headerlink" title="PIM路由表项"></a>PIM路由表项</h2><p>•PIM路由表项即通过PIM协议建立的组播协议路由表项。</p>
+<p>•PIM网络中存在两种路由表项：</p>
+<p>▫（S，G）路由表项主要用于在PIM网络中<strong>建立SPT</strong>。对于PIM-DM网络和PIM-SM网络适用。</p>
+<p>▫（*，G）路由表项主要用于在PIM网络中<strong>建立RPT</strong>。对于PIM-SM网络适用。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<blockquote>
+<p>•S表示组播源，G表示组播组，*表示任意。</p>
+<p>•PIM路由器上可能同时存在两种路由表项。当收到源地址为S，组地址为G的组播报文，且RPF检查通过的情况下，按照如下的规则转发：</p>
+<ul>
+<li><p>如果存在（S，G）路由表项，则由（S，G）路由表项指导报文转发。</p>
+</li>
+<li><p>如果不存在（S，G）路由表项，只存在（<em>，G）路由表项，则先依照（</em>，G）路由表项创建（S，G）路由表项，再由（S，G）路由表项指导报文转发。</p>
+</li>
+</ul>
+<p>▫Flag值：PIM路由表象的标志。</p>
+<p>D：以PIM-DM模式转发；<br> S：以PIM-SM模式转发；<br> P：该条目已经被Prune；<br> C：DST直连，指该RT为收到IGMP report的路由器；<br>  J：（仅用于PIM-SM）RPT-〉SPT，指通过本RT的multicast已从RPT转为SPT进行转发。当该条目用于（*，G）里面，代表SPT-Threshold已经超过预定值（Cisco默认1min0字节），下一个包将引发建立SPT；当条目用于（S，G）里面，表示SPT-Threshold已经低于预定值，将删除SPT重新使用RPT；<br> T：SPT，使用SPT进行转发；<br> L：RT本身就是组播成员；<br> F： Register flag 。</p>
+</blockquote>
+<h2 id="PIM路由表项与组播路由表项"><a href="#PIM路由表项与组播路由表项" class="headerlink" title="PIM路由表项与组播路由表项"></a>PIM路由表项与组播路由表项</h2><p>•在不同的组播路由器上，组播路由表项会基于不同的表项汇总形成。</p>
+<p>▫最后一跳路由器的组播路由表项主要基于PIM路由表项，IGMP组表项和IGMP路由表项汇总形成。</p>
+<p>▫其余组播路由器的组播路由表项主要<strong>基于PIM路由表项形成</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<h1 id="2-PIM-DM介绍"><a href="#2-PIM-DM介绍" class="headerlink" title="2.PIM-DM介绍"></a>2.PIM-DM介绍</h1><h2 id="PIM-DM工作原理"><a href="#PIM-DM工作原理" class="headerlink" title="PIM-DM工作原理"></a>PIM-DM工作原理</h2><h3 id="PIM-DM基本概念"><a href="#PIM-DM基本概念" class="headerlink" title="PIM-DM基本概念"></a>PIM-DM基本概念</h3><p>•PIM-DM主要用在组成员较少且相对密集的网络中，通过“<strong>扩散-剪枝</strong>”的方式形成组播转发树（SPT）。</p>
+<p>•PIM-DM在形成SPT的过程中，除了扩散（Flooding），剪枝（Prune）机制外，还会涉及邻居发现（Neighbor Discovery），嫁接（Graft），断言（Assert）和状态刷新（State Refresh）机制。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<h3 id="PIM-DM协议报文"><a href="#PIM-DM协议报文" class="headerlink" title="PIM-DM协议报文"></a>PIM-DM协议报文</h3><p>•PIM协议报文直接采用IP封装，<strong>目的地址224.0.0.13，IP协议号103</strong>。</p>
+<p>•PIM-DM与PIM-SM使用的协议报文类型有所不同。</p>
+<p>•PIM-DM使用报文主要是以下几类：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h3 id="邻居发现"><a href="#邻居发现" class="headerlink" title="邻居发现"></a>邻居发现</h3><p>•<strong>组播转发路径只能在PIM邻居之间建立</strong>，因此邻居发现是形成组播分发树的先决条件。</p>
+<p>•邻居发现主要通过PIM Hello包完成。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<blockquote>
+<p>•Hello报文中携带多项PIM协议报文参数，主要用于PIM邻居之间PIM协议报文的控制。具体如下：</p>
+<p>▫DR_Priority：表示各路由器接口竞选DR的优先级，优先级越高越容易获胜。</p>
+<p>▫Holdtime：表示保持邻居为可达状态的超时时间。如果在超时时间内没有收到PIM邻居发送的Hello报文，路由器则认为邻居不可达。</p>
+<p>▫LAN_Delay：表示共享网段内传输Prune报文的延迟时间。</p>
+<p>▫Neighbor-Tracking：表示邻居跟踪功能。</p>
+<p>▫Override-Interval：表示Hello报文中携带的否决剪枝的时间间隔。</p>
+</blockquote>
+<h3 id="首次形成组播分发树"><a href="#首次形成组播分发树" class="headerlink" title="首次形成组播分发树"></a>首次形成组播分发树</h3><p>•PIM-DM模式首次形成组播分发树主要依赖扩散机制、剪枝机制、断言机制与DR选举机制。</p>
+<ul>
+<li><p>扩散机制：组播数据包向所有的PIM邻居泛洪，同时组播路由器产生组播路由表项。</p>
+</li>
+<li><p>断言机制：当组播转发过程中存在多路访问网络，则需要选举出一个组播转发路由器，避免重复组播报文。</p>
+</li>
+<li><p>剪枝机制：如果组播路由器下没有组成员，则将源到该组播路由器的组播转发路径剪枝。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<h3 id="扩散机制"><a href="#扩散机制" class="headerlink" title="扩散机制"></a>扩散机制</h3><p>•组播源发送的组播报文会在全网内扩散。当PIM路由器接收到组播报文，先进行<strong>RPF检查</strong>，通过后会在该路由器上<strong>创建（S，G）表项</strong>，之后会向所有PIM邻居发送。</p>
+<p>•PIM-DM形成的（S，G）表项有老化时间（默认210s），如果老化时间超时前没有收到新的组播报文，则删除（S，G）表项。</p>
+<p>•扩散具体过程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•扩散机制会周期性（默认180s）全网扩散组播数据，周期性扩散的主要目的是探测是否有新成员加组，但是由于全网扩散组播数据会浪费大量带宽，所以现在的组播网络一般使用“状态刷新机制”加上“嫁接机制”来实现周期性全网扩散感知新成员加组的目的。</p>
+</blockquote>
+<h3 id="断言机制"><a href="#断言机制" class="headerlink" title="断言机制"></a>断言机制</h3><p>•当一个网段内有多个相连的PIM路由器向该网段转发组播报文时，需要通过断言机制（Assert）来保证<strong>只有一个PIM路由器向该网段转发组播报文</strong>。</p>
+<p>•通过断言机制的选举规则将决定组播路由器的转发行为：</p>
+<p>▫获胜一方的下游接口称为<strong>Assert Winner</strong>，将负责后续对该网段组播报文的<strong>转发</strong>。</p>
+<p>▫落败一方的下游接口称为<strong>Assert Loser</strong>，后续<strong>不会</strong>对该网段<strong>转发</strong>组播报文，PIM路由器也会将其从（S，G）表项<strong>下游接口列表中删除</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•断言机制由组播数据触发。</p>
+</blockquote>
+<h3 id="断言机制选举规则"><a href="#断言机制选举规则" class="headerlink" title="断言机制选举规则"></a>断言机制选举规则</h3><p>•PIM路由器在<strong>接收到</strong>邻居路由器发送的<strong>相同组播报文</strong>后，会向该网段<strong>发送断言（Assert）报文</strong>，进行Assert选举。Assert报文内会携带到组播源的单播路由前缀，路由优先级与开销。选举规则如下：</p>
+<p>▫单播路由协议优先级较高者获胜。</p>
+<p>▫如果优先级相同，则到组播源的开销较小者获胜。</p>
+<p>▫如果以上都相同，则下游接口IP地址最大者获胜。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<blockquote>
+<p>•Assert选举失败的设备会抑制转发，并将这种抑制转发的状态保持一段时间，这段时间就被称为Assert保持时间，默认180s。</p>
+<p>•Assert保持时间超时后，竞选失败的设备会恢复转发从而触发新一轮竞选。</p>
+</blockquote>
+<h3 id="剪枝机制"><a href="#剪枝机制" class="headerlink" title="剪枝机制"></a>剪枝机制</h3><p>•对于没有组成员连接的组播路由器，组播网络无需再将组播流量继续放往该设备。通过剪枝机制，组播网络可以将此类路径剪枝。</p>
+<p>•剪枝机制工作原理如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•路由器为被裁剪的下游接口启动一个剪枝定时器（默认210s），定时器超时后接口恢复转发。组播报文重新在全网范围内扩散，新加入的组成员可以接收到组播报文。随后，下游不存在组成员的叶子路由器将向上发起剪枝操作。通过这种周期性的扩散-剪枝，PIM-DM周期性的刷新SPT。</p>
+<p>•当下游接口被剪枝后：</p>
+<ul>
+<li><p>如果下游叶子路由器有组成员加入，并且希望在下次“扩散-剪枝”前就恢复组播报文转发，则执行嫁接动作。</p>
+</li>
+<li><p>如果下游叶子路由器一直没有组成员加入，希望该接口保持抑制转发状态，则执行状态刷新动作。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="维护组播分发树"><a href="#维护组播分发树" class="headerlink" title="维护组播分发树"></a>维护组播分发树</h3><p>•组播分发树形成后不会一直存在，也不会一直不变。</p>
+<p>•在PIM邻居关系稳定，组成员没有变化的情况下，维护组播分发树一般有两种方式：</p>
+<p>​    ▫持续发送组播报文，保证组播路由表项能一直存在。</p>
+<p>​    ▫发送状态刷新报文，保证组播路由表项的下行接口状态不发生变化。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<h3 id="状态刷新机制"><a href="#状态刷新机制" class="headerlink" title="状态刷新机制"></a>状态刷新机制</h3><p>•在PIM-DM网络中，为了避免被裁剪的接口因为“剪枝定时器”超时而恢复转发，离组播源最近的第一跳路由器会周期性地触发State Refresh报文在全网内扩散。</p>
+<p>•收到State Refresh报文的PIM路由器会刷新剪枝定时器的状态。被裁剪接口的下游叶子路由器如果一直没有组成员加入，该接口将一直处于抑制转发状态。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<h3 id="新成员加组"><a href="#新成员加组" class="headerlink" title="新成员加组"></a>新成员加组</h3><p>•当有新成员加入组播组后，组播网络需要<strong>更新组播分发树</strong>，才能将组播数据发往组成员。PIM-DM模式在使用“扩散-剪枝”的方式建立组播分发树后，通过<strong>状态刷新机制</strong>，使<strong>下行接口一旦被抑制就无法自动恢复</strong>。</p>
+<p>•因此需要一些机制来更新组播分发树，一般PIM-DM模式更新组播分发树的方法有两种：</p>
+<p>▫等待组播路由表超时后，全网重新泛洪。该方法不可控，在现网中无法实现</p>
+<p>▫使用嫁接（Graft）机制，当新成员加组后，<strong>主动反向建立组播分发路径</strong>。现网中一般使用嫁接机制来实现新成员加组。</p>
+<h3 id="嫁接机制"><a href="#嫁接机制" class="headerlink" title="嫁接机制"></a>嫁接机制</h3><p>•PIM-DM通过嫁接机制，使有新组成员加入的网段快速得到组播报文。</p>
+<p>•叶子路由器通过IGMP了解到与其相连的用户网段上，组播组G有新的组成员加入。随后叶子路由器会<strong>基于本地的组播路由表</strong>向上游发送Graft报文，请求上游路由器<strong>恢复相应出接口</strong>转发，将其添加在（S，G）表项下游接口列表中。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<h2 id="PIM-DM基本配置"><a href="#PIM-DM基本配置" class="headerlink" title="PIM-DM基本配置"></a>PIM-DM基本配置</h2><h3 id="PIM-DM的基本配置"><a href="#PIM-DM的基本配置" class="headerlink" title="PIM-DM的基本配置"></a>PIM-DM的基本配置</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<h3 id="PIM-DM基础实验"><a href="#PIM-DM基础实验" class="headerlink" title="PIM-DM基础实验"></a>PIM-DM基础实验</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<h4 id="查看参数"><a href="#查看参数" class="headerlink" title="查看参数"></a>查看参数</h4><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"> </p>
+<h1 id="3-PM-SM介绍"><a href="#3-PM-SM介绍" class="headerlink" title="3.PM-SM介绍"></a>3.PM-SM介绍</h1><h2 id="PIM-SM-ASM-工作原理"><a href="#PIM-SM-ASM-工作原理" class="headerlink" title="PIM-SM(ASM)工作原理"></a>PIM-SM(ASM)工作原理</h2><h3 id="PIM-DM的局限性"><a href="#PIM-DM的局限性" class="headerlink" title="PIM-DM的局限性"></a>PIM-DM的局限性</h3><p>•中大型组播网络中由于网络较大，如果依然使用PIM-DM会遇到组多问题：</p>
+<p>▫使用“扩散-剪枝”方式需要全网扩散组播报文，对于<strong>网络有一定冲击</strong>。</p>
+<p>▫所有组播路由器<strong>均需要维护组播路由表</strong>，即使该组播路由器无需转发组播数据。</p>
+<p>▫对于组成员较为稀疏的组播网络，使用“扩散-剪枝”形成组播分发树的<strong>效率不高</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<h3 id="PIM-SM-ASM-介绍"><a href="#PIM-SM-ASM-介绍" class="headerlink" title="PIM-SM(ASM)介绍"></a>PIM-SM(ASM)介绍</h3><p>•PIM-DM模型使用“扩散-剪枝”形成组播分发树的原因是：组播网络中大部分组播路由器无法得知组成员的位置。</p>
+<p>•PIM-SM（ASM）模型形成组播分发树的方法是：</p>
+<p>▫将组成员的位置事先告知某台组播路由器（Rendezvous Point，RP），形成<strong>RPT（RP Tree）</strong>。</p>
+<p>▫组播源在发送组播数据时，组播网络先将组播数据<strong>发送至RP</strong>，然后由RP再将组播数据转发给组成员。</p>
+<p>▫对于部分次优的组播转发路径，PIM-SM（ASM）能<strong>自动优化为最优路径（SPT）</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<blockquote>
+<p>•通过PIM-SM（ASM）模式形成组播分发树有如下好处：</p>
+<p>​    ▫只有组播转发路劲上的组播路由器需要维护组播路由表。</p>
+<p>​    ▫通过RP可以让所有组播路由器获知组成员的位置。</p>
+<p>​    ▫避免“扩散-剪枝”机制，提高组播分发树的形成效率。</p>
+</blockquote>
+<h3 id="PIM-SM-ASM-协议报文"><a href="#PIM-SM-ASM-协议报文" class="headerlink" title="PIM-SM(ASM)协议报文"></a>PIM-SM(ASM)协议报文</h3><p>•PIM协议报文直接采用IP封装，目的地址224.0.0.13，IP协议号103。</p>
+<p>•PIM-SM使用报文主要是以下几类：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<h3 id="RP介绍"><a href="#RP介绍" class="headerlink" title="RP介绍"></a>RP介绍</h3><p>•汇聚点RP（Rendezvous Point）为网络中一台重要的PIM路由器，用于处理源端DR注册信息及组成员加入请求，网络中的<strong>所有PIM路由器都必须知道RP的地址</strong>，类似于一个供求信息的汇聚中心。</p>
+<p>•目前可以通过以下方式配置RP：</p>
+<p>▫<strong>静态RP</strong>：在网络中的所有PIM路由器上配置相同的RP地址，静态指定RP的位置。</p>
+<p>▫<strong>动态RP</strong>：通过选举机制在多个C-RP（Candidate-RP，候选RP）之间选举出RP。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<blockquote>
+<p>•静态RP或者是动态RP在设置时均可以指定该RP为哪些组播组提供服务。</p>
+</blockquote>
+<h3 id="动态选举RP"><a href="#动态选举RP" class="headerlink" title="动态选举RP"></a>动态选举RP</h3><p>•动态选举RP会涉及两类角色C-BSR（Candidate-Bootstrap Router）与C-RP（Candidate-RP）：</p>
+<p>▫C-BSR通过竞选能选举出一个唯一的BSR。</p>
+<p>▫BSR的作用是收集C-RP的信息并形成RP-Set信息，BSR通过PIM报文将RP-Set信息扩散给所有PIM路由器。</p>
+<p>▫PIM路由器收到RP-Set消息后，根据RP选举规则选举出合适的RP。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<blockquote>
+<p>•BSR竞选规则如下：</p>
+<p>​    ▫优先级较高者获胜（优先级数值越大优先级越高）。</p>
+<p>​    ▫如果优先级相同，IP地址较大者获胜。</p>
+<p>•RP竞选规则如下：</p>
+<p>​    ▫与用户加入的组地址匹配的C-RP服务的组范围掩码最长者获胜。</p>
+<p>​    ▫如果以上比较结果相同，则C-RP优先级较高者获胜（优先级数值    越小优先级越高）。</p>
+<p>​    ▫如果以上比较结果都相同，则执行Hash函数，计算结果较大者获    胜。</p>
+<p>​    ▫如果以上比较结果都相同，则C-RP的IP地址较大者获胜。</p>
+</blockquote>
+<h3 id="首次形成组播分发树-1"><a href="#首次形成组播分发树-1" class="headerlink" title="首次形成组播分发树"></a>首次形成组播分发树</h3><p>•PIM-SM（ASM）模式首次形成组播分发树主要依赖RPT构建机制，组播源注册机制与DR选举机制。</p>
+<p>▫RPT构建机制：组播叶子路由器主动建立到RP的组播分发树（RPT）</p>
+<p>▫组播源注册机制：通过该机制形成组播源到RP的组播分发树（SPT）</p>
+<p>▫DR选举机制：DR负责源端或组成员端组播报文的收发，避免重复组播报文，同时成员端DR还负责发送Join加组消息。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<blockquote>
+<p>•DR选举机制与PIM-DM中的DR选举机制一致，不再赘述。</p>
+</blockquote>
+<h3 id="RPT构建"><a href="#RPT构建" class="headerlink" title="RPT构建"></a>RPT构建</h3><p>•RPT（RP Tree）是一棵<strong>以RP为根</strong>，以存在组成员关系的<strong>PIM路由器为叶子</strong>的组播分发树。</p>
+<p>•当网络中出现组成员（形成IGMP表项）时，组成员端DR向RP发送Join报文，在通向RP的路径上逐跳创建<strong>（*，*G）表项</strong>，生成一棵以RP为根的RPT。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
+<h3 id="组播源注册机制-–-形成SPT"><a href="#组播源注册机制-–-形成SPT" class="headerlink" title="组播源注册机制 – 形成SPT"></a>组播源注册机制 – 形成SPT</h3><p>•PIM-SM（ASM）模型中，源端DR到RP的组播分发树无法使用Join报文创建，因此需要<strong>组播源注册机制</strong>帮助形成源端DR到RP的组播分发树（SPT）。</p>
+<p>•形成SPT需要基于Register报文与Join报文，具体过程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
+<blockquote>
+<p>•组播源与源端DR之间没有IGMP协议，无法通过IGMP生成PIM（*，G）表项，进而无法发送Join消息形成组播分发树。</p>
+</blockquote>
+<h3 id="组播源注册机制-–-转发组播数据"><a href="#组播源注册机制-–-转发组播数据" class="headerlink" title="组播源注册机制 – 转发组播数据"></a>组播源注册机制 – 转发组播数据</h3><p>•组播源信息注册到RP后，就形成了组播源到RP的SPT，但源端DR此时仍然会将组播数据包封装入Register报文，该方式会造成一些问题：</p>
+<ul>
+<li><p>源端DR最初发送的是单播Register报文，但是该方式会<strong>加重源端DR与RP的工作量</strong>。</p>
+</li>
+<li><p>源端DR形成到RP的SPT后，<strong>会同时发送单播Register报文</strong>和<strong>组播报文</strong>，造成重复组播包的问题。</p>
+</li>
+</ul>
+<p>•SPT建立后，RP使用Register-Stop报文通知源端DR后续报文可以以组播报文形式发送。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
+<h3 id="源-末端网络中的重复组播报文"><a href="#源-末端网络中的重复组播报文" class="headerlink" title="源/末端网络中的重复组播报文"></a>源/末端网络中的重复组播报文</h3><p>•在<strong>源端网络或者成员端网络中</strong>，有可能有多台组播路由器转发组播流量，从而造成<strong>重复组播报文</strong>的问题。</p>
+<p>•PIM DR（Designated Router）是源端网络或者成员端网络的<strong>唯一组播转发者</strong>，由于不存在别的组播转发路由器就避免了重复组播报文的问题。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
+<h3 id="PIM-DR选举"><a href="#PIM-DR选举" class="headerlink" title="PIM DR选举"></a>PIM DR选举</h3><p>•PIM DR的选举：</p>
+<ul>
+<li><p>在PIM-SM（ASM）中各路由器通过比较<strong>Hello</strong>消息上携带的<strong>优先级</strong>和<strong>IP地址</strong>，为多路访问网络选举指定路由器DR。</p>
+</li>
+<li><p><strong>接口DR优先级高</strong>的路由器将成为该MA网络的DR，在优先级相同的情况下，<strong>接口IP地址大</strong>的路由器将成为DR。</p>
+</li>
+<li><p>当DR出现故障后，邻居路由器之间会重新选举DR。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
+<blockquote>
+<p>•DR优先级默认为1，数值越大越优。</p>
+<p>•对于成员端网络，如果有多台组播路由器，则组播路由器的下行接口需要同时开启IGMP与PIM。</p>
+<p>•DR还可充当IGMPv1的查询器。</p>
+</blockquote>
+<h3 id="RPT次优路径问题"><a href="#RPT次优路径问题" class="headerlink" title="RPT次优路径问题"></a>RPT次优路径问题</h3><p>•在PIM-SM网络中，一个组播组只对应一个RP。因此组播数据最初都会发往RP，由RP进行转发，这会导致两个问题：</p>
+<p>​    ▫过大的组播流量会对RP形成巨大的负担。</p>
+<p>​    ▫组播转发路径有可能是次优路径。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
+<h3 id="SPT切换机制"><a href="#SPT切换机制" class="headerlink" title="SPT切换机制"></a>SPT切换机制</h3><p>•当数据发送至RP后，RP会沿RPT将数据发送给成员端DR。为了解决RPT潜在的次优路径问题，<strong>成员端DR</strong>会基于组播数据包中的源IP，反向建立从成员端DR到源的SPT。</p>
+<p>•具体过程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
+<blockquote>
+<p>•设备沿最短路径发送Join消息，该最短路径基于RPF选举规则决定。设备将Join消息从RPF选举得出的上行接口发出。</p>
+<p>•多路访问网络在SPT切换的过程中可能会存在重复报文，需要利用断言机制快速选定下行接口。</p>
+<p>•SPT切换的触发条件</p>
+</blockquote>
+<h3 id="维护组播分发树-1"><a href="#维护组播分发树-1" class="headerlink" title="维护组播分发树"></a>维护组播分发树</h3><p>•当组播分发树（<strong>SPT或RPT</strong>）稳定后，成员端DR会周期性发送Join/Prune报文，用于维护组播分发树。</p>
+<p>•如果组播在一段时间后（默认210s）没有流量则SPT树会消失，成员端DR恢复到RP的RPT树。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
+<h2 id="PIM-SM-SSM-工作原理"><a href="#PIM-SM-SSM-工作原理" class="headerlink" title="PIM-SM(SSM)工作原理"></a>PIM-SM(SSM)工作原理</h2><h3 id="SSM概念回顾"><a href="#SSM概念回顾" class="headerlink" title="SSM概念回顾"></a>SSM概念回顾</h3><p>•SSM模型针对特定源和组的绑定数据流提供服务，接收者主机在加入组播组时，可以<strong>指定只接收</strong>哪些源的数据或<strong>指定拒绝接收</strong>来自哪些源的数据。加入组播组以后，主机<strong>只会收到指定源</strong>发送到该组的数据。</p>
+<p>•<strong>SSM模型对组地址不再要求全网唯一</strong>，<strong>只需要每个组播源保持唯一</strong>。这里的“唯一”指的是同一个源上不同的组播应用必须使用不同的SSM地址来区分。不同的源之间可以使用相同的组地址，因为SSM模型中针对每一个（源，组）信息都会生成表项。这样一方面节省了组播组地址，另一方面也不会造成网络拥塞。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
+<h3 id="PIM-SM-SSM-基本概述"><a href="#PIM-SM-SSM-基本概述" class="headerlink" title="PIM-SM(SSM)基本概述"></a>PIM-SM(SSM)基本概述</h3><p>•由于SSM提前定义了组播的源地址，所以PIM-SM（SSM）可以在成员端DR上基于组播源地址直接反向建立SPT。</p>
+<p>•PIM-SM（SSM）<strong>无需维护RP</strong>、<strong>无需构建RPT</strong>、<strong>无需注册组播源</strong>，可以直接在组播源与组成员之间建立SPT。</p>
+<p>•在PIM-SM（SSM）模型中，关键机制包括邻居发现、DR竞选、构建SPT。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
+<blockquote>
+<p>•PIM-SM（SSM）无需Assert机制</p>
+</blockquote>
+<h3 id="组播分发树形成与维护"><a href="#组播分发树形成与维护" class="headerlink" title="组播分发树形成与维护"></a>组播分发树形成与维护</h3><p>•PIM-SM（SSM）模型构建组播分发树的形成主要依赖IGMPv3报文与Join报文。</p>
+<p>•PIM-SM（SSM）模型形成的<strong>组播分发树会一直存在</strong>，不会因为没有组播流量而消失。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/39.png"></p>
+<blockquote>
+<p>•DR与邻居发现机制与PIM-DM模式一样，此处不再赘述。</p>
+</blockquote>
+<h3 id="PIM模型比较"><a href="#PIM模型比较" class="headerlink" title="PIM模型比较"></a>PIM模型比较</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/40.png"></p>
+<h2 id="PIM-SM基本配置"><a href="#PIM-SM基本配置" class="headerlink" title="PIM-SM基本配置"></a>PIM-SM基本配置</h2><h3 id="PIM-SM的基本配置"><a href="#PIM-SM的基本配置" class="headerlink" title="PIM-SM的基本配置"></a>PIM-SM的基本配置</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/41.png"></p>
+<h3 id="PIM-SM基础实验"><a href="#PIM-SM基础实验" class="headerlink" title="PIM-SM基础实验"></a>PIM-SM基础实验</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/42.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/43.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/44.png"></p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（单选题）PIM组播报文的目的IP地址是？</p>
+<p>A.224.0.0.2</p>
+<p>B.224.0.0.1</p>
+<p>C.224.0.0.5</p>
+<p><strong>D.224.0.0.13</strong></p>
+<p>2.（多选题）组播防止重复报文的机制有？</p>
+<p><strong>A.RPF机制</strong></p>
+<p><strong>B.Assert选举机制</strong></p>
+<p><strong>C.DR选举机制</strong></p>
+<p>D.IGMP查询者选举机制</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•PIM模型有两种：</p>
+<ul>
+<li><p>PIM-DM主要使用在网络规模较小，用户集中的组播网络中。</p>
+</li>
+<li><p>PIM-SM主要使用在网络规模较大，用户较为分散的组播网络中。PIM-SM基于组播模型又可以分为PIM-SM（ASM）于PIM-SM（SSM）模型，PIM-SM（SSM）模型主要为SSM组播服务。</p>
+</li>
+</ul>
+<p>•PIM-DM使用“扩散-剪枝”的方式形成组播分发树，在形成分发树时使用Assert选举于DR选举机制防止环路产生，在组播转发时使用PRF机制防止环路产生。</p>
+<p>•PIM-SM（ASM）将组成员加组信息发送给RP，形成RPT，组播源再发送组播报文时先将组播报文发送至RP，然后由RP再将组播数据发送至组成员，形成SPT+RPT的组播分发树。为了防止RPT次优路径的问题，PIM-SM（ASM）会发起SPT切换的机制，优化组播分发树。</p>
+<p>•PIM-SM（SSM）主要为SSM组播模型服务，由于SSM组播模型预先知道组播源的地址，因此可以直接反向建立组播分发树。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-19-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="tag"># IP-19-PIM原理与配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="next" title="IP-IGMP原理与配置">
+                <i class="fa fa-chevron-left"></i> IP-IGMP原理与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-IPv6%E6%A6%82%E8%BF%B0/" rel="prev" title="IP-IPv6概述">
+                IP-IPv6概述 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-PIM%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">1.PIM基础介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E7%BD%91%E7%BB%9C%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84%E5%9B%9E%E9%A1%BE"><span class="nav-number">3.1.</span> <span class="nav-text">组播网络基本架构回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91%E6%B5%81%E7%A8%8B%E5%9B%9E%E9%A1%BE"><span class="nav-number">3.2.</span> <span class="nav-text">组播数据转发流程回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D%E5%9B%9E%E9%A1%BE"><span class="nav-number">3.3.</span> <span class="nav-text">组播协议介绍回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.4.</span> <span class="nav-text">PIM协议介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM-DM%E4%B8%8EPIM-SM%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.5.</span> <span class="nav-text">PIM-DM与PIM-SM使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E5%88%86%E5%8F%91%E6%A0%91%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">3.6.</span> <span class="nav-text">组播分发树的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM%E8%B7%AF%E7%94%B1%E8%A1%A8%E9%A1%B9"><span class="nav-number">3.7.</span> <span class="nav-text">PIM路由表项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM%E8%B7%AF%E7%94%B1%E8%A1%A8%E9%A1%B9%E4%B8%8E%E7%BB%84%E6%92%AD%E8%B7%AF%E7%94%B1%E8%A1%A8%E9%A1%B9"><span class="nav-number">3.8.</span> <span class="nav-text">PIM路由表项与组播路由表项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-PIM-DM%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.</span> <span class="nav-text">2.PIM-DM介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM-DM%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">PIM-DM工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-DM%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.1.</span> <span class="nav-text">PIM-DM基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-DM%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87"><span class="nav-number">4.1.2.</span> <span class="nav-text">PIM-DM协议报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E5%B1%85%E5%8F%91%E7%8E%B0"><span class="nav-number">4.1.3.</span> <span class="nav-text">邻居发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A6%96%E6%AC%A1%E5%BD%A2%E6%88%90%E7%BB%84%E6%92%AD%E5%88%86%E5%8F%91%E6%A0%91"><span class="nav-number">4.1.4.</span> <span class="nav-text">首次形成组播分发树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E6%95%A3%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.5.</span> <span class="nav-text">扩散机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%AD%E8%A8%80%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.6.</span> <span class="nav-text">断言机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%AD%E8%A8%80%E6%9C%BA%E5%88%B6%E9%80%89%E4%B8%BE%E8%A7%84%E5%88%99"><span class="nav-number">4.1.7.</span> <span class="nav-text">断言机制选举规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AA%E6%9E%9D%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.8.</span> <span class="nav-text">剪枝机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%B4%E6%8A%A4%E7%BB%84%E6%92%AD%E5%88%86%E5%8F%91%E6%A0%91"><span class="nav-number">4.1.9.</span> <span class="nav-text">维护组播分发树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E5%88%B7%E6%96%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.10.</span> <span class="nav-text">状态刷新机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E6%88%90%E5%91%98%E5%8A%A0%E7%BB%84"><span class="nav-number">4.1.11.</span> <span class="nav-text">新成员加组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AB%81%E6%8E%A5%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.12.</span> <span class="nav-text">嫁接机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM-DM%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">PIM-DM基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-DM%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.1.</span> <span class="nav-text">PIM-DM的基本配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-DM%E5%9F%BA%E7%A1%80%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.2.2.</span> <span class="nav-text">PIM-DM基础实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%82%E6%95%B0"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">查看参数</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-PM-SM%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.</span> <span class="nav-text">3.PM-SM介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM-SM-ASM-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">5.1.</span> <span class="nav-text">PIM-SM(ASM)工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-DM%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">5.1.1.</span> <span class="nav-text">PIM-DM的局限性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-SM-ASM-%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.1.2.</span> <span class="nav-text">PIM-SM(ASM)介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-SM-ASM-%E5%8D%8F%E8%AE%AE%E6%8A%A5%E6%96%87"><span class="nav-number">5.1.3.</span> <span class="nav-text">PIM-SM(ASM)协议报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RP%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.1.4.</span> <span class="nav-text">RP介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%80%89%E4%B8%BERP"><span class="nav-number">5.1.5.</span> <span class="nav-text">动态选举RP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A6%96%E6%AC%A1%E5%BD%A2%E6%88%90%E7%BB%84%E6%92%AD%E5%88%86%E5%8F%91%E6%A0%91-1"><span class="nav-number">5.1.6.</span> <span class="nav-text">首次形成组播分发树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPT%E6%9E%84%E5%BB%BA"><span class="nav-number">5.1.7.</span> <span class="nav-text">RPT构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E6%BA%90%E6%B3%A8%E5%86%8C%E6%9C%BA%E5%88%B6-%E2%80%93-%E5%BD%A2%E6%88%90SPT"><span class="nav-number">5.1.8.</span> <span class="nav-text">组播源注册机制 – 形成SPT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E6%BA%90%E6%B3%A8%E5%86%8C%E6%9C%BA%E5%88%B6-%E2%80%93-%E8%BD%AC%E5%8F%91%E7%BB%84%E6%92%AD%E6%95%B0%E6%8D%AE"><span class="nav-number">5.1.9.</span> <span class="nav-text">组播源注册机制 – 转发组播数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90-%E6%9C%AB%E7%AB%AF%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E7%BB%84%E6%92%AD%E6%8A%A5%E6%96%87"><span class="nav-number">5.1.10.</span> <span class="nav-text">源&#x2F;末端网络中的重复组播报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-DR%E9%80%89%E4%B8%BE"><span class="nav-number">5.1.11.</span> <span class="nav-text">PIM DR选举</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPT%E6%AC%A1%E4%BC%98%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.1.12.</span> <span class="nav-text">RPT次优路径问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SPT%E5%88%87%E6%8D%A2%E6%9C%BA%E5%88%B6"><span class="nav-number">5.1.13.</span> <span class="nav-text">SPT切换机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%B4%E6%8A%A4%E7%BB%84%E6%92%AD%E5%88%86%E5%8F%91%E6%A0%91-1"><span class="nav-number">5.1.14.</span> <span class="nav-text">维护组播分发树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM-SM-SSM-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.</span> <span class="nav-text">PIM-SM(SSM)工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSM%E6%A6%82%E5%BF%B5%E5%9B%9E%E9%A1%BE"><span class="nav-number">5.2.1.</span> <span class="nav-text">SSM概念回顾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-SM-SSM-%E5%9F%BA%E6%9C%AC%E6%A6%82%E8%BF%B0"><span class="nav-number">5.2.2.</span> <span class="nav-text">PIM-SM(SSM)基本概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E6%92%AD%E5%88%86%E5%8F%91%E6%A0%91%E5%BD%A2%E6%88%90%E4%B8%8E%E7%BB%B4%E6%8A%A4"><span class="nav-number">5.2.3.</span> <span class="nav-text">组播分发树形成与维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM%E6%A8%A1%E5%9E%8B%E6%AF%94%E8%BE%83"><span class="nav-number">5.2.4.</span> <span class="nav-text">PIM模型比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PIM-SM%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">5.3.</span> <span class="nav-text">PIM-SM基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-SM%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">5.3.1.</span> <span class="nav-text">PIM-SM的基本配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PIM-SM%E5%9F%BA%E7%A1%80%E5%AE%9E%E9%AA%8C"><span class="nav-number">5.3.2.</span> <span class="nav-text">PIM-SM基础实验</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

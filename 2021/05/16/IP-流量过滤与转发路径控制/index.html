@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-12-流量过滤与转发路径控制," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•传统的路由转发原理是首先根据报文的目的地址查找路由表，然后进行报文转发。随着业务的发展，用户更加希望能够在传统路由转发的基础上根据自己定义的策略进行报文转发和选路。 •为提高网络安全性，用户希望能够控制进入网络的报文，将没有权限进入网络或存在安全隐患的报文隔离在网络边界。 •本课程将会学习流量过滤技术、策略路由以及使用MQC（Modular QoS Command-Line Interfac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-流量过滤与转发路径控制">
+<meta property="og:url" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•传统的路由转发原理是首先根据报文的目的地址查找路由表，然后进行报文转发。随着业务的发展，用户更加希望能够在传统路由转发的基础上根据自己定义的策略进行报文转发和选路。 •为提高网络安全性，用户希望能够控制进入网络的报文，将没有权限进入网络或存在安全隐患的报文隔离在网络边界。 •本课程将会学习流量过滤技术、策略路由以及使用MQC（Modular QoS Command-Line Interfac">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/1.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/2.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/3.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/4.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/5.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/6.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/7.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/8.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/9.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/10.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/13.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/14.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/15.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/16.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/17.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/18.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/19.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/20.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/21.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/22.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/23.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/24.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/25.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/26.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/27.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/28.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/29.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/30.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/31.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/32.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/33.png">
+<meta property="article:published_time" content="2021-05-16T12:09:21.000Z">
+<meta property="article:modified_time" content="2021-05-17T06:02:05.349Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-12-流量过滤与转发路径控制">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/16/IP-流量过滤与转发路径控制/"/>
+
+
+
+
+
+  <title>IP-流量过滤与转发路径控制 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-流量过滤与转发路径控制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:09:21+08:00">
+                2021-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•传统的路由转发原理是首先根据报文的目的地址查找路由表，然后进行报文转发。随着业务的发展，用户更加希望能够在传统路由转发的基础上根据自己定义的策略进行报文转发和选路。</p>
+<p>•为提高网络安全性，用户希望能够控制进入网络的报文，将没有权限进入网络或存在安全隐患的报文隔离在网络边界。</p>
+<p>•本课程将会学习流量过滤技术、策略路由以及使用MQC（Modular QoS Command-Line Interface，模块化QoS命令行）的方式控制报文的转发路径和进行流量过滤。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述策略路由的使用场景</p>
+<p>▫阐明策略路由的分类</p>
+<p>▫描述如何使用MQC配置策略路由</p>
+<p>▫描述如何使用MQC过滤报文</p>
+<h1 id="1-策略路由"><a href="#1-策略路由" class="headerlink" title="1.策略路由"></a>1.策略路由</h1><h2 id="策略路由技术背景"><a href="#策略路由技术背景" class="headerlink" title="策略路由技术背景"></a>策略路由技术背景</h2><p>在某些场景中我们希望一些特定用户、特定业务的流量走指定的转发路径，而其余用户或业务的流量则依旧根据路由表进行转发。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/1.png"></p>
+<h2 id="PBR介绍-基本概念"><a href="#PBR介绍-基本概念" class="headerlink" title="PBR介绍 - 基本概念"></a>PBR介绍 - 基本概念</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/2.png"></p>
+<p>•PBR（Policy-Based Routing，策略路由）：PBR使得网络设备不仅能够基于报文的目的IP地址进行数据转发，更能基于其他元素进行数据转发，例如源IP地址、源MAC地址、目的MAC地址、源端口号、目的端口号、VLAN-ID等等。</p>
+<p>•用户还可以使用ACL匹配特定的报文，然后针对该ACL进行PBR部署。</p>
+<p>•若设备部署了PBR，则被匹配的报文优先根据PBR的策略进行转发，即PBR策略的优先级高于传统路由表。</p>
+<h2 id="PBR介绍-结构"><a href="#PBR介绍-结构" class="headerlink" title="PBR介绍 - 结构"></a>PBR介绍 - 结构</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/3.png"></p>
+<p>•PBR与Route-Policy类似，由多个节点组成，每个节点由匹配条件（条件语句）和执行动作（执行语句）组成。</p>
+<p>•每个节点内可包含多个条件语句。</p>
+<p>•节点内的多个条件语句之间的关系为“与”，即匹配所有条件语句才会执行本节点内的动作。</p>
+<p>•节点之间的关系为“或”，PBR根据节点编号从小到大顺序执行，匹配当前节点将不会继续向下匹配。</p>
+<h2 id="PBR介绍-命令语法"><a href="#PBR介绍-命令语法" class="headerlink" title="PBR介绍 - 命令语法"></a>PBR介绍 - 命令语法</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/4.png"></p>
+<blockquote>
+<p>•PBR的节点匹配模式：</p>
+<p>​    ▫permit表示对满足匹配条件的报文进行策略路由</p>
+<p>​    ▫deny表示对满足匹配条件的报文不进行策略路由</p>
+</blockquote>
+<h2 id="PBR与路由策略区别"><a href="#PBR与路由策略区别" class="headerlink" title="PBR与路由策略区别"></a>PBR与路由策略区别</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/5.png"></p>
+<h2 id="PBR的分类"><a href="#PBR的分类" class="headerlink" title="PBR的分类"></a>PBR的分类</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/6.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/7.png"></p>
+<h2 id="PBR典型应用场景-1"><a href="#PBR典型应用场景-1" class="headerlink" title="PBR典型应用场景 (1)"></a>PBR典型应用场景 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/8.png"></p>
+<p>•内网防火墙旁挂部署在核心交换机，为防护内网在核心交换机的三层接口上部署PBR，将来自外部网络的流量牵引到防火墙上进行安全检查，检查完的流量再发送回核心交换机，由核心交换机依据路由表转发到内网。</p>
+<p>•将流量牵引到别的设备进行安全检查等类似的行为我们称之为“引流”，PBR是一种常见的引流工具。</p>
+<h2 id="PBR典型应用场景-2"><a href="#PBR典型应用场景-2" class="headerlink" title="PBR典型应用场景 (2)"></a>PBR典型应用场景 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/9.png"></p>
+<p>当企业存在多个网络出口时，若想指定部分网段访问Internet时的网络出口，可以使用PBR：在出口设备的内网接口配置PBR，匹配来自内网的流量，为其指定不同的下一跳公网地址。</p>
+<h2 id="配置介绍-1"><a href="#配置介绍-1" class="headerlink" title="配置介绍 (1)"></a>配置介绍 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/10.png"></p>
+<blockquote>
+<p>•当ACL的rule配置为permit时，设备会对匹配该规则的报文执行本地策略路由的动作：</p>
+<ul>
+<li><p>本地策略路由中策略点为permit时对满足匹配条件的报文进行策略路由；</p>
+</li>
+<li><p>本地策略路由中策略点为deny时对满足匹配条件的报文不进行策略路由，即根据目的地址查找路由表转发报文。</p>
+</li>
+</ul>
+<p>•当ACL配置了rule，如果报文未匹配上任何规则，则根据目的地址查找路由表转发报文。</p>
+<p>•当ACL的rule配置为deny或ACL未配置规则时，应用该ACL的本地策略路由不生效，即根据目的地址查找路由表转发报文。</p>
+</blockquote>
+<h2 id="配置介绍-2"><a href="#配置介绍-2" class="headerlink" title="配置介绍 (2)"></a>配置介绍 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png"></p>
+<blockquote>
+<p>•除了该方式之外，接口策略路由还可以使用MQC的方式进行配置。</p>
+</blockquote>
+<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png"></p>
+<p>需求：</p>
+<p>▫内网存在两个网段，网段1：10.1.1.0/24，网段2：10.1.2.0/24，在RTA的GE0/0/0接口部署PBR，实现网段1访问Internet通过ISP1、网段2访问Internet通过ISP2。</p>
+<p>▫RTA上旁挂了一台服务器，要求在RTA上部署的策略路由不影响内网用户访问该服务器。</p>
+<h2 id="配置案例-2"><a href="#配置案例-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/13.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/14.png"></p>
+<h2 id="配置案例-3"><a href="#配置案例-3" class="headerlink" title="配置案例 (3)"></a>配置案例 (3)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/15.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/16.png"></p>
+<h1 id="2-MQC"><a href="#2-MQC" class="headerlink" title="2.MQC"></a>2.MQC</h1><h2 id="MQC介绍-1"><a href="#MQC介绍-1" class="headerlink" title="MQC介绍 (1)"></a>MQC介绍 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/17.png"></p>
+<p>•MQC（Modular QoS Command-Line Interface，模块化QoS命令行）是指通过将具有某类共同特征的数据流划分为一类，并为同一类数据流提供相同的服务，也可以对不同类的数据流提供不同的服务。</p>
+<p>•MQC包含三个要素：流分类（traffic classifier）、流行为（traffic behavior）和流策略（traffic policy）。</p>
+<p>•MQC的流行为支持重定向报文，因此可以使用MQC实现IP单播策略路由。</p>
+<h2 id="MQC介绍-2"><a href="#MQC介绍-2" class="headerlink" title="MQC介绍 (2)"></a>MQC介绍 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/18.png"></p>
+<p>•流策略：将流分类和流行为绑定，对分类后的报文执行对应流行为中定义的动作。</p>
+<p>•一个流策略可以绑定多个流分类和流行为。</p>
+<h2 id="MQC-流分类"><a href="#MQC-流分类" class="headerlink" title="MQC - 流分类"></a>MQC - 流分类</h2><p>流分类：定义一组流量匹配规则，以对报文进行分类。流分类支持的匹配项如下所示。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/19.png"></p>
+<blockquote>
+<p>•流分类中各规则之间的关系分为：and或or，缺省情况下的关系为or。</p>
+<ul>
+<li><p>and：当流分类中包含ACL规则时，报文必须匹配其中一条ACL规则以及所有非ACL规则；当流分类中没有ACL规则时，报文必须匹配所有非ACL规则。</p>
+</li>
+<li><p>or：报文只要匹配了流分类中的一个规则，设备就认为报文匹配中该流分类。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MQC-流行为"><a href="#MQC-流行为" class="headerlink" title="MQC - 流行为"></a>MQC - 流行为</h2><p>流行为：用来定义执行的动作，支持报文过滤、重标记优先级、重定向、流量统计等动作。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/20.png"></p>
+<h2 id="MQC-流策略"><a href="#MQC-流策略" class="headerlink" title="MQC - 流策略"></a>MQC - 流策略</h2><p>•流策略：流策略支持在接口上调用。</p>
+<p>•流策略存在方向(inbound、outbound)的概念，策略中的流行为匹配入、出方向的报文，对匹配中的报文执行相应的流动作。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/21.png"></p>
+<blockquote>
+<p>•流策略不同于PBR，PBR只能调用在三层接口，而流策略支持调用在二层接口。</p>
+</blockquote>
+<h2 id="使用MQC实现策略路由"><a href="#使用MQC实现策略路由" class="headerlink" title="使用MQC实现策略路由"></a>使用MQC实现策略路由</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/22.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/23.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/24.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/25.png"></p>
+<h1 id="3-流量过滤"><a href="#3-流量过滤" class="headerlink" title="3.流量过滤"></a>3.流量过滤</h1><h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>为提高网络安全性，管理人员需要控制进入网络的流量，将不信任的报文丢弃在网络边界。所谓的不信任报文是指对用户来说存在安全隐患或者不愿意接收的报文。同时保证数据访问安全性，企业网络中经常会要求一些部门之间不能相互访问。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/26.png"></p>
+<h2 id="流量过滤工具"><a href="#流量过滤工具" class="headerlink" title="流量过滤工具"></a>流量过滤工具</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/27.png"></p>
+<h2 id="Traffic-Filter部署位置"><a href="#Traffic-Filter部署位置" class="headerlink" title="Traffic-Filter部署位置"></a>Traffic-Filter部署位置</h2><p>使用Traffic-Filter过滤流量可以灵活地选择部署位置，在流量进入设备或者离开设备的接口上执行过滤动作，双向访问的业务禁止其中一个方向即可实现阻断业务的需求。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/28.png"></p>
+<blockquote>
+<p>•Traffic-Filter部署的位置不同，其调用的ACL内容也不相同。</p>
+</blockquote>
+<h2 id="使用Traffic-Filter过滤流量"><a href="#使用Traffic-Filter过滤流量" class="headerlink" title="使用Traffic-Filter过滤流量"></a>使用Traffic-Filter过滤流量</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/29.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/30.png"></p>
+<h2 id="使用MQC过滤流量-1"><a href="#使用MQC过滤流量-1" class="headerlink" title="使用MQC过滤流量 (1)"></a>使用MQC过滤流量 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/31.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/32.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/33.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）本地策略路由与接口策略路由的区别在于？</p>
+<p><strong>本地策略路由对本地始发的流量生效，而接口策略路由只会对接口入方向的流量生效。</strong></p>
+<p>2.（简答题）使用MQC方式过滤流量时，流分类中匹配的ACL与Traffic-Filter调用的ACL有何区别？</p>
+<p><strong>MQC调用的ACL里permit、deny只代表是否匹配流量，不代表是否放通、拒绝流量，而Traffic-Filter调用的ACL里permit、deny代表放通、拒绝流量。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本课程介绍了PBR的应用场景、PBR的分类以及如何配置本地策略路由、接口策略路由。</p>
+<p>•MQC支持多种灵活的流量匹配方式以及执行动作，同时还可以在多种视图下调用，使用MQC可以完成策略路由、流量过滤的功能。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-12-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/" rel="tag"># IP-12-流量过滤与转发路径控制</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/" rel="next" title="IP-路由策略与路由控制">
+                <i class="fa fa-chevron-left"></i> IP-路由策略与路由控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/" rel="prev" title="IP-园区网典型技术应用概述">
+                IP-园区网典型技术应用概述 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1"><span class="nav-number">3.</span> <span class="nav-text">1.策略路由</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">策略路由技术背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E4%BB%8B%E7%BB%8D-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.2.</span> <span class="nav-text">PBR介绍 - 基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E4%BB%8B%E7%BB%8D-%E7%BB%93%E6%9E%84"><span class="nav-number">3.3.</span> <span class="nav-text">PBR介绍 - 结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E4%BB%8B%E7%BB%8D-%E5%91%BD%E4%BB%A4%E8%AF%AD%E6%B3%95"><span class="nav-number">3.4.</span> <span class="nav-text">PBR介绍 - 命令语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E4%B8%8E%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E5%8C%BA%E5%88%AB"><span class="nav-number">3.5.</span> <span class="nav-text">PBR与路由策略区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">3.6.</span> <span class="nav-text">PBR的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="nav-number">3.7.</span> <span class="nav-text">PBR典型应用场景 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PBR%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="nav-number">3.8.</span> <span class="nav-text">PBR典型应用场景 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">3.9.</span> <span class="nav-text">配置介绍 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">3.10.</span> <span class="nav-text">配置介绍 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1"><span class="nav-number">3.11.</span> <span class="nav-text">配置案例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-2"><span class="nav-number">3.12.</span> <span class="nav-text">配置案例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-3"><span class="nav-number">3.13.</span> <span class="nav-text">配置案例 (3)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-MQC"><span class="nav-number">4.</span> <span class="nav-text">2.MQC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQC%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">4.1.</span> <span class="nav-text">MQC介绍 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQC%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">4.2.</span> <span class="nav-text">MQC介绍 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQC-%E6%B5%81%E5%88%86%E7%B1%BB"><span class="nav-number">4.3.</span> <span class="nav-text">MQC - 流分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQC-%E6%B5%81%E8%A1%8C%E4%B8%BA"><span class="nav-number">4.4.</span> <span class="nav-text">MQC - 流行为</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQC-%E6%B5%81%E7%AD%96%E7%95%A5"><span class="nav-number">4.5.</span> <span class="nav-text">MQC - 流策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8MQC%E5%AE%9E%E7%8E%B0%E7%AD%96%E7%95%A5%E8%B7%AF%E7%94%B1"><span class="nav-number">4.6.</span> <span class="nav-text">使用MQC实现策略路由</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">3.流量过滤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E8%83%8C%E6%99%AF"><span class="nav-number">5.1.</span> <span class="nav-text">需求背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E5%B7%A5%E5%85%B7"><span class="nav-number">5.2.</span> <span class="nav-text">流量过滤工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Traffic-Filter%E9%83%A8%E7%BD%B2%E4%BD%8D%E7%BD%AE"><span class="nav-number">5.3.</span> <span class="nav-text">Traffic-Filter部署位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Traffic-Filter%E8%BF%87%E6%BB%A4%E6%B5%81%E9%87%8F"><span class="nav-number">5.4.</span> <span class="nav-text">使用Traffic-Filter过滤流量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8MQC%E8%BF%87%E6%BB%A4%E6%B5%81%E9%87%8F-1"><span class="nav-number">5.5.</span> <span class="nav-text">使用MQC过滤流量 (1)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

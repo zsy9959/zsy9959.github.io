@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-11-路由策略与路由控制," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•在复杂的数据通信网络中，根据实际组网需求，往往需要实施一些路由策略对路由信息进行过滤、属性设置等操作，通过对路由的控制，可以影响数据流量转发。 •路由策略并非单一的技术或者协议，而是一个技术专题或方法论，里面包含了多种工具及方法。 目标▫使用ACL匹配感兴趣路由 ▫使用IP-Prefix匹配感兴趣路由 ▫使用Filter-Policy进行路由过滤 ▫使用Route-Policy进行路由过滤及">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-路由策略与路由控制">
+<meta property="og:url" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•在复杂的数据通信网络中，根据实际组网需求，往往需要实施一些路由策略对路由信息进行过滤、属性设置等操作，通过对路由的控制，可以影响数据流量转发。 •路由策略并非单一的技术或者协议，而是一个技术专题或方法论，里面包含了多种工具及方法。 目标▫使用ACL匹配感兴趣路由 ▫使用IP-Prefix匹配感兴趣路由 ▫使用Filter-Policy进行路由过滤 ▫使用Route-Policy进行路由过滤及">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/1.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/2.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/3.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/4.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/5.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/6.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/7.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/8.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/9.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/10.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/11.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/12.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/13.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/14.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/15.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/16.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/17.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/18.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/19.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/20.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/21.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/22.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/23.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/24.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/25.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/26.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/27.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/28.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/29.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/30.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/31.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/32.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/33.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/34.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/35.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/36.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/37.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/38.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/39.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/40.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/41.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/42.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/43.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/44.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/45.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/46.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/47.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/48.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/49.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/50.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/51.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/52.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/53.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/54.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/55.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/56.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/57.png">
+<meta property="og:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/58.png">
+<meta property="article:published_time" content="2021-05-16T12:08:48.000Z">
+<meta property="article:modified_time" content="2021-05-17T06:01:59.706Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-11-路由策略与路由控制">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog/zsyblog/source_posts/IP-路由策略与路由控制/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/16/IP-路由策略与路由控制/"/>
+
+
+
+
+
+  <title>IP-路由策略与路由控制 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-路由策略与路由控制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:08:48+08:00">
+                2021-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在复杂的数据通信网络中，根据实际组网需求，往往需要实施一些路由策略对路由信息进行过滤、属性设置等操作，通过对路由的控制，可以影响数据流量转发。</p>
+<p>•路由策略并非单一的技术或者协议，而是一个技术专题或方法论，里面包含了多种工具及方法。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫使用ACL匹配感兴趣路由</p>
+<p>▫使用IP-Prefix匹配感兴趣路由</p>
+<p>▫使用Filter-Policy进行路由过滤</p>
+<p>▫使用Route-Policy进行路由过滤及路由属性修改</p>
+<h1 id="1-路由控制概述"><a href="#1-路由控制概述" class="headerlink" title="1.路由控制概述"></a>1.<strong>路由控制概述</strong></h1><h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\1.png"></p>
+<p>•R1上将业务A、B、C的网段路由引入时希望不引入业务C网段路由，同时R3上将OSPF路由引入到IS-IS中时，同样只希望引入B业务网段路由。</p>
+<p>•此时需要一个工具在引入路由时进行限制。</p>
+<h2 id="路由控制概述"><a href="#路由控制概述" class="headerlink" title="路由控制概述"></a>路由控制概述</h2><p>路由控制可以通过路由策略（Route-Policy）实现，路由策略应用灵活而广泛，有以下几种常见方式：</p>
+<p>▫控制路由的发布：通过路由策略对发布的路由进行过滤，只发布满足条件的路由。</p>
+<p>▫控制路由的接收：通过路由策略对接收的路由进行过滤，只接收满足条件的路由。</p>
+<p>▫控制路由的引入：通过路由策略控制从其他路由协议引入的路由条目，只有满足条件的路由才会被引入。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\2.png"></p>
+<h1 id="2-路由控制工具"><a href="#2-路由控制工具" class="headerlink" title="2.路由控制工具"></a>2.路由控制工具</h1><h2 id="路由匹配工具"><a href="#路由匹配工具" class="headerlink" title="路由匹配工具"></a>路由匹配工具</h2><h3 id="匹配工具1：访问控制列表"><a href="#匹配工具1：访问控制列表" class="headerlink" title="匹配工具1：访问控制列表"></a>匹配工具1：访问控制列表</h3><p>•访问控制列表（Access Control List，ACL）是一个匹配工具，能够对报文及路由进行匹配和区分。</p>
+<p>•ACL由若干条permit或deny语句组成。每条语句就是该ACL的一条规则，每条语句中的permit或deny就是与这条规则相对应的处理动作。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\3.png"></p>
+<blockquote>
+<p>ACL的组成：</p>
+<p>▫ACL编号：在网络设备上配置ACL时，每个ACL都需要分配一个编号，称为ACL编号，用来标识ACL。不同分类的ACL编号范围不同，这个后面具体讲。</p>
+<p>▫规则：前面提到了，一个ACL通常由若干条“permit/deny”语句组成，每条语句就是该ACL的一条规则。</p>
+<p>▫规则编号：每条规则都有一个相应的编号，称为规则编号，用来标识ACL规则。可以自定义，也可以系统自动分配。ACL规则的编号范围是0～4294967294，所有规则均按照规则编号从小到大进行排序。</p>
+<p>▫动作：每条规则中的permit或deny，就是与这条规则相对应的处理动作。permit指“允许”，deny指“拒绝”，但是ACL一般是结合其他技术使用，不同的场景，处理动作的含义也有所不同。</p>
+<ul>
+<li>比如：ACL如果与流量过滤技术结合使用（即流量过滤中调用ACL），permit就是“允许通行”的意思，deny就是“拒绝通行”的意思。</li>
+</ul>
+<p>▫匹配项：ACL定义了极其丰富的匹配项。例子中体现的源地址，ACL还支持很多其他规则匹配项。例如，二层以太网帧头信息（如源MAC、目的MAC、以太帧协议类型）、三层报文信息（如目的地址、协议类型）以及四层报文信息（如TCP/UDP端口号）等。</p>
+</blockquote>
+<h4 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\4.png"></p>
+<p>匹配规则：</p>
+<ul>
+<li>“0”表示“匹配”；“1”表示“无需匹配”</li>
+</ul>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\5.png"></p>
+<blockquote>
+<p>•当进行IP地址匹配的时候，后面会跟着32位掩码位，这32位称为通配符。</p>
+<p>•通配符，也是点分十进制格式，换算成二进制后，“0”表示“匹配”，“1”表示“不匹配”。通配符中的1或者0可以不连续。</p>
+<p>•具体看下这2条规则：</p>
+<ul>
+<li><p>rule 5: 拒绝源IP地址为10.1.1.1报文通过——因为通配符为全0，所以每一位都要严格匹配，因此匹配的是主机IP地址10.1.1.1；</p>
+</li>
+<li><p>rule 15:允许源IP地址为10.1.1.0/24网段地址的报文通过——因为通配符：0.0.0.11111111，后8位为1，表示不关心，因此10.1.1.xxxxxxxx 的后8位可以为任意值，所以匹配的是10.1.1.0/24网段。</p>
+</li>
+</ul>
+<p>•例子：如果要精确匹配192.168.1.1/24这个IP地址对应的网段地址，通配符是多少？</p>
+<ul>
+<li>可以得出：网络位需要严格匹配，主机位无所谓，因此通配符为“0.0.0.255”。</li>
+</ul>
+<p>•两个特殊的通配符：</p>
+<ul>
+<li><p>当通配符全为0来匹配IP地址时，表示精确匹配某个IP地址；</p>
+</li>
+<li><p>当通配符全为1来匹配0.0.0.0地址时，表示匹配了所有IP地址。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="ACL的分类与基本ACL"><a href="#ACL的分类与基本ACL" class="headerlink" title="ACL的分类与基本ACL"></a>ACL的分类与基本ACL</h4><p>•基于ACL规则定义方式的划分</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\6.png"></p>
+<p>•基本ACL</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\7.png"></p>
+<blockquote>
+<p>•对于使用ACL进行路由匹配的场景，用户只能使用基本ACL。</p>
+</blockquote>
+<h4 id="ACL的匹配机制"><a href="#ACL的匹配机制" class="headerlink" title="ACL的匹配机制"></a>ACL的匹配机制</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\8.png"></p>
+<blockquote>
+<p>•ACL的匹配机制概括来说就是：</p>
+<ul>
+<li><p>配置ACL的设备接收报文后，会将该报文与ACL中的规则逐条进行匹配，如果不能匹配上，就会继续尝试去匹配下一条规则。</p>
+</li>
+<li><p>一旦匹配上，则设备会对该报文执行这条规则中定义的处理动作，并且不再继续尝试与后续规则匹配。</p>
+</li>
+</ul>
+<p>•匹配流程：首先系统会查找设备上是否配置了ACL。</p>
+<ul>
+<li><p>如果ACL不存在，则返回ACL匹配结果为：不匹配。</p>
+</li>
+<li><p>如果ACL存在，则查找设备是否配置了ACL规则。</p>
+<ul>
+<li>如果规则不存在，则返回ACL匹配结果为：不匹配。</li>
+<li>如果规则存在，则系统会从ACL中编号最小的规则开始查找。<ul>
+<li>如果匹配上了permit规则，则停止查找规则，并返回ACL匹配结果为：匹配（允许）。</li>
+<li>如果匹配上了deny规则，则停止查找规则，并返回ACL匹配结果为：匹配（拒绝）。</li>
+<li>如果未匹配上规则，则继续查找下一条规则，以此循环。如果一直查到最后一条规则，报文仍未匹配上，则返回ACL匹配结果为：不匹配。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>•从整个ACL匹配流程可以看出，报文与ACL规则匹配后，会产生两种匹配结果：“匹配”和“不匹配”。</p>
+<ul>
+<li><p>匹配（命中规则）：指存在ACL，且在ACL中查找到了符合匹配条件的规则。不论匹配的动作是“permit”还是“deny”，都称为“匹配”，而不是只是匹配上permit规则才算“匹配”。</p>
+</li>
+<li><p>不匹配（未命中规则）：指不存在ACL，或ACL中无规则，再或者在ACL中遍历了所有规则都没有找到符合匹配条件的规则。以上三种情况，都叫做“不匹配”。</p>
+</li>
+</ul>
+<p>•匹配原则：一旦命中即停止匹配。</p>
+</blockquote>
+<h4 id="ACL的匹配顺序及匹配结果"><a href="#ACL的匹配顺序及匹配结果" class="headerlink" title="ACL的匹配顺序及匹配结果"></a>ACL的匹配顺序及匹配结果</h4><p>配置顺序（config模式）</p>
+<p>▫系统按照ACL规则编号从小到大的顺序进行报文匹配，规则编号越小越容易被匹配。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\9.png"></p>
+<blockquote>
+<p>•一条ACL可以由多条“deny或permit”语句组成，每一条语句描述一条规则，这些规则可能存在包含关系，也可能有重复或矛盾的地方，因此ACL的匹配顺序是十分重要的。</p>
+<p>•华为设备支持两种匹配顺序：自动排序（auto模式）和配置顺序（config模式）。缺省的ACL匹配顺序是config模式。</p>
+<ul>
+<li><p>自动排序，是指系统使用“深度优先”的原则，将规则按照精确度从高到低进行排序，并按照精确度从高到低的顺序进行报文匹配。——这个比较复杂，这里就不具体展开了，</p>
+</li>
+<li><p>配置顺序，系统按照ACL规则编号从小到大的顺序进行报文匹配，规则编号越小越容易被匹配。——这个就是前面提到的匹配顺序。</p>
+<ul>
+<li>如果后面又添加了一条规则，则这条规则会被加入到相应的位置，报文仍然会按照从小到大的顺序进行匹配。</li>
+</ul>
+</li>
+</ul>
+<p>•注意：ACL技术总是与其他技术结合在一起使用的，因此，所结合的技术不同，“允许 (permit)”及“拒绝 (deny)”的实际作用也会不同。例如，当ACL技术与路由过滤技术结合使用时，permit就是“匹配该条路由条目”的意思，deny就是“不匹配该条路由条目”的意思。</p>
+</blockquote>
+<h4 id="常用匹配举例"><a href="#常用匹配举例" class="headerlink" title="常用匹配举例"></a>常用匹配举例</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\10.png"></p>
+<h4 id="基本ACL的基础配置命令"><a href="#基本ACL的基础配置命令" class="headerlink" title="基本ACL的基础配置命令"></a>基本ACL的基础配置命令</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\11.png"></p>
+<blockquote>
+<p>•创建基本ACL</p>
+<p>•[Huawei] <strong>acl</strong> [ <strong>number</strong> ] <em>acl-number</em> [ <strong>match-order</strong> <strong>config</strong> ]</p>
+<ul>
+<li><p><em>acl-number</em>：指定访问控制列表的编号。</p>
+</li>
+<li><p><strong>match-order</strong> <strong>config</strong>：指定ACL规则的匹配顺序，config表示配置顺序。</p>
+</li>
+</ul>
+<p>•[Huawei] <strong>acl</strong> <strong>name</strong> <em>acl-name</em> { <strong>basic</strong> | <em>acl-number</em> } [ <strong>match-order</strong> <strong>config</strong> ]</p>
+<ul>
+<li><p><em>acl-name</em>：指定创建的ACL的名称。</p>
+</li>
+<li><p><strong>basic</strong>：指定ACL的类型为基本ACL。</p>
+</li>
+</ul>
+<p>•配置基本ACL规则</p>
+<p>•[Huawei-acl-basic-2000] <strong>rule</strong> [ <em>rule-id</em> ] { <strong>deny</strong> | <strong>permit</strong> } [ <strong>source</strong> { <em>source-address source-wildcard</em> | <strong>any</strong> } | <strong>time-range</strong> <em>time-name</em> ] </p>
+<ul>
+<li><p><em>rule-id</em>：指定ACL的规则ID。</p>
+</li>
+<li><p><strong>deny</strong>：指定拒绝符合条件的报文。</p>
+</li>
+<li><p><strong>permit</strong>：指定允许符合条件的报文。</p>
+</li>
+<li><p><strong>source</strong> { <em>source-address source-wildcard</em> | <strong>any</strong> }：指定ACL规则匹配报文的源地址信息。如果不配置，表示报文的任何源地址都匹配。其中：</p>
+<ul>
+<li><em>source-address</em>：指定报文的源地址。</li>
+<li><em>source-wildcard</em>：指定源地址通配符。</li>
+<li><strong>any</strong>：表示报文的任意源地址。相当于source-address为0.0.0.0或者source-wildcard为255.255.255.255。</li>
+</ul>
+</li>
+<li><p><strong>time-range</strong> <em>time-name</em>：指定ACL规则生效的时间段。其中，time-name表示ACL规则生效时间段名称。如果不指定时间段，表示任何时间都生效。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="匹配工具2：IP前缀列表"><a href="#匹配工具2：IP前缀列表" class="headerlink" title="匹配工具2：IP前缀列表"></a>匹配工具2：IP前缀列表</h3><p>•IP前缀列表（IP-Prefix List）是将路由条目的网络地址、掩码长度作为匹配条件的过滤器，可在各路由协议发布和接收路由时使用。</p>
+<p>•不同于ACL，IP-Prefix List能够同时匹配IP地址前缀长度以及掩码长度，增强了匹配的精确度。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\12.png"></p>
+<p>1、<strong>ip-prefix-name</strong>：地址前缀列表名称<br>2、<strong>序号</strong>：本匹配项在地址前缀列表中的序号，匹配时根据序号从小到大进行顺序匹配<br>3、<strong>动作</strong>：permit/deny，地址前缀列表的匹配模式为允许/拒绝，表示匹配/不匹配<br>4、<strong>IP网段与掩码</strong>：匹配路由的网络地址，以及限定网络地址的前多少位需严格匹配<br>5、<strong>掩码范围</strong>：匹配路由前缀长度，掩码长度的匹配范围 mask-length&lt;=greater-equal-value&lt;=less-equal-value&lt;=32</p>
+<h4 id="IP-Prefix的匹配机制"><a href="#IP-Prefix的匹配机制" class="headerlink" title="IP-Prefix的匹配机制"></a>IP-Prefix的匹配机制</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\13.png"></p>
+<h4 id="IP-Prefix的匹配示例"><a href="#IP-Prefix的匹配示例" class="headerlink" title="IP-Prefix的匹配示例"></a>IP-Prefix的匹配示例</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\14.png"></p>
+<h4 id="IP-Prefix的基础配置命令"><a href="#IP-Prefix的基础配置命令" class="headerlink" title="IP-Prefix的基础配置命令"></a>IP-Prefix的基础配置命令</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\15.png"></p>
+<blockquote>
+<p>•<strong>ip-prefix-name</strong>：指定地址前缀列表的名称。字符串形式，长度范围是1～169，不支持空格，区分大小写。</p>
+<p>•<strong>index</strong> <em>index-number</em>：指定本匹配项在地址前缀列表中的序号。整数形式，取值范围是1～4294967295。缺省情况下，该序号值按照配置先后顺序依次递增，每次加10，第一个序号值为10。</p>
+<p>•<strong>permit</strong>：指定地址前缀列表的匹配模式为允许。在该模式下，如果过滤的IP地址在定义的范围内，则通过过滤，进行相应的设置；否则，必须进行下一节点的测试。</p>
+<p>•<strong>deny</strong>：指定地址前缀列表的匹配模式为拒绝。在该模式下，如果过滤的IP地址在定义的范围内，该IP地址不能通过过滤从而不能进入下一节点的测试；否则，将进行下一节点的测试。</p>
+<p>•<em>ipv4-address mask-length</em>：指定IP地址和指定掩码长度。其中掩码长度为整数形式，取值范围是0～32。</p>
+<p>•<strong>greater-equal</strong> <em>greater-equal-value</em>：指定掩码长度匹配范围的下限。若不配置<strong>greater-equal</strong> <em>greater-equal-value</em>和<strong>less-equal</strong> <em>less-equal-value</em>，则使用mask-length作为掩码长度。 </p>
+<ul>
+<li><p>参数<em>greater-equal-value</em>的取值限制为：<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>&lt;=32。</p>
+</li>
+<li><p>如果只配置了<strong>greater-equal</strong>，则掩码长度范围在<em>greater-equal-value</em>和32之间。</p>
+</li>
+</ul>
+<p>•<strong>less-equal</strong> <em>less-equal-value</em>：指定掩码长度匹配范围的上限。若不配置<strong>greater-equal</strong> <em>greater-equal-value</em>和<strong>less-equal</strong> <em>less-equal-value</em>，则使用<em>mask-length</em>作为掩码长度。</p>
+<ul>
+<li><p>参数less-equal-value的取值限制为：<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>&lt;=32<em>。</em></p>
+</li>
+<li><p>如果只配置了<strong>less-equal</strong>，则掩码长度范围在<em>mask-length</em>和<em>less-equal-value</em>之间。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="IP-Prefix的配置举例-1"><a href="#IP-Prefix的配置举例-1" class="headerlink" title="IP-Prefix的配置举例 (1)"></a>IP-Prefix的配置举例 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\16.png"></p>
+<blockquote>
+<p>•Case1说明：这种情况属于单节点的精确匹配，只有目的地址，掩码完全相同的路由才会匹配成功，而且节点的匹配模式为Permit，所以路由10.1.1.0/24被Permit，属于匹配成功并被Permit，其他路由由于未匹配成功被Deny。</p>
+<p>•Case2说明：这种情况属于单节点的精确匹配，但节点的匹配模式为deny，所以路由10.1.1.0/24还是被Deny，属于匹配成功但被Deny，其他路由则属于未匹配成功被默认Deny。</p>
+</blockquote>
+<h4 id="IP-Prefix的配置举例-2"><a href="#IP-Prefix的配置举例-2" class="headerlink" title="IP-Prefix的配置举例 (2)"></a>IP-Prefix的配置举例 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\17.png"></p>
+<blockquote>
+<p>•Case1说明：这种情况属于多节点的精确匹配。</p>
+<ul>
+<li><p>路由10.1.1.0/24在匹配index 10时，满足匹配条件，但匹配模式是deny，属于匹配成功但被Deny。</p>
+</li>
+<li><p>路由10.1.1.1/32在匹配index 10时，不满足匹配条件，则继续匹配index 20，此时匹配成功，且index 20的匹配模式是permit，属于匹配成功并被Permit。</p>
+</li>
+<li><p>其他路由由于都不符合index 10和20的条件，属于未匹配成功被默认Deny。</p>
+</li>
+</ul>
+<p>•Case2说明：此时<em>greater-equal-value</em>=26，<em>less-equal-value</em>=32。配置时，需满足<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>，否则配置不成功。</p>
+</blockquote>
+<h4 id="IP-Prefix的配置举例-3"><a href="#IP-Prefix的配置举例-3" class="headerlink" title="IP-Prefix的配置举例 (3)"></a>IP-Prefix的配置举例 (3)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\18.png"></p>
+<blockquote>
+<p>•Case1说明：此时<em>greater-equal-value</em>=8，<em>less-equal-value</em>=32，前8个bit与10.0.0.0相同，掩码长度在8-32之间的路由全部被匹配。</p>
+<p>•Case2说明：</p>
+<ul>
+<li><p>对于index 10，<em>greater-equal-value</em>=24，<em>less-equal-value</em>=32，前24个bit与10.1.1.0相同，所有掩码长度在24到32的路由全部被Deny；</p>
+</li>
+<li><p>对于index 20，<em>greater-equal-value</em>=0，<em>less-equal-value</em>=32，前16个bit与10.1.0.0相同，掩码长度在16到32的路由被匹配，此时只有10.1.0.0/16被匹配，剩下的被默认deny。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="路由策略工具"><a href="#路由策略工具" class="headerlink" title="路由策略工具"></a>路由策略工具</h2><h3 id="策略工具1：Filter-Policy"><a href="#策略工具1：Filter-Policy" class="headerlink" title="策略工具1：Filter-Policy"></a>策略工具1：Filter-Policy</h3><p>•Filter-Policy（过滤-策略）是一个很常用的路由信息过滤工具，能够对接收、发布、引入的路由进行过滤，可应用于IS-IS、OSPF、BGP等协议。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\19.png"></p>
+<p>•如图所示，R1、R2、R3之间运行BGP路由协议，路由在各个设备之间传递，当需要根据实际需求过滤某些路由信息的时候可以使用Filter-Policy实现。</p>
+<h4 id="Filter-Policy在距离矢量路由协议中的应用"><a href="#Filter-Policy在距离矢量路由协议中的应用" class="headerlink" title="Filter-Policy在距离矢量路由协议中的应用"></a>Filter-Policy在距离矢量路由协议中的应用</h4><p>在距离矢量路由协议中，设备之间传递的是路由信息，如果需要对这种路由信息进行某种过滤，可以使用Filter-Policy实现，出方向和入方向的生效位置如图所示。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\20.png"></p>
+<blockquote>
+<p>•距离矢量协议是基于路由表生成路由的，因此过滤器会影响从邻居接收的路由和向邻居发布的路由。</p>
+<p>•如果要过滤掉上游设备到下游设备的路由，只需要在上游设备配置filter-policy export或者在下游设备上配置filter-policy import。</p>
+</blockquote>
+<h4 id="Filter-Policy在链路状态路由协议中的应用"><a href="#Filter-Policy在链路状态路由协议中的应用" class="headerlink" title="Filter-Policy在链路状态路由协议中的应用"></a>Filter-Policy在链路状态路由协议中的应用</h4><p>在链路状态路由协议中，各路由设备之间传递的是LSA信息，然后设备根据LSA汇总成的LSDB信息计算出路由表。但是Filter-Policy只能过滤路由信息，无法过滤LSA。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\21.png"></p>
+<blockquote>
+<p>•OSPF把网络中所泛洪的LSA存储到自己的LSDB中，并且运行SPF算法，计算出一颗以自己为根，无环的最短路径树，Filter-Policy对OSPF计算出来的路由（加载到路由表之前）进行过滤，而不会对LSA进行过滤。</p>
+<p>•上面的实例以OSPF为例，展示了Filter-Policy在链路状态中的应用。</p>
+</blockquote>
+<h4 id="Filter-Policy的基础配置命令-1"><a href="#Filter-Policy的基础配置命令-1" class="headerlink" title="Filter-Policy的基础配置命令 (1)"></a>Filter-Policy的基础配置命令 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\22.png"></p>
+<blockquote>
+<p>命令：[Huawei-ospf-100] <strong>filter-policy</strong> { acl-number | <strong>acl-name</strong> acl-name | <strong>ip-prefix</strong> ip-prefix-name | <strong>route-policy</strong> route-policy-name [ <strong>secondary</strong> ] } <strong>import</strong></p>
+<ul>
+<li>acl-number：指定基本访问控制列表号。整数形式，取值范围是2000～2999。</li>
+<li><strong>acl-name</strong> acl-name：指定访问控制列表名称。字符串形式，不支持空格，区分大小写，长度范围是1～32，以英文字母a～z或A～Z开始。</li>
+<li><strong>ip-prefix</strong> ip-prefix-name：指定地址前缀列表名称。字符串形式，长度范围是1～169，不支持空格，区分大小写。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>route-policy</strong> route-policy-name：指定路由策略名称。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>secondary</strong>：设置优选次优路由。</li>
+</ul>
+<p>命令：[Huawei-ospf-100] <strong>filter-policy</strong> { acl-number | <strong>acl-name</strong> acl-name | <strong>ip-prefix</strong> ip-prefix-name | <em>9</em>route-policy** route-policy-name } <strong>export</strong> [ protocol [ process-id ] ]</p>
+<ul>
+<li>protocol process-id：指定需要对引入的特定的路由协议进行过滤。目前的协议包括direct、isis、bgp、ospf、unr和static。当指定路由协议为RIP、IS-IS、OSPF时，还可以指定进程号。整数类型，取值范围是1～65535，缺省值是1。</li>
+</ul>
+</blockquote>
+<h4 id="Filter-Policy的基础配置命令-2"><a href="#Filter-Policy的基础配置命令-2" class="headerlink" title="Filter-Policy的基础配置命令 (2)"></a>Filter-Policy的基础配置命令 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\23.png"></p>
+<h4 id="Filter-Policy的基础配置命令-3"><a href="#Filter-Policy的基础配置命令-3" class="headerlink" title="Filter-Policy的基础配置命令 (3)"></a>Filter-Policy的基础配置命令 (3)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\24.png"></p>
+<h4 id="OSPF中使用Filter-Policy"><a href="#OSPF中使用Filter-Policy" class="headerlink" title="OSPF中使用Filter-Policy"></a>OSPF中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\25.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\26.png"></p>
+<blockquote>
+<p>•OSPF的路由信息记录在LSDB中，<strong>filter-policy import</strong>命令实际上是对OSPF计算出来的路由进行过滤，不是对发布和接收的LSA进行过滤。</p>
+<p>•<strong>filter-policy export</strong>命令通过指定<em>protocol</em>或<em>process-id</em>对特定的某一种协议或某一进程的路由进行过滤。如果没有指定<em>protocol</em>和<em>process-id</em>，则OSPF将对所有引入的路由信息进行过滤。</p>
+</blockquote>
+<h4 id="IS-IS中使用Filter-Policy"><a href="#IS-IS中使用Filter-Policy" class="headerlink" title="IS-IS中使用Filter-Policy"></a>IS-IS中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\27.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\28.png"></p>
+<blockquote>
+<p>•IS-IS的路由表项需要被成功下发到IP路由表中，才能用来指导IP报文转发。如果IS-IS路由表中有到达某个目的网段的路由，但是并不希望将该路由下发到IP路由表中，可以使用<strong>filter-policy import</strong>命令结合基本ACL、IP-Prefix、路由策略等方式，只将部分IS-IS路由下发到IP路由表中。</p>
+</blockquote>
+<h4 id="BGP中使用Filter-Policy"><a href="#BGP中使用Filter-Policy" class="headerlink" title="BGP中使用Filter-Policy"></a>BGP中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\29.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\30.png"></p>
+<h3 id="策略工具2：Route-Policy"><a href="#策略工具2：Route-Policy" class="headerlink" title="策略工具2：Route-Policy"></a>策略工具2：Route-Policy</h3><p>•Route-Policy是一个策略工具，用于过滤路由信息，以及为过滤后的路由信息设置路由属性。</p>
+<p>•一个Route-Policy由一个或多个节点（Node）构成，每个节点都可以是一系列条件语句（匹配条件）以及执行语句（执行动作）的集合，这些集合按照编号从小到大的顺序排列。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\31.png"></p>
+<p>•每个节点内可包含多个条件语句。节点内的多个条件语句之间的关系为“与”，即匹配所有条件语句才会执行本节点内的动作。</p>
+<p>•节点之间的关系为“或”，route-policy根据节点编号大小从小到大顺序执行，匹配中一个节点将不会继续向下匹配。</p>
+<blockquote>
+<p>•当使用Route-Policy时，Node的值小的节点先进行匹配。一个节点匹配成功后，路由将不再匹配其他节点。全部节点匹配失败后，路由将被过滤。</p>
+</blockquote>
+<h4 id="Route-Policy的组成"><a href="#Route-Policy的组成" class="headerlink" title="Route-Policy的组成"></a>Route-Policy的组成</h4><p>一个Route-Policy由一个或多个节点构成，每个节点包括多个if-match和apply子句。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\32.png"></p>
+<p>•permit或deny：指定Route-Policy节点的匹配模式为允许或拒绝。</p>
+<p>•node：指定Route-Policy的节点号。整数形式，取值范围是0～65535。</p>
+<p>•if-match子句：定义该节点的匹配条件。</p>
+<p>•apply子句：定义针对被匹配路由执行的操作。</p>
+<h4 id="Route-Policy的匹配顺序"><a href="#Route-Policy的匹配顺序" class="headerlink" title="Route-Policy的匹配顺序"></a>Route-Policy的匹配顺序</h4><p>路由策略使用不同的匹配条件和匹配模式选择路由和改变路由属性。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\33.png"></p>
+<blockquote>
+<p>•一个路由策略中包含N（N&gt;=1）个节点（Node）。路由进入路由策略后，按节点序号从小到大依次检查各个节点是否匹配。匹配条件由If-match子句定义。</p>
+<ul>
+<li><p>当路由与该节点的所有If-match子句都匹配成功后，进入匹配模式选择，不再匹配其他节点。匹配模式分permit和deny两种：</p>
+<ul>
+<li><p>permit：路由将被允许通过，并且执行该节点的apply子句对路由信息的一些属性进行设置。</p>
+</li>
+<li><p>deny：路由将被拒绝通过。</p>
+</li>
+</ul>
+</li>
+<li><p>当路由与该节点的任意一个If-match子句匹配失败后，进入下一节点。如果和所有节点都匹配失败，路由信息将被拒绝通过。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="Route-Policy的基础配置命令-1"><a href="#Route-Policy的基础配置命令-1" class="headerlink" title="Route-Policy的基础配置命令 (1)"></a>Route-Policy的基础配置命令 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\34.png"></p>
+<blockquote>
+<p>•命令：<strong>route-policy</strong> <em>route-policy-name</em> { <strong>permit</strong> | <strong>deny</strong> } <strong>node</strong> <em>node</em></p>
+<ul>
+<li><p><strong>permit</strong>：指定Route-Policy节点的匹配模式为允许。如果路由与节点所有的if-match子句匹配成功，则执行此节点apply子句；否则，进行下一节点。</p>
+</li>
+<li><p><strong>deny</strong>：指定Route-Policy节点的匹配模式为拒绝。如果路由与节点所有的if-match子句匹配成功，则该路由将被拒绝通过；否则进行下一节点。</p>
+</li>
+<li><p><strong>node</strong> <em>node</em>：指定Route-Policy的节点号。当使用Route-Policy时，node的值小的节点先进行匹配。一个节点匹配成功后，路由将不再匹配其他节点。全部节点匹配失败后，路由将被过滤。整数形式，取值范围是0～65535。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="Route-Policy的基础配置命令-2"><a href="#Route-Policy的基础配置命令-2" class="headerlink" title="Route-Policy的基础配置命令 (2)"></a>Route-Policy的基础配置命令 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\35.png"></p>
+<blockquote>
+<p>•apply子句用来为路由策略指定动作，用来设置匹配成功的路由的属性。在一个节点中，如果没有配置apply子句，则该节点仅起过滤路由的作用。如果配置一个或多个apply子句，则通过节点匹配的路由将执行所有apply子句。</p>
+</blockquote>
+<h1 id="3-路由控制案例"><a href="#3-路由控制案例" class="headerlink" title="3.路由控制案例"></a>3.路由控制案例</h1><h2 id="对接收的路由进行过滤"><a href="#对接收的路由进行过滤" class="headerlink" title="对接收的路由进行过滤"></a>对接收的路由进行过滤</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\36.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\37.png"></p>
+<blockquote>
+<p>•通过Filter-Policy进行路由过滤，只影响本地的路由表，因此R3可以正常学习到192.168.1.0/24网段的路由。</p>
+</blockquote>
+<h2 id="对发布的路由进行过滤"><a href="#对发布的路由进行过滤" class="headerlink" title="对发布的路由进行过滤"></a>对发布的路由进行过滤</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\38.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\39.png"></p>
+<h2 id="修改路由属性"><a href="#修改路由属性" class="headerlink" title="修改路由属性"></a>修改路由属性</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\40.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\41.png"></p>
+<h2 id="双点双向路由重发布"><a href="#双点双向路由重发布" class="headerlink" title="双点双向路由重发布"></a>双点双向路由重发布</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\42.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\43.png"></p>
+<h2 id="次优路径问题"><a href="#次优路径问题" class="headerlink" title="次优路径问题"></a>次优路径问题</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\44.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\45.png"></p>
+<h2 id="解决次优路径问题-1"><a href="#解决次优路径问题-1" class="headerlink" title="解决次优路径问题 (1)"></a>解决次优路径问题 (1)</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\46.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\47.png"></p>
+<h2 id="解决次优路径问题-2"><a href="#解决次优路径问题-2" class="headerlink" title="解决次优路径问题 (2)"></a>解决次优路径问题 (2)</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\48.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\49.png"></p>
+<h2 id="路由环路问题"><a href="#路由环路问题" class="headerlink" title="路由环路问题"></a>路由环路问题</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\50.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\51.png"></p>
+<h3 id="解决路由环路问题-1"><a href="#解决路由环路问题-1" class="headerlink" title="解决路由环路问题 (1)"></a>解决路由环路问题 (1)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\52.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\53.png"></p>
+<h3 id="解决路由环路问题-2"><a href="#解决路由环路问题-2" class="headerlink" title="解决路由环路问题 (2)"></a>解决路由环路问题 (2)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\54.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\55.png"></p>
+<h3 id="解决路由环路问题-3"><a href="#解决路由环路问题-3" class="headerlink" title="解决路由环路问题 (3)"></a>解决路由环路问题 (3)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\56.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\57.png"></p>
+<h2 id="场景思考"><a href="#场景思考" class="headerlink" title="场景思考"></a>场景思考</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\58.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）Filter-Policy export在OSPF、BGP中的作用分别是？</p>
+<p><strong>在OSPF中的作用为过滤从其他路由协议引入到OSPF中的路由条目；在BGP中的作用为限制本地对外发布的路由条目。</strong></p>
+<p>2.（简答题）Route-Policy多个节点之间的逻辑关系为？一个节点内多个条件语句的逻辑关系为？</p>
+<p><strong>节点之间的逻辑关系为或，条件语句间的逻辑关系为与。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•控制路由的发布、接收时需要先将相应的路由使用匹配器进行抓取，最常见的匹配器有ACL、 IP-Prefix List 。</p>
+<p>•Filter-Policy、Route-Policy都可用来在发布、接收路由时进行过滤，但需要注意在链路状态路由协议中使用Filter-Policy并不能正常的过滤链路状态信息，只是影响了本地的路由表。</p>
+<p>•Route-Policy在发布、接收路由时可以对路由的属性进行灵活地修改，以实现XXX。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-11-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/" rel="tag"># IP-11-路由策略与路由控制</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/" rel="next" title="BGP-EVPN基础">
+                <i class="fa fa-chevron-left"></i> BGP-EVPN基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/" rel="prev" title="IP-流量过滤与转发路径控制">
+                IP-流量过滤与转发路径控制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">1.路由控制概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">技术背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6%E6%A6%82%E8%BF%B0"><span class="nav-number">3.2.</span> <span class="nav-text">路由控制概述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6%E5%B7%A5%E5%85%B7"><span class="nav-number">4.</span> <span class="nav-text">2.路由控制工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8C%B9%E9%85%8D%E5%B7%A5%E5%85%B7"><span class="nav-number">4.1.</span> <span class="nav-text">路由匹配工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E5%B7%A5%E5%85%B71%EF%BC%9A%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%88%97%E8%A1%A8"><span class="nav-number">4.1.1.</span> <span class="nav-text">匹配工具1：访问控制列表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6"><span class="nav-number">4.1.1.1.</span> <span class="nav-text">通配符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ACL%E7%9A%84%E5%88%86%E7%B1%BB%E4%B8%8E%E5%9F%BA%E6%9C%ACACL"><span class="nav-number">4.1.1.2.</span> <span class="nav-text">ACL的分类与基本ACL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ACL%E7%9A%84%E5%8C%B9%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.1.3.</span> <span class="nav-text">ACL的匹配机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ACL%E7%9A%84%E5%8C%B9%E9%85%8D%E9%A1%BA%E5%BA%8F%E5%8F%8A%E5%8C%B9%E9%85%8D%E7%BB%93%E6%9E%9C"><span class="nav-number">4.1.1.4.</span> <span class="nav-text">ACL的匹配顺序及匹配结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%8C%B9%E9%85%8D%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.1.1.5.</span> <span class="nav-text">常用匹配举例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%ACACL%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.1.1.6.</span> <span class="nav-text">基本ACL的基础配置命令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%B9%E9%85%8D%E5%B7%A5%E5%85%B72%EF%BC%9AIP%E5%89%8D%E7%BC%80%E5%88%97%E8%A1%A8"><span class="nav-number">4.1.2.</span> <span class="nav-text">匹配工具2：IP前缀列表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-Prefix%E7%9A%84%E5%8C%B9%E9%85%8D%E6%9C%BA%E5%88%B6"><span class="nav-number">4.1.2.1.</span> <span class="nav-text">IP-Prefix的匹配机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-Prefix%E7%9A%84%E5%8C%B9%E9%85%8D%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.1.2.2.</span> <span class="nav-text">IP-Prefix的匹配示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-Prefix%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.1.2.3.</span> <span class="nav-text">IP-Prefix的基础配置命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-Prefix%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-1"><span class="nav-number">4.1.2.4.</span> <span class="nav-text">IP-Prefix的配置举例 (1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-Prefix%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-2"><span class="nav-number">4.1.2.5.</span> <span class="nav-text">IP-Prefix的配置举例 (2)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-Prefix%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-3"><span class="nav-number">4.1.2.6.</span> <span class="nav-text">IP-Prefix的配置举例 (3)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E5%B7%A5%E5%85%B7"><span class="nav-number">4.2.</span> <span class="nav-text">路由策略工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E5%B7%A5%E5%85%B71%EF%BC%9AFilter-Policy"><span class="nav-number">4.2.1.</span> <span class="nav-text">策略工具1：Filter-Policy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter-Policy%E5%9C%A8%E8%B7%9D%E7%A6%BB%E7%9F%A2%E9%87%8F%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">Filter-Policy在距离矢量路由协议中的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter-Policy%E5%9C%A8%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">4.2.1.2.</span> <span class="nav-text">Filter-Policy在链路状态路由协议中的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter-Policy%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="nav-number">4.2.1.3.</span> <span class="nav-text">Filter-Policy的基础配置命令 (1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter-Policy%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-2"><span class="nav-number">4.2.1.4.</span> <span class="nav-text">Filter-Policy的基础配置命令 (2)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Filter-Policy%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-3"><span class="nav-number">4.2.1.5.</span> <span class="nav-text">Filter-Policy的基础配置命令 (3)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OSPF%E4%B8%AD%E4%BD%BF%E7%94%A8Filter-Policy"><span class="nav-number">4.2.1.6.</span> <span class="nav-text">OSPF中使用Filter-Policy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IS-IS%E4%B8%AD%E4%BD%BF%E7%94%A8Filter-Policy"><span class="nav-number">4.2.1.7.</span> <span class="nav-text">IS-IS中使用Filter-Policy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BGP%E4%B8%AD%E4%BD%BF%E7%94%A8Filter-Policy"><span class="nav-number">4.2.1.8.</span> <span class="nav-text">BGP中使用Filter-Policy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E5%B7%A5%E5%85%B72%EF%BC%9ARoute-Policy"><span class="nav-number">4.2.2.</span> <span class="nav-text">策略工具2：Route-Policy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Route-Policy%E7%9A%84%E7%BB%84%E6%88%90"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">Route-Policy的组成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Route-Policy%E7%9A%84%E5%8C%B9%E9%85%8D%E9%A1%BA%E5%BA%8F"><span class="nav-number">4.2.2.2.</span> <span class="nav-text">Route-Policy的匹配顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Route-Policy%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="nav-number">4.2.2.3.</span> <span class="nav-text">Route-Policy的基础配置命令 (1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Route-Policy%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-2"><span class="nav-number">4.2.2.4.</span> <span class="nav-text">Route-Policy的基础配置命令 (2)</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6%E6%A1%88%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">3.路由控制案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%8E%A5%E6%94%B6%E7%9A%84%E8%B7%AF%E7%94%B1%E8%BF%9B%E8%A1%8C%E8%BF%87%E6%BB%A4"><span class="nav-number">5.1.</span> <span class="nav-text">对接收的路由进行过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E5%8F%91%E5%B8%83%E7%9A%84%E8%B7%AF%E7%94%B1%E8%BF%9B%E8%A1%8C%E8%BF%87%E6%BB%A4"><span class="nav-number">5.2.</span> <span class="nav-text">对发布的路由进行过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%B7%AF%E7%94%B1%E5%B1%9E%E6%80%A7"><span class="nav-number">5.3.</span> <span class="nav-text">修改路由属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E7%82%B9%E5%8F%8C%E5%90%91%E8%B7%AF%E7%94%B1%E9%87%8D%E5%8F%91%E5%B8%83"><span class="nav-number">5.4.</span> <span class="nav-text">双点双向路由重发布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AC%A1%E4%BC%98%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.5.</span> <span class="nav-text">次优路径问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%AC%A1%E4%BC%98%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98-1"><span class="nav-number">5.6.</span> <span class="nav-text">解决次优路径问题 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%AC%A1%E4%BC%98%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98-2"><span class="nav-number">5.7.</span> <span class="nav-text">解决次优路径问题 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E7%8E%AF%E8%B7%AF%E9%97%AE%E9%A2%98"><span class="nav-number">5.8.</span> <span class="nav-text">路由环路问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E8%B7%AF%E7%94%B1%E7%8E%AF%E8%B7%AF%E9%97%AE%E9%A2%98-1"><span class="nav-number">5.8.1.</span> <span class="nav-text">解决路由环路问题 (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E8%B7%AF%E7%94%B1%E7%8E%AF%E8%B7%AF%E9%97%AE%E9%A2%98-2"><span class="nav-number">5.8.2.</span> <span class="nav-text">解决路由环路问题 (2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E8%B7%AF%E7%94%B1%E7%8E%AF%E8%B7%AF%E9%97%AE%E9%A2%98-3"><span class="nav-number">5.8.3.</span> <span class="nav-text">解决路由环路问题 (3)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E6%80%9D%E8%80%83"><span class="nav-number">5.9.</span> <span class="nav-text">场景思考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

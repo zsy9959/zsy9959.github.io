@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-22-IPv6地址配置," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•IPv6是下一代互联网的核心协议，它解决了IPv4所暴露的诸多缺陷，如地址稀缺、路由表庞大、对移动设备支持不足等。 •IPv6的一个突出特点是支持网络节点的地址自动配置，真正实现即插即用，极大地简化网络管理者的工作。 •本课程将介绍IPv6地址自动配置的工作原理与配置实现。 目标▫描述IPv6无状态地址自动配置的工作原理 ▫描述DHCPv6地址自动配置的工作原理 ▫实现IPv6地址自动配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-IPv6地址配置">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•IPv6是下一代互联网的核心协议，它解决了IPv4所暴露的诸多缺陷，如地址稀缺、路由表庞大、对移动设备支持不足等。 •IPv6的一个突出特点是支持网络节点的地址自动配置，真正实现即插即用，极大地简化网络管理者的工作。 •本课程将介绍IPv6地址自动配置的工作原理与配置实现。 目标▫描述IPv6无状态地址自动配置的工作原理 ▫描述DHCPv6地址自动配置的工作原理 ▫实现IPv6地址自动配置">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/18.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/19.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/20.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/21.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/22.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/23.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/24.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/25.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/26.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/27.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/28.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/29.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/30.png">
+<meta property="article:published_time" content="2021-05-17T05:28:33.000Z">
+<meta property="article:modified_time" content="2021-05-17T06:04:45.148Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-22-IPv6地址配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-IPv6地址配置/"/>
+
+
+
+
+
+  <title>IP-IPv6地址配置 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-IPv6地址配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T13:28:33+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IPv6是下一代互联网的核心协议，它解决了IPv4所暴露的诸多缺陷，如地址稀缺、路由表庞大、对移动设备支持不足等。</p>
+<p>•IPv6的一个突出特点是支持网络节点的地址自动配置，真正实现即插即用，极大地简化网络管理者的工作。</p>
+<p>•本课程将介绍IPv6地址自动配置的工作原理与配置实现。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IPv6无状态地址自动配置的工作原理</p>
+<p>▫描述DHCPv6地址自动配置的工作原理</p>
+<p>▫实现IPv6地址自动配置</p>
+<h1 id="1-IPv6地址配置方式"><a href="#1-IPv6地址配置方式" class="headerlink" title="1.IPv6地址配置方式"></a>1.IPv6地址配置方式</h1><h2 id="IPv6地址配置方式"><a href="#IPv6地址配置方式" class="headerlink" title="IPv6地址配置方式"></a>IPv6地址配置方式</h2><p>IPv6地址配置的方式可以分为静态配置和动态配置。其中，动态地址配置又可以分为无状态地址自动配置（Stateless Address Autoconfiguration, SLAAC）和有状态地址自动配置（Stateful Address Autoconfiguration)。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="IPv6地址自动配置的分类"><a href="#IPv6地址自动配置的分类" class="headerlink" title="IPv6地址自动配置的分类"></a>IPv6地址自动配置的分类</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/2.png"></p>
+<h1 id="2-IPv6地址无状态自动配置"><a href="#2-IPv6地址无状态自动配置" class="headerlink" title="2.IPv6地址无状态自动配置"></a>2.IPv6地址无状态自动配置</h1><h2 id="IPv6地址无状态自动配置过程"><a href="#IPv6地址无状态自动配置过程" class="headerlink" title="IPv6地址无状态自动配置过程"></a>IPv6地址无状态自动配置过程</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/3.png"></p>
+<h2 id="IPv6地址无状态自动配置示例"><a href="#IPv6地址无状态自动配置示例" class="headerlink" title="IPv6地址无状态自动配置示例"></a>IPv6地址无状态自动配置示例</h2><p>IPv6无状态地址配置通过交互RS和RA报文完成。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•基于NDP的IPv6地址无状态自动配置具体过程如下（DAD略）：</p>
+<p>1.PC1首先生成链路本地地址FE80::1002，然后向本地链接中所有路由器发送路由器请求（RS）。</p>
+<p>2.R1发送RA携带着用于无状态地址自动配置的前缀信息，本例中，该前缀为2001:DB8::/64。</p>
+<p>3.PC1收到RA报文后，根据RA报文中携带的前缀信息加上接口ID生成IPv6地址2001:DB8::1002。</p>
+</blockquote>
+<h2 id="RA报文中的Flags字段"><a href="#RA报文中的Flags字段" class="headerlink" title="RA报文中的Flags字段"></a>RA报文中的Flags字段</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/5.png"></p>
+<h2 id="RA报文中的可选信息：地址前缀信息"><a href="#RA报文中的可选信息：地址前缀信息" class="headerlink" title="RA报文中的可选信息：地址前缀信息"></a>RA报文中的可选信息：地址前缀信息</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/6.png"></p>
+<h2 id="RA报文中的可选信息：生存周期"><a href="#RA报文中的可选信息：生存周期" class="headerlink" title="RA报文中的可选信息：生存周期"></a>RA报文中的可选信息：生存周期</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/7.png"></p>
+<h1 id="3-DHCPv6"><a href="#3-DHCPv6" class="headerlink" title="3.DHCPv6"></a>3.DHCPv6</h1><h2 id="DHCPv6概述"><a href="#DHCPv6概述" class="headerlink" title="DHCPv6概述"></a>DHCPv6概述</h2><p>•DHCPv6针对IPv6编址方案设计，支持对客户端分配IPv6前缀、IPv6地址和其他网络配置参数，并记录这些信息，便于网络管理。</p>
+<p>•DHCPv6又分为如下三种：</p>
+<ul>
+<li><p>DHCPv6有状态自动配置：DHCPv6服务器自动配置IPv6地址/前缀及其他网络配置参数（DNS、NIS、SNTP服务器地址等参数）。</p>
+</li>
+<li><p>DHCPv6无状态自动配置：主机IPv6地址仍然通过路由通告方式自动生成，DHCPv6服务器只分配除IPv6地址以外的配置参数，包括DNS服务器等参数。</p>
+</li>
+<li><p>DHCPv6 PD（Prefix Delegation，前缀代理）自动配置：下层网络路由器不需要再手工指定用户侧链路的IPv6地址前缀，它只需要向上层网络路由器提出前缀分配申请，上层网络路由器便可以分配合适的地址前缀给下层路由器，下层路由器把获得的前缀（前缀一般长度小于64）进一步自动细分成64位前缀长度的子网网段，把细分的地址前缀再通过路由通告(RA)至与IPv6主机直连的用户链路上，实现主机的地址自动配置，从而完成整个IPv6网络的层次化布局。</p>
+</li>
+</ul>
+<h2 id="DHCPv6网络构成"><a href="#DHCPv6网络构成" class="headerlink" title="DHCPv6网络构成"></a>DHCPv6网络构成</h2><p>DHCPv6基本协议架构中，主要包括以下三种角色：</p>
+<ul>
+<li><p>DHCPv6 Client：DHCPv6客户端，通过与DHCPv6服务器进行报文交互，获取IPv6地址/前缀和其他网络配置参数，完成自身的网络配置。</p>
+</li>
+<li><p>DHCPv6 Server：DHCPv6服务器，负责处理来自客户端或中继的地址分配、地址续租、地址释放等请求，为客户端分配IPv6地址/前缀和其他网络配置参数。</p>
+</li>
+<li><p>DHCPv6 Relay：DHCPv6中继，负责转发来自客户端或服务器的DHCPv6报文，协助DHCPv6客户端和DHCPv6服务器完成地址配置功能。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/8.png"></p>
+<h2 id="DHCPv6中的常用概念"><a href="#DHCPv6中的常用概念" class="headerlink" title="DHCPv6中的常用概念"></a>DHCPv6中的常用概念</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/9.png"></p>
+<blockquote>
+<p>•有效时间（Valid Lifetime）：地址/前缀的生命周期。用于指定地址/前缀的过期时间，过期后所有使用该地址/前缀的用户下线。此时间必须配置为不小于3小时，且不得小于优先级时间。</p>
+<p>•优选时间（Preferred Lifetime）：用于计算续租时间和重绑定时间。此时间必须配置为不小于2小时。</p>
+</blockquote>
+<h2 id="DHCPv6有状态自动配置-四步交互"><a href="#DHCPv6有状态自动配置-四步交互" class="headerlink" title="DHCPv6有状态自动配置 - 四步交互"></a>DHCPv6有状态自动配置 - 四步交互</h2><p>四步交互是指DHCPv6客户端与服务器交互四次来完成前缀/地址等参数获取的过程。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/10.png"></p>
+<h2 id="DHCPv6有状态自动配置-两步交互"><a href="#DHCPv6有状态自动配置-两步交互" class="headerlink" title="DHCPv6有状态自动配置 - 两步交互"></a>DHCPv6有状态自动配置 - 两步交互</h2><p>DHCPv6客户端可以在发送的Solicit消息中携带Rapid Commit选项，标识客户端希望服务器能够快速为其分配地址/前缀和网络配置参数。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•两步交换可以提高DHCPv6分配过程的效率，但适用在网络中只存在一台DHCPv6服务器的情况下。在有多个DHCPv6服务器的网络中，多个DHCPv6服务器都可以为DHCPv6客户端分配IPv6地址/前缀和其他配置参数，但是客户端实际只能使用其中一个服务器为其分配的IPv6地址/前缀和配置参数。</p>
+</blockquote>
+<h2 id="地址-前缀租约更新-1"><a href="#地址-前缀租约更新-1" class="headerlink" title="地址/前缀租约更新 (1)"></a>地址/前缀租约更新 (1)</h2><p>DHCPv6服务器分配的IPv6地址/前缀具有有效时间。地址/前缀的租借时间超过有效时间后，DHCPv6客户端不能再使用该地址/前缀。因此，在有效时间超时之前，如果DHCPv6客户端希望继续使用该地址/前缀，则需要更新地址/前缀的租约。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/12.png"></p>
+<h2 id="地址-前缀租约更新-2"><a href="#地址-前缀租约更新-2" class="headerlink" title="地址/前缀租约更新 (2)"></a>地址/前缀租约更新 (2)</h2><p>如果DHCPv6服务器未响应T1时刻DHCPv6客户端发出的Renew请求，则客户端会在T2（默认为Preferred Lifetime的0.8倍）向所有DHCPv6服务器组播发送Rebind请求更新租约。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/13.png"></p>
+<h2 id="DHCPv6无状态自动配置"><a href="#DHCPv6无状态自动配置" class="headerlink" title="DHCPv6无状态自动配置"></a>DHCPv6无状态自动配置</h2><p>DHCPv6服务器为已经具有IPv6地址/前缀的客户端分配除地址/前缀以外的其他网络配置参数，该过程称为DHCPv6无状态自动配置。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•在主机生成链路本地地址并检测无地址冲突后，会首先发起路由器发现过程，即主机发送RS报文，路由器回应RA报文。如果RA报文中M-bit为0，O-bit为1，则表示主机将通过DHCPv6无状态自动配置来获取除地址/前缀外的其他配置参数，如DNS、SIP、SNTP等服务器配置信息等。</p>
+</blockquote>
+<h2 id="DHCPv6-PD自动配置"><a href="#DHCPv6-PD自动配置" class="headerlink" title="DHCPv6 PD自动配置"></a>DHCPv6 PD自动配置</h2><p>在一个层次化的网络结构中，不同层次的IPv6地址配置一般是手工指定的。手工配置IPv6地址扩展性不佳，不利于IPv6地址的统一规划管理。DHCPv6 PD可以解决这个问题。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•DHCPv6 PD一般用于网络中存在路由器（如本例中的DHCPv6客户端）需要继续为下连的IPv6主机分配前缀的场景，实现主机的地址自动配置，从而完成整个IPv6网络的层次化布局。</p>
+<p>•第1步中，DHCPv6客户端请求DHCPv6服务器为其分配IA_NA地址和IA_PD前缀，IA_NA可以理解为服务器为客户端WAN口分配的地址，IA_PD可以理解为服务器为客户端的LAN侧分配的前缀。</p>
+</blockquote>
+<h2 id="DHCPv6中继工作过程"><a href="#DHCPv6中继工作过程" class="headerlink" title="DHCPv6中继工作过程"></a>DHCPv6中继工作过程</h2><p>当服务器和客户端不在一个网段时，需要使用到DHCPv6中继来完成IPv6地址/前缀和其他网络配置参数的获取。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/16.png"></p>
+<h2 id="DHCPv6地址确认过程"><a href="#DHCPv6地址确认过程" class="headerlink" title="DHCPv6地址确认过程"></a>DHCPv6地址确认过程</h2><p>当客户端有断电、掉线、漫游等情况发生时，客户端会发送Confirm报文确认自己的IPv6地址是否可用。如果客户端确认的地址是合法的，则服务器回应；如果没有回应，则客户端需要重新启动地址申请流程。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/17.png"></p>
+<h2 id="DHCPv6地址冲突检测过程"><a href="#DHCPv6地址冲突检测过程" class="headerlink" title="DHCPv6地址冲突检测过程"></a>DHCPv6地址冲突检测过程</h2><p>客户端完成地址申请后，会在开始使用该地址前发起DAD探测。如果DAD检测到地址存在冲突，则客户端发送Decline消息通知服务器，并不再使用该地址。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/18.png"></p>
+<h2 id="DHCPv6地址释放过程"><a href="#DHCPv6地址释放过程" class="headerlink" title="DHCPv6地址释放过程"></a>DHCPv6地址释放过程</h2><p>当客户端不需要再使用某地址时，将发送Release消息至服务器，发起释放地址的交互流程。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/19.png"></p>
+<h2 id="DHCPv6报文总结"><a href="#DHCPv6报文总结" class="headerlink" title="DHCPv6报文总结"></a>DHCPv6报文总结</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/20.png"></p>
+<h2 id="地址自动配置比较"><a href="#地址自动配置比较" class="headerlink" title="地址自动配置比较"></a>地址自动配置比较</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/21.png"></p>
+<h1 id="3-IPv6地址自动配置实现"><a href="#3-IPv6地址自动配置实现" class="headerlink" title="3.IPv6地址自动配置实现"></a>3.IPv6地址自动配置实现</h1><h2 id="IPv6基本配置"><a href="#IPv6基本配置" class="headerlink" title="IPv6基本配置"></a>IPv6基本配置</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/22.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/23.png"></p>
+<h2 id="IPv6地址配置举例-–-静态配置"><a href="#IPv6地址配置举例-–-静态配置" class="headerlink" title="IPv6地址配置举例 – 静态配置"></a>IPv6地址配置举例 – 静态配置</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/24.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/25.png"></p>
+<h2 id="IPv6地址配置举例-–-无状态自动配置"><a href="#IPv6地址配置举例-–-无状态自动配置" class="headerlink" title="IPv6地址配置举例 – 无状态自动配置"></a>IPv6地址配置举例 – 无状态自动配置</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/26.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/27.png"></p>
+<h2 id="IPv6地址配置举例-–-DHCPv6"><a href="#IPv6地址配置举例-–-DHCPv6" class="headerlink" title="IPv6地址配置举例 – DHCPv6"></a>IPv6地址配置举例 – DHCPv6</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/28.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/29.png"></p>
+<h2 id="IPv6地址自动配置实现-–-结果验证"><a href="#IPv6地址自动配置实现-–-结果验证" class="headerlink" title="IPv6地址自动配置实现 – 结果验证"></a>IPv6地址自动配置实现 – 结果验证</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/30.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）基于NDP的无状态地址自动配置，以下说法正确的是（    ）。</p>
+<p>A.基于NDP的无状态地址自动配置可以为主机分配128位的IPv6地址</p>
+<p>B.基于NDP的无状态地址自动配置可以为主机分配IPv6前缀或IPv6地址</p>
+<p>C.基于NDP的无状态地址自动配置只能为主机分配IPv6前缀</p>
+<p><strong>D.基于NDP的无状态地址自动配置可以为主机分配DNS</strong></p>
+<p>2.（多选题）在DHCPv6的工作过程中，以下哪些过程用到了Reply报文（    ）。</p>
+<p><strong>A.DHCPv6信息获取过程</strong></p>
+<p><strong>B.DHCPv6前缀分配两步交互过程</strong></p>
+<p><strong>C.DHCPv6地址分配四步交互过程</strong></p>
+<p><strong>D.DHCPv6地址释放过程</strong></p>
+<p><strong>E.DHCPv6地址续约过程</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•IPv6地址配置可以分为静态配置和动态配置。网络设备互联IPv6地址、环回接口IPv6地址等往往采用静态配置的方式，而终端通常采用动态自动配置方式。</p>
+<p>•本课程重点介绍了IPv6地址动态自动配置的两种方式：基于NDP的无状态地址自动配置和基于DHCPv6的有状态地址自动配置。无状态地址自动配置只支持分配64bit的前缀，扩展性较差，对地址的管控较弱。有状态地址自动配置可以实现更加丰富的功能，如PD前缀分配等。</p>
+<p>•客户端采用何种IPv6地址自动配置方式是由路由器RA报文中的M-bit和O-bit的配置决定的，实际网络中，需要结合实际场景决定合理的地址配置方式。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-22-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/" rel="tag"># IP-22-IPv6地址配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/" rel="next" title="IP-ICMPv6和NDP">
+                <i class="fa fa-chevron-left"></i> IP-ICMPv6和NDP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">1.IPv6地址配置方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">IPv6地址配置方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">3.2.</span> <span class="nav-text">IPv6地址自动配置的分类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-IPv6%E5%9C%B0%E5%9D%80%E6%97%A0%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">2.IPv6地址无状态自动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E6%97%A0%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">IPv6地址无状态自动配置过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E6%97%A0%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.2.</span> <span class="nav-text">IPv6地址无状态自动配置示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RA%E6%8A%A5%E6%96%87%E4%B8%AD%E7%9A%84Flags%E5%AD%97%E6%AE%B5"><span class="nav-number">4.3.</span> <span class="nav-text">RA报文中的Flags字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RA%E6%8A%A5%E6%96%87%E4%B8%AD%E7%9A%84%E5%8F%AF%E9%80%89%E4%BF%A1%E6%81%AF%EF%BC%9A%E5%9C%B0%E5%9D%80%E5%89%8D%E7%BC%80%E4%BF%A1%E6%81%AF"><span class="nav-number">4.4.</span> <span class="nav-text">RA报文中的可选信息：地址前缀信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RA%E6%8A%A5%E6%96%87%E4%B8%AD%E7%9A%84%E5%8F%AF%E9%80%89%E4%BF%A1%E6%81%AF%EF%BC%9A%E7%94%9F%E5%AD%98%E5%91%A8%E6%9C%9F"><span class="nav-number">4.5.</span> <span class="nav-text">RA报文中的可选信息：生存周期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-DHCPv6"><span class="nav-number">5.</span> <span class="nav-text">3.DHCPv6</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E6%A6%82%E8%BF%B0"><span class="nav-number">5.1.</span> <span class="nav-text">DHCPv6概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E7%BD%91%E7%BB%9C%E6%9E%84%E6%88%90"><span class="nav-number">5.2.</span> <span class="nav-text">DHCPv6网络构成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E6%A6%82%E5%BF%B5"><span class="nav-number">5.3.</span> <span class="nav-text">DHCPv6中的常用概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E6%9C%89%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE-%E5%9B%9B%E6%AD%A5%E4%BA%A4%E4%BA%92"><span class="nav-number">5.4.</span> <span class="nav-text">DHCPv6有状态自动配置 - 四步交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E6%9C%89%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE-%E4%B8%A4%E6%AD%A5%E4%BA%A4%E4%BA%92"><span class="nav-number">5.5.</span> <span class="nav-text">DHCPv6有状态自动配置 - 两步交互</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80-%E5%89%8D%E7%BC%80%E7%A7%9F%E7%BA%A6%E6%9B%B4%E6%96%B0-1"><span class="nav-number">5.6.</span> <span class="nav-text">地址&#x2F;前缀租约更新 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80-%E5%89%8D%E7%BC%80%E7%A7%9F%E7%BA%A6%E6%9B%B4%E6%96%B0-2"><span class="nav-number">5.7.</span> <span class="nav-text">地址&#x2F;前缀租约更新 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E6%97%A0%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">5.8.</span> <span class="nav-text">DHCPv6无状态自动配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6-PD%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">5.9.</span> <span class="nav-text">DHCPv6 PD自动配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E4%B8%AD%E7%BB%A7%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">5.10.</span> <span class="nav-text">DHCPv6中继工作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E5%9C%B0%E5%9D%80%E7%A1%AE%E8%AE%A4%E8%BF%87%E7%A8%8B"><span class="nav-number">5.11.</span> <span class="nav-text">DHCPv6地址确认过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E5%9C%B0%E5%9D%80%E5%86%B2%E7%AA%81%E6%A3%80%E6%B5%8B%E8%BF%87%E7%A8%8B"><span class="nav-number">5.12.</span> <span class="nav-text">DHCPv6地址冲突检测过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E5%9C%B0%E5%9D%80%E9%87%8A%E6%94%BE%E8%BF%87%E7%A8%8B"><span class="nav-number">5.13.</span> <span class="nav-text">DHCPv6地址释放过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCPv6%E6%8A%A5%E6%96%87%E6%80%BB%E7%BB%93"><span class="nav-number">5.14.</span> <span class="nav-text">DHCPv6报文总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E6%AF%94%E8%BE%83"><span class="nav-number">5.15.</span> <span class="nav-text">地址自动配置比较</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-IPv6%E5%9C%B0%E5%9D%80%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B0"><span class="nav-number">6.</span> <span class="nav-text">3.IPv6地址自动配置实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">6.1.</span> <span class="nav-text">IPv6基本配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-%E2%80%93-%E9%9D%99%E6%80%81%E9%85%8D%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text">IPv6地址配置举例 – 静态配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-%E2%80%93-%E6%97%A0%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">6.3.</span> <span class="nav-text">IPv6地址配置举例 – 无状态自动配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-%E2%80%93-DHCPv6"><span class="nav-number">6.4.</span> <span class="nav-text">IPv6地址配置举例 – DHCPv6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E5%9C%B0%E5%9D%80%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B0-%E2%80%93-%E7%BB%93%E6%9E%9C%E9%AA%8C%E8%AF%81"><span class="nav-number">6.5.</span> <span class="nav-text">IPv6地址自动配置实现 – 结果验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

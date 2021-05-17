@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-21-ICMPv6和NDP," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•在IPv4中，ICMP允许主机或设备报告差错情况。ICMP报文作为IP报文的数据部分，再封装上IP报文首部，组成完整的IP报文发送出去。常用的Ping、Tracert等命令都是基于ICMP实现的。 •IPv6定义了ICMPv6（Internet Control Message Protocol for IPv6），除了提供类似ICMP的功能外，还有诸多扩展。邻居发现协议（Neighbor D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-ICMPv6和NDP">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•在IPv4中，ICMP允许主机或设备报告差错情况。ICMP报文作为IP报文的数据部分，再封装上IP报文首部，组成完整的IP报文发送出去。常用的Ping、Tracert等命令都是基于ICMP实现的。 •IPv6定义了ICMPv6（Internet Control Message Protocol for IPv6），除了提供类似ICMP的功能外，还有诸多扩展。邻居发现协议（Neighbor D">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/18.png">
+<meta property="article:published_time" content="2021-05-17T05:28:03.000Z">
+<meta property="article:modified_time" content="2021-05-17T05:45:09.910Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-21-ICMPv6和NDP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-ICMPv6和NDP/"/>
+
+
+
+
+
+  <title>IP-ICMPv6和NDP | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-ICMPv6和NDP</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T13:28:03+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在IPv4中，ICMP允许主机或设备报告差错情况。ICMP报文作为IP报文的数据部分，再封装上IP报文首部，组成完整的IP报文发送出去。常用的Ping、Tracert等命令都是基于ICMP实现的。</p>
+<p>•IPv6定义了ICMPv6（Internet Control Message Protocol for IPv6），除了提供类似ICMP的功能外，还有诸多扩展。邻居发现协议（Neighbor Discovery Protocol，以下简称NDP）便是基于ICMPv6实现的，作为IPv6的关键协议，NDP提供了如前缀发现、重复地址检测、地址解析、重定向等功能。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述ICMPv6的功能</p>
+<p>▫描述ICMPv6的报文格式</p>
+<p>▫描述ICMPv6的报文类型</p>
+<p>▫描述NDP的功能</p>
+<h1 id="1-ICMPv6介绍"><a href="#1-ICMPv6介绍" class="headerlink" title="1.ICMPv6介绍"></a>1.ICMPv6介绍</h1><h2 id="ICMPv6概述"><a href="#ICMPv6概述" class="headerlink" title="ICMPv6概述"></a>ICMPv6概述</h2><h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>Internet控制消息协议ICMP (Internet Control Message Protocol)是IP协议的辅助协议。</p>
+<p>ICMP协议用来在网络设备间传递各种差错和控制信息，对于收集各种网络信息、诊断和排除各种网络故障等方面起着至关重要的作用。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/1.png"></p>
+<blockquote>
+<p>•为了更有效地转发IP数据报文和提高数据报文交互成功的机会，在网络层使用ICMP协议。ICMP允许主机或设备报告差错情况和提供有关异常情况的报告。</p>
+<p>•ICMP消息：</p>
+<ul>
+<li><p>ICMP消息封装在IP报文中，IP报文头部Protocol值为1时表示ICMP协议。</p>
+</li>
+<li><p>字段解释：</p>
+<ul>
+<li>ICMP消息的格式取决于Type和Code字段，其中Type字段为消息类型，Code字段包含该消息类型的具体参数。</li>
+<li>校验和字段用于检查消息是否完整。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="ICMP差错检测"><a href="#ICMP差错检测" class="headerlink" title="ICMP差错检测"></a>ICMP差错检测</h3><p>ICMP Echo消息常用于诊断源和目的地之间的网络连通性，同时还可以提供其他信息，如报文往返时间等。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/2.png"></p>
+<blockquote>
+<p>•ICMP的一个典型应用是Ping。Ping是检测网络连通性的常用工具，同时也能够收集其他相关信息。用户可以在Ping命令中指定不同参数，如ICMP报文长度、发送的ICMP报文个数、等待回复响应的超时时间等，设备根据配置的参数来构造并发送ICMP报文，进行Ping测试。</p>
+</blockquote>
+<h3 id="ICMP错误报告"><a href="#ICMP错误报告" class="headerlink" title="ICMP错误报告"></a>ICMP错误报告</h3><p>ICMP定义了各种错误消息，用于诊断网络连接性问题；根据这些错误消息，源设备可以判断出数据传输失败的原因。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/3.png"></p>
+<h3 id="ICMPv6概述-1"><a href="#ICMPv6概述-1" class="headerlink" title="ICMPv6概述"></a>ICMPv6概述</h3><p>•ICMPv6是IPv6的基础协议之一。</p>
+<p>•在IPv6报文头部中，Next Header字段值为58则对应为ICMPv6报文。</p>
+<p>•ICMPv6报文用于通告相关信息或错误。</p>
+<p>•ICMPv6报文被广泛应用于其它协议中，包括NDP、Path MTU发现机制等。</p>
+<p>•ICMPv6控制着IPv6中的地址自动配置、地址解析、地址冲突检测、路由选择、以及差错控制等关键环节。</p>
+<h2 id="ICMPv6报文格式"><a href="#ICMPv6报文格式" class="headerlink" title="ICMPv6报文格式"></a>ICMPv6报文格式</h2><h3 id="ICMPv6报文格式-1"><a href="#ICMPv6报文格式-1" class="headerlink" title="ICMPv6报文格式"></a>ICMPv6报文格式</h3><p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/4.png"></p>
+<blockquote>
+<p>•ICMPv6报文载荷由ICMPv6报文类型决定，因报文类型的不同而不同。</p>
+<p>•<strong>Type：</strong>表明消息的类型。</p>
+<p>•<strong>Code：</strong>表示消息类型的细分。</p>
+<p>•<strong>Checksum：</strong>表示ICMPv6报文的校验和。</p>
+</blockquote>
+<h2 id="ICMPv6报文类型及作用"><a href="#ICMPv6报文类型及作用" class="headerlink" title="ICMPv6报文类型及作用"></a>ICMPv6报文类型及作用</h2><h3 id="ICMPv6报文类型"><a href="#ICMPv6报文类型" class="headerlink" title="ICMPv6报文类型"></a>ICMPv6报文类型</h3><p>ICMPv6报文分为两类：差错报文和信息报文。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/5.png"></p>
+<h3 id="ICMPv6差错报文应用-Path-MTU发现"><a href="#ICMPv6差错报文应用-Path-MTU发现" class="headerlink" title="ICMPv6差错报文应用 - Path MTU发现"></a>ICMPv6差错报文应用 - Path MTU发现</h3><p>•在IPv6中，中间转发设备不对IPv6报文进行分片，报文的分片将在源节点进行。</p>
+<p>•PMTU（Path MTU）就是路径上的最小接口MTU。</p>
+<p>•PMTUD（Path MTU发现机制）的主要目的是发现路径上的MTU，当数据包被从源转发到目的地的过程中避免分段。</p>
+<p>•依赖PMTUD，数据的发送方可以使用所发现到的最优PMTU与目的地节点进行通信，这样可以避免数据包在从源传输到目的的过程之中，被中途的路由器分片而导致性能的下降。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/6.png"></p>
+<blockquote>
+<p>1.首先PC1用1500字节作为MTU向PC2发送IPv6数据包。</p>
+<p>2.R1意识到数据包过大，出站接口MTU为1400字节，于是回复一个ICMPv6（Type=2）报文给PC1，指定MTU值为1400字节。</p>
+<p>3.然后，PC1开始使用1400作为MTU发送IPv6数据。</p>
+<p>4.数据包到达R2后，R2意识到出站接口MTU为1300字节，于是发送一个ICMPv6（Type=2）报文给PC1，指定MTU值为1300字节。</p>
+<p>5.PC1开始使用1300作为MTU发送IPv6数据。</p>
+</blockquote>
+<h3 id="ICMPv6信息报文应用-Ping"><a href="#ICMPv6信息报文应用-Ping" class="headerlink" title="ICMPv6信息报文应用 - Ping"></a>ICMPv6信息报文应用 - Ping</h3><p>Ping基于ICMPv6信息报文实现</p>
+<ul>
+<li><p>Echo Request：用于发送到目标节点，以使目标节点立即发回一个Echo Reply应答报文。Echo Request报文的Type字段值为128，Code字段的值为0。</p>
+</li>
+<li><p>Echo Reply：当收到一个Echo Request报文时，ICMPv6会用Echo Reply报文响应。Echo Reply报文的Type字段的值为129，Code字段的值为0。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/7.png"></p>
+<h3 id="ICMPv6其它常用的报文"><a href="#ICMPv6其它常用的报文" class="headerlink" title="ICMPv6其它常用的报文"></a>ICMPv6其它常用的报文</h3><p>•邻居发现（RFC2461和RFC4861）</p>
+<p>​    ▫Type=133  路由器请求（Router Solicitation）</p>
+<p>​    ▫Type=134  路由器公告（Router Advertisement）</p>
+<p>​    ▫Type=135  邻居请求（Neighbor Solicitation）</p>
+<p>​    ▫Type=136  邻居公告（Neighbor Advertisement）</p>
+<p>​    ▫Type=137  重定向 （Redirect）</p>
+<p>•组播侦听者发现协议（RFC2710和RFC3810）</p>
+<p>​    ▫Type=130  查询消息</p>
+<p>​    ▫Type=131  报告消息</p>
+<p>​    ▫Type=132  离开消息</p>
+<p>​    ▫Type=143  MLDv2报告消息</p>
+<h1 id="2-NDP介绍"><a href="#2-NDP介绍" class="headerlink" title="2.NDP介绍"></a>2.NDP介绍</h1><h2 id="NDP概述"><a href="#NDP概述" class="headerlink" title="NDP概述"></a>NDP概述</h2><h3 id="NDP概述-1"><a href="#NDP概述-1" class="headerlink" title="NDP概述"></a>NDP概述</h3><p>RFC2461定义了IPv6邻居发现协议NDP。NDP是IPv6中非常核心的组件。其主要功能如下：</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/8.png"></p>
+<h3 id="NDP报文类型及功能"><a href="#NDP报文类型及功能" class="headerlink" title="NDP报文类型及功能"></a>NDP报文类型及功能</h3><p>NDP使用以下几种ICMPv6报文：</p>
+<p>▫RS（Router Solicitation）：路由器请求报文</p>
+<p>▫RA（Router Advertisement）：路由器通告报文</p>
+<p>▫NS（Neighbor Solicitation）：邻居请求报文</p>
+<p>▫NA（Neighbor Advertisement）：邻居通告报文</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/9.png"></p>
+<h2 id="路由器发现"><a href="#路由器发现" class="headerlink" title="路由器发现"></a>路由器发现</h2><h3 id="路由器发现-1"><a href="#路由器发现-1" class="headerlink" title="路由器发现"></a>路由器发现</h3><p>•路由器发现是指主机发现本地链路上路由器和确定其配置信息的过程。</p>
+<p>•路由器发现可以同时实现以下三个功能：</p>
+<ul>
+<li><p>路由器发现 （Router Discovery）：主机定位邻居路由器以及选择哪一个路由器作为缺省网关的过程。</p>
+</li>
+<li><p>前缀发现 （Prefix Discovery）：主机发现本地链路上的一组IPv6前缀的过程，用于主机的地址自动配置。</p>
+</li>
+<li><p>参数发现 （Parameter Discovery）：主机发现相关操作参数的过程，如输出报文的缺省跳数限制、地址配置方式等信息。</p>
+</li>
+</ul>
+<p>•使用报文：</p>
+<ul>
+<li><p>RS 路由器请求 </p>
+</li>
+<li><p>RA 路由器通告</p>
+</li>
+</ul>
+<p>•协议交互主要有两种情况：</p>
+<ul>
+<li><p>主机发送RS触发路由器回应RA</p>
+</li>
+<li><p>路由器周期发送RA</p>
+</li>
+</ul>
+<h3 id="路由器发现流程-主机请求触发"><a href="#路由器发现流程-主机请求触发" class="headerlink" title="路由器发现流程 - 主机请求触发"></a>路由器发现流程 - 主机请求触发</h3><p>当主机启动时，主机会向本地链路范围内所有的路由器发送RS报文，触发路由器响应RA报文。主机发现本地链路上的路由器后，自动配置缺省路由器，建立缺省路由表、前缀列表和设置其它的配置参数。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/10.png"></p>
+<h3 id="路由器发现流程-路由器周期性发送"><a href="#路由器发现流程-路由器周期性发送" class="headerlink" title="路由器发现流程 - 路由器周期性发送"></a>路由器发现流程 - 路由器周期性发送</h3><p>•路由器周期性的发送RA报文，RA发送间隔是一个有范围的随机值，缺省的最大时间间隔是600秒，最小时间间隔是200秒。</p>
+<p>•对于定期发送的RA报文，其地址有如下要求：</p>
+<p>▫Source Address：必须是发送接口的链路本地地址。</p>
+<p>▫Destination Address ：FF02::1。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/11.png"></p>
+<blockquote>
+<p>•ipv6 nd ra { max-interval maximum-interval | min-interval minimum-interval }命令用来配置发送周期。</p>
+</blockquote>
+<h2 id="地址解析"><a href="#地址解析" class="headerlink" title="地址解析"></a>地址解析</h2><h3 id="地址解析-1"><a href="#地址解析-1" class="headerlink" title="地址解析"></a>地址解析</h3><p>•IPv6地址解析通过ICMPv6（NS和NA报文）来实现。</p>
+<p>•在三层完成地址解析，主要带来以下几个好处：</p>
+<ul>
+<li>地址解析在三层完成，不同的二层介质可以采用相同的地址解析协议。</li>
+<li>可以使用三层的安全机制避免地址解析攻击。</li>
+<li>使用组播方式发送请求报文，减少了二层网络的性能压力。</li>
+</ul>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/12.png"></p>
+<blockquote>
+<p>•本例中，当PC1要传送数据包到PC2时，如果不知道PC2的链路层地址，则需要完成以下协议交互过程：</p>
+<ul>
+<li><p>PC1发送一个NS报文到网络上，目的地址为PC2对应的被请求节点组播地址（FF02::1:FF84:EFDC），选项字段中带上PC1的链路层地址000D-88F8-03B0。</p>
+</li>
+<li><p>PC2侦听到该NS报文后，由于报文的目的地址FF02::1:FF84:EFDC，自己在该组播组，处理该报文；同时，根据NS报文的源地址和源链路层地址选项更新自己的邻居缓存表项。</p>
+</li>
+<li><p>PC2发送一个NA报文应答NS，同时在消息的目标链路层地址选项中带上自己的链路层地址0013-7284-EFDC。</p>
+</li>
+<li><p>PC1接收到NA报文后，获悉了PC2的链路层地址，创建一个目标节点的邻居缓存表项。</p>
+</li>
+</ul>
+<p>•这样通过交互后，PC1和PC2就知道了对方的链路层地址，建立其对方的邻居缓存表项（类似于IPv4的ARP表），就可以相互通信了。</p>
+</blockquote>
+<h2 id="邻居状态跟踪"><a href="#邻居状态跟踪" class="headerlink" title="邻居状态跟踪"></a>邻居状态跟踪</h2><h3 id="IPv6邻居状态表"><a href="#IPv6邻居状态表" class="headerlink" title="IPv6邻居状态表"></a>IPv6邻居状态表</h3><p>IPv6邻居状态表中缓存了IPv6地址与MAC地址的映射，可以通过display ipv6 neighbors命令来查看IPv6邻居状态表。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/13.png"></p>
+<h3 id="IPv6邻居状态"><a href="#IPv6邻居状态" class="headerlink" title="IPv6邻居状态"></a>IPv6邻居状态</h3><p>IPv6节点需要维护一张邻居表，每个邻居都有相应的状态，状态之间可以迁移。5种邻居状态分别是：未完成（Incomplete）、可达（Reachable）、陈旧（Stale）、延迟（Delay）、探查（Probe）。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/14.png"></p>
+<h3 id="邻居状态迁移"><a href="#邻居状态迁移" class="headerlink" title="邻居状态迁移"></a>邻居状态迁移</h3><p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/15.png"></p>
+<blockquote>
+<p>•R1先发送NS报文，并生成缓存条目，此时，邻居状态为Incomplete。</p>
+<p>•若收到R2回复的NA报文，则邻居状态由Incomplete变为Reachable，否则固定时间后邻居状态由Incomplete变为Empty。</p>
+<p>•经过邻居可达时间（默认30s），邻居状态由Reachable变为Stale，即未知是否可达。</p>
+<ul>
+<li>如果在Reachable状态，R1收到R2的非请求NA报文，且其中携带的R2的链路层地址和表项中不同，则邻居状态马上变为Stale。</li>
+</ul>
+<p>•在Stale状态若R1要向R2发送数据，则邻居状态由Stale变为Delay，并发送NS请求。</p>
+<p>•在经过一段固定时间后，邻居状态由Delay变为Probe，其间若有NA应答，则邻居状态由Delay变为Reachable。</p>
+<p>•在Probe状态，R1每隔一定时间间隔（默认1s）发送单播NS，发送固定次数后，有应答则邻居状态变为Reachable，否则邻居状态变为Empty。</p>
+</blockquote>
+<h2 id="重复地址检测"><a href="#重复地址检测" class="headerlink" title="重复地址检测"></a>重复地址检测</h2><h3 id="重复地址检测-1"><a href="#重复地址检测-1" class="headerlink" title="重复地址检测 (1)"></a>重复地址检测 (1)</h3><p>•重复地址检测(Duplicate Address Detect，DAD)是指接口在使用某个IPv6地址之前，需要先探测是否有其它的节点使用了该地址，从而确保网络中没有两个相同的单播地址。</p>
+<p>•接口在启用任何一个单播IPv6地址前都需要先进行DAD，包括Link-Local地址。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/16.png"></p>
+<blockquote>
+<p>•重复地址检测是节点确定即将使用的地址是否被另一节点使用的过程。在节点自动配置某个接口的IPv6单播地址之前，必须在本地链路范围内验证要使用的地址是唯一的，并且未被其他节点使用过。只要NS报文发送到本地链路上（缺省发送一次NS报文），如果在规定时间内没有NA报文进行应答，则认为这个临时单播地址在本地链路上是唯一的，可以分配给接口；反之，这个临时地址是重复的，不能配置到接口。</p>
+</blockquote>
+<h3 id="重复地址检测-2"><a href="#重复地址检测-2" class="headerlink" title="重复地址检测 (2)"></a>重复地址检测 (2)</h3><p>•一个地址在通过重复地址检测之前称为“tentative地址”，即“试验地址”。此时该接口不能使用这个试验地址进行单播通讯。</p>
+<p>•若2个节点配置相同地址，同时作重复地址检测时，当一方收到对方发出的DAD NS报文，则接收方将不启用该地址。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/17.png"></p>
+<blockquote>
+<p>•特殊情况：有两台主机同时分配到同一个IP地址。假设PC1和PC2都想使用2000::1这个地址，那么进一步假设PC1先发送NS，PC2收到以后将不会发送NS了（当然也不会发送NA），直接停止使用2000::1这个地址，等待其他方式生成新的地址。如果同时收到NS报文，则都会放弃使用2000::1地址。</p>
+</blockquote>
+<h2 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h2><h3 id="重定向-1"><a href="#重定向-1" class="headerlink" title="重定向"></a>重定向</h3><p>重定向是指网关设备发现报文从其它网关设备转发更优，它就会发送重定向报文告知报文的发送者，让报文发送者选择另一个网关设备。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/18.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）ICMPv6报文类型分为哪几大类？</p>
+<p><strong>A.差错报文</strong></p>
+<p><strong>B.信息报文</strong></p>
+<p>C.其他报文</p>
+<p>D.参数报文</p>
+<p>2.（多选题） IPv6地址解析通过以下哪种报文实现？</p>
+<p>A.RS</p>
+<p>B.RA</p>
+<p><strong>C.NS</strong></p>
+<p><strong>D.NA</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•ICMPv6是IPv6的基础协议之一，具有差错报文和信息报文两种，用于IPv6节点报告报文处理过程中的错误和信息。其中，差错报文用于报告在转发IPv6数据包过程中出现的错误，如常见的目的不可达、超时等等；信息报文则可以实现路由器发现，重复地址检测，组播成员管理等等。</p>
+<p>•NDP是5个ICMPv6信息报文的“打包”，Type133、134为RS、RA报文，可以实现路由器发现，实现主机的网关发现，地址的自动配置；Type135、136为NS、NA报文，可以实现邻居链路层地址解析，重复地址检测；Type137为重定向报文，可以实现重定向。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-21-ICMPv6%E5%92%8CNDP/" rel="tag"># IP-21-ICMPv6和NDP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-IPv6%E6%A6%82%E8%BF%B0/" rel="next" title="IP-IPv6概述">
+                <i class="fa fa-chevron-left"></i> IP-IPv6概述
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/" rel="prev" title="IP-IPv6地址配置">
+                IP-IPv6地址配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-ICMPv6%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">1.ICMPv6介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMPv6%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">ICMPv6概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMP"><span class="nav-number">3.1.1.</span> <span class="nav-text">ICMP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMP%E5%B7%AE%E9%94%99%E6%A3%80%E6%B5%8B"><span class="nav-number">3.1.2.</span> <span class="nav-text">ICMP差错检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMP%E9%94%99%E8%AF%AF%E6%8A%A5%E5%91%8A"><span class="nav-number">3.1.3.</span> <span class="nav-text">ICMP错误报告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMPv6%E6%A6%82%E8%BF%B0-1"><span class="nav-number">3.1.4.</span> <span class="nav-text">ICMPv6概述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMPv6%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">ICMPv6报文格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMPv6%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">ICMPv6报文格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMPv6%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B%E5%8F%8A%E4%BD%9C%E7%94%A8"><span class="nav-number">3.3.</span> <span class="nav-text">ICMPv6报文类型及作用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMPv6%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.3.1.</span> <span class="nav-text">ICMPv6报文类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMPv6%E5%B7%AE%E9%94%99%E6%8A%A5%E6%96%87%E5%BA%94%E7%94%A8-Path-MTU%E5%8F%91%E7%8E%B0"><span class="nav-number">3.3.2.</span> <span class="nav-text">ICMPv6差错报文应用 - Path MTU发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMPv6%E4%BF%A1%E6%81%AF%E6%8A%A5%E6%96%87%E5%BA%94%E7%94%A8-Ping"><span class="nav-number">3.3.3.</span> <span class="nav-text">ICMPv6信息报文应用 - Ping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICMPv6%E5%85%B6%E5%AE%83%E5%B8%B8%E7%94%A8%E7%9A%84%E6%8A%A5%E6%96%87"><span class="nav-number">3.3.4.</span> <span class="nav-text">ICMPv6其它常用的报文</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-NDP%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.</span> <span class="nav-text">2.NDP介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NDP%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">NDP概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NDP%E6%A6%82%E8%BF%B0-1"><span class="nav-number">4.1.1.</span> <span class="nav-text">NDP概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NDP%E6%8A%A5%E6%96%87%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%8A%9F%E8%83%BD"><span class="nav-number">4.1.2.</span> <span class="nav-text">NDP报文类型及功能</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%8F%91%E7%8E%B0"><span class="nav-number">4.2.</span> <span class="nav-text">路由器发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%8F%91%E7%8E%B0-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">路由器发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%8F%91%E7%8E%B0%E6%B5%81%E7%A8%8B-%E4%B8%BB%E6%9C%BA%E8%AF%B7%E6%B1%82%E8%A7%A6%E5%8F%91"><span class="nav-number">4.2.2.</span> <span class="nav-text">路由器发现流程 - 主机请求触发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8%E5%8F%91%E7%8E%B0%E6%B5%81%E7%A8%8B-%E8%B7%AF%E7%94%B1%E5%99%A8%E5%91%A8%E6%9C%9F%E6%80%A7%E5%8F%91%E9%80%81"><span class="nav-number">4.2.3.</span> <span class="nav-text">路由器发现流程 - 路由器周期性发送</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90"><span class="nav-number">4.3.</span> <span class="nav-text">地址解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">地址解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%BB%E5%B1%85%E7%8A%B6%E6%80%81%E8%B7%9F%E8%B8%AA"><span class="nav-number">4.4.</span> <span class="nav-text">邻居状态跟踪</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IPv6%E9%82%BB%E5%B1%85%E7%8A%B6%E6%80%81%E8%A1%A8"><span class="nav-number">4.4.1.</span> <span class="nav-text">IPv6邻居状态表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPv6%E9%82%BB%E5%B1%85%E7%8A%B6%E6%80%81"><span class="nav-number">4.4.2.</span> <span class="nav-text">IPv6邻居状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E5%B1%85%E7%8A%B6%E6%80%81%E8%BF%81%E7%A7%BB"><span class="nav-number">4.4.3.</span> <span class="nav-text">邻居状态迁移</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%9C%B0%E5%9D%80%E6%A3%80%E6%B5%8B"><span class="nav-number">4.5.</span> <span class="nav-text">重复地址检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%9C%B0%E5%9D%80%E6%A3%80%E6%B5%8B-1"><span class="nav-number">4.5.1.</span> <span class="nav-text">重复地址检测 (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%9C%B0%E5%9D%80%E6%A3%80%E6%B5%8B-2"><span class="nav-number">4.5.2.</span> <span class="nav-text">重复地址检测 (2)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">4.6.</span> <span class="nav-text">重定向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E5%90%91-1"><span class="nav-number">4.6.1.</span> <span class="nav-text">重定向</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
