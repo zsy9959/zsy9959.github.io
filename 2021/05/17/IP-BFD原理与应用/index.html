@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-27-BFD原理与应用," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•随着网络应用的广泛部署，网络发生故障极大可能导致业务异常。为了减小链路、设备故障对业务的影响，提高网络的可靠性，网络设备需要尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务正常进行。 •BFD（Bidirectional Forwarding Detection，双向转发检测）提供了一个通用的、标准化的、介质无关和协议无关的快速故障检测机制，用于快速检测、监控网络中链路或者IP路">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-BFD原理与应用">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•随着网络应用的广泛部署，网络发生故障极大可能导致业务异常。为了减小链路、设备故障对业务的影响，提高网络的可靠性，网络设备需要尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务正常进行。 •BFD（Bidirectional Forwarding Detection，双向转发检测）提供了一个通用的、标准化的、介质无关和协议无关的快速故障检测机制，用于快速检测、监控网络中链路或者IP路">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/18.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/19.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/20.png">
+<meta property="article:published_time" content="2021-05-17T12:42:30.000Z">
+<meta property="article:modified_time" content="2021-05-17T12:53:12.495Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-27-BFD原理与应用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-BFD原理与应用/"/>
+
+
+
+
+
+  <title>IP-BFD原理与应用 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-BFD原理与应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:42:30+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着网络应用的广泛部署，网络发生故障极大可能导致业务异常。为了减小链路、设备故障对业务的影响，提高网络的可靠性，网络设备需要尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务正常进行。</p>
+<p>•BFD（Bidirectional Forwarding Detection，双向转发检测）提供了一个通用的、标准化的、介质无关和协议无关的快速故障检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状态。</p>
+<p>•本章节主要介绍BFD工作原理以及常见的应用场景。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫阐明BFD的作用</p>
+<p>▫描述BFD工作原理</p>
+<p>▫实现BFD配置与应用</p>
+<h1 id="1-BFD概述"><a href="#1-BFD概述" class="headerlink" title="1.BFD概述"></a>1.BFD概述</h1><h2 id="网络故障检测遇到的问题"><a href="#网络故障检测遇到的问题" class="headerlink" title="网络故障检测遇到的问题"></a>网络故障检测遇到的问题</h2><p>•在无法通过硬件信号检测故障的系统中，应用通常采用上层协议本身的Hello报文机制检测网络故障。</p>
+<p>•常用路由协议的Hello报文机制检测时间较长，检测时间超过1秒钟。当应用在网络中传输的数据超过GB/s时，秒级的检测时间将会导致应用传输的数据大量丢失。</p>
+<p>•在三层网络中，静态路由本身没有故障检查机制。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/1.png"></p>
+<h2 id="BFD概述"><a href="#BFD概述" class="headerlink" title="BFD概述"></a>BFD概述</h2><p>•BFD提供了一个通用的、标准化的、介质无关的、协议无关的快速故障检测机制，有以下两大优点：</p>
+<p>​    ▫对相邻转发引擎之间的通道提供轻负荷、快速故障检测。</p>
+<p>​    ▫用单一的机制对任何介质、任何协议层进行实时检测。</p>
+<p>•BFD是一个简单的“Hello”协议。两个系统之间建立BFD会话通道，并周期性发送BFD检测报文，如果某个系统在规定的时间内没有收到对端的检测报文，则认为该通道的某个部分发生了故障。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/2.png"></p>
+<blockquote>
+<p>•由于同一个数据路径上只建立一个BFD会话，如果不同的应用使用的BFD参数不一致，则应该配置一个能满足所有应用要求的BFD参数。</p>
+</blockquote>
+<h1 id="2-BFD工作原理"><a href="#2-BFD工作原理" class="headerlink" title="2.BFD工作原理"></a>2.BFD工作原理</h1><h2 id="BFD报文结构"><a href="#BFD报文结构" class="headerlink" title="BFD报文结构"></a>BFD报文结构</h2><p>•BFD检测是通过维护在两个系统之间建立的BFD会话来实现的，系统通过发送BFD报文建立会话。</p>
+<p>•BFD控制报文根据场景不同封装不同，报文结构由强制部分和可选的认证字段组成。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/3.png"></p>
+<p>1.Sta：BFD本地状态。</p>
+<p>2.Detect Mult：检测超时倍数，用于检测方计算检测超时时间。</p>
+<p>3.My Discriminator：BFD会话连接本地标识符（Local Discriminator） 。发送系统产生的一个唯一的、非0鉴别值，用来区分一个系统的多个BFD会话。 </p>
+<p>4.Your Discriminator：BFD会话连接远端标识符（Remote Discriminator） 。从远端系统接收到的鉴别值，这个域直接返回接收到的“My Discriminator”，如果不知道这个值就返回0。 </p>
+<p>5.Desired Min TX Interval：本地支持的最小BFD报文发送间隔。 </p>
+<p>6.Required Min RX Interval：本地支持的最小BFD报文接收间隔。</p>
+<p>7.Required Min Echo RX Interval：本地支持的最小Echo报文接收间隔，单位为微秒（如果本地不支持Echo功能，则设置0）。</p>
+<blockquote>
+<p>•Ver：BFD协议版本号，目前为1。</p>
+<p>•Diag：诊断字，标明本地BFD系统最近一次会话状态发生变化的原因。</p>
+<p>•P：参数发生改变时，发送方在BFD报文中置该标志，接收方必须立即响应该报文。</p>
+<p>•F：响应P标志置位的回应报文中必须将F标志置位。</p>
+<p>•C：转发/控制分离标志，一旦置位，控制平面的变化不影响BFD检测。</p>
+<p>•A：认证标识，置1代表会话需要进行验证。</p>
+<p>•D：查询请求，置位代表发送方期望采用查询模式对链路进行监测。</p>
+<p>•M：为BFD将来支持点对多点扩展而设的预留位。</p>
+<p>•Length：报文长度，单位为字节。</p>
+</blockquote>
+<h2 id="BFD会话建立"><a href="#BFD会话建立" class="headerlink" title="BFD会话建立"></a>BFD会话建立</h2><p>BFD会话的建立有两种方式，即静态建立BFD会话和动态建立BFD会话。BFD通过控制报文中的本地标识符和远端标识符区分不同的会话。静态和动态创建BFD会话的主要区别在于Local Discriminator和Remote Discriminator的配置方式不同。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/4.png"></p>
+<blockquote>
+<p>•动态建立BFD会话时，系统对本地标识符和远端标识符的处理方式如下：</p>
+<ul>
+<li>动态分配本地标识符，当应用程序触发动态创建BFD会话时，系统分配属于动态会话标识符区域的值作为BFD会话的本地标识符。然后向对端发送Remote Discriminator的值为0的BFD控制报文，进行会话协商。</li>
+<li>自学习远端标识符，当BFD会话的一端收到Remote Discriminator的值为0的BFD控制报文时，判断该报文是否与本地BFD会话匹配，如果匹配，则学习接收到的BFD报文中Local Discriminator的值，获取远端标识符。</li>
+</ul>
+</blockquote>
+<h2 id="BFD会话状态"><a href="#BFD会话状态" class="headerlink" title="BFD会话状态"></a>BFD会话状态</h2><p>BFD会话有四种状态：Down、Init、Up和AdminDown。会话状态变化通过BFD报文的State字段传递，系统根据自己本地的会话状态和接收到的对端BFD报文驱动状态改变，如左下图所示。BFD状态机的建立和拆除都采用三次握手机制，如右下图所示，以确保两端系统都能知道状态的变化。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/5.png"></p>
+<blockquote>
+<p>•BFD会话过程中包含有三个状态：init和up两个用来建立会话，down用来断开会话。建立和断开会话都需要三次握手确保两端系统都感知到。另外还有一个特殊状态：管理down，使会话可以通过管理手段down，在状态机中管理down也是down状态。每个系统通过报文中的sta域发送本端状态，接收报文中的sta域了解对端状态，综合起来决定状态机的跳转。</p>
+<p>•Down状态说明会话down。一个会话会维持在down状态直到收到对端的报文并且该报文的sta字段标志着对端状态不是up。如果收到的是down包，状态机将从down状态跳转到init状态，如果收到的是init包，状态机将从down状态跳转到up状态，如果收到的是up包，状态机维持down状态。</p>
+<p>•Init状态说明与远端正在通信，并且本地会话期望进入up状态，但是远端还没回应。一个init状态的会话会维持init状态直到收到对端的init包或者up包，就会跳转到up状态，否则等到检测时间超时以后，便会跳转到down状态，意味着与远端的通信丢失。</p>
+<p>•Up状态说明BFD会话成功建立，并且正在确认链路的联通性，会话会一直保持在up状态直到链路故障或者管理down操作。如果收到远端的down包或者检测时间超时会话就会从up状态跳转到down状态。</p>
+<p>•管理down意味着会话是被管理操作down的，这会导致远端系统会话进入down状态，并且一直保持down状态直到本端退出管理down。管理down并不意味着转发路径的连通性问题。</p>
+</blockquote>
+<h2 id="BFD检测模式"><a href="#BFD检测模式" class="headerlink" title="BFD检测模式"></a>BFD检测模式</h2><p>BFD的检测机制：两个系统建立BFD会话，并沿它们之间的路径周期性发送BFD控制报文，如果一方在既定的时间内没有收到BFD控制报文，则认为路径上发生了故障。BFD的检测模式有异步模式和查询模式两种。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/6.png"></p>
+<blockquote>
+<p>•异步模式和查询模式的本质区别：检测的位置不同，异步模式下本端按一定的发送周期发送BFD控制报文，检测位置为远端，远端检测本端是否周期性发送BFD控制报文；查询模式下本端检测自身发送的BFD控制报文是否得到了回应。</p>
+</blockquote>
+<h2 id="BFD检测时间"><a href="#BFD检测时间" class="headerlink" title="BFD检测时间"></a>BFD检测时间</h2><p>BFD会话检测时长由TX（Desired Min TX Interval），RX（Required Min RX Interval），DM（Detect Multi）三个参数决定。BFD报文的实际发送时间间隔，实际接受时间间隔由BFD会话协商决定。</p>
+<p>▫本地BFD报文实际发送时间间隔＝MAX { 本地配置的发送时间间隔，对端配置的接收时间间隔 }</p>
+<p>▫本地BFD报文实际接收时间间隔＝MAX { 对端配置的发送时间间隔，本地配置的接收时间间隔 }</p>
+<p>▫本地BFD报文实际检测时间：</p>
+<ul>
+<li><p>异步模式：本地BFD报文实际检测时间＝本地BFD报文实际接收时间间隔×对端配置的BFD检测倍数</p>
+</li>
+<li><p>查询模式：本地BFD报文实际检测时间 = 本地BFD报文实际接收时间间隔×本端配置的BFD检测倍数</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/7.png"></p>
+<blockquote>
+<p>•BFD缺省时间参数</p>
+<ul>
+<li><p>BFD报文发送间隔默认1000毫秒，接受间隔默认1000毫秒，本地检测倍数3次。</p>
+</li>
+<li><p>BFD会话等待恢复时间0秒，会话延迟Up时间0秒。</p>
+</li>
+</ul>
+<p>•检测超时倍数，用于检测方计算检测超时时间。</p>
+<ul>
+<li><p>查询模式：采用本地检测倍数。</p>
+</li>
+<li><p>异步模式：采用对端检测倍数。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="BFD-Echo功能"><a href="#BFD-Echo功能" class="headerlink" title="BFD Echo功能"></a>BFD Echo功能</h2><p>•BFD Echo功能也称为BFD回声功能，是由本地发送BFD Echo报文，远端系统将报文环回的一种检测机制。</p>
+<p>•在两台直接相连的设备中，其中一台设备支持BFD功能（R1）；另一台设备不支持BFD功能（R2），只支持基本的网络层转发。为了能够快速的检测这两台设备之间的故障，可以在支持BFD功能的设备上创建单臂回声功能的BFD会话。支持BFD功能的设备主动发起回声请求功能，不支持BFD功能的设备接收到该报文后直接将其环回，从而实现转发链路的连通性检测功能。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/8.png"></p>
+<h1 id="3-BFD应用场景"><a href="#3-BFD应用场景" class="headerlink" title="3.BFD应用场景"></a>3.BFD应用场景</h1><h2 id="联动功能简介"><a href="#联动功能简介" class="headerlink" title="联动功能简介"></a>联动功能简介</h2><p>联动功能由检测模块、Track和应用模块三部分组成。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/9.png"></p>
+<blockquote>
+<p>•监测模块负责对链路状态、网络性能等进行监测，并将探测结果通知给Track模块 。</p>
+<p>•Track模块收到监测模块的探测结果后，及时改变Track项的状态，并通知应用模块。</p>
+<p>•应用模块根据Track项的状态，进行相应的处理，从而实现联动。</p>
+</blockquote>
+<h2 id="静态路由与BFD联动"><a href="#静态路由与BFD联动" class="headerlink" title="静态路由与BFD联动"></a>静态路由与BFD联动</h2><p>•静态路由自身没有检测机制，如果静态路由存在冗余路径，通过静态路由与BFD联动，当主用路径故障时，实现静态路由的快速切换 。</p>
+<p>•静态路由与BFD联动应用广泛，如下图中R1是园区网的出口路由器，R1通过两条链路分别连接ISP1和ISP2，正常情况下默认路由经过的链路为指向ISP1的链路，当通往ISP1的链路出现故障的时候，BFD会话能够快速感知，并通知路由器将流量切换到指向ISP2的链路。</p>
+<blockquote>
+<p>•静态路由自身没有检测机制，如果静态路由存在冗余路径，通过静态路由与BFD联动，当主用路径故障时，实现静态路由的快速切换 。</p>
+<p>•静态路由与BFD联动应用广泛，如下图中R1是园区网的出口路由器，R1通过两条链路分别连接ISP1和ISP2，正常情况下默认路由经过的链路为指向ISP1的链路，当通往ISP1的链路出现故障的时候，BFD会话能够快速感知，并通知路由器将流量切换到指向ISP2的链路。</p>
+</blockquote>
+<h2 id="OSPF与BFD联动-1"><a href="#OSPF与BFD联动-1" class="headerlink" title="OSPF与BFD联动 (1)"></a>OSPF与BFD联动 (1)</h2><p>•OSPF在未绑定BFD的情况下，链路故障检测时间由协议Hello机制决定，通常是秒级。通过绑定BFD，可以实现毫秒级故障检测。</p>
+<p>•BFD与OSPF联动就是将BFD和OSPF协议关联起来， BFD将链路故障的快速检测结果告知OSPF协议。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/11.png"></p>
+<h2 id="OSPF与BFD联动-2"><a href="#OSPF与BFD联动-2" class="headerlink" title="OSPF与BFD联动 (2)"></a>OSPF与BFD联动 (2)</h2><p>BFD会话建立后会周期性地快速发送BFD报文，如果在检测时间内没有收到BFD报文则认为该双向转发路径发生了故障，通知被服务的上层应用进行相应的处理。</p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/12.png"></p>
+<h1 id="4-BFD基本配置"><a href="#4-BFD基本配置" class="headerlink" title="4.BFD基本配置"></a>4.BFD基本配置</h1><h2 id="BFD配置命令介绍"><a href="#BFD配置命令介绍" class="headerlink" title="BFD配置命令介绍"></a>BFD配置命令介绍</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/13.png"></p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/14.png"></p>
+<blockquote>
+<p>•配置编辑完成后，用户可以执行<strong>commit</strong>提交配置，使新的配置数据在当前的系统运行配置中生效。</p>
+</blockquote>
+<h2 id="静态路由与BFD联动配置"><a href="#静态路由与BFD联动配置" class="headerlink" title="静态路由与BFD联动配置"></a>静态路由与BFD联动配置</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/15.png"></p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/16.png"></p>
+<h2 id="BFD会话配置验证"><a href="#BFD会话配置验证" class="headerlink" title="BFD会话配置验证"></a>BFD会话配置验证</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/17.png"></p>
+<h2 id="OSPF与BFD联动配置"><a href="#OSPF与BFD联动配置" class="headerlink" title="OSPF与BFD联动配置"></a>OSPF与BFD联动配置</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/18.png"></p>
+<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/19.png"></p>
+<h2 id="BFD检测配置验证"><a href="#BFD检测配置验证" class="headerlink" title="BFD检测配置验证"></a>BFD检测配置验证</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/20.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）BFD会话建立过程中有以下哪几种状态？</p>
+<p><strong>A.Down</strong></p>
+<p><strong>B.Init</strong></p>
+<p><strong>C.Up</strong></p>
+<p>D.Establish</p>
+<p>2.（多选题）BFD检测模式有哪些？</p>
+<p><strong>A.异步模式</strong></p>
+<p>B.同步模式</p>
+<p><strong>C.查询模式</strong></p>
+<p><strong>D.回声模式</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章详细介绍了BFD工作原理，内容包括会话建立的过程、检测模式、检测时间以及检测流程。</p>
+<p>•BFD会话建立中经过三个不同的状态，包括down、init和up，会话状态建立根据收到报文中的sta字段进行转换。BFD检测模式分为异步检测和查询模式，它们的主要区别不仅是发送检测报文的方式和检测的位置不同，同时检测时间与检测流程也不同。</p>
+<p>•BFD能够快速检测链路故障，但是只有被应用模块调用，例如OSPF、静态路由，才能够实现流量路径的快速切换，因此BFD在线网当中应用非常广泛。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-27-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="tag"># IP-27-BFD原理与应用</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/" rel="next" title="IP-VRF基本概念及应用">
+                <i class="fa fa-chevron-left"></i> IP-VRF基本概念及应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="IP-VRRP原理与配置">
+                IP-VRRP原理与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-BFD%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">1.BFD概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%A3%80%E6%B5%8B%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">网络故障检测遇到的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E6%A6%82%E8%BF%B0"><span class="nav-number">3.2.</span> <span class="nav-text">BFD概述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-BFD%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">2.BFD工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E6%8A%A5%E6%96%87%E7%BB%93%E6%9E%84"><span class="nav-number">4.1.</span> <span class="nav-text">BFD报文结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B"><span class="nav-number">4.2.</span> <span class="nav-text">BFD会话建立</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E4%BC%9A%E8%AF%9D%E7%8A%B6%E6%80%81"><span class="nav-number">4.3.</span> <span class="nav-text">BFD会话状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E6%A3%80%E6%B5%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.4.</span> <span class="nav-text">BFD检测模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E6%A3%80%E6%B5%8B%E6%97%B6%E9%97%B4"><span class="nav-number">4.5.</span> <span class="nav-text">BFD检测时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD-Echo%E5%8A%9F%E8%83%BD"><span class="nav-number">4.6.</span> <span class="nav-text">BFD Echo功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-BFD%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">3.BFD应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%94%E5%8A%A8%E5%8A%9F%E8%83%BD%E7%AE%80%E4%BB%8B"><span class="nav-number">5.1.</span> <span class="nav-text">联动功能简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8EBFD%E8%81%94%E5%8A%A8"><span class="nav-number">5.2.</span> <span class="nav-text">静态路由与BFD联动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E4%B8%8EBFD%E8%81%94%E5%8A%A8-1"><span class="nav-number">5.3.</span> <span class="nav-text">OSPF与BFD联动 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E4%B8%8EBFD%E8%81%94%E5%8A%A8-2"><span class="nav-number">5.4.</span> <span class="nav-text">OSPF与BFD联动 (2)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-BFD%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">4.BFD基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.1.</span> <span class="nav-text">BFD配置命令介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E4%B8%8EBFD%E8%81%94%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text">静态路由与BFD联动配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E4%BC%9A%E8%AF%9D%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81"><span class="nav-number">6.3.</span> <span class="nav-text">BFD会话配置验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E4%B8%8EBFD%E8%81%94%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">6.4.</span> <span class="nav-text">OSPF与BFD联动配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BFD%E6%A3%80%E6%B5%8B%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81"><span class="nav-number">6.5.</span> <span class="nav-text">BFD检测配置验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

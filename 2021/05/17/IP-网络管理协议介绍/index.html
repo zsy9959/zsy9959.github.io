@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-30-网络管理协议介绍," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•随着人工智能、大数据、云计算等新技术快速发展，未来各行业将面临数字化转型，企业业务随着数字化转型也变得丰富多样，使网络管理成为网络管理员面临的最具挑战的问题之一。我们无法仅依赖人手工来完成整个的网络管理的工作，迫切的需要一种自动化和智能化的工具协助我们管理网络中的设备和资源。 •本次课程，将简要介绍网络管理的发展历程及网络管理的相关概念，同时会着重介绍网络管理中使用到的不同的协议以及它们的使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-网络管理协议介绍">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•随着人工智能、大数据、云计算等新技术快速发展，未来各行业将面临数字化转型，企业业务随着数字化转型也变得丰富多样，使网络管理成为网络管理员面临的最具挑战的问题之一。我们无法仅依赖人手工来完成整个的网络管理的工作，迫切的需要一种自动化和智能化的工具协助我们管理网络中的设备和资源。 •本次课程，将简要介绍网络管理的发展历程及网络管理的相关概念，同时会着重介绍网络管理中使用到的不同的协议以及它们的使">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/18.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/19.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/20.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/21.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/22.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/23.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/24.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/25.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/26.png">
+<meta property="article:published_time" content="2021-05-17T13:39:07.000Z">
+<meta property="article:modified_time" content="2021-05-17T13:56:31.187Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-30-网络管理协议介绍">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-网络管理协议介绍/"/>
+
+
+
+
+
+  <title>IP-网络管理协议介绍 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-网络管理协议介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T21:39:07+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着人工智能、大数据、云计算等新技术快速发展，未来各行业将面临数字化转型，企业业务随着数字化转型也变得丰富多样，使网络管理成为网络管理员面临的最具挑战的问题之一。我们无法仅依赖人手工来完成整个的网络管理的工作，迫切的需要一种自动化和智能化的工具协助我们管理网络中的设备和资源。</p>
+<p>•本次课程，将简要介绍网络管理的发展历程及网络管理的相关概念，同时会着重介绍网络管理中使用到的不同的协议以及它们的使用场景。最后，简要介绍网络管理的典型应用案例。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫阐释网络管理的发展趋势及功能特征</p>
+<p>▫阐释网络管理协议的功能</p>
+<p>▫阐释不同网络管理协议的机制和应用场景的异同点</p>
+<p>▫阐释网络管理协议的应用场景</p>
+<h1 id="1-网络管理的发展历程"><a href="#1-网络管理的发展历程" class="headerlink" title="1.网络管理的发展历程"></a>1.网络管理的发展历程</h1><h2 id="网络发展的现状"><a href="#网络发展的现状" class="headerlink" title="网络发展的现状"></a>网络发展的现状</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/1.png"></p>
+<blockquote>
+<p>•随着互联网产业的飞速发展，网络面临巨大变革，多业务融合成为未来网络的主流趋势。网络的融合需要管理的融合，统一网管能实现多业务、多设备的统一集中管理。</p>
+</blockquote>
+<h2 id="传统网络管理面临的挑战"><a href="#传统网络管理面临的挑战" class="headerlink" title="传统网络管理面临的挑战"></a>传统网络管理面临的挑战</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/2.png"></p>
+<blockquote>
+<p>•人工智能、大数据、云计算等新技术正在快速发展，未来十年各行业将面临数字化转型，企业业务随着数字化转型也变得丰富多样。因此，数字化带来网络模型的变化，传统的网络管理模式已经不能适应数字化业务带来的新需求。传统网络的建设、管理和运维手段已无法满足数字化带来的新的网络需求。</p>
+</blockquote>
+<h2 id="网络管理的发展趋势"><a href="#网络管理的发展趋势" class="headerlink" title="网络管理的发展趋势"></a>网络管理的发展趋势</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/3.png"></p>
+<blockquote>
+<p>•OPEX（Operating Expense，运营支出）：指企业运行付出的各种支出成本，包括维护费用、营销费用、人工成本以及折旧。</p>
+<p>•根据行业知名分析机构在2019年4月发布的关于AI和自动化提高网络可靠性的报告中指出，到2022年，将会有65%的企业在园区网络部署网络自动化技术，而今天这个比例只有17%。</p>
+<p>•管理自动化：正如家用洗衣机一样，从手动到半自动，到今天的全自动甚至是智能洗衣，让人人都能操作一个复杂的机器完成复杂的任务。对于网络管理也是如此，从基于命名行的逐台设备的配置与管理，到基于图形化界面的管理控制系统，到今天基于业务语言对网络进行自动化配置。从网络管理的视角，企业网络管理将几乎1/3的时间花费在网络的规划、部署上。未来网络自动化有两个层面：</p>
+<ul>
+<li>全生命周期的自动化：包括自动化工具是否能从网络的规划、部署、策略发放、网络状态监测和维护以及管理的全生命周期，均实现自动化。</li>
+<li>整网自动化：包括企业的LAN、WLAN、以及WAN网络是否能够进行集中式地管理和策略配置，是否能从全局视角定义基于用户身份和应用类型的业务策略。</li>
+</ul>
+<p>•运维智能化：智能化是网络管理运维的更高级别能力。以前，网络运维工作很简单，主要关注网络和设备的KPI指标，无法感知用户体验和业务质量。而今天，网络连接的质量直接影响到了业务的质量，从而影响了企业的运作效率。甚至在部分工业和生产场景，因不同业务的需要，网络质量有了差异化的要求，每终端的带宽、时延、丢包、无线漫游的切换时间仅依托以网元为中心的运维系统是无法完成如此复杂的工作。这就像医生为了检测病人，需要采用更为先进的机器。</p>
+</blockquote>
+<h1 id="2-网络管理的功能特征"><a href="#2-网络管理的功能特征" class="headerlink" title="2.网络管理的功能特征"></a>2.网络管理的功能特征</h1><h2 id="什么是网络管理？"><a href="#什么是网络管理？" class="headerlink" title="什么是网络管理？"></a>什么是网络管理？</h2><p>•网络管理，简单地说是对网络的管理，是一个网络的基本诉求。当前，用户能够通过各种协议、工具、应用或设备来实现对网络的管理，其管理对象包括网络中的硬件及软件。</p>
+<p>•网络管理的目标是实现对网络软硬件的监控、测试、配置、分析、评价及控制等，确保网络运行正常。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/4.png"></p>
+<h2 id="网络管理的典型架构"><a href="#网络管理的典型架构" class="headerlink" title="网络管理的典型架构"></a>网络管理的典型架构</h2><p>通常情况下，网络管理系统具有相同的基本体系结构。该体系结构包含两个关键元素：</p>
+<p>​    ▫管理设备，也被称为网络管理站。</p>
+<p>​    ▫被管理设备，也被称为代理设备。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/5.png"></p>
+<h2 id="网络管理的四大模型"><a href="#网络管理的四大模型" class="headerlink" title="网络管理的四大模型"></a>网络管理的四大模型</h2><p>OSI网络管理模型由四个主要的模型组成:</p>
+<ul>
+<li><p>组织结构模型(Organization Model)：描述网络管理系统组件的功能和基础架构。</p>
+</li>
+<li><p>信息模型(Information Model)：描述被管理对象及其关系的信息库。</p>
+</li>
+<li><p>通信模型(Communication Model)：描述管理者与被管理者之间交换信息的方式。</p>
+</li>
+<li><p>功能模型(Functional Model)：包括配置管理、性能管理、故障管理、安全管理和计费管理五个功能区域。</p>
+</li>
+</ul>
+<blockquote>
+<p>•组织结构模型定义管理者，代理和被管理对象。 它描述了网络管理系统的组件，组件的功能和基础架构。</p>
+<p>•信息模型与信息结构和存储有关。 它指定用于描述被管理对象及其关系的信息库。 管理信息结构（SMI）定义了存储在管理信息库（MIB）中的管理信息的语法和语义。 代理进程和管理器进程都使用MIB进行管理信息交换和存储。</p>
+<p>•通信模型处理代理与管理者之间以及管理者之间交换信息的方式。 通信模型中包含三个关键元素：传输协议，应用程序协议和要传达的实际消息。</p>
+<p>•功能模型包括网络管理的五个功能区域：配置管理、性能管理、故障管理、安全管理和计费管理。</p>
+</blockquote>
+<h2 id="网络管理的五大功能"><a href="#网络管理的五大功能" class="headerlink" title="网络管理的五大功能"></a>网络管理的五大功能</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/6.png"></p>
+<p>在网络运维工作中，主要涉及到三个功能：</p>
+<p>•配置：许多管理协议都包括对托管项目执行动作的能力。</p>
+<p>•性能：这里的想法是获取有关平台行为的数据，该数据使我们可以推断其性能。</p>
+<p>•故障：在这一领域中，其思想是拥有检测故障的程序和报告故障的方案。</p>
+<blockquote>
+<p>•OSI定义网络管理的五大功能模型。</p>
+<p>•配置管理（Configuration Management）：</p>
+<ul>
+<li><p>配置管理涉及初始化网络，提供网络资源和服务以及监视和控制网络。 更具体地说，配置管理的职责包括在网络运行期间设置，维护，添加和更新组件之间的关系以及组件的状态。</p>
+</li>
+<li><p>配置管理包括设备配置和网络配置。设备配置可以在本地或远程执行。 自动化的网络配置，例如动态主机配置协议（DHCP）和域名服务（DNS）在网络管理中发挥关键作用。</p>
+</li>
+</ul>
+<p>•性能管理（Performance Management）：</p>
+<ul>
+<li>性能管理与评估和报告被管理网络对象的行为和有效性有关。 网络监视系统可以测量和显示网络状态，例如收集有关流量，网络可用性，响应时间和吞吐量的统计信息。</li>
+</ul>
+<p>•故障管理（Fault Management）：</p>
+<ul>
+<li>故障管理涉及检测，隔离和纠正可能导致OSI网络故障的异常操作。 故障管理的主要目标是确保网络始终可用，并在发生故障时尽快将其修复。</li>
+</ul>
+<p>•安全管理（Security Management）：</p>
+<ul>
+<li>安全管理可以保护网络和系统免受未经授权的访问和安全攻击。 安全管理机制包括身份验证，加密和授权。 安全管理还涉及加密密钥以及其他与安全相关的信息的生成，分发和存储。 安全管理可以包括提供实时事件监视和事件日志的安全系统，例如防火墙和入侵检测系统。</li>
+</ul>
+<p>•计费管理（Accounting Management）：</p>
+<ul>
+<li>计费管理可以计量被管理对象的使用费用，并确定这种使用的成本。 该度量可能包括消耗的资源，用于收集会计数据的设施以及为客户使用的服务设置计费参数，维护用于计费目的的数据库，以及准备资源使用情况和计费报告。</li>
+</ul>
+</blockquote>
+<h1 id="3-网络管理的协议分类"><a href="#3-网络管理的协议分类" class="headerlink" title="3.网络管理的协议分类"></a>3.网络管理的协议分类</h1><h2 id="网络管理概览"><a href="#网络管理概览" class="headerlink" title="网络管理概览"></a>网络管理概览</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/7.png"></p>
+<blockquote>
+<p>•CLI（Command-Line Interface，命令行界面）既可以支持网络配置管理，也可以支持网络监控管理。</p>
+<p>•SNMP（Simple Network Management Protocol，简单网络管理协议）的Set功能可以支持网络配置管理，Trap功能可以支持网络监控管理。</p>
+<p>•NETCONF（Network Configuration Protocol，网络配置协议）的Edit功能可以支持网路配置管理，Get功能可以支持网络监控管理。</p>
+</blockquote>
+<h2 id="CLI（Telnet-SSH）"><a href="#CLI（Telnet-SSH）" class="headerlink" title="CLI（Telnet/SSH）"></a>CLI（Telnet/SSH）</h2><p>CLI是在图形用户界面得到普及之前使用最为广泛的用户界面，它通常不支持鼠标，用户通过键盘输入指令，设备接收到指令后，予以执行。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/8.png"></p>
+<blockquote>
+<p>•网络管理员可以采用CLI对设备进行配置和网络监控，操作简单便捷，一旦进行大规模部署，就必须借助于自动化工具来进行批量配置。</p>
+<p>•Telnet是电信（Telecommunications）和网络（Networks）的联合缩写。</p>
+<ul>
+<li><p>Telnet使用专用的TCP端口号23，它不是一种安全通信协议，通过网络/互联网传输明文格式的数据，包括密码。</p>
+</li>
+<li><p>Telnet中没有使用任何验证策略及数据加密方法。</p>
+</li>
+</ul>
+<p>•SSH（Secure Shell，安全外壳）</p>
+<ul>
+<li><p>SSH使用专用的TCP端口号22，它是一种非常安全的协议，通过网络/互联网传输加密格式的数据，一旦经过加密就极难解压和读取该数据。</p>
+</li>
+<li><p>SSH还使用公钥用于对访问者的用户身份验证，这种方式提供了更高的安全性。</p>
+</li>
+</ul>
+<p>•Telnet和SSH是两种远程管理设备的方式，其中SSH连接方式较Telnet更为安全，因此目前网络都会要求部署SSH。</p>
+</blockquote>
+<h2 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h2><p>SNMP是广泛用于TCP/IP网络的网络管理标准协议。SNMP提供了一种通过运行网络管理软件的中心计算机（即网络管理工作站NMS）来管理网元的方法。共有三个版本：SNMPv1、SNMPv2c和SNMPv3，用户可以根据实际情况选择配置一个或同时配置多个版本。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/9.png"></p>
+<blockquote>
+<p>•网络管理站（Network Management Station，NMS）<br> 向被管理设备发送各种查询报文，以及接收被管理设备发送的告警。</p>
+<p>•被管理设备（Devices）<br> 也就是网络中的各种接受网管的设备。</p>
+<p>•代理（Agent）<br> 驻留在被管理设备上的一个进程。Agent的作用如下：</p>
+<ul>
+<li><p>接收、解析来自网管站的查询报文。</p>
+</li>
+<li><p>根据报文类型对管理变量进行Read或Write操作，并生成响应报文，返回给网管站。</p>
+</li>
+<li><p>根据各协议模块对告警触发条件的定义，当发生某个事件（如端口UP/DOWN，STP拓扑变更、OSPF邻居关系DOWN掉等）的时候，主动触发一个告警，向网管站报告该事件。</p>
+</li>
+</ul>
+<p>•MIB（Management Information Base ）是一个数据库，指明了被管理设备所维护的变量（即能够被Agent查询和设置的信息）。MIB在数据库中定义了被管理设备的一系列属性：对象的名称、对象的状态、对象的访问权限和对象的数据类型等。</p>
+<p>•OID（Object IDentifier）：MIB是以树状结构进行存储的，树的节点表示管理对象Object，对象可以用从根Root开始的一条路径来唯一的识别，这就是OID也即对象标示符</p>
+</blockquote>
+<h2 id="SNMP的应用场景"><a href="#SNMP的应用场景" class="headerlink" title="SNMP的应用场景"></a>SNMP的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/10.png"></p>
+<h2 id="NETCONF"><a href="#NETCONF" class="headerlink" title="NETCONF"></a>NETCONF</h2><p>NETCONF是一种基于XML的网络配置协议，它存在的目的在于用可编程的方式实现网络配置的自动化，从而简化、加速网络服务地部署。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/11.png"></p>
+<blockquote>
+<p>•NETCONF使用SSH实现安全传输，使用RPC(Remote Procedure Call)远程调用的机制实现客户端和服务端的通信。</p>
+<p>•NETCONF消息以XML格式呈现。</p>
+</blockquote>
+<h2 id="NETCONF的应用场景"><a href="#NETCONF的应用场景" class="headerlink" title="NETCONF的应用场景"></a>NETCONF的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/12.png"></p>
+<blockquote>
+<p>•NETCONF提供一套管理网络设备的机制。用户可以使用这套机制增加、修改、删除、备份、恢复、锁定、解锁网络设备的配置，同时还具备事务和会话操作功能，从而来获取网络设备的配置和状态信息。</p>
+</blockquote>
+<h2 id="NetStream"><a href="#NetStream" class="headerlink" title="NetStream"></a>NetStream</h2><p>•NetStream技术是一种基于网络流信息的统计技术，可以对网络中的业务流量情况进行统计和分析。在网络的接入层、汇聚层、核心层上，都可以通过部署NetStream。</p>
+<p>•NetStream支持IP报文（UDP、TCP、ICMP报文）和MPLS报文的统计。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/13.png"></p>
+<blockquote>
+<p>•一个典型的NetStream系统由网络流数据输出器（NetStream Data Exporter, NDE）、网络流数据收集器（NetStream Collector, NSC）和网络流数据分析器（NetStream Data Analyzer, NDA）三部分组成。</p>
+<ul>
+<li><p>NDE：负责对网络流进行分析处理，提取符合条件的流进行统计，并将统计信息输出给 NDA（NetStream Data Analyzer）设备。 输出前也可对数据进行一些处理， 比如聚合。 配置了NetStream功能的设备在 NetStream 系统中担当 NDE 角色。</p>
+</li>
+<li><p>NSC：通常为运行于 Unix 或者 Windows 上的一个应用程序，负责解析来自 NDE 的报文，把统计数据收集到数据库中，可供 NDA 进行解析。 NSC 可以采集多个 NDE 设备输出的数据，对数据进行进一步的过滤和聚合。</p>
+</li>
+<li><p>NDA：是一个网络流量分析工具，它从 NSC 中提取统计数据，进行进一步的加工处理，生成报表，为各种业务提供依据（比如流量计费、网络规划，攻击监测）。通常， NDA 具有图形化用户界面，使用户可以方便地获取、显示和分析收集到的数据。 </p>
+</li>
+</ul>
+<p>•NetStream流输出方式：</p>
+<ul>
+<li><p>原始流输出方式：在流老化时间超时后，每条流的统计信息都要输出到NSC。原始流输出方式的优点是：NSC可以得到每条流的详细统计信息。</p>
+</li>
+<li><p>聚合流输出方式：聚合流输出方式是指设备对与聚合关键项完全相同的原始流统计信息进行汇总，从而得到对应的聚合流统计信息。通过对原始流进行聚合后输出，可以明显减少网络带宽。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="NetStream的应用场景"><a href="#NetStream的应用场景" class="headerlink" title="NetStream的应用场景"></a>NetStream的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/14.png"></p>
+<blockquote>
+<p>•在实际的应用中，NSC和NDA一般集成在一台NetStream服务器上。NDE通过NetStream采样获取GE0/0/1接口出方向流量信息，并按照一定条件建立NetStream流，当NetStream缓存区已满或者NetStream流达到老化时间，NDE会将统计的信息封装成NetStream报文发送到NetStream服务器。NetStream服务器对NetStream报文进行分析处理，并显示分析结果。</p>
+<p>•传统的流量统计的实现方法和局限性：</p>
+<ul>
+<li><p>基于IP报文计数：统计的信息简单，无法针对多种信息进行统计。</p>
+</li>
+<li><p>使用ACL：要求ACL的容量很大，对于ACL规则以外的流没有办法统计。</p>
+</li>
+<li><p>SNMP协议：功能不强。要不断的通过轮询向网管查询，浪费CPU和网络资源。</p>
+</li>
+<li><p>端口镜像：成本高，同时消耗设备的一个接口，对于无法镜像的端口无能为力。</p>
+</li>
+<li><p>物理层复制：成本高，同时还需要购买专用的硬件设备。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="sFlow"><a href="#sFlow" class="headerlink" title="sFlow"></a>sFlow</h2><p>•采样流sFlow（Sampled Flow）是一种基于报文采样的网络流量监控技术，基于Flow采样可以截取原始报文的全部，也可以截取一部分报头。</p>
+<p>•sFlow系统包含一个嵌入在设备中的sFlow Agent和远端的sFlow Collector。其中，sFlow Agent通过<strong>sFlow采样</strong>获取接口统计信息和数据信息，将信息封装成<strong>sFlow报文</strong>发送到指定的sFlow Collector。sFlow Collector对sFlow报文进行分析，并显示分析结果。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/15.png"></p>
+<blockquote>
+<p>•Flow采样是sFlow Agent设备在指定接口上按照特定的采样方向和采样比对报文进行采样分析，用于获取报文数据内容的相关信息。该采样方式主要是关注流量的细节，这样就可以监控和分析网络上的流行为。</p>
+<ul>
+<li>Flow采样可以截取原始报文的全部，也可以截取一部分报头。</li>
+</ul>
+<p>•Counter采样是sFlow Agent设备周期性的获取接口上的流量统计信息，Counter采样支持获取的采样信息。与Flow采样相比，Counter采样只关注接口上流量的数量，而不关注流量的详细信息。</p>
+</blockquote>
+<h2 id="sFlow的应用场景"><a href="#sFlow的应用场景" class="headerlink" title="sFlow的应用场景"></a>sFlow的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/16.png"></p>
+<blockquote>
+<p>•如图所示，只需要在支持sFlow Agent的设备上进行部署，远端连接一个sFlow Collector，就可以对流量进行基于接口的搜集和详细的分析。</p>
+<p>•使用 NetStream 也可以对网络流量进行统计分析， 而 NetStream 是一种基于网络流信息的统计技术，网络设备自身需要对网络流进行初步的统计分析，并把统计信息储存在缓存区，当缓存区满或者流统计信息老化后输出统计信息。 与 NetStream 相比， sFlow不需要缓存区，网络设备仅进行报文的采样工作，网络流的统计分析工作由远端的采集器完成。 </p>
+<p>•sFlow 与 NetStream 比较具有以下优势：</p>
+<ul>
+<li><p>节省资源、降低成本：由于不需要缓存区，对网络设备的资源占用少，实现成本低。</p>
+</li>
+<li><p> 采集器灵活、随需的部署：由于网络流的分析和统计工作由采集器完成，采集器可以灵活的配置网络流特征进行统计分析，实现灵活、随需的部署。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="Telemetry"><a href="#Telemetry" class="headerlink" title="Telemetry"></a>Telemetry</h2><p>•Telemetry，也称为Network Telemetry，即网络遥测技术。主要用于监控网络，包括报文检查和分析，安全侵入和攻击检测，智能收集数据，应用的性能管理等。</p>
+<p>•Telemetry优势：</p>
+<p>​    ▫支持多种实现方式，满足用户的不同需求。</p>
+<p>​    ▫采集数据的精度高，且类型十分丰富，充分反映网络状况。</p>
+<p>​    ▫一次订阅，持续上报。</p>
+<p>​    ▫故障定位更快速、精准。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/17.png"></p>
+<blockquote>
+<p>•随着网络的普及和新技术的涌现，网络规模日益增大，部署的复杂度逐步提升，用户对业务的质量要求也不断提高。为了满足用户需求，网络运维务必更加精细化、智能化。当今网络的运维面临着如下挑战：</p>
+<ul>
+<li><p>超大规模：管理的设备数目众多，监控的信息数量非常庞大。</p>
+</li>
+<li><p>快速定位：在复杂的网络中，能够快速地定位故障，达到秒级、甚至亚秒级的故障定位速。</p>
+</li>
+<li><p>精细监控：监控的数据类型更多，且监控粒度更细，以便完整、准确地反应网络状况，据此预估可能发生的故障，并为网络优化提供有力的数据依据。网络运维不仅需要监控接口上的流量统计信息、每条流上的丢包情况、 CPU 和内存占用情况，还需要监控每条流的时延抖动、每个报文在传输路径上的时延、每台设备上的缓冲区占用情况等。</p>
+</li>
+</ul>
+<p>•采集器、分析器和控制器都位于网管侧。</p>
+<ul>
+<li><p>采集器用于接收和存储网络设备上报的监控数据。</p>
+</li>
+<li><p>分析器用于分析采集器接收到的监控数据，并对数据进行处理，例如以图形化界面的形式展现给用户。</p>
+</li>
+<li><p>控制器通过 NETCONF 等方式向设备下发配置，实现对网络设备的管理。控制器可以根据分析器提供的分析数据，为网络设备下发配置，对网络设备的转发行为进行调整；也可以控制网络设备对哪些数据进行采样和上报 。 </p>
+</li>
+</ul>
+</blockquote>
+<h2 id="Telemetry的应用场景"><a href="#Telemetry的应用场景" class="headerlink" title="Telemetry的应用场景"></a>Telemetry的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/18.png"></p>
+<blockquote>
+<p>•gRPC（Google Remote Procedure Call， Google 远程过程调用） 是 Google 发布的基于 HTTP 2.0传输层协议承载的高性能开源软件框架，提供了支持多种编程语言的、 对网络设备进行配置和管理的方法。</p>
+<p>•传统的网络监控手段（SNMP、CLI、日志）已无法满足网络需要：</p>
+<p>•SNMP 和 CLI 主要采用“拉模式”获取数据，即发送请求来获取设备上的数据，限制了可以监控的网络设备数量，且无法快速获取数据。</p>
+<p>•SNMP Trap 和日志虽然采用“推模式”获取数据，即设备主动将数据上报给监控设备，但仅上报事件和告警，监控的数据内容极其有限，无法准确地反映网络状况。 </p>
+<p>•Telemetry 是一项监控设备性能和故障的远程数据采集技术。它采用“推模式”及时获取丰富的监控数据，可以实现网络故障的快速定位，从而解决上述网络运维问题。</p>
+</blockquote>
+<h2 id="Syslog"><a href="#Syslog" class="headerlink" title="Syslog"></a>Syslog</h2><p>•Syslog是一种工业标准的协议，可用来记录设备的日志。在UNIX系统，路由器、交换机等网络设备中，系统日志（System Log）记录系统中任何时间发生的大小事件。管理者可以通过查看系统记录，随时掌握系统状况。</p>
+<p>•Syslog协议提供了一种通过IP网络传送事件消息的机制，它允许主机将事件消息通过IP网络传输到接收消息的主机上，这些主机通常称为syslog server。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/19.png"></p>
+<blockquote>
+<p>•该协议从最初的加州大学伯克利分校软件中心整理，后来由于其操作管理的实用性迅速成为很多网络设备操作管理协议的一部分。现在已经有相应的RFC3164,RFC3195进行通用的定义。前者定义的是使用UDP形式传输，后者定义的是使用TCP形式传输。</p>
+<p>•几乎所有的网络设备都可以通过syslog protocol将日志信息以UDP方式传送到远端服务器，远端接收日志服务器必须通过syslogd来监听UDP Port 514，并且根据syslog.conf中的配置来处理本机和接收访问系统的日志信息，把指定的事件写入特定档案中，供后台数据库管理和响应之用。</p>
+<p>•角色分类</p>
+<ul>
+<li><p>发送者 sender：产生syslog message的网元；</p>
+</li>
+<li><p>中继 relay：能接收到后进行转发syslog message的网元或其他设备；</p>
+</li>
+<li><p>收集者 collector：接收了不再转发syslog message的syslog server；</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="其他-LLDP"><a href="#其他-LLDP" class="headerlink" title="其他 - LLDP"></a>其他 - LLDP</h2><p>LLDP（Link Layer Discovery Protocol）是IEEE 802.1ab中定义的链路层发现协议，可以将本端设备的管理地址、设备标识、接口标识等信息组织起来，并发布给自己的邻居设备，邻居设备收到这些信息后将其以标准的管理信息库MIB（Management Information Base）的形式保存起来，以供网络管理系统查询及判断链路的通信状况。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/20.png"></p>
+<blockquote>
+<p>•LLDP是一种邻近发现协议。它为以太网网络设备，如交换机、路由器和无线局域网接入点定义了一种标准的方法，使其可以向网络中其他节点公告自身的存在，并保存各个邻近设备的发现信息。例如设备配置和设备识别等详细信息都可以用该协议进行公告。</p>
+<p>•LLDP信息是定期传输的，并且只在一定的期限内保留。IEEE已经定义了一个建议的传输频率，即每30秒传输一次。LLDP设备在收到邻近网络设备发出的LLDP信息后，将把LLDP信息存储在一个IEEE定义的简单网络管理协议（SNMP）管理信息库（MIB）中，并且在一定的时限内保持有效。定义该时限的LLDP“生存时间”（TTL）值就包含在所收到的数据包内。</p>
+<p>•该协议使网络管理系统能够精确地发现和模拟物理网络拓扑结构。由于LLDP设备发送和接收公告，这些设备将会把自己发现的邻近设备信息存储下来。公告数据，如邻近设备的管理地址、设备类型和端口号，都有助于确定邻近设备到底属于什么类型，以及它们通过哪些端口实现互联。</p>
+<p>•单邻居组网模式：</p>
+<ul>
+<li>单邻居组网模式是指交换机设备的接口之间直接相连，而且接口只有一个邻居设备的情况。</li>
+</ul>
+<p>•链路聚合组网模式：</p>
+<ul>
+<li>链路聚合组网模式是指交换机设备的接口之间存在链路聚合，接口之间是直接相连，链路聚合之间的每个接口只有一个邻居设备。</li>
+</ul>
+</blockquote>
+<h2 id="LLDP的应用场景"><a href="#LLDP的应用场景" class="headerlink" title="LLDP的应用场景"></a>LLDP的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/21.png"></p>
+<blockquote>
+<p>•Eth-Trunk以太网链路聚合，简称链路聚合，它通过将多条以太网物理链路捆绑在一起成为一条逻辑链路，从而实现增加链路带宽的目的。</p>
+</blockquote>
+<h2 id="其他-–-镜像"><a href="#其他-–-镜像" class="headerlink" title="其他 – 镜像"></a>其他 – 镜像</h2><p>镜像是指将镜像端口（源端口）的报文复制到观察端口（目的端口）。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/22.png"></p>
+<blockquote>
+<p>•在网络维护的过程中会遇到需要对报文进行获取和分析的情况，比如怀疑有攻击报文，此时需要在不影响报文转发的情况下，对报文进行获取和分析。镜像可以在不影响报文正常处理流程的情况下，将镜像端口的报文复制一份到观察端口，用户利用数据监控设备来分析复制到观察端口的报文，进行网络监控和故障排除。</p>
+<p>•基本概念：</p>
+<ul>
+<li><p>镜像端口是被监控的端口，从镜像端口流经的所有报文或匹配流分类规则的报文将被复制到观察端口。</p>
+</li>
+<li><p>观察端口是连接监控设备的端口，用于输出从镜像端口复制过来的报文。</p>
+</li>
+<li><p>观察端口组是连接多个监控设备的一组端口。观察端口组中的多个成员端口分别连接多个监控设备，当使用观察端口组镜像报文时，镜像到观察端口组的报文将被复制到所有的成员端口。</p>
+</li>
+</ul>
+<p>•端口镜像：是指设备复制一份从镜像端口流经的报文，并将此报文传送到指定的观察端口进行分析和监控</p>
+<p>•流镜像：是将镜像端口上特定业务流的报文复制到观察端口进行分析和监控。在流镜像中，镜像端口应用了包含流镜像行为的流策略。如果从镜像端口流经的报文匹配流分类规则，则将被复制到观察端口。</p>
+</blockquote>
+<h2 id="镜像的应用场景"><a href="#镜像的应用场景" class="headerlink" title="镜像的应用场景"></a>镜像的应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/23.png"></p>
+<blockquote>
+<p>•在某些场景中，我们可能需要监控交换机特定端口的入站或出站报文，或者需要针对特定的流量进行分析，例如上图中，GE0/0/2口上承载了许多流量，基于某种需求，我需要对接口的收发报文进行分析从而进行网络的故障定位。那么我可以在交换机的GE0/0/3口接一个PC，在PC上安装协议分析软件，然后部署端口镜像，将GE0/0/2的入、出站流量镜像到GE0/0/3口上来，接下来我只要在PC上通过协议分析软件查看报文即可。</p>
+<p>•注意到，如果没有端口镜像技术，除非数据包的目的地是监控PC（所连接的端口），否则报文是不会发向该端口的。因此事实上端口镜像就是将某个特定端口的流量拷贝到某个监控端口。</p>
+</blockquote>
+<h1 id="4-网络管理的应用场景"><a href="#4-网络管理的应用场景" class="headerlink" title="4.网络管理的应用场景"></a>4.网络管理的应用场景</h1><h2 id="网络管理典型应用场景"><a href="#网络管理典型应用场景" class="headerlink" title="网络管理典型应用场景"></a>网络管理典型应用场景</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/24.png"></p>
+<blockquote>
+<p>•随着网络的快速发展，数字化转型日益凸显，网络管理逐步从面向网元管理的方式转到面向场景的自动化。</p>
+<p>•网络管控系统是自治网络的演进方向，包含了控制器、分析器和管理器。</p>
+<p>•SNMP和NETCONF一般用于配置下发，Telemetry、Netstream和sFlow一般用于数据上报。</p>
+</blockquote>
+<h2 id="什么是iMaster-NCE？"><a href="#什么是iMaster-NCE？" class="headerlink" title="什么是iMaster NCE？"></a>什么是iMaster NCE？</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/25.png"></p>
+<h2 id="iMaster-NCE产品架构和客户价值"><a href="#iMaster-NCE产品架构和客户价值" class="headerlink" title="iMaster NCE产品架构和客户价值"></a>iMaster NCE产品架构和客户价值</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/26.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）网络管理体系结构包含的两个关键元素是什么（ ）</p>
+<p><strong>A. 管理设备</strong></p>
+<p><strong>B. 被管理设备</strong></p>
+<p>C. 代理     </p>
+<p>D. 网管协议</p>
+<p>2.（多选题）网络管理的基本功能，以下描述正确的是（  ）</p>
+<p><strong>A. 配置管理</strong></p>
+<p><strong>B. 性能管理</strong>  </p>
+<p><strong>C. 故障管理</strong>  </p>
+<p><strong>D. 安全管理</strong></p>
+<p><strong>E. 计费管理</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•随着数字化技术的快速发展，大数据、AI、云等技术与业务的发展交织在一起，促进了网络管理的变革。网络管理将逐渐向管理自动化和运维智能化方向发展。</p>
+<p>•网络管理主要由四个主要模型组成，包括组织结构模型、信息模型、通信模型和功能模型。</p>
+<p>•本章节主要从网络管理的配置、性能和故障三大功能来介绍相应的网络管理协议。各个不同协议的讲解主要从角色、数据组织和典型管理方式，三个维度展开。</p>
+<h1 id="更多信息"><a href="#更多信息" class="headerlink" title="更多信息"></a>更多信息</h1><p>•RFC 6241 - Network Configuration Protocol</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc6241">https://tools.ietf.org/html/rfc6241</a></li>
+</ul>
+<p>•Network Telemetry Framework - IETF Tools</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/id/draft-song-opsawg-ntf-02.html">https://tools.ietf.org/id/draft-song-opsawg-ntf-02.html</a></li>
+</ul>
+<p>•学习推荐</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://e.huawei.com/cn/talent/#/home">https://e.huawei.com/cn/talent/#/home</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-30-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/" rel="tag"># IP-30-网络管理协议介绍</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="next" title="IP-DHCP原理与配置">
+                <i class="fa fa-chevron-left"></i> IP-DHCP原理与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">1.网络管理的发展历程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%8F%91%E5%B1%95%E7%9A%84%E7%8E%B0%E7%8A%B6"><span class="nav-number">3.1.</span> <span class="nav-text">网络发展的现状</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="nav-number">3.2.</span> <span class="nav-text">传统网络管理面临的挑战</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%8F%91%E5%B1%95%E8%B6%8B%E5%8A%BF"><span class="nav-number">3.3.</span> <span class="nav-text">网络管理的发展趋势</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%8A%9F%E8%83%BD%E7%89%B9%E5%BE%81"><span class="nav-number">4.</span> <span class="nav-text">2.网络管理的功能特征</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%EF%BC%9F"><span class="nav-number">4.1.</span> <span class="nav-text">什么是网络管理？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%85%B8%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">4.2.</span> <span class="nav-text">网络管理的典型架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%9B%9B%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.3.</span> <span class="nav-text">网络管理的四大模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E4%BA%94%E5%A4%A7%E5%8A%9F%E8%83%BD"><span class="nav-number">4.4.</span> <span class="nav-text">网络管理的五大功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%8D%8F%E8%AE%AE%E5%88%86%E7%B1%BB"><span class="nav-number">5.</span> <span class="nav-text">3.网络管理的协议分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E6%A6%82%E8%A7%88"><span class="nav-number">5.1.</span> <span class="nav-text">网络管理概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLI%EF%BC%88Telnet-SSH%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">CLI（Telnet&#x2F;SSH）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SNMP"><span class="nav-number">5.3.</span> <span class="nav-text">SNMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SNMP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.4.</span> <span class="nav-text">SNMP的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NETCONF"><span class="nav-number">5.5.</span> <span class="nav-text">NETCONF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NETCONF%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.6.</span> <span class="nav-text">NETCONF的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NetStream"><span class="nav-number">5.7.</span> <span class="nav-text">NetStream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NetStream%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.8.</span> <span class="nav-text">NetStream的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sFlow"><span class="nav-number">5.9.</span> <span class="nav-text">sFlow</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sFlow%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.10.</span> <span class="nav-text">sFlow的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Telemetry"><span class="nav-number">5.11.</span> <span class="nav-text">Telemetry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Telemetry%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.12.</span> <span class="nav-text">Telemetry的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Syslog"><span class="nav-number">5.13.</span> <span class="nav-text">Syslog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-LLDP"><span class="nav-number">5.14.</span> <span class="nav-text">其他 - LLDP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LLDP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.15.</span> <span class="nav-text">LLDP的应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96-%E2%80%93-%E9%95%9C%E5%83%8F"><span class="nav-number">5.16.</span> <span class="nav-text">其他 – 镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.17.</span> <span class="nav-text">镜像的应用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">6.</span> <span class="nav-text">4.网络管理的应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">6.1.</span> <span class="nav-text">网络管理典型应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFiMaster-NCE%EF%BC%9F"><span class="nav-number">6.2.</span> <span class="nav-text">什么是iMaster NCE？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iMaster-NCE%E4%BA%A7%E5%93%81%E6%9E%B6%E6%9E%84%E5%92%8C%E5%AE%A2%E6%88%B7%E4%BB%B7%E5%80%BC"><span class="nav-number">6.3.</span> <span class="nav-text">iMaster NCE产品架构和客户价值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E4%BF%A1%E6%81%AF"><span class="nav-number">9.</span> <span class="nav-text">更多信息</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

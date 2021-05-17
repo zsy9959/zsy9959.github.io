@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-29-DHCP原理与配置," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•随着网络规模的不断扩大，网络复杂度不断提升，网络中的终端设备例如主机、手机、平板等，位置经常变化。终端设备访问网络时需要配置IP地址、网关地址、DNS服务器地址等。采用手工方式为终端配置这些参数非常低效且不够灵活。 •IETF于1993年发布了DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）。DHCP实现了网络参数配置的自动化，降低客户端的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-DHCP原理与配置">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•随着网络规模的不断扩大，网络复杂度不断提升，网络中的终端设备例如主机、手机、平板等，位置经常变化。终端设备访问网络时需要配置IP地址、网关地址、DNS服务器地址等。采用手工方式为终端配置这些参数非常低效且不够灵活。 •IETF于1993年发布了DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）。DHCP实现了网络参数配置的自动化，降低客户端的">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png">
+<meta property="article:published_time" content="2021-05-17T13:07:42.000Z">
+<meta property="article:modified_time" content="2021-05-17T13:38:39.257Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-29-DHCP原理与配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-DHCP原理与配置/"/>
+
+
+
+
+
+  <title>IP-DHCP原理与配置 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-DHCP原理与配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T21:07:42+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着网络规模的不断扩大，网络复杂度不断提升，网络中的终端设备例如主机、手机、平板等，位置经常变化。终端设备访问网络时需要配置IP地址、网关地址、DNS服务器地址等。采用手工方式为终端配置这些参数非常低效且不够灵活。</p>
+<p>•IETF于1993年发布了DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）。DHCP实现了网络参数配置的自动化，降低客户端的配置和维护成本。</p>
+<p>•本课程介绍DHCP工作原理、应用场景和简单配置。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述DHCP工作原理</p>
+<p>▫描述DHCP地址分配规则</p>
+<p>▫区分DHCP与DHCP Relay的应用场景</p>
+<p>▫实现DHCP的基本配置</p>
+<h1 id="1-DHCP产生背景"><a href="#1-DHCP产生背景" class="headerlink" title="1.DHCP产生背景"></a>1.DHCP产生背景</h1><h2 id="手工配置网络参数存在的问题"><a href="#手工配置网络参数存在的问题" class="headerlink" title="手工配置网络参数存在的问题"></a>手工配置网络参数存在的问题</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<blockquote>
+<p>•手工配置主机IP地址、网络掩码、网关地址、DNS服务器地址等网络参数时，需要经过地址规划、地址分配、地址配置、地址维护等复杂的操作流程。这使地址分配灵活性差，IP地址资源利用低，同时较大的工作量导致配置容易出错，对人员素质要求较高。</p>
+</blockquote>
+<h2 id="DHCP的基本概念"><a href="#DHCP的基本概念" class="headerlink" title="DHCP的基本概念"></a>DHCP的基本概念</h2><p>•DHCP是一种用于集中对用户IP地址进行动态管理和配置的协议。</p>
+<p>•DHCP采用C/S(Client/Server，客户端/服务器)通信模式，协议报文基于UDP的方式进行交互，采用67（DHCP服务器）和68（DHCP客户端）两个端口号：</p>
+<p>​    ▫正常工作时由客户端向服务器提出配置申请。</p>
+<p>​    ▫服务器返回为客户端分配的IP地址等相应的配置信息。</p>
+<p>•DHCP相对于手工配置有如下优点：</p>
+<p>​    ▫效率高</p>
+<p>​    ▫灵活性强</p>
+<p>​    易于管理</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•网络终端设备，例如主机、打印机、笔记本电脑、手机和AP，作为DHCP客户端，向DHCP服务器请求分配相关网络参数。DHCP服务器响应DHCP客户端请求进行动态分配。</p>
+</blockquote>
+<h1 id="2-DHCP工作原理与配置"><a href="#2-DHCP工作原理与配置" class="headerlink" title="2.DHCP工作原理与配置"></a>2.DHCP工作原理与配置</h1><h2 id="DHCP客户端首次接入网络的工作原理"><a href="#DHCP客户端首次接入网络的工作原理" class="headerlink" title="DHCP客户端首次接入网络的工作原理"></a>DHCP客户端首次接入网络的工作原理</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<ol>
+<li>发现阶段，即DHCP客户端发现DHCP服务器的阶段。</li>
+</ol>
+<ul>
+<li>DHCP客户端发送DHCP DISCOVER报文来发现DHCP服务器。DHCP DISCOVER报文中携带了客户端的MAC地址、需要请求的参数列表选项、广播标志位等信息。</li>
+</ul>
+<ol start="2">
+<li>提供阶段，即DHCP服务器提供网络配置信息的阶段。</li>
+</ol>
+<ul>
+<li>服务器接收到DHCP DISCOVER报文后，选择跟接收DHCP DISCOVER报文接口的IP地址处于同一网段的地址池，并且从中选择一个可用的IP地址，然后通过DHCP OFFER报文发送给DHCP客户端。</li>
+</ul>
+<ol start="3">
+<li>选择阶段，即DHCP客户端选择IP地址的阶段。</li>
+</ol>
+<ul>
+<li><p>如果有多个DHCP服务器向DHCP客户端回应DHCP OFFER报文，则DHCP客户端一般只接收第一个收到的DHCP OFFER报文，然后以广播方式发送DHCP REQUEST报文，该报文中包含客户端想选择的DHCP服务器标识符和客户端IP地址。</p>
+<p>4.确认阶段，即DHCP服务器确认所分配IP地址的阶段。</p>
+</li>
+<li><p>DHCP客户端收到DHCP ACK报文，会广播发送免费ARP报文，探测本网段是否有其他终端使用服务器分配的IP地址。</p>
+</li>
+</ul>
+<blockquote>
+<p>•在确认阶段，两种情况可能出现IP地址的冲突：</p>
+<ul>
+<li><p>DHCP服务器收到DHCP DISCOVER报文时，给客户端分配IP地址前会发送Ping探测，如果能Ping通则标识该地址不可用，并选择其他IP地址分配给客户端。</p>
+</li>
+<li><p>DHCP客户端获取IP地址成功后，会立即发送免费ARP报文，如果收到响应，则发送DHCP DECLINE报文通知DHCP服务器该IP地址冲突，DHCP服务器标识该地址不可用，客户端发送DHCP DISCOVER报文重新申请IP地址。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="DHCP报文格式"><a href="#DHCP报文格式" class="headerlink" title="DHCP报文格式"></a>DHCP报文格式</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•Htype （hardware type）: 表示硬件地址的类型。</p>
+<p>•Hlen（hardware length）: 表示硬件地址的长度。</p>
+<p>•Hops（hops）: 表示当前DHCP报文经过的DHCP Relay数目。该字段由客户端设置为0，每经过一个DHCP Relay时，该字段加1。此字段的作用是限制DHCP报文所经过的DHCP Relay数目。</p>
+<p>•Xid：表示DHCP客户端选取的随机数，使DHCP服务器的回复与DHCP客户端的报文相关联。</p>
+<p>•Sname（server host name）: 表示客户端获取配置信息的服务器名字。此字段由DHCP服务器填写，是可选的。如果填写，必须是一个以0结尾的字符串。</p>
+<p>•File（file name）: 表示客户端启动DHCP相关配置的文件名。此字段由DHCP服务器填写，随着DHCP地址分配的同时下发至客户端。本字段是可选的，如果填写，必须是一个以0结尾的字符串。</p>
+</blockquote>
+<h2 id="Options预定义选项字段介绍"><a href="#Options预定义选项字段介绍" class="headerlink" title="Options预定义选项字段介绍"></a>Options预定义选项字段介绍</h2><p>•DHCP报文中Options字段为可变长度字段，最多为312Byte，此字段包含了DHCP报文类型，服务器分配给终端的配置信息，如网关IP地址，DNS服务器的IP地址，客户端可以使用IP地址的有效租期等信息。</p>
+<p>•Options字段由Type、Length和Value三部分组成。其中Type字段取值范围1~255。常见的Options如下表所示：</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<h2 id="DHCP的消息类型"><a href="#DHCP的消息类型" class="headerlink" title="DHCP的消息类型"></a>DHCP的消息类型</h2><p>DHCP报文通过Options选项中的Type=53来表示DHCP的报文类型。如下图所示，当Type=53，Length=1，Value取值从01到08分别表示不同的DHCP报文类型。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>•1-DHCP DISCOVER：DHCP客户端首次登录网络时进行DHCP交互过程发送的第一个消息，用来寻找DHCP服务器。</p>
+<p>•2-DHCP OFFER：DHCP服务器用来响应DHCP DISCOVER消息，此消息携带了各种配置信息。 </p>
+<p>•3-DHCP REQUEST：DHCP客户端广播请求回应DHCP服务器OFFER消息；DHCP客户端重启广播确认之前的IP地址等配置信息；续租。</p>
+<p>•4-DHCP DECLINE：当客户端发现服务器分配给它的IP地址发生冲突时会通过发送此消息来通知服务器。</p>
+<p>•5-DHCP ACK：DHCP服务器对客户端的DHCP REQUEST消息的确认响应消息。</p>
+<p>•6-DHCP NAK：服务器对客户端的DHCP REQUEST消息的拒绝响应消息。</p>
+<p>•7-DHCP RELEASE：客户端可通过发送此消息主动释放服务器分配给它的IP地址。</p>
+<p>•8-DHCP INFORM：DHCP客户端获取IP地址后，如果需要向DHCP服务器获取更为详细的配置信息（网关地址、DNS服务器地址），则向DHCP服务器发送DHCP INFORM请求消息。</p>
+</blockquote>
+<h2 id="Options自定义选项字段介绍"><a href="#Options自定义选项字段介绍" class="headerlink" title="Options自定义选项字段介绍"></a>Options自定义选项字段介绍</h2><p>除了标准协议中规定的字段选项外，还有部分选项内容没有统一规定，统称为用户自定义选项，例如Option 82和Option 43。</p>
+<ul>
+<li>Option 82称为中继代理信息选项。<ul>
+<li>Option 82中可以包含最多255个Sub-Option，若定义了Option 82，至少要定义一个Sub-Option。</li>
+<li>DHCP中继或DHCP Snooping设备接收到DHCP客户端发送给DHCP服务器的请求报文后，在该报文中添加Option 82，并转发给DHCP服务器。管理员可以从Option 82中获得DHCP客户端的信息，例如DHCP客户端所连接交换机端口的VLAN ID、二层端口号、中继设备的MAC地址等。</li>
+</ul>
+</li>
+</ul>
+<p>▫Option 43称为厂商特定信息选项。</p>
+<ul>
+<li>DHCP服务器和DHCP客户端通过Option 43交换厂商特定的信息。当DHCP服务器接收到请求Option 43信息的DHCP请求报文（Option 55中带有Option 43参数）后，将在回复报文中携带Option 43，为DHCP客户端分配厂商指定的信息。</li>
+<li>在WLAN组网中，AP作为DHCP客户端，DHCP服务器可以为AP指定AC的IP地址，以方便AP与AC建立连接。</li>
+</ul>
+<blockquote>
+<p>目前option 82中常用的Sub-Option如下：</p>
+<p>▫Sub-Option 1：为代理电路id（即circuit id）子项。子选项通常在DHCP中继设备上配置，定义了在传输报文的时候要携带DHCP客户端所连接交换机端口的vlan-id及二层端口号。通常Sub-Option 1与Sub-Option 2子选项要共同使用来标识DHCP源端的信息。</p>
+<p>▫Sub-Option 2：代理远程id（即remote id）子项。该子选项也通常在DHCP中继设备上配置，定义了在传输报文的时候要携带中继设备的mac地址信息。</p>
+<p>▫和Sub-Option 5：为链路选择（link selection）子项，该选项中包含了DHCP中继添加的ip地址。这样DHCP server在分配ip地址给DHCP客户端的时候就可以分配与该地址同网段的ip地址。</p>
+</blockquote>
+<h2 id="Option-43应用举例"><a href="#Option-43应用举例" class="headerlink" title="Option 43应用举例"></a>Option 43应用举例</h2><p>•在WLAN三层组网中，当AP上线时，需要获取AC的IP地址，并与AC之间建立CAPWAP隧道。</p>
+<p>•AP的IP地址通过DHCP服务器分配，当AC的IP地址与AP不在同一个广播域，AP无法通过广播的方式获取AC的IP地址，则CAPWAP隧道无法建立成功。</p>
+<p>•AP通过DHCP报文中的Option 43选项字段获取AC的IP地址，当AP获取AC的IP地址后，可以进一步完成CAPWAP隧道的建立，从而实现AP上线。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<h2 id="DHCP地址续租"><a href="#DHCP地址续租" class="headerlink" title="DHCP地址续租"></a>DHCP地址续租</h2><p>DHCP客户端根据IP地址的剩余租期的不同而产生不同形式的续租请求。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<p>•当租期达到50%（T1）时，DHCP客户端会自动以单播的方式向DHCP服务器发送DHCP REQUEST报文，请求更新IP地址租期。如果收到DHCP服务器回应的DHCP ACK报文，则租期更新成功。</p>
+<p>•当租期达到87.5%（T2）时，如果仍未收到DHCP服务器的应答，DHCP客户端会自动以广播的方式向DHCP服务器发送DHCP REQUEST报文，请求更新IP地址租期。如果收到DHCP服务器回应的DHCP ACK报文，则租期更新成功。</p>
+<p>•如果租期时间到时都没有收到服务器的回应，客户端停止使用此IP地址，重新发送DHCP DISCOVER报文请求新的IP地址。</p>
+<blockquote>
+<p>•DHCP服务器给每个分配给客户端的IP地址定义一个使用期限，该使用期限被称为租期。在租期到期前，DHCP客户端如果仍需要使用该IP地址，可以请求延长租期；如果不需要，可以主动释放该IP地址。在没有其他空闲地址可用的情况下，DHCP服务器会把客户端主动释放的IP地址分配给其他客户端。</p>
+<p>•DHCP客户端无论在T1还是T2时刻发送DHCP REQUEST报文后，如果收到DHCP NAK报文，则重新发送DHCP DISCOVER报文请求新的IP地址。</p>
+<p>•客户端在租期时间到之前，如果用户不想使用分配的IP地址（例如客户端网络位置需要变更），会触发DHCP客户端向DHCP服务器发送DHCP RELEASE报文，通知DHCP服务器释放IP地址的租期。DHCP服务器会保留这个DHCP客户端的配置信息，将IP地址列为曾经分配过的IP地址中，以便后续重新分配给该客户端或其他客户端。客户端可以通过发送DHCP INFORM报文向服务器请求更新配置信息。</p>
+</blockquote>
+<h2 id="DHCP客户端重用曾经使用过的地址"><a href="#DHCP客户端重用曾经使用过的地址" class="headerlink" title="DHCP客户端重用曾经使用过的地址"></a>DHCP客户端重用曾经使用过的地址</h2><p>DHCP客户端非首次接入网络时，可以重用曾经使用过的地址。例如，网络中的主机作为DHCP客户端，在关机再开机的过程中，需要重新获取相关网络参数，则可以请求分配曾经使用过的IP地址。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<p>1.选择阶段</p>
+<ul>
+<li>客户端广播发送包含前一次分配的IP地址的DHCP REQUEST报文，报文中的Option 50（请求的IP地址选项）字段填入曾经使用过的IP地址。</li>
+</ul>
+<p>2.确认阶段</p>
+<ul>
+<li>DHCP服务器收到DHCP REQUEST报文后，根据DHCP REQUEST报文中携带的MAC地址来查找有没有相应的租约记录。如果有则返回DHCP ACK报文，通知DHCP客户端可以继续使用这个IP地址，如果没有租约记录，则不响应。</li>
+</ul>
+<blockquote>
+<p>•是否支持重用曾经使用过的IP地址，因不同客户端而异。</p>
+</blockquote>
+<h2 id="DHCP分配IP地址顺序"><a href="#DHCP分配IP地址顺序" class="headerlink" title="DHCP分配IP地址顺序"></a>DHCP分配IP地址顺序</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<h2 id="DHCP配置命令介绍-1"><a href="#DHCP配置命令介绍-1" class="headerlink" title="DHCP配置命令介绍 (1)"></a>DHCP配置命令介绍 (1)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•此处以ip pool的名字为HW举例说明。</p>
+<p>•缺省情况下，没有配置为指定DHCP Client分配固定IP地址。</p>
+</blockquote>
+<h2 id="DHCP配置命令介绍-2"><a href="#DHCP配置命令介绍-2" class="headerlink" title="DHCP配置命令介绍 (2)"></a>DHCP配置命令介绍 (2)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•此处以接口GigabitEthernet0/0/1举例说明。</p>
+</blockquote>
+<h2 id="DHCP配置举例（1）"><a href="#DHCP配置举例（1）" class="headerlink" title="DHCP配置举例（1）"></a>DHCP配置举例（1）</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<h2 id="DHCP配置举例（2）"><a href="#DHCP配置举例（2）" class="headerlink" title="DHCP配置举例（2）"></a>DHCP配置举例（2）</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<h2 id="DHCP配置结果"><a href="#DHCP配置结果" class="headerlink" title="DHCP配置结果"></a>DHCP配置结果</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<h1 id="3-DHCP-Relay工作原理与配置"><a href="#3-DHCP-Relay工作原理与配置" class="headerlink" title="3.DHCP Relay工作原理与配置"></a>3.DHCP Relay工作原理与配置</h1><h2 id="什么是DHCP-Relay"><a href="#什么是DHCP-Relay" class="headerlink" title="什么是DHCP Relay"></a>什么是DHCP Relay</h2><p>•随着网络规模的不断扩大，网络设备不断增多，企业内不同的用户可能分布在不同的网段，一台DHCP服务器在正常情况下无法满足多个网段的地址分配需求。如果还需要通过DHCP服务器分配IP地址，则需要跨网段发送DHCP报文。</p>
+<p>•DHCP Relay即DHCP中继，它是为解决DHCP服务器和DHCP客户端不在同一个广播域而提出的，提供了对DHCP广播报文的中继转发功能，能够把DHCP客户端的广播报文“透明地”传送到其它广播域的DHCP服务器上，同样也能够把DHCP服务器端的应答报文“透明地”传送到其它广播域的DHCP客户端。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<h2 id="DHCP-Relay报文格式"><a href="#DHCP-Relay报文格式" class="headerlink" title="DHCP Relay报文格式"></a>DHCP Relay报文格式</h2><p>DHCP Relay主要负责转发DHCP客户端与DHCP服务器之间的DHCP报文，所以DHCP Relay的报文格式只是把DHCP的报文部分字段做了相应的修改，报文格式没有发生变化，如下图所示：</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<p>Hops：表示当前的DHCP报文经过的DHCP中继的数目。该字段由客户端或服务器设置为0，每经过一个DHCP中继时，该字段加1。</p>
+<p>Giaddr(gateway ip address)：表示第一个DHCP中继的IP地址。当客户端发出DHCP请求时，第一个DHCP中继在将DHCP请求报文转发给DHCP服务器时，会把自己的IP地址填入此字段。</p>
+<blockquote>
+<p>•Hops字段的作用是限制DHCP报文所经过的DHCP中继数目。服务器和客户端之间的DHCP中继数目不能超过16个，也就是Hops值不能大于16，否则DHCP报文将被丢弃。</p>
+<p>•Giaddr字段，DHCP服务器会根据此字段来判断出客户端所在的网段地址，从而选择合适的地址池，为客户端分配该网段的IP地址。服务器还会根据此地址将响应报文发送给此DHCP中继，再由DHCP中继将此报文转发给客户端。若在到达DHCP服务器前经过了多个DHCP中继，该字段作为客户端所在的网段的标记，填充了第一个DHCP中继的IP地址后不会再变更，只是每经过一个DHCP中继，hops字段的数值会加1。</p>
+</blockquote>
+<h2 id="DHCP-Relay工作原理"><a href="#DHCP-Relay工作原理" class="headerlink" title="DHCP Relay工作原理"></a>DHCP Relay工作原理</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<p>有中继场景时DHCP客户端首次接入网络的工作原理：</p>
+<p>1.发现阶段：DHCP中继接收到DHCP客户端广播发送的DHCP DISCOVER报文后，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</p>
+<p>2.提供阶段：DHCP服务器根据DHCP DISCOVER报文中的Giaddr字段选择地址池为客户端分配相关网络参数，DHCP中继收到DHCP OFFER报文后，以单播或组播方式发送给DHCP Client。</p>
+<p>3.选择阶段：中继接收到来自客户端的DHCP REQUEST报文的处理过程同“发现阶段”。</p>
+<p>4.确认阶段：中继接收到来自服务器的DHCP ACK报文的处理过程同“提供阶段”。</p>
+<blockquote>
+<p>1.DHCP中继收到DHCP DISCOVER报文后，处理规则为：</p>
+<ul>
+<li>检查DHCP报文中的Hops字段，如果大于16，则丢弃DHCP报文；否则，将Hops字段加1（表明经过一次DHCP中继），并继续下面的操作。</li>
+<li>检查DHCP报文中的Giaddr字段。如果是0，将Giaddr字段设置为接收DHCP DISCOVER报文的接口IP地址。如果不是0，则不修改该字段，继续下面的操作。</li>
+<li>将DHCP报文的目的IP地址改为DHCP服务器或下一跳中继的IP地址，源地址改为中继连接客户端的接口地址，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</li>
+</ul>
+<p>2.DHCP服务器接收到DHCP DISCOVER报文后，选择与报文中Giaddr字段为同一网段的地址池，并为客户端分配IP地址等参数，然后向Giaddr字段标识的DHCP中继单播发送DHCP OFFER报文，DHCP中继收到DHCP OFFER报文后，会进行如下处理：</p>
+<ul>
+<li><p>检查报文中的Giaddr字段，如果不是接口的地址，则丢弃该报文；否则，继续下面的操作。</p>
+</li>
+<li><p>DHCP中继检查报文的广播标志位。如果广播标志位为1，则将DHCP OFFER报文广播发送给DHCP客户端；否则将DHCP OFFER报文单播发送给DHCP客户端。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="DHCP-Relay配置命令介绍"><a href="#DHCP-Relay配置命令介绍" class="headerlink" title="DHCP Relay配置命令介绍"></a>DHCP Relay配置命令介绍</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<h2 id="DHCP-Relay配置举例-1"><a href="#DHCP-Relay配置举例-1" class="headerlink" title="DHCP Relay配置举例 (1)"></a>DHCP Relay配置举例 (1)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<blockquote>
+<p>•各个设备配置DHCP前需要在全局视图下通过DHCP enable命令开启DHCP功能。</p>
+</blockquote>
+<h2 id="DHCP-Relay配置举例-2"><a href="#DHCP-Relay配置举例-2" class="headerlink" title="DHCP Relay配置举例 (2)"></a>DHCP Relay配置举例 (2)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<h2 id="DHCP-Relay配置验证"><a href="#DHCP-Relay配置验证" class="headerlink" title="DHCP Relay配置验证"></a>DHCP Relay配置验证</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）DHCP客户端向DHCP Server进行续租时会发送哪种报文？</p>
+<p>A.DHCP DISCOVER</p>
+<p>B.DHCP OFFER</p>
+<p><strong>C.DHCP REQUEST</strong></p>
+<p>D.DHCP ACK</p>
+<p>2.（单选题）以下哪条命令可以开启路由器接口的DHCP中继功能？</p>
+<p>A.DHCP select server</p>
+<p>B.DHCP select global</p>
+<p>C.DHCP select interface</p>
+<p><strong>D.DHCP select relay</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章节主要讲解了DHCP报文的格式及关键字段的作用。通过报文交互介绍了DHCP服务器如何给DHCP客户端分配IP地址等网络参数的过程，同时阐述了地址续租与DHCP客户端重启之后如何获取IP地址的原理。</p>
+<p>•当DHCP客户端与DHCP服务器不在一个广播域的时候，通过DHCP Relay的中继功能，实现DHCP报文的跨网段传输，从而完成DHCP客户端与服务器之间的报文协商。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-29-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="tag"># IP-29-DHCP原理与配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="next" title="IP-VRRP原理与配置">
+                <i class="fa fa-chevron-left"></i> IP-VRRP原理与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/" rel="prev" title="IP-网络管理协议介绍">
+                IP-网络管理协议介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-DHCP%E4%BA%A7%E7%94%9F%E8%83%8C%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">1.DHCP产生背景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%B7%A5%E9%85%8D%E7%BD%AE%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B0%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">手工配置网络参数存在的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.2.</span> <span class="nav-text">DHCP的基本概念</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-DHCP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">2.DHCP工作原理与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%A6%96%E6%AC%A1%E6%8E%A5%E5%85%A5%E7%BD%91%E7%BB%9C%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">DHCP客户端首次接入网络的工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">DHCP报文格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Options%E9%A2%84%E5%AE%9A%E4%B9%89%E9%80%89%E9%A1%B9%E5%AD%97%E6%AE%B5%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.3.</span> <span class="nav-text">Options预定义选项字段介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E7%9A%84%E6%B6%88%E6%81%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.4.</span> <span class="nav-text">DHCP的消息类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Options%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%89%E9%A1%B9%E5%AD%97%E6%AE%B5%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.5.</span> <span class="nav-text">Options自定义选项字段介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Option-43%E5%BA%94%E7%94%A8%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.6.</span> <span class="nav-text">Option 43应用举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E5%9C%B0%E5%9D%80%E7%BB%AD%E7%A7%9F"><span class="nav-number">4.7.</span> <span class="nav-text">DHCP地址续租</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%87%8D%E7%94%A8%E6%9B%BE%E7%BB%8F%E4%BD%BF%E7%94%A8%E8%BF%87%E7%9A%84%E5%9C%B0%E5%9D%80"><span class="nav-number">4.8.</span> <span class="nav-text">DHCP客户端重用曾经使用过的地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E5%88%86%E9%85%8DIP%E5%9C%B0%E5%9D%80%E9%A1%BA%E5%BA%8F"><span class="nav-number">4.9.</span> <span class="nav-text">DHCP分配IP地址顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">4.10.</span> <span class="nav-text">DHCP配置命令介绍 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">4.11.</span> <span class="nav-text">DHCP配置命令介绍 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B%EF%BC%881%EF%BC%89"><span class="nav-number">4.12.</span> <span class="nav-text">DHCP配置举例（1）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B%EF%BC%882%EF%BC%89"><span class="nav-number">4.13.</span> <span class="nav-text">DHCP配置举例（2）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%9C"><span class="nav-number">4.14.</span> <span class="nav-text">DHCP配置结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-DHCP-Relay%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">3.DHCP Relay工作原理与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFDHCP-Relay"><span class="nav-number">5.1.</span> <span class="nav-text">什么是DHCP Relay</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-Relay%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">5.2.</span> <span class="nav-text">DHCP Relay报文格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-Relay%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">5.3.</span> <span class="nav-text">DHCP Relay工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-Relay%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.4.</span> <span class="nav-text">DHCP Relay配置命令介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-Relay%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-1"><span class="nav-number">5.5.</span> <span class="nav-text">DHCP Relay配置举例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-Relay%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-2"><span class="nav-number">5.6.</span> <span class="nav-text">DHCP Relay配置举例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-Relay%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81"><span class="nav-number">5.7.</span> <span class="nav-text">DHCP Relay配置验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

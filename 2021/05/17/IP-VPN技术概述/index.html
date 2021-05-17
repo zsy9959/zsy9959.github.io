@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-25-VPN技术概述," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、办事处、出差员工、合作单位等也需要访问公司总部的网络资源，可以采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。 •VPN是一类技术的统称，不同的VPN技术拥有不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-VPN技术概述">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、办事处、出差员工、合作单位等也需要访问公司总部的网络资源，可以采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。 •VPN是一类技术的统称，不同的VPN技术拥有不">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/18.png">
+<meta property="article:published_time" content="2021-05-17T12:19:55.000Z">
+<meta property="article:modified_time" content="2021-05-17T12:33:41.272Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-25-VPN技术概述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-VPN技术概述/"/>
+
+
+
+
+
+  <title>IP-VPN技术概述 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-VPN技术概述</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:19:55+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、办事处、出差员工、合作单位等也需要访问公司总部的网络资源，可以采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。</p>
+<p>•VPN是一类技术的统称，不同的VPN技术拥有不同的特性和实现方式，常见的VPN技术包括IPSec VPN、GRE VPN、L2TP VPN、MPLS VPN等。</p>
+<p>•本课程将从VPN的定义、常见的VPN类型与应用场景等几个方面对VPN进行一个简单而又全面的介绍。</p>
+<blockquote>
+<p>•IPSec：Internet Protocol Security， 因特网协议安全协议。</p>
+<p>•GRE：Generic Routing Encapsulation， 通用路由封装协议。</p>
+<p>•L2TP：Layer 2 Tunneling Protocol， 二层隧道协议。</p>
+<p>•MPLS：Multiprotocol Label Switching，多协议标签交换协议。</p>
+</blockquote>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述VPN的分类</p>
+<p>▫描述VPN的实现方式</p>
+<h1 id="1-什么是VPN"><a href="#1-什么是VPN" class="headerlink" title="1.什么是VPN"></a>1.什么是VPN</h1><h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p>•在VPN出现之前，企业分支之间的数据传输只能依靠现有物理网络（例如Internet）。由于Internet中存在多种不安全因素，报文容易被网络中的黑客窃取或篡改，最终造成数据泄密、重要数据被破坏等后果。</p>
+<p>•除了通过Internet，还可以通过搭建一条物理专网连接保证数据的安全传输，但其费用会非常昂贵，且专网的搭建和维护十分困难。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/1.png"></p>
+<h2 id="VPN简介"><a href="#VPN简介" class="headerlink" title="VPN简介"></a>VPN简介</h2><p>VPN即虚拟专用网，泛指通过VPN技术在公用网络上构建的虚拟专用网络。VPN用户在此虚拟网络中传输私网流量，在不改变网络现状的情况下实现安全、可靠的连接。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/2.png"></p>
+<blockquote>
+<p>•VPN和传统的数据专网相比具有如下优势：</p>
+<ul>
+<li><p>安全：在远端用户、驻外机构、合作伙伴、供应商与公司总部之间建立可靠的连接，保证数据传输的安全性。这对于实现电子商务或金融网络与通讯网络的融合特别重要。</p>
+</li>
+<li><p>廉价：利用公共网络进行信息通讯，企业可以用更低的成本连接远程办事机构、出差人员和业务伙伴。</p>
+</li>
+<li><p>支持移动业务：支持驻外VPN用户在任何时间、任何地点的移动接入，能够满足不断增长的移动业务需求。</p>
+</li>
+<li><p>可扩展性：由于VPN为逻辑上的网络，物理网络中增加或修改节点，不影响VPN的部署。</p>
+</li>
+</ul>
+<p>•公共网络又经常被称为VPN骨干网（VPN Backbone），公共网络可以是Internet，也可以是企业自建专网或运营商租赁专网。</p>
+</blockquote>
+<h2 id="VPN分类-根据建设单位不同"><a href="#VPN分类-根据建设单位不同" class="headerlink" title="VPN分类 - 根据建设单位不同"></a>VPN分类 - 根据建设单位不同</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/3.png"></p>
+<h2 id="VPN分类-根据组网方式不同"><a href="#VPN分类-根据组网方式不同" class="headerlink" title="VPN分类 - 根据组网方式不同"></a>VPN分类 - 根据组网方式不同</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/4.png"></p>
+<h2 id="VPN分类-根据实现的网络层次"><a href="#VPN分类-根据实现的网络层次" class="headerlink" title="VPN分类 - 根据实现的网络层次"></a>VPN分类 - 根据实现的网络层次</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/5.png"></p>
+<blockquote>
+<p>•工作在网络层和数据链路层的VPN又被称为三层VPN和二层VPN。</p>
+</blockquote>
+<h2 id="VPN关键技术-隧道技术"><a href="#VPN关键技术-隧道技术" class="headerlink" title="VPN关键技术 - 隧道技术"></a>VPN关键技术 - 隧道技术</h2><p>•VPN技术的基本原理是利用隧道（Tunnel）技术，对传输报文进行封装，利用VPN骨干网建立专用数据传输通道，实现报文的安全传输。</p>
+<p>•位于隧道两端的VPN网关，通过对原始报文的“封装”和“解封装”，建立一个点到点的虚拟通信隧道。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/6.png"></p>
+<blockquote>
+<p>•隧道的功能就是在两个网络节点之间提供一条通路，使数据能够在这个通路上透明传输。VPN隧道一般是指在VPN骨干网的VPN节点之间建立的用来传输VPN数据的虚拟连接。隧道是构建VPN不可或缺的部分，用于把VPN数据从一个VPN节点透明传送到另一个上。</p>
+<p>•隧道通过隧道协议实现。目前已存在不少隧道协议，如GRE（Generic Routing Encapsulation）、L2TP（Layer 2 Tunneling Protocol）等。隧道协议通过在隧道的一端给数据加上隧道协议头，即进行封装，使这些被封装的数据能都在某网络中传输，并且在隧道的另一端去掉该数据携带的隧道协议头，即进行解封装。报文在隧道中传输前后都要通过封装和解封装两个过程。</p>
+<p>•部分隧道可以混合使用，如GRE Over IPSec隧道。</p>
+</blockquote>
+<h2 id="VPN关键技术-身份认证、数据加密与验证"><a href="#VPN关键技术-身份认证、数据加密与验证" class="headerlink" title="VPN关键技术 - 身份认证、数据加密与验证"></a>VPN关键技术 - 身份认证、数据加密与验证</h2><p>身份认证、数据加密和认证技术可以有效保证VPN网络与数据的安全性：</p>
+<ul>
+<li><p>身份认证：可用于部署了远程接入VPN的场景，VPN网关对用户的身份进行认证，保证接入网络的都是合法用户而非恶意用户。也可以用于VPN网关之间对对方身份的认证。</p>
+</li>
+<li><p>数据加密：将明文通过加密变成密文，使得数据即使被黑客截获，黑客也无法获取其中的信息。</p>
+</li>
+<li><p>数据验证：通过数据验证技术对报文的完整性和真伪进行检查，丢弃被伪造和被篡改的报文。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/7.png"></p>
+<h1 id="2-常见VPN技术"><a href="#2-常见VPN技术" class="headerlink" title="2.常见VPN技术"></a>2.常见VPN技术</h1><h2 id="IPSec概述"><a href="#IPSec概述" class="headerlink" title="IPSec概述"></a>IPSec概述</h2><p>IPSec（IP Security） VPN一般部署在企业出口设备之间，通过加密与验证等方式，实现了数据来源验证、数据加密、数据完整性保证和抗重放等功能。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/8.png"></p>
+<blockquote>
+<p>•数据来源验证：接收方验证发送方身份是否合法。</p>
+<p>•数据加密：发送方对数据进行加密，以密文的形式在Internet上传送，接收方对接收的加密数据进行解密后处理或直接转发。</p>
+<p>•数据完整性：接收方对接收的数据进行验证，以判定报文是否被篡改。</p>
+<p>•抗重放：接收方拒绝旧的或重复的数据包，防止恶意用户通过重复发送捕获到的数据包所进行的攻击。</p>
+</blockquote>
+<h2 id="IPSec协议体系"><a href="#IPSec协议体系" class="headerlink" title="IPSec协议体系"></a>IPSec协议体系</h2><p>IPSec不是一个单独的协议，它给出了IP网络上数据安全的一整套体系结构，包括AH（Authentication Header）、ESP（Encapsulating Security Payload）、IKE（Internet Key Exchange）等协议。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/9.png"></p>
+<blockquote>
+<p>•IPSec使用认证头AH（Authentication Header）和封装安全载荷ESP（Encapsulating Security Payload）两种安全协议来传输和封装数据，提供认证或加密等安全服务。</p>
+<ul>
+<li><p>AH和ESP协议提供的安全功能依赖于协议采用的验证、加密算法。</p>
+</li>
+<li><p>AH仅支持认证功能，不支持加密功能。ESP支持认证和加密功能。</p>
+</li>
+<li><p>安全协议提供认证或加密等安全服务需要有秘钥的存在。</p>
+</li>
+</ul>
+<p>•秘钥交换的方式有两种：</p>
+<ul>
+<li><p>带外共享密钥：在发送、接收设备上手工配置静态的加密、验证密钥。双方通过带外共享的方式（例如通过电话或邮件方式）保证密钥一致性。这种方式的缺点是可扩展性差，在点到多点组网中配置密钥的工作量成倍增加。另外，为提升网络安全性需要周期性修改密钥，这种方式下也很难实施。</p>
+</li>
+<li><p>通过IKE协议自动协商密钥：IKE建立在Internet安全联盟和密钥管理协议ISAKMP定义的框架上，采用DH（Diffie-Hellman）算法在不安全的网络上安全地分发密钥。这种方式配置简单，可扩展性好，特别是在大型动态的网络环境下此优点更加突出。同时，通信双方通过交换密钥交换材料来计算共享的密钥，即使第三方截获了双方用于计算密钥的所有交换数据，也无法计算出真正的密钥。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="IPSec基本原理"><a href="#IPSec基本原理" class="headerlink" title="IPSec基本原理"></a>IPSec基本原理</h2><p>IPSec隧道建立过程中需要协商IPSec SA（Security Association，安全联盟），IPSec SA一般通过IKE协商生成。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/10.png"></p>
+<blockquote>
+<p>•SA由一个三元组来唯一标识，这个三元组包括安全参数索引SPI（Security Parameter Index）、目的IP地址和使用的安全协议号（AH或ESP）。其中，SPI是为唯一标识SA而生成的一个32位比特的数值，它在AH和ESP头中传输。在手工配置SA时，需要手工指定SPI的取值。使用IKE协商产生SA时，SPI将随机生成。</p>
+<p>•SA是单向的逻辑连接，因此两个IPSec对等体之间的双向通信，最少需要建立两个SA来分别对两个方向的数据流进行安全保护。</p>
+<p>•IKE作为秘钥协商协议，存在两个版本：IKEv1和IKEv2，本课程采用IKEv1为例进行介绍，IKEv2内容可参考产品文档对应内容。</p>
+<ul>
+<li><p>IKEv1协商阶段1的目的是建立IKE SA。IKE SA建立后对等体间的所有ISAKMP消息都将通过加密和验证，这条安全通道可以保证IKEv1第二阶段的协商能够安全进行。IKE SA是一个双向的逻辑连接，两个IPSec对等体间只建立一个IKE SA。</p>
+</li>
+<li><p>IKEv1协商阶段2的目的就是建立用来安全传输数据的IPSec SA，并为数据传输衍生出密钥。该阶段使用IKEv1协商阶段1中生成的密钥对ISAKMP消息的完整性和身份进行验证，并对ISAKMP消息进行加密，故保证了交换的安全性。</p>
+</li>
+</ul>
+<p>•IKE协商成功意味着双向的IPSec隧道已经建立，可以通过ACL方式或者安全框架方式定义IPSec“感兴趣流”，符合感兴趣流流量特征的数据都将被送入IPSec隧道进行处理。</p>
+<p>•感兴趣流：需要被IPSec保护的数据流。</p>
+</blockquote>
+<h2 id="GRE概述"><a href="#GRE概述" class="headerlink" title="GRE概述"></a>GRE概述</h2><p>通用路由封装协议（General Routing Encapsulation，GRE）是一种三层VPN封装技术。GRE可以对某些网络层协议（如IPX、IPv4、IPv6等）的报文进行封装，使封装后的报文能够在另一种网络中（如IPv4）传输，从而解决了跨越异种网络的报文传输问题。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/11.png"></p>
+<blockquote>
+<p>•如图所示，通过在IPv4网络上建立GRE隧道，解决了两个IPv6网络的通信问题。</p>
+<p>•GRE还具备封装组播报文的能力。由于动态路由协议中会使用组播报文，因此更多时候GRE会在需要传递组播路由数据的场景中被用到，这也是GRE被称为通用路由封装协议的原因。</p>
+</blockquote>
+<h2 id="GRE基本原理"><a href="#GRE基本原理" class="headerlink" title="GRE基本原理"></a>GRE基本原理</h2><p>•GRE构成要素分为3个部分：乘客协议、封装协议和运输协议。</p>
+<p>▫乘客协议是指用户在传输数据时所使用的原始网络协议。</p>
+<p>▫封装协议的作用就是用来“包装”乘客协议对应的报文，使原始报文能够在新的网络中传输。</p>
+<p>▫运输协议是指被封装以后的报文在新网络中传输时所使用的网络协议。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/12.png"></p>
+<blockquote>
+<p>•隧道接口（Tunnel Interface）是为实现报文的封装而提供的一种点对点类型的虚拟接口，与Loopback接口类似，都是一种逻辑接口。</p>
+<p>•如图所示，乘客协议为IPv6，封装协议为GRE，运输协议为IPv4。整体转发流程如下：</p>
+<ol>
+<li><p>当R1收到IP1发来的IPv6数据包，查询设备路由表，发现出接口是隧道接口，则将此报文发给隧道接口处理。</p>
+</li>
+<li><p>隧道接口给原始报文添加GRE头部，然后根据配置信息，给报文加上IP头。该IP头的源地址就是隧道源地址，IP头的目的地址就是隧道目的地址。</p>
+</li>
+<li><p>封装后的报文在IPv4网络中进行普通的IPv4路由转发，最终到达目的地R2。</p>
+</li>
+<li><p>解封装过程和封装过程相反，这里不再赘述。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="GRE-Over-IPSec"><a href="#GRE-Over-IPSec" class="headerlink" title="GRE Over IPSec"></a>GRE Over IPSec</h2><p>•GRE的主要缺点是不支持加密和认证，数据的安全传输得不到很好的保障。</p>
+<p>•IPSec的主要缺点是只支持IP协议，且不支持组播。</p>
+<p>•可通过部署GRE Over IPSec结合两种VPN技术的优点。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/13.png"></p>
+<h2 id="L2TP概述"><a href="#L2TP概述" class="headerlink" title="L2TP概述"></a>L2TP概述</h2><p>•L2TP是虚拟私有拨号网VPDN（Virtual Private Dial-up Network）隧道协议的一种，它扩展了点到点协议PPP的应用，是一种在远程办公场景中为出差员工或企业分支远程访问企业内网资源提供接入服务的VPN。</p>
+<p>•L2TP组网架构中包括LAC（L2TP Access Concentrator，L2TP访问集中器）和LNS（L2TP Network Server，L2TP网络服务器）</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/14.png"></p>
+<blockquote>
+<p>•VPDN是指利用公共网络（如ISDN和PSTN）的拨号功能及接入网来实现虚拟专用网，为企业、小型ISP、移动办公人员提供接入服务。VPDN采用专用的网络加密通信协议，在公共网络上为企业建立安全的虚拟专网。企业驻外机构和出差人员可从远程经由公共网络，通过虚拟加密隧道实现和企业总部之间的网络连接，而公共网络上其它用户则无法穿过虚拟隧道访问企业网内部的资源。VPDN隧道协议有多种，目前使用最广泛的是L2TP。</p>
+<p>•LAC是网络上具有PPP和L2TP协议处理能力的设备。LAC负责和LNS建立L2TP隧道连接。在不同的组网环境中，LAC可以是不同的设备，可以是一台网关设备，也可以是一台终端设备。LAC可以发起建立多条L2TP隧道使数据流之间相互隔离。</p>
+<p>•LNS是LAC的对端设备，即LAC和LNS建立了L2TP隧道；LNS位于企业总部私网与公网边界，通常是企业总部的网关设备。</p>
+</blockquote>
+<h2 id="L2TP消息"><a href="#L2TP消息" class="headerlink" title="L2TP消息"></a>L2TP消息</h2><p>L2TP协议包含两种类型的消息，控制消息和数据消息，消息的传输在LAC和LNS之间进行。</p>
+<p>​    ▫控制消息用于L2TP隧道和会话连接的建立、维护和拆除。</p>
+<p>​    ▫数据消息用于封装PPP数据帧并在隧道上传输。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/15.png"></p>
+<blockquote>
+<p>•控制消息</p>
+<ul>
+<li><p>用于L2TP隧道和会话连接的建立、维护和拆除。在控制消息的传输过程中，使用消息丢失重传和定时检测隧道连通性等机制来保证控制消息传输的可靠性，支持对控制消息的流量控制和拥塞控制。</p>
+</li>
+<li><p>控制消息承载在L2TP控制通道上，控制通道实现了控制消息的可靠传输，将控制消息封装在L2TP报头内，再经过IP网络传输。</p>
+</li>
+</ul>
+<p>•数据消息</p>
+<ul>
+<li><p>用于封装PPP数据帧并在隧道上传输。数据消息是不可靠的传输，不重传丢失的数据报文，不支持对数据消息的流量控制和拥塞控制。</p>
+</li>
+<li><p>数据消息携带PPP帧承载在不可靠的数据通道上，对PPP帧进行L2TP封装，再经过IP网络传输。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="L2TP工作过程"><a href="#L2TP工作过程" class="headerlink" title="L2TP工作过程"></a>L2TP工作过程</h2><p>L2TP主要可分为以下三种工作场景，其工作过程并不相同：</p>
+<p>​    ▫NAS-Initiated场景：拨号用户通过NAS访问企业内网</p>
+<p>​    ▫Client-Initiated场景：移动办公用户访问企业内网</p>
+<p>​    ▫Call-LNS场景：通过LAC自主拨号实现企业内网互连</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/16.png"></p>
+<blockquote>
+<p>•NAS-Initiated场景：由远程拨号用户发起，远程系统通过PSTN/ISDN拨入LAC，由LAC通过Internet向LNS发起建立隧道连接请求。拨号用户地址由LNS分配；对远程拨号用户的验证与计费既可由LAC侧的代理完成，也可在LNS完成。</p>
+<ul>
+<li><p>用户必须采用PPP的方式接入到Internet，也可以是PPPoE等协议。</p>
+</li>
+<li><p>运营商的接入设备（主要是BAS设备）需要开通相应的VPN服务。用户需要到运营商处申请该业务。</p>
+</li>
+<li><p>L2TP隧道两端分别驻留在LAC侧和LNS侧，且一个L2TP隧道可以承载多个会话。</p>
+</li>
+</ul>
+<p>•Client-Initialized场景：直接由LAC客户（指可在本地支持L2TP协议的用户）发起。客户需要知道LNS的IP地址。LAC客户可直接向LNS发起隧道连接请求，无需再经过一个单独的LAC设备。在LNS设备上收到了LAC客户的请求之后，根据用户名、密码进行验证，并且给LAC客户分配私有IP地址。</p>
+<ul>
+<li>用户需要安装L2TP的拔号软件。部分操作系统自带L2TP客户端软件。</li>
+<li>用户上网的方式和地点没有限制，不需ISP介入。</li>
+<li>L2TP隧道两端分别驻留在用户侧和LNS侧，一个L2TP隧道承载一个L2TP会话。</li>
+<li>该场景建立过程如下：</li>
+</ul>
+<ol>
+<li><p>移动办公用户与LNS建立L2TP隧道。</p>
+</li>
+<li><p>移动办公用户与LNS建立L2TP会话：移动办公用户在第3步会与LNS间建立PPP连接，L2TP会话用来记录和管理它们之间的PPP连接状态。因此，在建立PPP连接以前，隧道双方需要为PPP连接预先协商出一个L2TP会话。会话中携带了移动办公用户的LCP协商信息和用户认证信息，LNS对收到的信息认证通过后，通知移动办公用户会话建立成功。L2TP会话连接由会话ID进行标识。</p>
+</li>
+<li><p>移动办公用户与LNS建立PPP连接。移动办公用户通过与LNS建立PPP连接获取LNS分配的企业内网IP地址。</p>
+</li>
+<li><p>移动办公用户发送业务报文访问企业总部服务器。</p>
+</li>
+</ol>
+<p>•Call-LNS场景：L2TP除了可以为出差员工提供远程接入服务以外，还可以进行企业分支与总部的内网互联，实现分支用户与总部用户的互访。一般是由分支路由器充当LAC与LNS建立L2TP隧道，这样就可实现分支与总部网络之间的数据通过L2TP隧道互通。</p>
+</blockquote>
+<h2 id="L2TP-Over-IPSec"><a href="#L2TP-Over-IPSec" class="headerlink" title="L2TP Over IPSec"></a>L2TP Over IPSec</h2><p>当企业对数据和网络的安全性要求较高时，L2TP无法为报文传输提供足够的保护。这时可以和IPSec功能结合使用，保护传输的数据，有效避免数据被截取或攻击。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/17.png"></p>
+<blockquote>
+<p>•企业出差用户和总部通信，使用L2TP功能建立VPN连接，总部部署为LNS对接入的用户进行认证。当出差用户需要向总部传输高机密信息时，L2TP无法为报文传输提供足够的保护，这时可以和IPSec功能结合使用，保护传输的数据。在出差用户的PC终端上运行拨号软件，将数据报文先进行L2TP封装，再进行IPSec封装，发往总部。在总部网关，部署IPSec策略，最终还原数据。这种方式IPSec功能会对所有源地址为LAC、目的地址为LNS的报文进行保护。</p>
+</blockquote>
+<h2 id="MPLS-VPN概述"><a href="#MPLS-VPN概述" class="headerlink" title="MPLS VPN概述"></a>MPLS VPN概述</h2><p>•MPLS是一种利用标签（Label）进行转发的技术，最初为了提高IP报文转发速率而被提出，现主要应用于VPN和流量工程、QoS等场景。 </p>
+<p>•根据部署的不同，MPLS VPN可分为MPLS L2 VPN或者MPLS L3 VPN。</p>
+<p>•企业可以自建MPLS专网也可以通过租用运营商MPLS专网的方式获得MPLS VPN接入服务。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/18.png"></p>
+<blockquote>
+<p>•MPLS VPN网络一般由运营商搭建，VPN用户购买VPN服务来实现用户网络之间（图中的分公司和总公司）的路由传递、数据互通等。</p>
+<p>•基本的MPLS VPN网络架构由CE（Customer Edge）、PE（Provider Edge）和P（Provider）三部分组成：</p>
+<ul>
+<li><p>CE：用户网络边缘设备，有接口直接与运营商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。</p>
+</li>
+<li><p>PE：运营商边缘路由器，是运营商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。</p>
+</li>
+<li><p>P：运营商网络中的骨干路由器，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN相关信息。</p>
+</li>
+</ul>
+<p>•更多MPLS及MPLS VPN的相关内容，参考HCIP-Datacom-Advance相应课程。</p>
+</blockquote>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（判断题）L2TP VPN工作在网络层。</p>
+<p>A. 正确</p>
+<p><strong>B. 错误</strong></p>
+<p>2.（多选题）IPSec SA包含以下哪些内容？</p>
+<p><strong>A. SPI</strong></p>
+<p><strong>B. 安全协议</strong></p>
+<p>C. 源地址</p>
+<p><strong>D. 目的地址</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VPN技术拥有安全、廉价、支持移动业务、灵活等一系列优势，已经成为现网中部署最为广泛的一类技术。</p>
+<p>•本课程从VPN基本概念与分类出发，简单介绍了如下几类常见VPN技术：</p>
+<ul>
+<li><p>IPSec VPN：是一系列为IP网络提供安全性的协议和服务的集合，为IP网络提供安全的传输。</p>
+</li>
+<li><p>GRE VPN：提供了将一种协议的报文封装在另一种协议报文中的机制，解决异种网络的传输问题。</p>
+</li>
+<li><p>L2TP VPN：是一种能够提供移动用户远程接入服务的二层VPN技术。</p>
+</li>
+<li><p>MPLS VPN：一种通过标签交换技术，实现站点与站点之间互联的VPN技术。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-25-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/" rel="tag"># IP-25-VPN技术概述</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/" rel="next" title="IP-网络设备安全特性">
+                <i class="fa fa-chevron-left"></i> IP-网络设备安全特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/" rel="prev" title="IP-VRF基本概念及应用">
+                IP-VRF基本概念及应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFVPN"><span class="nav-number">3.</span> <span class="nav-text">1.什么是VPN</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="nav-number">3.1.</span> <span class="nav-text">技术背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E7%AE%80%E4%BB%8B"><span class="nav-number">3.2.</span> <span class="nav-text">VPN简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E5%88%86%E7%B1%BB-%E6%A0%B9%E6%8D%AE%E5%BB%BA%E8%AE%BE%E5%8D%95%E4%BD%8D%E4%B8%8D%E5%90%8C"><span class="nav-number">3.3.</span> <span class="nav-text">VPN分类 - 根据建设单位不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E5%88%86%E7%B1%BB-%E6%A0%B9%E6%8D%AE%E7%BB%84%E7%BD%91%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="nav-number">3.4.</span> <span class="nav-text">VPN分类 - 根据组网方式不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E5%88%86%E7%B1%BB-%E6%A0%B9%E6%8D%AE%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%BD%91%E7%BB%9C%E5%B1%82%E6%AC%A1"><span class="nav-number">3.5.</span> <span class="nav-text">VPN分类 - 根据实现的网络层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF-%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF"><span class="nav-number">3.6.</span> <span class="nav-text">VPN关键技术 - 隧道技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VPN%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF-%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E3%80%81%E6%95%B0%E6%8D%AE%E5%8A%A0%E5%AF%86%E4%B8%8E%E9%AA%8C%E8%AF%81"><span class="nav-number">3.7.</span> <span class="nav-text">VPN关键技术 - 身份认证、数据加密与验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B8%B8%E8%A7%81VPN%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">2.常见VPN技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPSec%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">IPSec概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPSec%E5%8D%8F%E8%AE%AE%E4%BD%93%E7%B3%BB"><span class="nav-number">4.2.</span> <span class="nav-text">IPSec协议体系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPSec%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">4.3.</span> <span class="nav-text">IPSec基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GRE%E6%A6%82%E8%BF%B0"><span class="nav-number">4.4.</span> <span class="nav-text">GRE概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GRE%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">4.5.</span> <span class="nav-text">GRE基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GRE-Over-IPSec"><span class="nav-number">4.6.</span> <span class="nav-text">GRE Over IPSec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#L2TP%E6%A6%82%E8%BF%B0"><span class="nav-number">4.7.</span> <span class="nav-text">L2TP概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#L2TP%E6%B6%88%E6%81%AF"><span class="nav-number">4.8.</span> <span class="nav-text">L2TP消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#L2TP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="nav-number">4.9.</span> <span class="nav-text">L2TP工作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#L2TP-Over-IPSec"><span class="nav-number">4.10.</span> <span class="nav-text">L2TP Over IPSec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E6%A6%82%E8%BF%B0"><span class="nav-number">4.11.</span> <span class="nav-text">MPLS VPN概述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

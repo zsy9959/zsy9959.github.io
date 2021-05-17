@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-28-VRRP原理与配置," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•局域网中的用户终端通常采用配置一个默认网关的形式访问外部网络，如果默认网关设备发生故障，那么所有用户终端访问外部网络的流量将会中断。可以通过部署多个网关的方式来解决单点故障，但是需要解决多个网关之间的冲突问题。 •VRRP（Virtual Router Redundancy Protocol，虚拟路由器冗余协议）既能够实现网关的备份，又能解决多个网关之间互相冲突的问题，从而提高网络可靠性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-VRRP原理与配置">
+<meta property="og:url" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•局域网中的用户终端通常采用配置一个默认网关的形式访问外部网络，如果默认网关设备发生故障，那么所有用户终端访问外部网络的流量将会中断。可以通过部署多个网关的方式来解决单点故障，但是需要解决多个网关之间的冲突问题。 •VRRP（Virtual Router Redundancy Protocol，虚拟路由器冗余协议）既能够实现网关的备份，又能解决多个网关之间互相冲突的问题，从而提高网络可靠性。">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png">
+<meta property="og:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png">
+<meta property="article:published_time" content="2021-05-17T12:53:26.000Z">
+<meta property="article:modified_time" content="2021-05-17T13:07:14.708Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-28-VRRP原理与配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/17/IP-VRRP原理与配置/"/>
+
+
+
+
+
+  <title>IP-VRRP原理与配置 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-VRRP原理与配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:53:26+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•局域网中的用户终端通常采用配置一个默认网关的形式访问外部网络，如果默认网关设备发生故障，那么所有用户终端访问外部网络的流量将会中断。可以通过部署多个网关的方式来解决单点故障，但是需要解决多个网关之间的冲突问题。</p>
+<p>•VRRP（Virtual Router Redundancy Protocol，虚拟路由器冗余协议）既能够实现网关的备份，又能解决多个网关之间互相冲突的问题，从而提高网络可靠性。</p>
+<p>•本课程主要介绍VRRP的工作原理与基本配置，以及在网络中的典型应用。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫分析局域网单网关引发的问题</p>
+<p>▫阐述VRRP基本概念及工作原理</p>
+<p>▫描述VRRP主备切换过程</p>
+<p>▫实现VRRP基本配置</p>
+<h1 id="1-VRRP技术概述"><a href="#1-VRRP技术概述" class="headerlink" title="1.VRRP技术概述"></a>1.VRRP技术概述</h1><h2 id="单网关面临的问题"><a href="#单网关面临的问题" class="headerlink" title="单网关面临的问题"></a>单网关面临的问题</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="VRRP概述"><a href="#VRRP概述" class="headerlink" title="VRRP概述"></a>VRRP概述</h2><p>通过把几台路由设备联合组成一台虚拟的“路由设备”，使用一定的机制保证当主机的下一跳路由设备出现故障时，及时将业务切换到备份路由设备，从而保持通讯的连续性和可靠性。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•VRRP的运行结果是在局域网上提供一个虚拟路由器。</p>
+<p>•本例中：</p>
+<ul>
+<li><p>局域网中有两个路由器R1和R2，R1端口IP地址为192.168.1.251/24，R2端口IP地址为192.168.1.252/24。</p>
+</li>
+<li><p>配置R1和R2关联到同一个虚拟路由器，该虚拟路由器使用192.168.1.254做为端口IP地址。</p>
+</li>
+<li><p>所有的PC使用192.168.1.254做为默认网关。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="VRRP的基本概念-1"><a href="#VRRP的基本概念-1" class="headerlink" title="VRRP的基本概念 (1)"></a>VRRP的基本概念 (1)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<p>•<strong>VRRP路由器：</strong>运行VRRP协议的路由器，如R1和R2。VRRP是配置在路由器的接口上的，而且也是基于接口来工作的。</p>
+<p>•<strong>VRID：</strong>一个VRRP组（VRRP Group）由多台协同工作的路由器（的接口）组成，使用相同的VRID（Virtual Router Identifier，虚拟路由器标识符）进行标识。属于同一个VRRP组的路由器之间交互VRRP协议报文并产生一台虚拟“路由器”。一个VRRP组中只能出现一台Master路由器。 </p>
+<h2 id="VRRP的基本概念-2"><a href="#VRRP的基本概念-2" class="headerlink" title="VRRP的基本概念 (2)"></a>VRRP的基本概念 (2)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<p>•<strong>虚拟路由器：</strong>VRRP为每一个组抽象出一台虚拟“路由器”（Virtual Router），该路由器并非真实存在的物理设备，而是由VRRP虚拟出来的逻辑设备。一个VRRP组只会产生一台虚拟路由器。</p>
+<p>•<strong>虚拟IP地址及虚拟MAC地址：</strong>虚拟路由器拥有自己的IP地址以及MAC地址，其中IP地址由网络管理员在配置VRRP时指定，一台虚拟路由器可以有一个或多个IP地址，通常情况下用户使用该地址作为网关地址。而虚拟MAC地址的格式是“0000-5e00-01xx”，其中xx为VRID。</p>
+<h2 id="VRRP的基本概念-3"><a href="#VRRP的基本概念-3" class="headerlink" title="VRRP的基本概念 (3)"></a>VRRP的基本概念 (3)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<p>•<strong>Master路由器：</strong>“Master路由器”在一个VRRP组中承担报文转发任务。在每一个VRRP组中，只有Master路由器才会响应针对虚拟IP地址的ARP Request。Master路由器会以一定的时间间隔周期性地发送VRRP报文，以便通知同一个VRRP组中的Backup路由器关于自己的存活情况。</p>
+<p>•<strong>Backup路由器：</strong>也被称为备份路由器。Backup路由器将会实时侦听Master路由器发送出来的VRRP报文，它随时准备接替Master路由器的工作。</p>
+<p>•<strong>Priority：</strong>优先级值是选举Master路由器和Backup路由器的依据，优先级取值范围0-255，值越大越优先，值相等则比较接口IP地址大小，大者优先。</p>
+<h2 id="VRRP报文格式"><a href="#VRRP报文格式" class="headerlink" title="VRRP报文格式"></a>VRRP报文格式</h2><p>VRRP只有一种报文，即Advertisement报文，基于组播方式发送，因此只能在同一个广播域传递。 Advertisement报文的目的组播地址为224.0.0.18。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>VRRP报文字段含义如下：</p>
+<p>▫Ver：VRRP目前有两个版本，其中VRRPv2仅适用于IPv4网络，VRRPv3适用于IPv4和IPv6两种网络。</p>
+<p>▫Virtual Rtr ID：该报文所关联的虚拟路由器的标识。</p>
+<p>▫Priority：发送该报文的VRRP路由器的优先级。</p>
+<p>▫Count IP Addrs：该VRRP报文中所包含的虚拟IP地址的数量。</p>
+<p>▫Auth Type：VRRP支持三种认证类型：不认证、纯文本密码认证、MD5方式认证，对应值分别为0、1、2。</p>
+<p>▫Adver Int：发送VRRP通告消息的间隔。默认为1秒</p>
+<p>▫IP Address：所关联的虚拟路由器的虚拟IP地址，可以为多个。</p>
+<p>▫Authentication Data：验证所需要的密码信息。</p>
+</blockquote>
+<h2 id="VRRP定时器"><a href="#VRRP定时器" class="headerlink" title="VRRP定时器"></a>VRRP定时器</h2><p>在VRRP协议工作过程中，VRRP定义了两个定时器：</p>
+<p>▫ADVER_INTERVAL定时器：Master发送VRRP通告报文时间周期，缺省值为1秒。</p>
+<p>▫MASTER_DOWN定时器：Backup设备监听该定时器超时后，会变为Master状态。<br>     MASTER_DOWN定时器计算公式如下：</p>
+<ul>
+<li>MASTER_DOWN =（3* ADVER_INTERVAL）+ Skew_time（偏移时间）</li>
+<li>其中，Skew_Time=（256–Priority）/256</li>
+</ul>
+<h1 id="2-VRRP技术原理"><a href="#2-VRRP技术原理" class="headerlink" title="2.VRRP技术原理"></a>2.VRRP技术原理</h1><h2 id="VRRP状态机"><a href="#VRRP状态机" class="headerlink" title="VRRP状态机"></a>VRRP状态机</h2><p>VRRP协议状态机有三种状态：Initialize（初始状态）、Master（活动状态）、Backup（备份状态）。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<blockquote>
+<p>•一个Startup事件可以由系统在VRRP配置完成后自动触发，也可以是在已经配置VRRP的端口上，底层链路由不可用变为可用而触发。</p>
+</blockquote>
+<h2 id="VRRP协议状态"><a href="#VRRP协议状态" class="headerlink" title="VRRP协议状态"></a>VRRP协议状态</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h2 id="VRRP主备选举-1"><a href="#VRRP主备选举-1" class="headerlink" title="VRRP主备选举 (1)"></a>VRRP主备选举 (1)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<blockquote>
+<p>•初始创建VRRP的设备工作在Initialize状态，收到接口Up的消息后，若此设备的优先级小于255，则会先切换至Backup状态，等待MASTER_DOWN定时器超时后再切换至Master状态。</p>
+<p>•如果优先级高的设备先启动，优先级低的设备后启动，则优先级高的设备先进入Master状态，优先级低的设备收到高优先级的VRRP通告报文，自己仍处于Backup状态。</p>
+<p>•如果优先级低的先启动，优先级高的后启动，则优先级低的先由Backup状态切换为Master状态，优先级高的设备收到优先级低的VRRP通告报文，重新进行选举，将优先级高的设备切换为Master状态。</p>
+</blockquote>
+<h2 id="VRRP主备选举-2"><a href="#VRRP主备选举-2" class="headerlink" title="VRRP主备选举 (2)"></a>VRRP主备选举 (2)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•初始创建VRRP的设备工作在Initialize状态，收到接口Up的消息后，若此设备的优先级小于255，则会先切换至Backup状态，等待MASTER_DOWN定时器超时后再切换至Master状态。</p>
+<p>•如果优先级高的设备先启动，优先级低的设备后启动，则优先级高的设备先进入Master状态，优先级低的设备收到高优先级的VRRP通告报文，自己仍处于Backup状态。</p>
+<p>•如果优先级低的先启动，优先级高的后启动，则优先级低的先由Backup状态切换为Master状态，优先级高的设备收到优先级低的VRRP通告报文，重新进行选举，将优先级高的设备切换为Master状态。</p>
+</blockquote>
+<h2 id="VRRP主备选举-3"><a href="#VRRP主备选举-3" class="headerlink" title="VRRP主备选举 (3)"></a>VRRP主备选举 (3)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•通常情况下，VRRP路由器的接口IP地址不会与虚拟路由器的IP地址重叠，也就是说我们会为虚拟路由器单独规划一个IP地址，而不会使用某台路由器的接口IP地址。当然也存在一个特殊的情况，例如在某些网络中IP地址资源比较紧缺，那么也有可能会将某台路由器的接口IP地址用于虚拟路由器，此时该路由器将无条件成为Master。</p>
+<p>•无法手动将VRRP接口优先级配置为255，当接口IP地址为IP地址拥有者时，优先级自动成为255。</p>
+</blockquote>
+<h2 id="VRRP主备切换"><a href="#VRRP主备切换" class="headerlink" title="VRRP主备切换"></a>VRRP主备切换</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•当Master设备主动放弃Master地位（如Master设备退出备份组）时，会发送优先级为0的通告报文，用来使Backup设备快速切换成Master设备，而不用等到MASTER_DOWN定时器超时。这个切换的时间称为Skew_time。</p>
+<p>•当Master设备发生网络故障而不能发送通告报文的时候，Backup设备并不能立即知道其工作状况。等到MASTER_DOWN定时器超时后，才会认为Master设备无法正常工作，从而将状态切换为Master。</p>
+</blockquote>
+<h2 id="VRRP主备回切"><a href="#VRRP主备回切" class="headerlink" title="VRRP主备回切"></a>VRRP主备回切</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<blockquote>
+<p>•开启抢占模式的VRRP备份组，当主备进行切换时，总共时长为：3xAdver_Interval+Skew_time+Delay_time</p>
+<p>•在抢占模式下，当Master的设备状态不稳定或者网络质量差时，会导致VRRP备份组频繁切换，从而引发终端ARP表项频繁刷新，为缓解此问题，通常设置抢占延时定时器，通过MASTER_INTERVAL定时器超时时间加上延时时间，确定状态稳定后，再进行主备回切。</p>
+</blockquote>
+<h1 id="3-VRRP典型应用"><a href="#3-VRRP典型应用" class="headerlink" title="3.VRRP典型应用"></a>3.VRRP典型应用</h1><h2 id="VRRP负载分担"><a href="#VRRP负载分担" class="headerlink" title="VRRP负载分担"></a>VRRP负载分担</h2><p>通过创建多个虚拟路由器，每个物理路由器在不同的VRRP组中扮演不同的角色，不同虚拟路由器的Virtual IP作为不同的内网网关地址可以实现流量转发负载分担。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<h2 id="VRRP监视上行端口"><a href="#VRRP监视上行端口" class="headerlink" title="VRRP监视上行端口"></a>VRRP监视上行端口</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<blockquote>
+<p>•如果用户未配置VRRP监视上行端口，则当VRRP备份组中的Master设备R1的上行接口或者链路出现故障时，VRRP备份组无法感知，Master无法向外转发流量。但是由于主备不会发生切换，导致出现流量黑洞。</p>
+</blockquote>
+<h2 id="VRRP与BFD联动"><a href="#VRRP与BFD联动" class="headerlink" title="VRRP与BFD联动"></a>VRRP与BFD联动</h2><p>通过配置VRRP与BFD联动，当Backup设备通过BFD感知故障发生之后，不再等待Master_Down_Timer计时器超时而会在BFD检测周期结束后立即切换VRRP状态，此时可以实现毫秒级的主备切换。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<blockquote>
+<p>•当VRRP备份组之间的链路出现故障时，由于此时VRRP报文无法正常交互，Backup设备需要等待Master_Down_Timer计时器超时后才会切换为Master设备，在等待切换期间内，业务流量仍会发往Master设备，此时会造成业务流量丢失。</p>
+<p>•通过在Master设备和Backup设备之间建立BFD会话并与VRRP备份组进行绑定，由BFD机制快速检测VRRP备份组之间的通信故障，并在出现故障时及时通知VRRP备份组进行主备切换，从而大大减少应用中断时间。</p>
+<p>•在普通BFD联动中，VRRP备份组会根据BFD会话的状态进行优先级调整，并根据调整后的优先级判断是否进行主备切换。在实际应用中，通常Master设备配置延时抢占，而Backup设备配置立即抢占，当Backup设备检测到BFD会话状态出现DOWN后，通过增加自身优先级大于Master优先级实现快速切换，当故障排除，BFD会话状态出现UP时，新的Master通过减小自己的优先级，发送vrrp通告报文，经过延迟时间后再次切换为Backup。</p>
+</blockquote>
+<h2 id="VRRP与MSTP结合应用"><a href="#VRRP与MSTP结合应用" class="headerlink" title="VRRP与MSTP结合应用"></a>VRRP与MSTP结合应用</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<blockquote>
+<p>•MSTP是将一个或多个VLAN映射到一个生成树的实例，若干个VLAN共用一个生成树，MSTP可以实现负载均衡。</p>
+<p>•VRRP配置网关可以灵活根据网络拓扑变化而自动切换，提高网络可靠性。</p>
+<p>•VRRP+MSTP可以在实现负载分担的同时保证网络冗余备份。</p>
+</blockquote>
+<h1 id="4-VRRP基本配置"><a href="#4-VRRP基本配置" class="headerlink" title="4.VRRP基本配置"></a>4.VRRP基本配置</h1><h2 id="VRRP常用配置命令"><a href="#VRRP常用配置命令" class="headerlink" title="VRRP常用配置命令"></a>VRRP常用配置命令</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<h2 id="VRRP基础配置实例"><a href="#VRRP基础配置实例" class="headerlink" title="VRRP基础配置实例"></a>VRRP基础配置实例</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<h2 id="VRRP基础配置验证"><a href="#VRRP基础配置验证" class="headerlink" title="VRRP基础配置验证"></a>VRRP基础配置验证</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下关于VRRP报文中IP地址的设置正确的说法是(   )。</p>
+<p><strong>A.源IP地址为Master设备端口的IP地址</strong></p>
+<p>B.源IP地址为虚拟路由器的虚拟IP地址</p>
+<p>C.目的IP地址为广播IP地址</p>
+<p><strong>D.目的IP地址为组播IP地址</strong></p>
+<p>2.（多选题）以下关于VRRP协议中各定时器的说法正确的是(   )。</p>
+<p><strong>A.VRRP通告消息发送间隔默认为1秒，关联到同一虚拟路由器VRRP路由器上配置的VRRP消息通告间隔必须一致。</strong></p>
+<p>B.配置抢占延迟时间为4秒，表示如果4秒中之内没有收到Master发送的VRRP通告消息，则Slave应当成为新的Master。</p>
+<p>C.配置抢占延迟时间为4秒，配置VRRP消息通告间隔为2秒，表示如果6秒中之内没有收到Master发送的VRRP通告消息，则Slave应当成为新的Master。</p>
+<p><strong>D.在比较繁忙的网络中，应当适当的将抢占延迟设置为一个较大的值，以避免不必要的VRRP角色振荡。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VRRP作为一种非常重要的可靠性技术，常用于实现网关设备冗余，该协议既能提高网络可靠性，又可以实现网络负载分担。</p>
+<p>•VRRP主备选举、主备切换及主备回切都主要通过VRRP优先级来控制，为了确保网络稳定性，VRRP设计了抢占延时机制，减少网络震荡。</p>
+<p>•VRRP可监视上行接口状态，从而感知网络故障，联动VRRP实现网络可靠性。VRRP亦可绑定BFD会话实现快速收敛。此外，VRRP可与MSTP结合使用，在园区网络中，这是常见的组网方案。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-28-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="tag"># IP-28-VRRP原理与配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="next" title="IP-BFD原理与应用">
+                <i class="fa fa-chevron-left"></i> IP-BFD原理与应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="IP-DHCP原理与配置">
+                IP-DHCP原理与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-VRRP%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">1.VRRP技术概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E7%BD%91%E5%85%B3%E9%9D%A2%E4%B8%B4%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">单网关面临的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E6%A6%82%E8%BF%B0"><span class="nav-number">3.2.</span> <span class="nav-text">VRRP概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-1"><span class="nav-number">3.3.</span> <span class="nav-text">VRRP的基本概念 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-2"><span class="nav-number">3.4.</span> <span class="nav-text">VRRP的基本概念 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-3"><span class="nav-number">3.5.</span> <span class="nav-text">VRRP的基本概念 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.6.</span> <span class="nav-text">VRRP报文格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="nav-number">3.7.</span> <span class="nav-text">VRRP定时器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-VRRP%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">2.VRRP技术原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">4.1.</span> <span class="nav-text">VRRP状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%8D%8F%E8%AE%AE%E7%8A%B6%E6%80%81"><span class="nav-number">4.2.</span> <span class="nav-text">VRRP协议状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%BB%E5%A4%87%E9%80%89%E4%B8%BE-1"><span class="nav-number">4.3.</span> <span class="nav-text">VRRP主备选举 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%BB%E5%A4%87%E9%80%89%E4%B8%BE-2"><span class="nav-number">4.4.</span> <span class="nav-text">VRRP主备选举 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%BB%E5%A4%87%E9%80%89%E4%B8%BE-3"><span class="nav-number">4.5.</span> <span class="nav-text">VRRP主备选举 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%BB%E5%A4%87%E5%88%87%E6%8D%A2"><span class="nav-number">4.6.</span> <span class="nav-text">VRRP主备切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%BB%E5%A4%87%E5%9B%9E%E5%88%87"><span class="nav-number">4.7.</span> <span class="nav-text">VRRP主备回切</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-VRRP%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">3.VRRP典型应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E8%B4%9F%E8%BD%BD%E5%88%86%E6%8B%85"><span class="nav-number">5.1.</span> <span class="nav-text">VRRP负载分担</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E7%9B%91%E8%A7%86%E4%B8%8A%E8%A1%8C%E7%AB%AF%E5%8F%A3"><span class="nav-number">5.2.</span> <span class="nav-text">VRRP监视上行端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%8EBFD%E8%81%94%E5%8A%A8"><span class="nav-number">5.3.</span> <span class="nav-text">VRRP与BFD联动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E4%B8%8EMSTP%E7%BB%93%E5%90%88%E5%BA%94%E7%94%A8"><span class="nav-number">5.4.</span> <span class="nav-text">VRRP与MSTP结合应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-VRRP%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">4.VRRP基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">6.1.</span> <span class="nav-text">VRRP常用配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B"><span class="nav-number">6.2.</span> <span class="nav-text">VRRP基础配置实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81"><span class="nav-number">6.3.</span> <span class="nav-text">VRRP基础配置验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
