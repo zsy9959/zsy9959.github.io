@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IP-31-大型WLAN组网介绍与部," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•目前，大多数企业办公环境同时使用有线和无线网络来支撑业务。办公区在提供有线网口的同时，也采用全Wi-Fi覆盖，办公环境更为开放和智能。未来，企业云桌面办公、智真会议、4K视频等大带宽业务将从有线网络迁移至无线网络，而VR&#x2F;AR、虚拟助手、自动化工厂等新技术将直接基于无线网络部署。新的应用场景对企业WLAN的设计与规划提出更高的要求。 •本课程介绍大型WLAN组网的典型应用、关键技术原理以及大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP-大型WLAN组网介绍与部署">
+<meta property="og:url" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•目前，大多数企业办公环境同时使用有线和无线网络来支撑业务。办公区在提供有线网口的同时，也采用全Wi-Fi覆盖，办公环境更为开放和智能。未来，企业云桌面办公、智真会议、4K视频等大带宽业务将从有线网络迁移至无线网络，而VR&#x2F;AR、虚拟助手、自动化工厂等新技术将直接基于无线网络部署。新的应用场景对企业WLAN的设计与规划提出更高的要求。 •本课程介绍大型WLAN组网的典型应用、关键技术原理以及大">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/1.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/2.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/3.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/4.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/5.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/6.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/7.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/8.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/9.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/10.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/11.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/12.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/13.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/14.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/15.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/16.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/17.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/18.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/19.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/20.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/21.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/22.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/23.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/24.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/25.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/26.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/27.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/28.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/29.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/30.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/31.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/32.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/33.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/34.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/35.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/36.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/37.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/38.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/39.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/40.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/41.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/42.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/43.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/44.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/45.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/46.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/47.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/48.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/49.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/50.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/51.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/52.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/53.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/54.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/55.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/56.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/57.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/58.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/59.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/60.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/61.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/62.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/63.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/64.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/65.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/66.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/67.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/68.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/69.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/70.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/71.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/72.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/73.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/74.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/75.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/76.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/77.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/78.png">
+<meta property="og:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/79.png">
+<meta property="article:published_time" content="2021-05-18T12:37:03.000Z">
+<meta property="article:modified_time" content="2021-05-18T13:17:04.024Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IP-31-大型WLAN组网介绍与部">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/05/18/IP-大型WLAN组网介绍与部署/"/>
+
+
+
+
+
+  <title>IP-大型WLAN组网介绍与部署 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IP-大型WLAN组网介绍与部署</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-18T20:37:03+08:00">
+                2021-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•目前，大多数企业办公环境同时使用有线和无线网络来支撑业务。办公区在提供有线网口的同时，也采用全Wi-Fi覆盖，办公环境更为开放和智能。未来，企业云桌面办公、智真会议、4K视频等大带宽业务将从有线网络迁移至无线网络，而VR/AR、虚拟助手、自动化工厂等新技术将直接基于无线网络部署。新的应用场景对企业WLAN的设计与规划提出更高的要求。</p>
+<p>•本课程介绍大型WLAN组网的典型应用、关键技术原理以及大型WLAN组网的配置。</p>
+<blockquote>
+<p>•云桌面又称桌面虚拟化、云电脑，是替代传统电脑的一种新模式；采用云桌面后，用户无需再购买电脑主机，用户安装客户端后通过特有的通信协议访问后端服务器上的虚拟机主机来实现交互式操作，达到与电脑一致的体验效果；同时，云桌面不仅支持用于替换传统电脑，还支持手机、平板等其他智能设备在互联网上访问，也是移动办公的最新解决方案。</p>
+<p>•智真会议是通过高分辨率摄像头和语音设备，提供真人大小面对面、眼对眼的视频会议。</p>
+<p>•VR：Virtual Reality，虚拟现实，指用计算机模拟三维环境，用户常常借助手套和眼镜就能直接交互操作。</p>
+<p>•AR：Augmented Reality，增强现实，在虚拟现实的基础上发展起来的新技术，也被称为混合现实。是通过计算机系统提供的信息增加用户对现实世界感知的技术，将虚拟的信息应用到真实世界，并将计算机生成的虚拟物体、场景或系统提示信息叠加到真实场景中，从而实现对现实的增强。AR通常是以透过式头盔显示系统和注册（AR系统中用户观察点和计算机生成的虚拟物体的定位）系统相结合的形式来实现的。</p>
+</blockquote>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫阐述大型WLAN典型组网架构与特点</p>
+<p>▫阐述大型WLAN的关键技术</p>
+<p>▫实现大型WLAN的组网配置</p>
+<h1 id="1-大型WLAN组网概述"><a href="#1-大型WLAN组网概述" class="headerlink" title="1.大型WLAN组网概述"></a>1.大型WLAN组网概述</h1><h2 id="大型WLAN组网的应用"><a href="#大型WLAN组网的应用" class="headerlink" title="大型WLAN组网的应用"></a>大型WLAN组网的应用</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/1.png"></p>
+<blockquote>
+<p>•高新科技园区会使用大量的新兴技术，比如IoT、5G融合、自动驾驶等等技术。</p>
+</blockquote>
+<h2 id="大型WLAN组网特点"><a href="#大型WLAN组网特点" class="headerlink" title="大型WLAN组网特点"></a>大型WLAN组网特点</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/2.png"></p>
+<h2 id="华为大型WLAN方案功能"><a href="#华为大型WLAN方案功能" class="headerlink" title="华为大型WLAN方案功能"></a>华为大型WLAN方案功能</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/3.png"></p>
+<h2 id="WLAN网络解决方案"><a href="#WLAN网络解决方案" class="headerlink" title="WLAN网络解决方案"></a>WLAN网络解决方案</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/4.png"></p>
+<h2 id="大型WLAN网络关键技术"><a href="#大型WLAN网络关键技术" class="headerlink" title="大型WLAN网络关键技术"></a>大型WLAN网络关键技术</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/5.png"></p>
+<h1 id="2-VLAN-Pool"><a href="#2-VLAN-Pool" class="headerlink" title="2.VLAN Pool"></a>2.<strong>VLAN Pool</strong></h1><h2 id="VLAN-Pool-概念"><a href="#VLAN-Pool-概念" class="headerlink" title="VLAN Pool 概念"></a>VLAN Pool 概念</h2><p>•现有网络面临的挑战</p>
+<ul>
+<li><p>无线网络终端的移动性导致特定区域IP地址请求较多。</p>
+</li>
+<li><p>通过情况下，一个SSID只能对应一个业务VLAN，如果通过扩大子网增加IP地址则会导致广播域扩大，大量的广播报文造成网络拥塞。</p>
+</li>
+</ul>
+<p>•VLAN Pool是一种把多个VLAN放在一个池中并提供分配算法的VLAN分配技术，又称为VLAN池。</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/6.png"></p>
+<blockquote>
+<p>•通过VLAN Pool把接入的用户分配到不同的VLAN，可以减少广播域，减少网络中的广播报文，提升网络性能。</p>
+<p>•由于无线终端的移动性，在无线网络中经常有大量用户从某个区域接入后，随着用的移动，再漫游到其他区域，导致该区域的用户接入多，对IP地址数目要求大。比如：场馆入口、酒店的大堂等。目前一个SSID只能对应一个VLAN，一个VLAN对应一个子网，如果大量用户从某一区域接入，只能扩大VLAN的子网，保证用户能够获取到IP地址。这样带来的问题就是广播域扩大，导致大量的广播报文（如：ARP、DHCP等）带来严重的网络拥塞。</p>
+<p>•基于此问题考虑，一个SSID需要能够对应多个VLAN，把大量用户分散到不同的VLAN减少广播域。VLAN Pool提供多个VLAN的管理和分配算法，实现SSID对应多个VLAN的方案。</p>
+</blockquote>
+<h2 id="VLAN-Pool分配VLAN的算法"><a href="#VLAN-Pool分配VLAN的算法" class="headerlink" title="VLAN Pool分配VLAN的算法"></a>VLAN Pool分配VLAN的算法</h2><p>•顺序分配算法：把用户按上线顺序依次划分到不同的VLAN中。</p>
+<p>•HASH分配算法：根据用户MAC地址HASH值分配VLAN。</p>
+<p>•两种分配方式的比较：</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/7.png"></p>
+<blockquote>
+<p>•顺序分配算法：把用户按上线顺序依次划分到不同的VLAN中，用户上下线用户VLAN容易变化，IP地址变更。</p>
+<p>•HASH分配算法：根据用户MAC地址HASH值分配VLAN，用户分配的VLAN固定，可能导致VLAN间用户划分不均匀，有的VLAN用户较多，有的较少。</p>
+</blockquote>
+<h2 id="分配VLAN流程"><a href="#分配VLAN流程" class="headerlink" title="分配VLAN流程"></a>分配VLAN流程</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/8.png"></p>
+<p>1.用户终端从某个VAP接入，判断VAP是否有判断VLAN Pool。</p>
+<p>2.如果该VAP对应的模板绑定了VLAN Pool，使用VLAN Pool的分配算法分配一个VLAN, VLAN Pool有顺序分配和hash分配两种分配算法。</p>
+<p>3.给终端分配一个VLAN。</p>
+<p>4.终端从VLAN Pool分配的VLAN上线。</p>
+<blockquote>
+<p>•虚拟接入点VAP（Virtual Access Point）：VAP就是在一个物理实体AP上虚拟出多个AP，每一个被虚拟出的AP就是一个VAP，每个VAP提供和物理实体AP一样的功能。用户可以在一个AP上创建不同的VAP来为不同的用户群体提供无线接入服务。</p>
+</blockquote>
+<h2 id="VLAN-Pool应用示例"><a href="#VLAN-Pool应用示例" class="headerlink" title="VLAN Pool应用示例"></a>VLAN Pool应用示例</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/9.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/10.png"></p>
+<h2 id="配置介绍"><a href="#配置介绍" class="headerlink" title="配置介绍"></a>配置介绍</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/11.png"></p>
+<blockquote>
+<p>•VLAN pool中可以配置VLAN分配算法。assignment { even | hash }</p>
+<ul>
+<li><p>VLAN分配算法为even时，VLAN pool根据STA的上线顺序为STA分配业务VLAN，VLAN pool尽量保证所有VLAN分配给STA的IP地址数目相近。但同一个STA如果多次上线，每次获取的地址通常都不相同。</p>
+</li>
+<li><p>VLAN分配算法为hash时，VLAN pool根据STA的MAC地址进行哈希运算后的结果为STA分配业务VLAN，只要VLAN pool里面的VLAN不发生变化，通常STA都会获取到固定的业务VLAN，STA重新上线时也会被尽量优先分配到之前使用过的IP地址。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="配置案例"><a href="#配置案例" class="headerlink" title="配置案例"></a>配置案例</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/12.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/13.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/14.png"></p>
+<h1 id="3-DHCP技术"><a href="#3-DHCP技术" class="headerlink" title="3.DHCP技术"></a>3.DHCP技术</h1><h2 id="DHCP中继"><a href="#DHCP中继" class="headerlink" title="DHCP中继"></a>DHCP中继</h2><p>•DHCP客户端使用IP广播来寻找同一网段上的DHCP服务器。当服务器和客户段处在不同网段，即被路由器分割开来时，路由器是不会转发这样的广播包。</p>
+<p>•DHCP中继能够跨网段“透传”DHCP报文，使得一个DHCP服务器同时为多个网段服务成为可能。</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/15.png"></p>
+<blockquote>
+<p>•随着网络规模的不断扩大，网络设备不断增多，企业内不同的用户可能分布在不同的网段，一台DHCP服务器在正常情况下无法满足多个网段的地址分配需求。企业内网各个网段通常都没有与DHCP Server在同一个二层广播域内，如果还需要通过DHCP服务器分配IP地址，则需要跨网段发送DHCP协议报文。</p>
+</blockquote>
+<h2 id="配置介绍-1"><a href="#配置介绍-1" class="headerlink" title="配置介绍"></a>配置介绍</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/16.png"></p>
+<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/17.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/18.png"></p>
+<h2 id="配置案例-2"><a href="#配置案例-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/19.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/20.png"></p>
+<h2 id="配置案例-3"><a href="#配置案例-3" class="headerlink" title="配置案例 (3)"></a>配置案例 (3)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/21.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/22.png"></p>
+<h2 id="配置案例-4"><a href="#配置案例-4" class="headerlink" title="配置案例 (4)"></a>配置案例 (4)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/23.png"></p>
+<h2 id="WLAN三层组网AC发现机制"><a href="#WLAN三层组网AC发现机制" class="headerlink" title="WLAN三层组网AC发现机制"></a>WLAN三层组网AC发现机制</h2><p>当AC和AP间是三层组网时，AP通过发送广播请求报文的方式无法发现AC，这时需要通过DHCP服务器回应给AP的报文中携带的Option43字段（IPv4）或Option52（IPv6）来通告AC的IP地址。</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/24.png"></p>
+<blockquote>
+<p>•在AC和AP间是二层组网的情况下，也可以配置Option43，AP会根据Option43的内容先向指定IP地址的AC发送单播请求报文，如果发送十次报文，AP都没有收到回应，则AP会继续以广播的方式来发现同一网段的AC。所以在二层组网的情况下Option 43不是必配的参数，但在三层组网的情况下则是必配的。</p>
+<p>•Option 43即为Type值为43（0x2B）的Option字段，又称为厂商特定信息选项，DHCP服务器和DHCP客户端通过Option43交换厂商特定的信息。当DHCP服务器接收到请求Option43信息的DHCP请求报文后，将在回复报文中携带Option43，为DHCP客户端分配厂商指定的信息（本文中特指AC的IP地址）。</p>
+</blockquote>
+<h2 id="配置介绍-2"><a href="#配置介绍-2" class="headerlink" title="配置介绍"></a>配置介绍</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/25.png"></p>
+<blockquote>
+<p>•以AC或交换机配置DHCP服务器为例。大型组网中，通常都是使用独立的DHCP服务器，实际上AC或交换机也可以作为DHCP服务器。然后选择下面的一条命令配置Option43就可以了。</p>
+<ul>
+<li>option 43 sub-option 1 hex C0A80001C0A80002配置设备为AP指定AC的IP地址为192.168.0.1和192.168.0.2。其中，“C0A80001”表示IP地址192.168.0.1的十六进制格式，“C0A80002”表示IP地址192.168.0.2的十六进制格式。</li>
+<li>option 43 sub-option 2 ip-address 192.168.0.1 192.168.0.2配置设备为AP指定AC的IP地址为192.168.0.1和192.168.0.2。</li>
+<li>option 43 sub-option 3 ascii 192.168.0.1,192.168.0.2配置设备为AP指定AC的IP地址为192.168.0.1和192.168.0.2，选项使用ASCII字符串类型时，如果要配置多个IP地址，IP地址之间要使用“,”隔开。</li>
+</ul>
+</blockquote>
+<h2 id="配置案例-1-1"><a href="#配置案例-1-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/26.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/27.png"></p>
+<h2 id="配置案例-2-1"><a href="#配置案例-2-1" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/28.png"></p>
+<h1 id="4-漫游技术"><a href="#4-漫游技术" class="headerlink" title="4.漫游技术"></a>4.漫游技术</h1><h2 id="WLAN漫游概述"><a href="#WLAN漫游概述" class="headerlink" title="WLAN漫游概述"></a>WLAN漫游概述</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/29.png"></p>
+<p>•WLAN漫游是指STA在不同AP覆盖范围之间移动且保持用户业务不中断的行为。</p>
+<p>•实现WLAN漫游的两个AP必须使用相同的SSID和安全模板（安全模板名称可以不同，但是安全模板下的配置必须相同），认证模板的认证方式和认证参数也要配置相同。</p>
+<p>•WLAN漫游策略主要解决以下问题：</p>
+<p>​    ▫避免漫游过程中的认证时间过长导致丢包甚至业务中断。</p>
+<p>​    ▫保证用户授权信息不变。</p>
+<p>​    ▫保证用户IP地址不变。</p>
+<blockquote>
+<p>•终端在移动过程中，终端在移动过程中， 如果逐渐远离接入AP，则链路的信号质量也会逐步下降。当终端感知到信号质量降低一定程度（漫游门限）时，终端会主动漫游到附近AP来提高信号质量。</p>
+<p>•如图所示，漫游一般包括如下动作：</p>
+<ul>
+<li><p>终端已经与AP1建链，终端在各种信道中发送Probe Request。AP2在信道6（AP2使用的信道）中收到请求后，通过在信道6中发送应答来进行响应。终端收到应答后，对其进行评估，确定同哪个AP关联最合适。此时通过评估，终端与AP2关联最合适。</p>
+</li>
+<li><p>终端通过信道6向AP2发送关联请求，AP2使用关联响应做出应答，建立用户与AP2间的关联，至此，用户与AP1的关联一直保持。</p>
+</li>
+<li><p>删除用户与AP1现有的关联。终端通过信道1（AP1使用的信道）向AP1发送802.11解除关联信息，解除用户与AP1间的关联。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="WLAN漫游的相关术语"><a href="#WLAN漫游的相关术语" class="headerlink" title="WLAN漫游的相关术语"></a>WLAN漫游的相关术语</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/30.png"></p>
+<blockquote>
+<p>•AC内漫游：如果漫游过程中关联的是同一个AC，这次漫游就是AC内漫游。</p>
+<p>•AC间漫游：如果漫游过程中关联的不是同一个AC，这次漫游就是AC间漫游。</p>
+<p>•AC间隧道：为了支持AC间漫游，漫游组内的所有AC需要同步每个AC管理的STA和AP设备的信息，因此在AC间建立一条隧道作为数据同步和报文转发的通道。AC间隧道也是利用CAPWAP协议创建的。如图所示，AC1和AC2间建立AC间隧道进行数据同步和报文转发。</p>
+<p>•漫游组服务器</p>
+<ul>
+<li><p>STA在AC间进行漫游，通过选定一个AC作为漫游组服务器，在该AC上维护漫游组的成员表，并下发到漫游组内的各AC，使漫游组内的各AC间相互识别并建立AC间隧道。</p>
+</li>
+<li><p>漫游组服务器既可以是漫游组外的AC，也可以是漫游组内选择的一个AC。</p>
+</li>
+<li><p>一个AC可以同时作为多个漫游组的漫游组服务器，但是自身只能加入一个漫游组。</p>
+</li>
+<li><p>漫游组服务器管理其他AC的同时不能被其他的漫游组服务器管理。也就是说如果一个AC是作为漫游组服务器角色负责向其他AC同步漫游配置的，则它无法再作为被管理者接受其他AC向其同步漫游配置（即配置了漫游组就不能再配置漫游组服务器）。</p>
+</li>
+<li><p>漫游组服务器作为一个集中配置点，不需要有特别强的数据转发能力，只需要能够和各个AC互通即可。</p>
+</li>
+</ul>
+<p>•家乡代理</p>
+<ul>
+<li>能够和STA家乡网络的网关二层互通的一台设备。为了支持STA漫游后仍能正常访问家乡网络，需要将STA的业务报文通过隧道转发到家乡代理，再由家乡代理中转。STA的家乡代理由HAC或HAP兼任，如图所示，用户可以选取AC1或AP1作为STA的家乡代理。</li>
+</ul>
+</blockquote>
+<h2 id="WLAN漫游类型"><a href="#WLAN漫游类型" class="headerlink" title="WLAN漫游类型"></a>WLAN漫游类型</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/31.png"></p>
+<blockquote>
+<p>•二层漫游：1个无线客户端在2个AP（或多个AP）之间来回切换连接无线，前提是这些AP都绑定的是同1个SSID并且业务VLAN都在同1个VLAN内（在同一个IP地址段），漫游切换的过程中，无线客户端的接入属性（比如无线客户端所属的业务VLAN、获取的IP地址等属性）不会有任何变化，直接平滑过渡，在漫游的过程中不会有丢包和断线重连的现象。</p>
+<p>•三层漫游：漫游前后SSID的业务VLAN不同，AP所提供的业务网络为不同的三层网络，对应不同的网关。此时，为保持漫游用户IP地址不变的特性，需要将用户流量迂回到初始接入网段的AP，实现跨VLAN漫游。</p>
+<p>•网络中有时候会出现以下情况：两个业务VLAN的VLAN ID相同，但是这两个子网又属于不同的子网。此时为了避免系统仅仅依据VLAN ID将用户在两个子网间的漫游误判为二层漫游，需要通过漫游域来确定设备是否在同一个子网内，只有当VLAN相同且漫游域也相同的时候才是二层漫游，否则是三层漫游。</p>
+</blockquote>
+<h2 id="WLAN漫游流量转发模型"><a href="#WLAN漫游流量转发模型" class="headerlink" title="WLAN漫游流量转发模型"></a>WLAN漫游流量转发模型</h2><p>根据WLAN数据转发类型以及跨三层与否，可将漫游流量转发模型划分为四种：</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/32.png"></p>
+<h2 id="AC间二层漫游-直接转发"><a href="#AC间二层漫游-直接转发" class="headerlink" title="AC间二层漫游 - 直接转发"></a>AC间二层漫游 - 直接转发</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/33.png"></p>
+<p>漫游前：</p>
+<p>•STA发送业务报文给HAP。</p>
+<p>•HAP接收到业务报文后经由网关（交换机）发送给上层网络。</p>
+<p>漫游后：</p>
+<p>•STA发送业务报文给FAP。</p>
+<p>•FAP接收到业务报文后经由网关（交换机）发送给上层网络。</p>
+<blockquote>
+<p>•AC间二层漫游隧道转发与直接转发流量走向一致，不再赘述。</p>
+</blockquote>
+<h2 id="AC间三层漫游-隧道转发"><a href="#AC间三层漫游-隧道转发" class="headerlink" title="AC间三层漫游 - 隧道转发"></a>AC间三层漫游 - 隧道转发</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/34.png"></p>
+<p>漫游前： </p>
+<p>1.STA发送业务报文给HAP。</p>
+<p>2.HAP接收到业务报文后通过CAPWAP隧道发送给HAC。</p>
+<p>3.HAC直接将业务报文经过交换机发送给上层网络。</p>
+<p>漫游后：</p>
+<p>1.STA发送业务报文给FAP。</p>
+<p>2.FAP接收到业务报文后通过CAPWAP隧道发送给FAC 。</p>
+<p>3.FAC通过HAC和FAC之间的AC间隧道将业务报文转发给HAC。</p>
+<p>4.HAC直接将业务报文经由交换机发送给上层网络。</p>
+<blockquote>
+<p>•三层漫游时，用户漫游前后不在同一个子网中，为了使用户漫游后仍能正常访问漫游前的网络，需要将用户流量通过隧道中转到原来的子网。</p>
+<p>•隧道转发模式下，HAP和HAC之间的业务报文通过CAPWAP隧道封装，此时可以将HAP和HAC看作在同一个子网内，报文无需返回到HAP， 直接通过HAC进行中转到上层网络。</p>
+</blockquote>
+<h2 id="AC间三层漫游-直接转发（HAP为家乡代理）"><a href="#AC间三层漫游-直接转发（HAP为家乡代理）" class="headerlink" title="AC间三层漫游 - 直接转发（HAP为家乡代理）"></a>AC间三层漫游 - 直接转发（HAP为家乡代理）</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/35.png"></p>
+<blockquote>
+<p>漫游前： </p>
+<p>1.STA发送业务报文给HAP。</p>
+<p>2.HAP接收到业务报文后直接将业务报文经过交换机发送给上层网络。</p>
+<p>漫游后：</p>
+<p>1.STA发送业务报文给FAP。</p>
+<p>2.FAP接收到STA发送的业务报文并通过CAPWAP隧道发送给FAC。</p>
+<p>3.FAC通过HAC和FAC之间的AC间隧道将业务报文转发给HAC。</p>
+<p>4.HAC通过CAPWAP隧道将业务报文发送给HAP。</p>
+<p>5.HAP直接将业务报文发送给上层网络。</p>
+</blockquote>
+<blockquote>
+<p>•直接转发模式下，HAP和HAC之间的业务报文不通过CAPWAP隧道封装，无法判定HAP和HAC是否在同一个子网内，此时设备默认报文需要返回到HAP进行中转。如果HAP和HAC在同一个子网时，可以将家乡代理设置为性能更强的HAC，减少HAP的负荷并提高转发效率。</p>
+</blockquote>
+<h2 id="AC间三层漫游-直接转发（HAC为家乡代理）"><a href="#AC间三层漫游-直接转发（HAC为家乡代理）" class="headerlink" title="AC间三层漫游 - 直接转发（HAC为家乡代理）"></a>AC间三层漫游 - 直接转发（HAC为家乡代理）</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/36.png"></p>
+<p>漫游前： </p>
+<p>1.STA发送业务报文给HAP。</p>
+<p>2.HAP接收到业务报文后直接将业务报文经过交换机发送给上层网络。</p>
+<p>漫游后：</p>
+<p>1.STA发送业务报文给FAP。</p>
+<p>2.FAP接收到STA发送的业务报文并通过CAPWAP隧道发送给FAC。</p>
+<p>3.FAC通过HAC和FAC之间的AC间隧道将业务报文转发给HAC。</p>
+<p>4.HAC直接将业务报文发送给上层网络。</p>
+<blockquote>
+<p>•直接转发模式下，HAP和HAC之间的业务报文不通过CAPWAP隧道封装，无法判定HAP和HAC是否在同一个子网内，此时设备默认报文需要返回到HAP进行中转。如果HAP和HAC在同一个子网时，可以将家乡代理设置为性能更强的HAC，减少HAP的负荷并提高转发效率。</p>
+</blockquote>
+<h2 id="AC间漫游配置介绍"><a href="#AC间漫游配置介绍" class="headerlink" title="AC间漫游配置介绍"></a>AC间漫游配置介绍</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/37.png"></p>
+<blockquote>
+<p>•配置漫游组。</p>
+<ul>
+<li>如果指定了漫游组服务器，则需要在漫游组服务器上配置漫游组。</li>
+<li>如果没有指定漫游组服务器，则各成员AC均需配置漫游组。</li>
+</ul>
+</blockquote>
+<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例"></a>配置案例<img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/38.png"></h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/39.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/40.png"></p>
+<h1 id="5-高可靠性技术"><a href="#5-高可靠性技术" class="headerlink" title="5.高可靠性技术"></a>5.高可靠性技术</h1><h2 id="AC高可靠性概述"><a href="#AC高可靠性概述" class="headerlink" title="AC高可靠性概述"></a>AC高可靠性概述</h2><p>•在WLAN组网中，为保证组网可靠性，常见的备份技术有：</p>
+<p>​    ▫VRRP双机热备份（主备）</p>
+<p>​    ▫双链路冷备份</p>
+<p>​    ▫双链路热备份（主备&amp;负载分担）</p>
+<p>​    ▫N+1备份</p>
+<p>•为了保证WLAN业务的稳定运行，热备份（Hot-Standby Backup）机制可以保证在主设备故障时业务能够不中断的顺利切换到备份设备。</p>
+<blockquote>
+<p>•热备份是指，当两台设备在确定主用（Master）设备和备用（Backup）设备后，由主用设备进行业务的转发，而备用设备处于监控状态，同时主用设备实时向备用设备发送状态信息和需要备份的信息，当主用设备出现故障后，备用设备及时接替主用设备的业务运行。</p>
+<p>•VRRP双机热备份</p>
+<ul>
+<li><p>主备AC两个独立的IP地址，通过VRRP对外虚拟为同一个IP地址，单个AP和虚拟IP建立一条CAPWAP链路。</p>
+</li>
+<li><p>主AC备份AP信息、STA信息和CAPWAP链路信息，并通过HSB主备服务将信息同步给备AC。主AC故障后，备AC直接接替工作。</p>
+</li>
+</ul>
+<p>•双链路热备份</p>
+<ul>
+<li><p>单个AP分别和主备AC建立CAPWAP链路，一条主链路，一条备链路。</p>
+</li>
+<li><p>主AC仅备份STA信息，并通过HSB主备服务将信息同步给备AC。主AC故障后，AP切换到备链路上，备AC接替工作。</p>
+</li>
+</ul>
+<p>•双链路冷备份</p>
+<ul>
+<li><p>单个AP分别和主备AC建立CAPWAP链路，一条主链路，一条备链路。</p>
+</li>
+<li><p>AC不备份同步信息。主AC故障后，AP切换到备链路上，备AC接替工作。</p>
+</li>
+</ul>
+<p>•N+1备份</p>
+<ul>
+<li><p>单个AP只和一个AC建立CAPWAP链路。</p>
+</li>
+<li><p>AC不备份同步信息。主AC故障后，AP重新与备AC建链CAPWAP链路，备AC接替工作。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="VRRP双机热备"><a href="#VRRP双机热备" class="headerlink" title="VRRP双机热备"></a>VRRP双机热备</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/41.png"></p>
+<p>•两台AC组成一个VRRP组，主、备AC对AP始终显示为同一个虚拟IP地址，主AC通过Hot Standby（HSB）主备通道同步业务信息到备AC上。</p>
+<p>•两台AC通过VRRP协议产生一台“虚拟AC”，缺省情况下，主AC担任虚拟AC的具体工作，当主AC故障时，备AC接替其工作。所有AP与“虚拟AC”建立CAPWAP隧道。</p>
+<p>•AP只看到一个AC的存在，AC间的切换由VRRP决定。</p>
+<p>•这种方式一般将主备AC部署在同一地理位置，和其他备份方式比较，其业务切换速度非常快。</p>
+<blockquote>
+<p>•AC目前支持VRRP单实例整机热备，不支持负载均衡。整机热备具有以下特点:</p>
+<ul>
+<li><p>上行链路可以互为备份，主备VRRP可以track上行口状态，AC整机主备状态可能与各下行链路通断状态不一致。</p>
+</li>
+<li><p>下行多条链路(包括有线、无线) 采用MSTP破环，MSTP状态变更时会自动清除链路上的MAC/ARP表。 </p>
+</li>
+</ul>
+</blockquote>
+<h2 id="HSB相关概念"><a href="#HSB相关概念" class="headerlink" title="HSB相关概念"></a>HSB相关概念</h2><p>•HSB（Hot Standby，热备份）是华为主备公共机制。</p>
+<p>•主备服务（HSB service）：建立和维护主备通道，为各个主备业务模块提供通道通断事件和报文发送/接收接口。</p>
+<p>•主备备份组（HSB group）：HSB备份组内部绑定HSB service，为各个主备业务模块提供数据备份通道。HSB备份组与一个VRRP实例绑定，借用VRRP机制协商出主备实例。同时，HSB备份组还负责通知各个业务模块处理批量备份、实时备份、主备切换等事件。</p>
+<blockquote>
+<p>•基于VRRP 的双机热备，热备相关的业务都注册到同一个HSB备份组，HSB备份组内部绑定HSB服务，同时HSB备份组与一个VRRP实例绑定，从而业务通过HSB备份组获知当前用户的主备状态、以及主备切换等事件，并通过HSB组的接口进行备份数据的接收和发送。</p>
+</blockquote>
+<h2 id="HSB主备服务"><a href="#HSB主备服务" class="headerlink" title="HSB主备服务"></a>HSB主备服务</h2><p>•HSB主备服务负责在两个互为备份的设备间建立主备备份通道，维护主备通道的链路状态，为其他业务提供报文的收发服务，并在备份链路发生故障时通知主备业务备份组进行相应的处理。</p>
+<p>•HSB主备服务主要包括两个方面：</p>
+<p>​    ▫建立主备备份通道</p>
+<p>​    ▫维护主备通道的链路状态</p>
+<blockquote>
+<p>•HSB主备服务主要包括两个方面： 建立主备备份通道：通过配置主备服务本端和对端的IP地址和端口号，从而建立主备机制报文发送的TCP通道，为其他业务提供报文的收发以及链路状态变化通知服务。</p>
+<p>•维护主备通道的链路状态：通过发送主备服务报文和重传等机制来防止TCP较长时间中断但协议栈没有检测到该连接中断。如果在主备服务报文时间间隔与重传次数乘积的时间内还未收到对端发送的主备服务报文，设备则会收到异常通知，并且准备重建主备备份通道。</p>
+</blockquote>
+<h2 id="数据同步"><a href="#数据同步" class="headerlink" title="数据同步"></a>数据同步</h2><p>基于VRRP双机热备备份信息包括用户表项、CAPWAP链路信息以及AP表项等信息，备份的方式有实时备份，批量备份，定时备份。</p>
+<ul>
+<li><p>批量备份：主用设备会将已有的会话表项一次性同步到新加入的备份设备上，使主备AC信息对齐，这个过程称为批量备份。批量备份会在AC主备确立时进行触发。</p>
+</li>
+<li><p>实时备份：主用设备在产生新表项或表项变化后会及时备份到备份设备上。</p>
+</li>
+<li><p>定时同步：备用设备会每隔30分钟检查其已有的会话表项与主用设备是否一致，若不一致则将主用设备上的会话表项同步到备用设备。</p>
+</li>
+</ul>
+<blockquote>
+<p>•当主用设备出现故障，流量切换到备份设备时，要求主用设备和备份设备的会话表项完全一致，否则有可能导致会话中断。因此，需要一种机制在主用设备上会话建立或表项变化时将相关信息同步保存到备份设备上。HSB主备服务处理模块可以提供数据的备份功能，它负责在两个互为备份的设备间建立主备通道，并维护主备通道的链路状态，提供报文的收发服务。</p>
+<p>•HSB业务实时备份：</p>
+<p>​    ▫用户数据信息备份</p>
+<p>​    ▫CAPWAP隧道信息备份</p>
+<p>​    ▫AP表项备份</p>
+<p>​    ▫DHCP地址信息备份</p>
+<p>•HSB主备通道，可通过两台AC之间的直连物理链路承载，也可通过交换机承载，例如复用VRRP报文交互所处的物理通道。</p>
+</blockquote>
+<h2 id="VRRP双机热备配置流程"><a href="#VRRP双机热备配置流程" class="headerlink" title="VRRP双机热备配置流程"></a>VRRP双机热备配置流程</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/42.png"></p>
+<h2 id="配置介绍-1"><a href="#配置介绍-1" class="headerlink" title="配置介绍 (1)"></a>配置介绍 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/43.png"></p>
+<h2 id="配置介绍-2"><a href="#配置介绍-2" class="headerlink" title="配置介绍 (2)"></a>配置介绍 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/44.png"></p>
+<h2 id="配置介绍-3"><a href="#配置介绍-3" class="headerlink" title="配置介绍 (3)"></a>配置介绍 (3)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/45.png"></p>
+<h2 id="配置案例-1-2"><a href="#配置案例-1-2" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/46.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/47.png"></p>
+<h2 id="配置案例-2-2"><a href="#配置案例-2-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/48.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/49.png"></p>
+<h2 id="配置案例-3-1"><a href="#配置案例-3-1" class="headerlink" title="配置案例 (3)"></a>配置案例 (3)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/50.png"></p>
+<h2 id="双链路双机热备"><a href="#双链路双机热备" class="headerlink" title="双链路双机热备"></a>双链路双机热备</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/51.png"></p>
+<p>•双链路双机热备场景下，业务直接绑定HSB备份服务，这样HSB对业务仅提供备份数据收发的功能，用户的主备状态由双链路机制进行维护。</p>
+<p>•AP同时与主备AC之间分别建立CAPWAP隧道，AC间的业务信息通过HSB主备通道同步。</p>
+<p>•当AP和主AC间链路断开，AP会通知备AC切换成主AC。</p>
+<blockquote>
+<p>•该方案除了支持主备备份之外，还支持负载分担模式。负载分担模式下可以指定一部分AP的主AC为AC1，与其建立CAPWAP主链路，一部分AP的主AC为AC2，与其建立CAPWAP主链路。</p>
+<p>•双链路双机热备的主备AC不受地理位置限制，部署灵活，可进行负载分担，有效利用资源，但业务切换速度较慢。</p>
+<p>•图中，AC1 和 AC2 经过部署为双链路双机热备，只绑定HSB主备服务，提供双机热备份HSB隧道。AP需依次与两台AC建立CAPWAP隧道，通过AC下发的CAPWAP报文中的优先级判断主用AC与备用AC。</p>
+</blockquote>
+<h2 id="主备协商-amp-建立主链路"><a href="#主备协商-amp-建立主链路" class="headerlink" title="主备协商&amp;建立主链路"></a>主备协商&amp;建立主链路</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/52.png"></p>
+<p>AP与AC建立主链路，在Discovery阶段要优选出主AC。</p>
+<p>1.使能双链路备份功能后，AP开始发送Discovery Request报文。</p>
+<p>2.AC收到Request报文后回应Discovery Response报文。</p>
+<p>3.AP收集到主备AC回应的Discovery Response报文后，根据AC的优先级、设备的负载情况以及AC的IP地址来选择主AC。</p>
+<p>4.AP开始与优选出的主AC建立CAPWAP主链路。</p>
+<blockquote>
+<p>•建立主链路时，除了Discovery阶段要优选出主AC，其他过程跟正常情况下的CAPWAP隧道建立过程一致。</p>
+<p>•在Discovery阶段，使能双链路备份功能后，AP开始发送Discovery Request报文，分为单播方式和广播方式：</p>
+<ul>
+<li><p>如果预先通过静态方式、DHCP服务器方式或DNS方式指定了主备AC的IP地址，AP向AC发送单播Discovery Request报文请求与主备AC关联。</p>
+</li>
+<li><p>如果没有配置AC的静态IP地址或者单播没有回应时，AP将发送广播Discovery Request报文请求同网段内可关联的AC。</p>
+</li>
+</ul>
+<p>•不管是单播发现还是广播发现，如果主备AC都正常，都会回应Discovery Response报文，并在该报文中携带双链路特性开关、优先级、负载情况以及IP地址。</p>
+<p>•AP收集到主备AC回应的Discovery Response报文后，根据AC的优先级、设备的负载情况以及AC IP地址来选择主AC并开始与其建立CAPWAP主链路，优选顺序如下：</p>
+<ul>
+<li><p>比较AC的优先级，优先级值小的为主AC，默认优先级为0，最大值为7，优先级取值越小，优先级越高。；</p>
+</li>
+<li><p>优先级相同情况下，比较AC设备的负载情况，即AP个数和STA个数，负载轻的为主AC。优先选择当前可接入AP数大的AC为主AC，如果当前可接入AP数相同，则选择当前可接入STA数大的AC为主AC；</p>
+</li>
+<li><p>负载相同情况下，比较IP地址，IP地址小的为主AC。</p>
+</li>
+</ul>
+<p>•说明：当前可接入AP数=可接入的最大AP数-当前已接入的AP数，当前可接入STA数=可接入的最大STA数-当前已接入的STA数。</p>
+</blockquote>
+<h2 id="建立备链路"><a href="#建立备链路" class="headerlink" title="建立备链路"></a>建立备链路</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/53.png"></p>
+<p>AP与AC建立备链路，为了避免业务配置重复下发导致错误，在AP和 主AC建立主隧道并且配置下发完成后，才启动备CAPWAP链路的建立。</p>
+<p>1.主AC下发配置到AP上；</p>
+<p>2.AP开始建立备用隧道，向备AC发送单播CAPWAP Discovery Request报文；</p>
+<p>3.备AC收到Request报文后，回应Response报文，在该报文中携带优选AC的IP地址、备选AC的IP地址、双链路特性开关、负载情况及其优先级。</p>
+<p>4.AP收到备AC回应的Response报文后，获取到双链路特性开关为打开，并保存其优先级。</p>
+<blockquote>
+<p>•说明：如果该AC的优先级修改为比步骤1已经建立好CAPWAP链路的AC优先级高，也不进行主备倒换，待建立隧道完成后再进行倒换。</p>
+<p>•AP发送的Join Request中，会携带一个自定义消息类型，告诉备AC配置已经下发过了，不需要再下发。AC收到Join Request，获取到该自定义消息时，在配置下发阶段，会跳过配置下发流程，避免对AP重复下发配置。</p>
+<p>•备链路建立完成后，AP重新根据两个链路的优先级决策出主备AC。</p>
+<p>•缺省情况下，CAPWAP心跳检测的间隔时间为25秒，心跳检测报文次数为6。如果开启了双链路备份功能，则CAPWAP心跳检测的间隔时间为25秒，心跳检测报文次数为3。</p>
+<p>•说明： </p>
+<ul>
+<li><p>如果在配置双链路备份时需要使用WDS或Mesh，建议配置CAPWAP心跳检测的间隔时间为25秒，心跳检测报文次数至少为6次。否则由于双链路备份时缺省的心跳报文间隔时间为25秒，心跳检测报文次数为3次，会导致WDS或Mesh链路不稳定，无法保证用户正常接入。</p>
+</li>
+<li><p>配置CAPWAP心跳检测间隔时间和次数低于默认值会影响CAPWAP链路可靠性，请谨慎修改，建议使用默认值。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="配置介绍-1-1"><a href="#配置介绍-1-1" class="headerlink" title="配置介绍 (1)"></a>配置介绍 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/54.png"></p>
+<h2 id="配置介绍-2-1"><a href="#配置介绍-2-1" class="headerlink" title="配置介绍 (2)"></a>配置介绍 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/55.png"></p>
+<h2 id="配置案例-1-3"><a href="#配置案例-1-3" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/56.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/57.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/58.png"></p>
+<h2 id="配置案例-2-3"><a href="#配置案例-2-3" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/59.png"></p>
+<h2 id="AC可靠性：N-1"><a href="#AC可靠性：N-1" class="headerlink" title="AC可靠性：N+1"></a>AC可靠性：N+1</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/60.png"></p>
+<p>•N+1备份是指在AC+FIT AP的网络架构中，使用一台AC作为备AC，为多台主AC提供备份服务的一种解决方案。</p>
+<p>•网络正常情况下，AP只与各自所属的主AC建立CAPWAP链路。</p>
+<p>•当主AC故障或主AC与AP间CAPWAP链路故障时，备AC替代主AC来管理AP，备AC与AP间建立CAPWAP链路，为AP提供业务服务。</p>
+<p>•支持主备倒换，支持主备回切。</p>
+<blockquote>
+<p>•当AP与主用AC之间的CAPWAP隧道中断时，将触发AP与备用AC建立CAPWAP隧道，此时AP会重新与该AC建链、重启并获取配置，在该过程中，业务将会受影响。</p>
+</blockquote>
+<h2 id="N-1-备份—主备选择"><a href="#N-1-备份—主备选择" class="headerlink" title="N+1 备份—主备选择"></a>N+1 备份—主备选择</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/61.png"></p>
+<p>•在Discovery阶段，AP发现AC后，要选择出最高优先级的AC作为主AC接入。</p>
+<p>•AC上存在两种优先级：</p>
+<p>•全局优先级：针对所有AP配置的AC优先级，默认为0，最大值为7，优先级取值越小，优先级越高。</p>
+<p>•个性优先级：针对指定的单个AP或指定AP组中的AP配置的AC优先级，没有默认值。</p>
+<p>•AC全局优先级&lt;AP在AC上优先级。</p>
+<blockquote>
+<p>•当AC收到AP发送的Discovery Request报文时，如果AC没有为该AP配置个性优先级，则在回应的Discovery Response报文中携带全局优先级；</p>
+<p>•如果AC已为该AP配置了个性优先级，则在回应的Discovery Response报文中携带个性优先级。</p>
+<p>•正确配置主AC和备AC的不同优先级，可以控制AP能够在指定的主AC或备AC上线</p>
+<p>•优选顺序如下：</p>
+<ul>
+<li><p>AP查看优选AC，如果只有一个优选AC，则此AC作为主AC。如果存在多个优选AC，则选择负载最轻的AC作为主AC，如果负载相同选择IP地址最小的作为主AC；</p>
+</li>
+<li><p>负载的比较方式：比较AC设备的负载情况，即AP个数和STA个数，负载轻的为主AC。优先选择当前可接入AP数大的AC为主AC，如果当前可接入AP数相同，则选择当前可接入STA数大的AC为主AC；</p>
+</li>
+<li><p>如果没有优选AC，查看备选AC，如果只有一个备选AC，则此AC作为主AC，如果存在多个备选AC，则选择负载最轻的AC作为主AC，如果负载相同选择IP地址最小的作为主AC；</p>
+</li>
+<li><p>如果没有备选AC，比较AC的优先级，优先级最高的作为主AC。优先级取值越小，优先级越高。优先级的具体判断方式参考主备优先级；</p>
+</li>
+<li><p>优先级相同情况下，则选择负载最轻的AC作为主AC；</p>
+</li>
+<li><p>负载相同情况下，继续比较IP地址，IP地址小的为主AC。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="配置介绍-1-2"><a href="#配置介绍-1-2" class="headerlink" title="配置介绍 (1)"></a>配置介绍 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/62.png"></p>
+<h2 id="配置介绍-2-2"><a href="#配置介绍-2-2" class="headerlink" title="配置介绍 (2)"></a>配置介绍 (2)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/63.png"></p>
+<h2 id="配置案例-1-4"><a href="#配置案例-1-4" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/64.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/65.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/66.png"></p>
+<h2 id="配置案例-2）"><a href="#配置案例-2）" class="headerlink" title="配置案例 (2）"></a>配置案例 (2）</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/67.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/68.png"></p>
+<blockquote>
+<p>•缺省情况下，全局回切功能处于使能状态，执行命令undo ac protect restore disable会提示Info。</p>
+<p>•缺省情况下，N+1备份功能开启，执行命令undo ac protect enable会提示Info。需要在主AC上继续执行命令ap-reset all重启所有AP，AP重启后，N+1备份功能开始生效。</p>
+</blockquote>
+<h2 id="配置案例-3-2"><a href="#配置案例-3-2" class="headerlink" title="配置案例 (3)"></a>配置案例 (3)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/69.png"></p>
+<h2 id="配置案例-4-1"><a href="#配置案例-4-1" class="headerlink" title="配置案例 (4)"></a>配置案例 (4)</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/70.png"></p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/71.png"></p>
+<h2 id="AC可靠性：小结"><a href="#AC可靠性：小结" class="headerlink" title="AC可靠性：小结"></a>AC可靠性：小结</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/72.png"></p>
+<h1 id="6-准入控制技术"><a href="#6-准入控制技术" class="headerlink" title="6.准入控制技术"></a>6.准入控制技术</h1><h2 id="NAC概述"><a href="#NAC概述" class="headerlink" title="NAC概述"></a>NAC概述</h2><p>NAC（Network Admission Control）称为网络接入控制，通过对接入网络的客户端和用户的认证保证网络的安全，是一种“端到端”的安全技术。</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/73.png"></p>
+<h2 id="RADIUS概述"><a href="#RADIUS概述" class="headerlink" title="RADIUS概述"></a>RADIUS概述</h2><p>•AAA可以通过多种协议来实现，在实际应用中，最常使用RADIUS协议。</p>
+<p>•RADIUS是一种分布式的、客户端/服务器结构的信息交互协议，能保护网络不受未授权访问的干扰，常应用在既要求较高安全性、又允许远程用户访问的各种网络环境中。</p>
+<p>•该协议定义了基于UDP（User Datagram Protocol）的RADIUS报文格式及其传输机制，并规定UDP端口1812、1813分别作为默认的认证、计费端口。</p>
+<p>•RADIUS协议的主要特征如下：</p>
+<p>​    ▫客户端/服务器模式</p>
+<p>​    ▫安全的消息交互机制</p>
+<p>​    ▫良好的扩展性</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/74.png"></p>
+<h2 id="802-1X认证"><a href="#802-1X认证" class="headerlink" title="802.1X认证"></a>802.1X认证</h2><p>•802.1X是IEEE制定的关于用户接入网络的认证标准，主要解决以太网内认证和安全方面的问题。</p>
+<p>•802.1X认证系统为典型的Client/Server结构，包括3个实体：请求方、认证方和认证服务器。</p>
+<p>•认证服务器通常是RADIUS服务器，用于对申请者进行认证、授权和计费。</p>
+<p>•对于大中型企业的员工，推荐使用802.1X认证。</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/75.png"></p>
+<blockquote>
+<p>•802.1X认证系统使用可扩展认证协议（Extensible Authentication Protocol，EAP）来实现申请者、认证者和认证服务器之间的信息交互。常用的802.1X认证协议有防护扩展验证协议（Protected Extensible Authentication Protocol，PEAP）和传输层安全性协议（Transport Layer Security，TLS），其区别如下：</p>
+<ul>
+<li><p>PEAP：管理员给用户分配用户名、密码。用户在接入WLAN时输入用户名、密码进行认证。</p>
+</li>
+<li><p>TLS：用户使用证书进行认证，此认证方式一般结合企业App使用，如华为的EasyAccess。</p>
+</li>
+</ul>
+<p>•对于大中型企业的员工，推荐使用802.1X认证。</p>
+</blockquote>
+<h2 id="MAC认证"><a href="#MAC认证" class="headerlink" title="MAC认证"></a>MAC认证</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/76.png"></p>
+<p>•MAC认证是一种基于MAC地址对用户的网络访问权限进行控制的认证方法，它不需要用户安装任何客户端软件。</p>
+<p>•接入设备在启动了MAC认证的接口上首次检测到用户的MAC地址后，即启动对该用户的认证操作。</p>
+<p>•认证过程中，不需要用户手动输入用户名或者密码。</p>
+<p>•MAC认证常用于哑终端（如打印机）的接入认证，或者结合认证服务器完成MAC优先的Portal认证，用户首次认证通过后，一定时间内免认证再次接入。</p>
+<h2 id="Portal认证"><a href="#Portal认证" class="headerlink" title="Portal认证"></a>Portal认证</h2><p>•Portal认证通常也称为Web认证，将浏览器作为认证客户端，不需要安装单独的认证客户端。</p>
+<p>•用户上网时，必须在Portal页面进行认证，只有认证通过后才可以使用网络资源，同时服务提供商可以在Portal页面上开展业务拓展，如展示商家广告等。</p>
+<p>•对于大中型企业的访客、商业会展和公共场所，推荐使用Portal认证。</p>
+<p>•常用的Portal认证方式如下：</p>
+<ul>
+<li><p>用户名和密码方式：由前台管理员给访客申请一个临时账号，访客使用临时账号认证。</p>
+</li>
+<li><p>短信认证：访客通过手机验证码方式认证。</p>
+</li>
+</ul>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/77.png"></p>
+<blockquote>
+<p>•定义</p>
+<ul>
+<li>Portal认证通常也称为Web认证，一般将Portal认证网站称为门户网站。用户上网时，必须在门户网站进行认证，如果未认证成功，仅可以访问特定的网络资源，认证成功后，才可以访问其他网络资源。</li>
+</ul>
+<p>•优点</p>
+<ul>
+<li><p>一般情况下，客户端不需要安装额外的软件，直接在Web页面上认证，简单方便。</p>
+</li>
+<li><p>便于运营，可以在Portal页面上进行业务拓展，如广告推送、企业宣传等。</p>
+</li>
+<li><p>技术成熟，被广泛应用于运营商、连锁快餐、酒店、学校等网络。</p>
+</li>
+<li><p>部署位置灵活，可以在接入层或关键数据的入口作访问控制。</p>
+</li>
+<li><p>用户管理灵活，可基于用户名与VLAN/IP地址/MAC地址的组合对用户进行认证。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MAC优先的Portal认证"><a href="#MAC优先的Portal认证" class="headerlink" title="MAC优先的Portal认证"></a>MAC优先的Portal认证</h2><p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/78.png"></p>
+<h2 id="三种认证方式比较"><a href="#三种认证方式比较" class="headerlink" title="三种认证方式比较"></a>三种认证方式比较</h2><p>NAC包括三种认证方式：802.1X认证、MAC认证和Portal认证。由于三种认证方式认证原理不同，各自适合的场景也有所差异，实际应用中，可以根据场景部署某一种合适的认证方式，也可以部署几种认证方式组成的混合认证，混合认证的组合方式以设备实际支持为准。</p>
+<p><img src="/2021/05/18/IP-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8%E7%BD%B2/79.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）在部署WLAN三层组网的时候，需要配置DHCP Option43，那么Option43的作用是什么？</p>
+<p><strong>AP发送的DHCP广播请求报文是二层报文，不能在三层组网中传输，所以广播发现不了三层组网中AC，必须通过Option43来通告AC的IP地址，否则AP获取不到AC的IP地址，后续AP无法上线。</strong></p>
+<p>2.（简答题）二层漫游和三层漫游的最大的区别是什么？</p>
+<p><strong>二层漫游和三层漫游的最大的区别是什么？</strong></p>
+<p>​    <strong>▫区别在于漫游前后关联的AP的服务集上的VLAN不同。</strong></p>
+<p>​    <strong>▫二层漫游是指客户端在同一子网内漫游。</strong></p>
+<p>​    <strong>▫三层漫游是指客户端在不同子网间漫游。</strong></p>
+<p>3.（简答题）WLAN双机热备份数据同步的方式有几种，分别应用在什么场景下？</p>
+<p><strong>数据同步的方式有批量备份、实时备份和定时同步：</strong></p>
+<ul>
+<li><p><strong>批量备份：在配置双机热备份功能后，先运行的主用设备会将已有的会话表项一次性同步到新加入的备份设备上。</strong></p>
+</li>
+<li><p><strong>实时备份：主用设备在产生新表项或表项变化后会及时备份到备份设备上。</strong></p>
+</li>
+<li><p><strong>定时同步：备用设备会每隔30分钟检查其已有的会话表项与主用设备是否一致，若不一致则将主用设备上的会话表项同步到备用设备。</strong></p>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•通过大型WLAN组网技术，用户可以更方便、更安全地接入到无线网络，并在无线网络覆盖区域内自由移动，彻底摆脱有线网络的束缚。</p>
+<p>•本章主要介绍了企业大型WLAN组网技术，包括：WLAN大型组网架构、WLAN大型组网关键技术、漫游技术、高可靠性技术以及准入控制技术等。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IP-31-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D%E4%B8%8E%E9%83%A8/" rel="tag"># IP-31-大型WLAN组网介绍与部</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE%E4%BB%8B%E7%BB%8D/" rel="next" title="IP-网络管理协议介绍">
+                <i class="fa fa-chevron-left"></i> IP-网络管理协议介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/05/18/IP-%E4%BC%81%E4%B8%9A%E6%95%B0%E9%80%9A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%A6%82%E8%BF%B0/" rel="prev" title="IP-企业数通解决方案概述">
+                IP-企业数通解决方案概述 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">1.大型WLAN组网概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">大型WLAN组网的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%9E%8BWLAN%E7%BB%84%E7%BD%91%E7%89%B9%E7%82%B9"><span class="nav-number">3.2.</span> <span class="nav-text">大型WLAN组网特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8E%E4%B8%BA%E5%A4%A7%E5%9E%8BWLAN%E6%96%B9%E6%A1%88%E5%8A%9F%E8%83%BD"><span class="nav-number">3.3.</span> <span class="nav-text">华为大型WLAN方案功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E7%BD%91%E7%BB%9C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.4.</span> <span class="nav-text">WLAN网络解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%9E%8BWLAN%E7%BD%91%E7%BB%9C%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF"><span class="nav-number">3.5.</span> <span class="nav-text">大型WLAN网络关键技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-VLAN-Pool"><span class="nav-number">4.</span> <span class="nav-text">2.VLAN Pool</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN-Pool-%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">VLAN Pool 概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN-Pool%E5%88%86%E9%85%8DVLAN%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">VLAN Pool分配VLAN的算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%85%8DVLAN%E6%B5%81%E7%A8%8B"><span class="nav-number">4.3.</span> <span class="nav-text">分配VLAN流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VLAN-Pool%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.4.</span> <span class="nav-text">VLAN Pool应用示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.5.</span> <span class="nav-text">配置介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B"><span class="nav-number">4.6.</span> <span class="nav-text">配置案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-DHCP%E6%8A%80%E6%9C%AF"><span class="nav-number">5.</span> <span class="nav-text">3.DHCP技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP%E4%B8%AD%E7%BB%A7"><span class="nav-number">5.1.</span> <span class="nav-text">DHCP中继</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">5.2.</span> <span class="nav-text">配置介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1"><span class="nav-number">5.3.</span> <span class="nav-text">配置案例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-2"><span class="nav-number">5.4.</span> <span class="nav-text">配置案例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-3"><span class="nav-number">5.5.</span> <span class="nav-text">配置案例 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-4"><span class="nav-number">5.6.</span> <span class="nav-text">配置案例 (4)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E4%B8%89%E5%B1%82%E7%BB%84%E7%BD%91AC%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">5.7.</span> <span class="nav-text">WLAN三层组网AC发现机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">5.8.</span> <span class="nav-text">配置介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1-1"><span class="nav-number">5.9.</span> <span class="nav-text">配置案例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-2-1"><span class="nav-number">5.10.</span> <span class="nav-text">配置案例 (2)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%BC%AB%E6%B8%B8%E6%8A%80%E6%9C%AF"><span class="nav-number">6.</span> <span class="nav-text">4.漫游技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E6%BC%AB%E6%B8%B8%E6%A6%82%E8%BF%B0"><span class="nav-number">6.1.</span> <span class="nav-text">WLAN漫游概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E6%BC%AB%E6%B8%B8%E7%9A%84%E7%9B%B8%E5%85%B3%E6%9C%AF%E8%AF%AD"><span class="nav-number">6.2.</span> <span class="nav-text">WLAN漫游的相关术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E6%BC%AB%E6%B8%B8%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">WLAN漫游类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN%E6%BC%AB%E6%B8%B8%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.4.</span> <span class="nav-text">WLAN漫游流量转发模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E9%97%B4%E4%BA%8C%E5%B1%82%E6%BC%AB%E6%B8%B8-%E7%9B%B4%E6%8E%A5%E8%BD%AC%E5%8F%91"><span class="nav-number">6.5.</span> <span class="nav-text">AC间二层漫游 - 直接转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E9%97%B4%E4%B8%89%E5%B1%82%E6%BC%AB%E6%B8%B8-%E9%9A%A7%E9%81%93%E8%BD%AC%E5%8F%91"><span class="nav-number">6.6.</span> <span class="nav-text">AC间三层漫游 - 隧道转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E9%97%B4%E4%B8%89%E5%B1%82%E6%BC%AB%E6%B8%B8-%E7%9B%B4%E6%8E%A5%E8%BD%AC%E5%8F%91%EF%BC%88HAP%E4%B8%BA%E5%AE%B6%E4%B9%A1%E4%BB%A3%E7%90%86%EF%BC%89"><span class="nav-number">6.7.</span> <span class="nav-text">AC间三层漫游 - 直接转发（HAP为家乡代理）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E9%97%B4%E4%B8%89%E5%B1%82%E6%BC%AB%E6%B8%B8-%E7%9B%B4%E6%8E%A5%E8%BD%AC%E5%8F%91%EF%BC%88HAC%E4%B8%BA%E5%AE%B6%E4%B9%A1%E4%BB%A3%E7%90%86%EF%BC%89"><span class="nav-number">6.8.</span> <span class="nav-text">AC间三层漫游 - 直接转发（HAC为家乡代理）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E9%97%B4%E6%BC%AB%E6%B8%B8%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.9.</span> <span class="nav-text">AC间漫游配置介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1"><span class="nav-number">6.10.</span> <span class="nav-text">配置案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E9%AB%98%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%80%E6%9C%AF"><span class="nav-number">7.</span> <span class="nav-text">5.高可靠性技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E9%AB%98%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%A6%82%E8%BF%B0"><span class="nav-number">7.1.</span> <span class="nav-text">AC高可靠性概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87"><span class="nav-number">7.2.</span> <span class="nav-text">VRRP双机热备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HSB%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5"><span class="nav-number">7.3.</span> <span class="nav-text">HSB相关概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HSB%E4%B8%BB%E5%A4%87%E6%9C%8D%E5%8A%A1"><span class="nav-number">7.4.</span> <span class="nav-text">HSB主备服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5"><span class="nav-number">7.5.</span> <span class="nav-text">数据同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87%E9%85%8D%E7%BD%AE%E6%B5%81%E7%A8%8B"><span class="nav-number">7.6.</span> <span class="nav-text">VRRP双机热备配置流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">7.7.</span> <span class="nav-text">配置介绍 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">7.8.</span> <span class="nav-text">配置介绍 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-3"><span class="nav-number">7.9.</span> <span class="nav-text">配置介绍 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1-2"><span class="nav-number">7.10.</span> <span class="nav-text">配置案例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-2-2"><span class="nav-number">7.11.</span> <span class="nav-text">配置案例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-3-1"><span class="nav-number">7.12.</span> <span class="nav-text">配置案例 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E9%93%BE%E8%B7%AF%E5%8F%8C%E6%9C%BA%E7%83%AD%E5%A4%87"><span class="nav-number">7.13.</span> <span class="nav-text">双链路双机热备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%A4%87%E5%8D%8F%E5%95%86-amp-%E5%BB%BA%E7%AB%8B%E4%B8%BB%E9%93%BE%E8%B7%AF"><span class="nav-number">7.14.</span> <span class="nav-text">主备协商&amp;建立主链路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%A4%87%E9%93%BE%E8%B7%AF"><span class="nav-number">7.15.</span> <span class="nav-text">建立备链路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-1-1"><span class="nav-number">7.16.</span> <span class="nav-text">配置介绍 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-2-1"><span class="nav-number">7.17.</span> <span class="nav-text">配置介绍 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1-3"><span class="nav-number">7.18.</span> <span class="nav-text">配置案例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-2-3"><span class="nav-number">7.19.</span> <span class="nav-text">配置案例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E5%8F%AF%E9%9D%A0%E6%80%A7%EF%BC%9AN-1"><span class="nav-number">7.20.</span> <span class="nav-text">AC可靠性：N+1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#N-1-%E5%A4%87%E4%BB%BD%E2%80%94%E4%B8%BB%E5%A4%87%E9%80%89%E6%8B%A9"><span class="nav-number">7.21.</span> <span class="nav-text">N+1 备份—主备选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-1-2"><span class="nav-number">7.22.</span> <span class="nav-text">配置介绍 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%8B%E7%BB%8D-2-2"><span class="nav-number">7.23.</span> <span class="nav-text">配置介绍 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-1-4"><span class="nav-number">7.24.</span> <span class="nav-text">配置案例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-2%EF%BC%89"><span class="nav-number">7.25.</span> <span class="nav-text">配置案例 (2）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-3-2"><span class="nav-number">7.26.</span> <span class="nav-text">配置案例 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-4-1"><span class="nav-number">7.27.</span> <span class="nav-text">配置案例 (4)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC%E5%8F%AF%E9%9D%A0%E6%80%A7%EF%BC%9A%E5%B0%8F%E7%BB%93"><span class="nav-number">7.28.</span> <span class="nav-text">AC可靠性：小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%E5%87%86%E5%85%A5%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF"><span class="nav-number">8.</span> <span class="nav-text">6.准入控制技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NAC%E6%A6%82%E8%BF%B0"><span class="nav-number">8.1.</span> <span class="nav-text">NAC概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RADIUS%E6%A6%82%E8%BF%B0"><span class="nav-number">8.2.</span> <span class="nav-text">RADIUS概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#802-1X%E8%AE%A4%E8%AF%81"><span class="nav-number">8.3.</span> <span class="nav-text">802.1X认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MAC%E8%AE%A4%E8%AF%81"><span class="nav-number">8.4.</span> <span class="nav-text">MAC认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Portal%E8%AE%A4%E8%AF%81"><span class="nav-number">8.5.</span> <span class="nav-text">Portal认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MAC%E4%BC%98%E5%85%88%E7%9A%84Portal%E8%AE%A4%E8%AF%81"><span class="nav-number">8.6.</span> <span class="nav-text">MAC优先的Portal认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E8%AE%A4%E8%AF%81%E6%96%B9%E5%BC%8F%E6%AF%94%E8%BE%83"><span class="nav-number">8.7.</span> <span class="nav-text">三种认证方式比较</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">9.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

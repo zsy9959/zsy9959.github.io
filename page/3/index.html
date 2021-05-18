@@ -241,6 +241,683 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/" itemprop="url">BGP-EVPN基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T21:21:55+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•标准BGP-4仅支持IPv4单播地址，为了支持更多的网络层协议，MP-BGP（Multiprotocol Extensions for BGP-4）（RFC4760）被提出作为BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。</p>
+<p>•随着SDN的发展和商用，EVPN（Ethernet VPN）在各解决方案中占据重要角色，应用覆盖全场景包括园区网络、数据中心网络、广域IP承载网络和SD-WAN。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MP-BGP的基本概念</p>
+<p>▫描述EVPN的起源</p>
+<p>▫描述EVPN的常见路由类型</p>
+<p>▫描述EVPN的典型应用场景</p>
+<h1 id="MP-BGP"><a href="#MP-BGP" class="headerlink" title="MP-BGP"></a>MP-BGP</h1><h2 id="MP-BGP-1"><a href="#MP-BGP-1" class="headerlink" title="MP-BGP"></a>MP-BGP</h2><p>MP-BGP（Multiprotocol Extensions for BGP-4）在RFC4760中被定义，用于实现BGP-4的扩展以允许BGP携带多种网络层协议（例如IPv6、L3VPN、EVPN等）。这种扩展有很好的后向兼容性，即一个支持MP-BGP的路由器可以和一个仅支持BGP-4的路由器交互。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/1.png"></p>
+<blockquote>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4760/">https://datatracker.ietf.org/doc/rfc4760/</a></p>
+</blockquote>
+<h2 id="BGP-4扩展"><a href="#BGP-4扩展" class="headerlink" title="BGP-4扩展"></a>BGP-4扩展</h2><p>•BGP-4中IPv4特有的三个信息是NEXT_HOP属性、AGGREGATOR和IPv4 NLRI。因此为了支持多种网络层协议，BGP-4需要增加两种能力：</p>
+<p>​    ▫关联其他网络层协议下一跳信息的能力。</p>
+<p>​    ▫关联其他网络层协议NLRI的能力。</p>
+<p>•这种两种能力被互联网数字分配机构（IANA）统称为地址族（Address Family，AF）。</p>
+<p>•为了实现后向兼容性，协议规定MP-BGP增加两种新的属性，MP_REACH_NLRI和MP_UNREACH_NLRI，分别用于表示可达的目的信息和不可达的目的信息。这两种属性都属于可选非过渡（optional and non-transitive）。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/2.png"></p>
+<blockquote>
+<p>•BGP-4规定IPv4的NEXT_HOP和AGGREGATOR属于Path attributes字段，IPv4的NLRI中携带IPv4的路由条目。</p>
+<p>•MP-BGP新增Path attributes的字段，将对应的网络层协议的NEXT_HOP字段和NLRI归属于MP_REACH_NLRI。MP_REACH_NLRI为Path attributes的新增字段。</p>
+</blockquote>
+<h2 id="MP-REACH-NLRI"><a href="#MP-REACH-NLRI" class="headerlink" title="MP_REACH_NLRI"></a>MP_REACH_NLRI</h2><p>•MP_REACH_NLRI被携带于BGP Update报文中，有以下作用：</p>
+<p>​    ▫通告可达的路由给BGP邻居</p>
+<p>​    ▫通告可达路的路由的下一跳给BGP邻居</p>
+<p>•其详细字段如下：</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/3.png"></p>
+<blockquote>
+<p>•SAFI字段中1表示单播，2表示组播。值由IANA分配，其分配原则被定义于RFC2434（Guidelines for Writing an IANA Considerations Section in RFCs）。</p>
+<p>•本章节后续学习EVPN的AFI为25 (L2VPN) ，SAFI为70 (EVPN)。</p>
+</blockquote>
+<h2 id="MP-UNREACH-NLRI"><a href="#MP-UNREACH-NLRI" class="headerlink" title="MP_UNREACH_NLRI"></a>MP_UNREACH_NLRI</h2><p>•MP_UNREACH_NLRI被携带于BGP Update报文中，用于撤销不可达的路由。</p>
+<p>•其详细字段如下：</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/4.png"></p>
+<blockquote>
+<p>•例如EVPN的AFI为25 (L2VPN) ，SAFI为70 (EVPN)。</p>
+</blockquote>
+<h1 id="EVPN"><a href="#EVPN" class="headerlink" title="EVPN"></a>EVPN</h1><h2 id="EVPN简介"><a href="#EVPN简介" class="headerlink" title="EVPN简介"></a>EVPN简介</h2><h3 id="MPLS简介"><a href="#MPLS简介" class="headerlink" title="MPLS简介"></a>MPLS简介</h3><p>•MPLS （Multiprotocol Label Switching，多协议标记交换）位于TCP/IP协议栈中的数据链路层和网络层之间，在两层之间增加了额外的MPLS头部。报文转发直接基于MPLS头部。MPLS头部又被称为MPLS标签（Label）。</p>
+<p>•MPLS以标签交换替代IP转发，实现了基于标签的快速转发。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/5.png"></p>
+<blockquote>
+<p>•MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）、Appletalk、DECnet、CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
+<p>•MPLS以标签交换替代IP转发。标签是一个短而定长的、只具有本地意义的连接标识符，与ATM的VPI/VCI以及Frame Relay的DLCI类似。</p>
+<p>•MPLS域（MPLS Domain）：一系列连续的运行MPLS的网络设备构成了一个MPLS域。</p>
+</blockquote>
+<h3 id="VPLS简介"><a href="#VPLS简介" class="headerlink" title="VPLS简介"></a>VPLS简介</h3><p>VPLS（Virtual Private LAN Service）是一种基于以太网的二层VPN技术，它在MPLS网络上提供了类似LAN的业务，允许用户可以从多个地址位置接入网络、相互访问。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/6.png"></p>
+<h3 id="传统L2VPN"><a href="#传统L2VPN" class="headerlink" title="传统L2VPN"></a>传统L2VPN</h3><p>•传统的L2VPN业务例如VPLS（Virtual Private LAN Service），提供用户远程站点之间二层连接服务。它组建二层交换网，像二层交换机一样透传以太报文。本例中PE1和PE2组建的VPLS网络透传CE1和CE2之间的VLAN流量。</p>
+<p>•因此在传统L2VPN中对于远端MAC地址的学习依靠ARP广播泛洪，PE设备将需要承载广播流量。广播占用较多的接口带宽，这是传统L2VPN的一个典型问题。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/7.png"></p>
+<blockquote>
+<p>•VPLS有更多的问题，例如不支持多活接入、故障收敛慢、不支持负载均衡等不在本课程介绍，请学习HCIE-HCIE-Datacom《Etherent VPN》和RFC 7209 - Requirements for Ethernet VPN (EVPN)。</p>
+</blockquote>
+<h3 id="EVPN的诞生"><a href="#EVPN的诞生" class="headerlink" title="EVPN的诞生"></a>EVPN的诞生</h3><p>•随着新技术和新场景对网络需求，VPLS被暴露出更多的问题无法满足二层VPN的需求。业界重新审视了对Ethernet VPN的需求（RFC 7209），提出新的解决方案EVPN（Ethernet VPN）。</p>
+<p>•EVPN最初在RFC 7432中被定义，EVPN引入控制平面，用于更好的控制MAC地址学习过程。</p>
+<p>•EVPN的控制平面采用MP-BGP，数据平面支持MPLS LSPs或者IP/GRE tunneling。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/8.png"></p>
+<blockquote>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7209/">https://datatracker.ietf.org/doc/rfc7209/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7432/">https://datatracker.ietf.org/doc/rfc7432/</a></p>
+</blockquote>
+<h3 id="EVPN的优势"><a href="#EVPN的优势" class="headerlink" title="EVPN的优势"></a>EVPN的优势</h3><p>•EVPN颠覆了传统L2 VPN数据面学习的方式，引入控制面学习MAC和IP指导数据转发，实现了转控分离。</p>
+<p>•EVPN解决传统L2 VPN的典型问题，带来双活，快速收敛，简化运维等更多的价值。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/9.png"></p>
+<blockquote>
+<p>•更多详细EVPN原理，请参考HCIE-Datacom《Ethernet VPN》。</p>
+</blockquote>
+<h2 id="EVPN常见路由"><a href="#EVPN常见路由" class="headerlink" title="EVPN常见路由"></a>EVPN常见路由</h2><h3 id="EVPN-NLRI"><a href="#EVPN-NLRI" class="headerlink" title="EVPN NLRI"></a>EVPN NLRI</h3><p>•EVPN定义了一种新的BGP NLRI（Network Layer Reachable Information）来承载所有的EVPN路由，被称为EVPN NLRI。</p>
+<p>•EVPN NLRI是MP-BGP的新型扩展，被包含于MP_REACH_NLRI中，定义了新的NLRI。它规定了EVPN的AFI（Address Family Identifier）是25，SAFI（Subsequent Address Family Identifier）是70。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/10.png"></p>
+<h3 id="EVPN路由"><a href="#EVPN路由" class="headerlink" title="EVPN路由"></a>EVPN路由</h3><p>EVPN NLRI格式采用TLV（Type-Length-Value）三元组结构，使得报文具有很强的灵活性和扩展性：</p>
+<p>▫Route Type定义了不同的EVPN路由。RFC 7432中首先定义了四类路由。</p>
+<p>▫Length定义了字段的长度。</p>
+<p>▫Route Type Specifc则表示不同的路由类型有不同的字段填充。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/11.png"></p>
+<blockquote>
+<p>•The NLRI field in the MP_REACH_NLRI/MP_UNREACH_NLRI attribute contains the EVPN NLRI (encoded as specified above). </p>
+<p>•The EVPN NLRI is carried in BGP [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4271">RFC4271</a>] using BGP Multiprotocol Extensions [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4760">RFC4760</a>] with an Address Family Identifier (AFI) of 25 (L2VPN) and a Subsequent Address Family Identifier (SAFI) of 70 (EVPN). The NLRI field in the MP_REACH_NLRI/MP_UNREACH_NLRI attribute contains the EVPN NLRI (encoded as specified above). </p>
+<p>•In order for two BGP speakers to exchange labeled EVPN NLRI, they must use BGP Capabilities Advertisements to ensure that they both are capable of properly processing such NLRI. This is done as specified in [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4760">RFC4760</a>], by using capability code 1 (multiprotocol BGP) with an AFI of 25 (L2VPN) and a SAFI of 70 (EVPN).</p>
+</blockquote>
+<h3 id="EVPN更多类型路由及作用"><a href="#EVPN更多类型路由及作用" class="headerlink" title="EVPN更多类型路由及作用"></a>EVPN更多类型路由及作用</h3><p>EVPN不仅限于二层VPN的应用，随着其EVPN路由类型的增加，支持更多的应用例如L3 VPN功能。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/12.png"></p>
+<blockquote>
+<p>•Type5类路由IP Prefix Route在标准化进程中目前处于草案阶段，draft-ietf-bess-evpn-prefix-advertisement。</p>
+</blockquote>
+<h3 id="EVPN协议标准"><a href="#EVPN协议标准" class="headerlink" title="EVPN协议标准"></a>EVPN协议标准</h3><p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/13.png"></p>
+<h2 id="EVPN典型应用场景"><a href="#EVPN典型应用场景" class="headerlink" title="EVPN典型应用场景"></a>EVPN典型应用场景</h2><h3 id="EVPN在广域IP承载网的应用"><a href="#EVPN在广域IP承载网的应用" class="headerlink" title="EVPN在广域IP承载网的应用"></a>EVPN在广域IP承载网的应用</h3><p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/14.png"></p>
+<blockquote>
+<p>•E-LINE、E-TREE、E-LAN是EVC定义的三种类型，具体请参考城域以太网标准。<a target="_blank" rel="noopener" href="https://wiki.mef.net/display/CESG/E-Line">https://wiki.mef.net/display/CESG/E-Line</a></p>
+<p>•MEF中提到了三种EVC的服务种类，点到点EVC（Point-to-Point EVC）、多点到多点EVC（Mutlipoint-to-Multipoint EVC）和根到多点EVC（Rooted-Multipoint EVC）。</p>
+<ul>
+<li>E-LINE：一条点到点的EVC将两个UNI严格地关联。</li>
+<li>E-LAN：一个多点到多点EVC可以将两个或者两个以上的UNI关联起来，而且用户/运营商可以在不影响其他UNI的前提下根据需要向这个EVC中添加任意个UNI，或者将这个EVC中的某些UNI剔除。</li>
+<li>E-TREE：这种EVC类似于三层VPN中的Hub-Spoke模式，它包含一个或多个根UNI（Root）和若干叶子UNI（Leaf），其中根UNI可以和EVC中的所有UNI直接通信，而叶子UNI只能和EVC中的根UNI直接通信，两个叶子UNI之间不能直接通信。 </li>
+</ul>
+</blockquote>
+<h3 id="EVPN在数据中心网络的应用"><a href="#EVPN在数据中心网络的应用" class="headerlink" title="EVPN在数据中心网络的应用"></a>EVPN在数据中心网络的应用</h3><p>•在云数据中心采用EVPN的NVO（Network Virtualization Overlay）解决方案（RFC 8365）。</p>
+<p>•推荐数据平面使用VXLAN封装与控制平面EVPN结合，构建灵活的数据中心Overlay网络。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/15.png"></p>
+<h3 id="EVPN在园区网的应用"><a href="#EVPN在园区网的应用" class="headerlink" title="EVPN在园区网的应用"></a>EVPN在园区网的应用</h3><p>•园区网虚拟化园区解决方案同在云数据中心相同，采用EVPN的NVO解决方案（RFC 8365）。</p>
+<p>•在不同的底层组网上使用VXLAN封装与控制平面EVPN结合，构建灵活的数据中心Overlay网络。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/16.png"></p>
+<h3 id="EVPN在SD-WAN的应用"><a href="#EVPN在SD-WAN的应用" class="headerlink" title="EVPN在SD-WAN的应用"></a>EVPN在SD-WAN的应用</h3><p>•SD-WAN是新一代的企业分支互联解决方案，支持智能动态选路、ZTP和可视化等特性。</p>
+<p>•SD-WAN解决方案中，在RR与CPE之间部署EVPN用于在控制平面传播SD-WAN的Overlay VPN路由，数据平面采用IPSec VPN构建安全的转发通道。</p>
+<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/17.png"></p>
+<blockquote>
+<p>•Overlay VPN路由包括站点VPN路由前缀、下一跳TNP路由信息以及用于CPE之间数据通道的数据加密所需要的IPSec相关密钥等信息。详细内容请参考SD-WAN课程。</p>
+<p>•CPE（Customer Premise Equipment，客户终端设备）。</p>
+</blockquote>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（简答题）请简述EVPN的原理和常见的路由类型。</p>
+<p><strong>EVPN是MP-BGP的扩展，常见有五种路由类型，被用于作为L2或者L3隧道的控制平面。</strong></p>
+<p>2.（简答题）请简述EVPN的应用场景。</p>
+<p><strong>EVPN可以被广泛用于企业全场景，例如SD-WAN、园区网、数据中心和广域网。在数据中心和园区中，EVPN与VXLAN结合构建业务 Overlay。在SD-WAN场景中EVPN与IPSec结合构建企业分支互联网络。在广域网中EVPN可以与各种底层隧道/标签技术结合，例如MPLS/SR/VPLS/VPWS等。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MP-BGP对BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。</p>
+<p>•本章节简单介绍EVPN的提出用于解决Ethernet二层VPN的问题。随着应用场景的逐渐丰富和协议的扩展，EVPN可以被用于多场景包括广域IP承载网络、数据中心网络、园区网络和SD-WAN。</p>
+<h1 id="拓展信息"><a href="#拓展信息" class="headerlink" title="拓展信息"></a>拓展信息</h1><p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4760/">https://datatracker.ietf.org/doc/rfc4760/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7209/">https://datatracker.ietf.org/doc/rfc7209/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7432/">https://datatracker.ietf.org/doc/rfc7432/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc8365/">https://datatracker.ietf.org/doc/rfc8365/</a></p>
+<p>•<a target="_blank" rel="noopener" href="https://wiki.mef.net/display/CESG/MEF+6.3+-+EVC+Ethernet+Services+Definitions">https://wiki.mef.net/display/CESG/MEF+6.3+-+EVC+Ethernet+Services+Definitions</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/" itemprop="url">BGP路由优选</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T17:56:08+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•BGP是一个应用非常广泛的边界网关路由协议，在全球范围内被大量部署。BGP定义了多种路径属性，并且拥有丰富的路由策略工具，这使得BGP在路由操控和路径决策上变得非常灵活。</p>
+<p>•针对BGP路由的各种属性的操作都可能影响路由的优选，从而对网络的流量产生影响，因此掌握BGP路由的优选规则十分重要。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP路由优选规则</p>
+<p>▫实现BGP路由控制</p>
+<h1 id="BGP路由优选"><a href="#BGP路由优选" class="headerlink" title="BGP路由优选"></a>BGP路由优选</h1><h2 id="BGP路由优选规则"><a href="#BGP路由优选规则" class="headerlink" title="BGP路由优选规则"></a>BGP路由优选规则</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p><strong>丢弃下一跳不可达的路由。</strong></p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<blockquote>
+<p><strong>↑</strong>  <strong>取值越大越优</strong></p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>↓</strong>  <strong>取值越小越优</strong></p>
+</blockquote>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<blockquote>
+<p>当前8条属性全部相同时可以形成路由负载分担</p>
+<p>•上述规则依序排列，BGP进行路由优选时，从第一条规则开始执行，如果根据第一条规则无法作出判断，例如路由的Preferred-Value属性值相同，则继续执行下一条规则，如果根据当前的规则，BGP能够决策出最优的路由，则不再继续往下执行。</p>
+<p>•本文选取了BGP路由优选规则中最为关键的12条，接下来将逐一讲解并验证上述规则。</p>
+<p>•在后续的内容中可能会提到诸如“第8条选路规则”之类的术语，则对应本页所罗列的第8条选路规则。</p>
+<p>•AIGP（Accumulated Interior Gateway Protocol，累加IGP度量值）用于传递并累加IGP metric值，该属性值并不常用，在BGP路由优选规则中并不涉及。</p>
+</blockquote>
+<hr>
+<h2 id="拓扑说明-1"><a href="#拓扑说明-1" class="headerlink" title="拓扑说明 (1)"></a>拓扑说明 (1)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/2.png"></p>
+<p>•AS、设备互联地址如图所示，所有设备均创建Loopback0接口，IP地址为10.0.x.x（x为设备编号），所有设备使用环回口地址作为Router ID。</p>
+<p>•AS200内运行OSPF，在内部互联接口（不包含连接外部AS的接口）、Loopback接口上激活OSPF。</p>
+<h2 id="拓扑说明-2"><a href="#拓扑说明-2" class="headerlink" title="拓扑说明 (2)"></a>拓扑说明 (2)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/3.png"></p>
+<p>•AS内部基于Loopback0接口建立IBGP对等体关系，AS之间基于直连接口建立EBGP对等体关系。</p>
+<p>•R4、R5上存在相同的网段：10.0.45.0/24，通过import-route命令将该网段的直连路由注入到BGP，用于验证BGP路由优选规则。</p>
+<h2 id="BGP路由优选规则-1"><a href="#BGP路由优选规则-1" class="headerlink" title="BGP路由优选规则"></a>BGP路由优选规则</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   <strong>丢弃下一跳不可达的路由。</strong></p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h2 id="丢弃下一跳不可达的路由-1"><a href="#丢弃下一跳不可达的路由-1" class="headerlink" title="丢弃下一跳不可达的路由 (1)"></a>丢弃下一跳不可达的路由 (1)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/4.png"></p>
+<p>•R4、R5将BGP路由10.0.45.0/24通告给AS200时Next_Hop属性值为10.0.24.4、10.0.34.5。</p>
+<p>•R2、R3将路由通告给R1时不修改Next_Hop属性值，R1学习到的两条BGP路由10.0.45.0/24下一跳为10.0.24.4、10.0.34.5。</p>
+<p>•R1进行BGP路由下一跳迭代查询时，由于R2、R3未在连接外部AS的接口上激活OSPF，导致路由迭代失败，R1上的BGP路由10.0.45.0/24下一跳不可达。</p>
+<p>•在R1上通过<strong>display bgp routing</strong>查看BGP路由表，此时BGP路由10.0.45.0/24为非有效路由条目。</p>
+<h2 id="丢弃下一跳不可达的路由-2"><a href="#丢弃下一跳不可达的路由-2" class="headerlink" title="丢弃下一跳不可达的路由 (2)"></a>丢弃下一跳不可达的路由 (2)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/5.png"></p>
+<p>在R2、R3上通过<strong>next-hop-local</strong>命令修改Next_Hop属性值为本地更新源地址。</p>
+<p>R2、R3向R1通告BGP路由时Next_Hop属性值将会变为：10.0.2.2、10.0.3.3。</p>
+<p>这两个下一跳地址在R1上能够成功进行路由迭代，BGP路由的下一跳地址将会变成可达。</p>
+<h2 id="丢弃下一跳不可达的路由-3"><a href="#丢弃下一跳不可达的路由-3" class="headerlink" title="丢弃下一跳不可达的路由 (3)"></a>丢弃下一跳不可达的路由 (3)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/6.png"></p>
+<h2 id="BGP路由优选规则1"><a href="#BGP路由优选规则1" class="headerlink" title="BGP路由优选规则1"></a>BGP路由优选规则1</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p><strong>1.优选Preferred-Value属性值最大的路由。</strong></p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="修改Preferred-Value"><a href="#修改Preferred-Value" class="headerlink" title="修改Preferred-Value"></a>修改Preferred-Value</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/7.png"></p>
+<p>使用<strong>preferred-value</strong>命令修改R3通告的BGP路由其Preferred-Value为100 ，优于R2通告BGP路由的默认Preferred-Value ，R1将会优选R3通告的BGP路由10.0.45.0/24。</p>
+<h3 id="查看R1-BGP路由表"><a href="#查看R1-BGP路由表" class="headerlink" title="查看R1 BGP路由表"></a>查看R1 BGP路由表</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/8.png"></p>
+<p>R3（10.0.3.3）通告的BGP路由拥有更高的Preferred-Value（100），因此R1将会优选R3通告的BGP路由10.0.45.0/24。</p>
+<h2 id="BGP路由优选规则2"><a href="#BGP路由优选规则2" class="headerlink" title="BGP路由优选规则2"></a>BGP路由优选规则2</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p><strong>2.优选Local_Preference属性值最大的路由。</strong></p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="修改Local-Preference-1"><a href="#修改Local-Preference-1" class="headerlink" title="修改Local_Preference (1)"></a>修改Local_Preference (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/9.png"></p>
+<h3 id="修改Local-Preference-2"><a href="#修改Local-Preference-2" class="headerlink" title="修改Local_Preference (2)"></a>修改Local_Preference (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/10.png"></p>
+<p>下一跳可达、相同Preferred-Value的情况下将会比较Local_Preference，R3通告的BGP路由Local_Preference值为200，高于R2通告的BGP路由，R1将会优选R3通告的BGP路由。</p>
+<h2 id="BGP路由优选规则3"><a href="#BGP路由优选规则3" class="headerlink" title="BGP路由优选规则3"></a>BGP路由优选规则3</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p><strong>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</strong></p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="本地优先"><a href="#本地优先" class="headerlink" title="本地优先"></a>本地优先</h3><p>•本条规则可以概括为在相同条件下，优选本地生成的路由，从对等体学习到的路由条目为次优。</p>
+<p>•同时本地生成的路由也可能存在多种途径，当本地存在多种途径学习到相同路由时，从高到低优先级如下：</p>
+<ul>
+<li>手动聚合：手动通过aggregate命令在BGP视图内聚合生成的聚合路由</li>
+<li>自动聚合：Summary automatic命令生成的自动聚合路由</li>
+<li>Network方式注入的路由</li>
+<li>Import-route方式注入的路由</li>
+</ul>
+<blockquote>
+<p>•本条规则我们验证了：</p>
+<p>​    ▫本地产生的BGP路由优于从对等体学习的BGP路由</p>
+<p>​    ▫手动聚合产生的BGP路由优于自动聚合产生的BGP路由</p>
+</blockquote>
+<h3 id="手动聚合-1"><a href="#手动聚合-1" class="headerlink" title="手动聚合 (1)"></a>手动聚合 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/11.png"></p>
+<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/12.png"></p>
+<h3 id="手动聚合-2"><a href="#手动聚合-2" class="headerlink" title="手动聚合 (2)"></a>手动聚合 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/13.png"></p>
+<blockquote>
+<p>•BGP路由表中“s”标志代表该路由条目被抑制。</p>
+</blockquote>
+<h3 id="手动聚合-3"><a href="#手动聚合-3" class="headerlink" title="手动聚合 (3)"></a>手动聚合 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/14.png"></p>
+<p>•R3上通过<strong>display bgp routing-table</strong> <strong>10.0.45.0</strong> <strong>24</strong>查看BGP路由10.0.45.0/24的详细信息，存在两条有效路由，其中最优的为手动聚合产生的路由。</p>
+<p>•在本案例中我们验证了本地产生的BGP路由优于从对等体学习的BGP路由。</p>
+<h3 id="自动聚合-1"><a href="#自动聚合-1" class="headerlink" title="自动聚合 (1)"></a>自动聚合 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/15.png"></p>
+<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/16.png"></p>
+<h3 id="自动聚合-2"><a href="#自动聚合-2" class="headerlink" title="自动聚合 (2)"></a>自动聚合 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/17.png"></p>
+<h3 id="自动聚合-3"><a href="#自动聚合-3" class="headerlink" title="自动聚合 (3)"></a>自动聚合 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/18.png"></p>
+<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/19.png"></p>
+<h3 id="自动聚合-4"><a href="#自动聚合-4" class="headerlink" title="自动聚合 (4)"></a>自动聚合 (4)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/20.png"></p>
+<p>•R3上通过<strong>display bgp routing-table</strong> <strong>10.0.0.0</strong> 查看BGP路由10.0.0.0/8的详细信息，存在三条有效路由，其中最优的条目由聚合产生，并且存在Atomic-aggregate属性，由此可以看出该聚合条目为手动聚合产生的条目。</p>
+<p>•R3上相同的BGP聚合路由：手动聚合 &gt; 自动聚合。</p>
+<p>•在该案例中我们验证了手动聚合产生的BGP路由优于自动聚合产生的BGP路由。</p>
+<blockquote>
+<p>•本地Network优于本地import，此案例不再展示。</p>
+<p>•自动聚合产生的聚合路由并不会携带Atomic-aggregate属性。</p>
+</blockquote>
+<h2 id="BGP路由优选规则4"><a href="#BGP路由优选规则4" class="headerlink" title="BGP路由优选规则4"></a>BGP路由优选规则4</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p><strong>4.优选AS_Path属性值最短的路由。</strong></p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="优选AS-Path最短-1"><a href="#优选AS-Path最短-1" class="headerlink" title="优选AS_Path最短 (1)"></a>优选AS_Path最短 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/21.png"></p>
+<h3 id="优选AS-Path最短-2"><a href="#优选AS-Path最短-2" class="headerlink" title="优选AS_Path最短 (2)"></a>优选AS_Path最短 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/22.png"></p>
+<h2 id="BGP路由优选规则5"><a href="#BGP路由优选规则5" class="headerlink" title="BGP路由优选规则5"></a>BGP路由优选规则5</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p><strong>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</strong></p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="Origin属性验证-1"><a href="#Origin属性验证-1" class="headerlink" title="Origin属性验证 (1)"></a>Origin属性验证 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/23.png"></p>
+<p>•R4、R5上默认采用import-route方式将路由10.0.45.0/24注入到BGP，R1的BGP路由表中两条BGP路由10.0.45.0/24其Origin属性都是“？”，此时R1优选R4注入的BGP路由。</p>
+<p>•在R5上修改注入路由的方式为network</p>
+<p>•之后在R1上再次查看BGP路由表。</p>
+<h3 id="Origin属性验证-2"><a href="#Origin属性验证-2" class="headerlink" title="Origin属性验证 (2)"></a>Origin属性验证 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/24.png"></p>
+<p>•此时R5注入的BGP路由10.0.45.0/24其Origin属性为“i”，在前几条优选规则相同情况下，起源类型为“i”的BGP路由成为优选路由。</p>
+<h2 id="BGP路由优选规则6"><a href="#BGP路由优选规则6" class="headerlink" title="BGP路由优选规则6"></a>BGP路由优选规则6</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p><strong>6.优选MED属性值最小的路由。</strong></p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="优选MED最小-1"><a href="#优选MED最小-1" class="headerlink" title="优选MED最小 (1)"></a>优选MED最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/25.png"></p>
+<h3 id="优选MED最小-2"><a href="#优选MED最小-2" class="headerlink" title="优选MED最小 (2)"></a>优选MED最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/26.png"></p>
+<h2 id="BGP路由优选规则7"><a href="#BGP路由优选规则7" class="headerlink" title="BGP路由优选规则7"></a>BGP路由优选规则7</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p><strong>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</strong></p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="优选从EBGP对等体学来的路由-1"><a href="#优选从EBGP对等体学来的路由-1" class="headerlink" title="优选从EBGP对等体学来的路由 (1)"></a>优选从EBGP对等体学来的路由 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/27.png"></p>
+<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/28.png"></p>
+<h3 id="优选从EBGP对等体学来的路由-2"><a href="#优选从EBGP对等体学来的路由-2" class="headerlink" title="优选从EBGP对等体学来的路由 (2)"></a>优选从EBGP对等体学来的路由 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/29.png"></p>
+<h2 id="BGP路由优选规则8"><a href="#BGP路由优选规则8" class="headerlink" title="BGP路由优选规则8"></a>BGP路由优选规则8</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p><strong>8.优选到Next_Hop的IGP度量值最小的路由。</strong></p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="IGP-Cost"><a href="#IGP-Cost" class="headerlink" title="IGP Cost"></a>IGP Cost</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/30.png"></p>
+<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/31.png"></p>
+<h3 id="优选IGP-Cost值最小-1"><a href="#优选IGP-Cost值最小-1" class="headerlink" title="优选IGP Cost值最小 (1)"></a>优选IGP Cost值最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/32.png"></p>
+<h3 id="优选IGP-Cost值最小-2"><a href="#优选IGP-Cost值最小-2" class="headerlink" title="优选IGP Cost值最小 (2)"></a>优选IGP Cost值最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/33.png"></p>
+<h3 id="优选IGP-Cost值最小-3"><a href="#优选IGP-Cost值最小-3" class="headerlink" title="优选IGP Cost值最小 (3)"></a>优选IGP Cost值最小 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/34.png"></p>
+<p>•R1上通过<strong>display bgp routing-table</strong> <strong>10.0.45.0 24</strong> 查看BGP路由的详细信息，下一跳10.0.2.2的BGP路由其IGP cost值变为了10，而下一跳为10.0.3.3的BGP路由其IGP cost为默认值1，所以R1优选下一跳为10.0.3.3的路由。</p>
+<p>•在R1的路由详细信息中可以看到如下内容：</p>
+<p>​    <strong>not preferred for IGP cost</strong></p>
+<p>​    表明该路由因为IGP cost未被优选。</p>
+<h3 id="BGP路由等价负载分担"><a href="#BGP路由等价负载分担" class="headerlink" title="BGP路由等价负载分担"></a>BGP路由等价负载分担</h3><p>•在大型网络中，到达同一目的地通常会存在多条有效BGP路由，设备只会优选一条最优的BGP路由，将该路由加载到路由表中使用，这一特点往往会造成很多流量负载不均衡的情况。</p>
+<p>•通过配置BGP负载分担，可以使得设备同时将多条等代价的BGP路由加载到路由表，实现流量负载均衡，减少网络拥塞。</p>
+<p>•值得注意的是，尽管配置了BGP负载分担，设备依然只会在多条到达同一目的地的BGP路由中优选一条路由，并只将这条路由通告给其他对等体。</p>
+<p>•在设备上使能BGP负载分担功能后，只有满足条件的多条BGP路由才会成为等价路由，进行负载分担。</p>
+<blockquote>
+<p>•默认情况下设备只会对AS_Path完全相同的路由进行负载分担，可以使用<strong>load-balancing as-path-ignore</strong>忽略AS_Path路径不一致。</p>
+<p>•在公网中到达同一目的地的路由形成负载分担时，系统会首先判断最优路由的类型。若最优路由为IBGP路由则只是IBGP路由参与负载分担，若最优路由为EBGP路由则只是EBGP路由参与负载分担，即公网中到达同一目的地的IBGP和EBGP路由不能形成负载分担。</p>
+</blockquote>
+<h3 id="形成BGP路由等价负载分担的条件"><a href="#形成BGP路由等价负载分担的条件" class="headerlink" title="形成BGP路由等价负载分担的条件"></a>形成BGP路由等价负载分担的条件</h3><p>•Preferred-Value属性值相同。</p>
+<p>•Local_Preference属性值相同。</p>
+<p>•都是聚合路由或者非聚合路由。</p>
+<p>•AS_Path属性长度相同。</p>
+<p>•Origin类型（IGP、EGP、Incomplete）相同。</p>
+<p>•MED属性值相同。</p>
+<p>•都是EBGP路由或都是IBGP路由。</p>
+<p>•AS内部IGP的Metric相同。</p>
+<p>•AS_Path属性完全相同。</p>
+<h3 id="配置BGP路由负载分担"><a href="#配置BGP路由负载分担" class="headerlink" title="配置BGP路由负载分担"></a>配置BGP路由负载分担</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/35.png"></p>
+<p>以左侧拓扑为例，R1上两条BGP路由在不做任何路由策略、配置的情况下，前8条优选规则无法比较出优选路由。因此可以配置IBGP路由的负载分担。</p>
+<h3 id="配置BGP路由负载分担后"><a href="#配置BGP路由负载分担后" class="headerlink" title="配置BGP路由负载分担后"></a>配置BGP路由负载分担后</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/36.png"></p>
+<h2 id="BGP路由优选规则9"><a href="#BGP路由优选规则9" class="headerlink" title="BGP路由优选规则9"></a>BGP路由优选规则9</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p><strong>9.优选Cluster_List最短的路由。</strong></p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="优选Cluster-List最短案例-1"><a href="#优选Cluster-List最短案例-1" class="headerlink" title="优选Cluster_List最短案例 (1)"></a>优选Cluster_List最短案例 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/37.png"></p>
+<p>对拓扑做如下修改：</p>
+<p>•只在R5上将10.0.45.0/24发布到BGP</p>
+<p>•配置R1为RR，R3为R1的客户端。</p>
+<p>•R2、R3之间基于环回口建立IBGP对等体关系</p>
+<p>R2上将收到R3通告的BGP路由10.0.45.0/24、R1反射的BGP路由10.0.45.0/24。</p>
+<p>默认配置下，前面介绍的规则无法比较出优选路由，此时将根据Cluster_List进行优选。</p>
+<h3 id="优选Cluster-List最短案例-2"><a href="#优选Cluster-List最短案例-2" class="headerlink" title="优选Cluster_List最短案例 (2)"></a>优选Cluster_List最短案例 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/38.png"></p>
+<p>从BGP路由表中无法看出优选的是R1反射的BGP路由还是R3通告的BGP路由，此时可以通过命令<strong>display</strong> <strong>bgp routing</strong> <strong>10.0.45.0</strong> <strong>24</strong>查看BGP路由详细信息。</p>
+<h3 id="优选Cluster-List最短案例-3"><a href="#优选Cluster-List最短案例-3" class="headerlink" title="优选Cluster_List最短案例 (3)"></a>优选Cluster_List最短案例 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/39.png"></p>
+<p>•经由R1反射的路由不是最优路由，原因也被标出：</p>
+<p><strong>not preferred for Cluster List</strong>*</p>
+<p>•R3直接通告给R2的BGP路由因为没有经过路由反射器，不存在Cluster_List属性，即被认为Cluster_List长度为0，小于由R1反射的BGP路由其Cluster_List长度（1），所以R3通告的BGP路由为优选路由。</p>
+<h2 id="BGP路由优选规则10"><a href="#BGP路由优选规则10" class="headerlink" title="BGP路由优选规则10"></a>BGP路由优选规则10</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p><strong>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</strong></p>
+<p>11.优选具有最小IP地址的对等体通告的路由。</p>
+<h3 id="优选Router-ID最小-1"><a href="#优选Router-ID最小-1" class="headerlink" title="优选Router ID最小 (1)"></a>优选Router ID最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/40.png"></p>
+<p>在我们的讲解拓扑中，默认配置下R1从R2、R3都会收到BGP路由10.0.45.0/24，并且前面的优选规则无法比较出优选路由，最终将会根据本条规则，优选Router ID最小的对等体通告的BGP路由，在本案例中也就是R2通告的BGP路由。</p>
+<h3 id="优选Router-ID最小-2"><a href="#优选Router-ID最小-2" class="headerlink" title="优选Router ID最小 (2)"></a>优选Router ID最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/41.png"></p>
+<p>查看R1的BGP路由表详细信息，来自10.0.3.3的BGP路由因Router ID原因没有被优选：<br> <strong>not preferred for router ID</strong></p>
+<h3 id="优选Orginator-ID最小-1"><a href="#优选Orginator-ID最小-1" class="headerlink" title="优选Orginator_ID最小 (1)"></a>优选Orginator_ID最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/42.png"></p>
+<p>如果BGP路由携带Originator_ID属性，则在本条规则的优选过程中，将比较Originator_ID的大小，并优选Originator_ID最小的BGP路由。</p>
+<h3 id="优选Orginator-ID最小-2"><a href="#优选Orginator-ID最小-2" class="headerlink" title="优选Orginator_ID最小 (2)"></a>优选Orginator_ID最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/43.png"></p>
+<h2 id="BGP路由优选规则11"><a href="#BGP路由优选规则11" class="headerlink" title="BGP路由优选规则11"></a>BGP路由优选规则11</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
+<p>   丢弃下一跳不可达的路由。</p>
+<p>1.优选Preferred-Value属性值最大的路由。</p>
+<p>2.优选Local_Preference属性值最大的路由。</p>
+<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
+<p>4.优选AS_Path属性值最短的路由。</p>
+<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
+<p>6.优选MED属性值最小的路由。</p>
+<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
+<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
+<p>9.优选Cluster_List最短的路由。</p>
+<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
+<p><strong>11.优选具有最小IP地址的对等体通告的路由。</strong></p>
+<h3 id="优选具有最小IP地址的对等体-1"><a href="#优选具有最小IP地址的对等体-1" class="headerlink" title="优选具有最小IP地址的对等体 (1)"></a>优选具有最小IP地址的对等体 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/44.png"></p>
+<p>•当前面所有规则都无法比较出优选路由时，此时会根据对等体地址大小来进行优选，对等体地址较小者发送的路由较优。</p>
+<p>•修改前一条规则的验证拓扑，R2、R3都与R4相连，R4作为RR客户端，只在R4上将路由发布到BGP，此时R2、R3反射的BGP路由将拥有相同的Originator ID：10.0.4.4。</p>
+<h3 id="优选具有最小IP地址的对等体-2"><a href="#优选具有最小IP地址的对等体-2" class="headerlink" title="优选具有最小IP地址的对等体 (2)"></a>优选具有最小IP地址的对等体 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/45.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）从EBGP对等体收到的BGP路由通告给IBGP对等体时如何修改next_hop属性值为自身更新源地址？</p>
+<p><strong>使用peer next-hop-local命令指定next_hop属性为TCP连接源地址。</strong></p>
+<p>2.（判断题）当前三条优选规则相同的情况下，BGP会比较AS_Path长度，当AS_Path长度相同时会比较AS号的大小。</p>
+<p>A.对</p>
+<p><strong>B.错</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•BGP采用路径属性进行路由优选，这让BGP拥有丰富的可选比较项，可以在不同的场景下根据不同的路径属性选择出最适合的路由。</p>
+<p>•BGP定义了一套详细的最优路径选择算法，这使得路由器能够在任何复杂的、高冗余性的网络环境下选择出最优的路径，这套算法也被称作BGP路由优选规则，或者BGP选路原则。</p>
+<p>•BGP选路原则在实际中频繁应用，需要熟练掌握。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP%E8%B7%AF%E5%BE%84%E5%B1%9E%E6%80%A7%E4%B8%8E%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3273,774 +3950,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/RSTP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/06/RSTP/" itemprop="url">RSTP原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:10:54+08:00">
-                2021-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•以太网交换网络中为了进行链路备份，提高网络可靠性，通常会使用冗余链路，但是这也带来了网络环路的问题。网络环路会引发广播风暴和MAC地址表震荡等问题，导致用户通信质量差，甚至通信中断。为了解决交换网络中的环路问题，IEEE提出了基于802.1D标准的STP（Spanning Tree Protocol，生成树协议）。</p>
-<p>•随着局域网规模的不断增长，STP拓扑收敛速度慢的问题逐渐凸显，因此，IEEE在2001年发布了802.1W标准，定义了RSTP（Rapid Spanning Tree Protocol，快速生成树协议），RSTP在STP的基础上进行了改进，可实现网络拓扑的快速收敛。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><ul>
-<li><p>描述STP技术的缺陷</p>
-</li>
-<li><p>描述RSTP对STP技术的改进</p>
-</li>
-<li><p>描述RSTP的基本工作原理</p>
-</li>
-<li><p>完成RSTP的基本配置</p>
-</li>
-</ul>
-<h1 id="STP回顾与STP不足"><a href="#STP回顾与STP不足" class="headerlink" title="STP回顾与STP不足"></a><strong>STP回顾与STP不足</strong></h1><h2 id="回顾：STP的工作原理"><a href="#回顾：STP的工作原理" class="headerlink" title="回顾：STP的工作原理"></a><strong>回顾：STP的工作原理</strong></h2><p>•STP通过在交换机之间传递配置BPDU来选举根交换机 (或根桥)，以及确定每个交换机端口的角色和状态。</p>
-<p>​    ▫在初始化过程中，每个交换机都主动发送配置BPDU。</p>
-<p>​    ▫在网络拓扑稳定以后，只有根桥周期性发送配置BPDU，其他交    换机在收到上游传来的配置BPDU后，才会发送自己的配BPDU。</p>
-<p>•配置BPDU包含了桥ID、路径开销和端口ID等参数。</p>
-<p><img src="/2021/05/06/RSTP/1.png"></p>
-<blockquote>
-<p>•配置BPDU泛洪：</p>
-<ul>
-<li><p>在初始形成STP树的过程中，所有STP交换机会周期性地（Hello Time，缺省为2s）主动产生并发送配置BPDU，大家都认为自己是根桥。</p>
-</li>
-<li><p>随着BPDU的泛洪和收集，各交换机根据BPDU包含的信息进行比较，并选举出根桥。</p>
-</li>
-<li><p>在此之后（即STP树形成后的稳定期），只有根桥会周期性地（缺省为2s）主动产生并发送配置BPDU。相应的，非根桥交换机会从自己的根端口周期性地接收到配置BPDU，并立即触发产生自己的配置BPDU，然后从自己的指定端口发出。——这一过程看起来就像是，根桥发出的配置BPDU逐跳地“经过”了其他的交换机。也可以理解为：从根桥倒一盆水下来，水顺着这棵无环的树从上往下不断地往下流。因此如图所示，可以理解为SW1与SW2间的链路是SW2的上游链路，SW2与SW3间的链路是SW2的下游链路。</p>
-</li>
-</ul>
-<p>•报文格式：</p>
-<ul>
-<li><p>配置BPDU携带的参数可以分为3类：</p>
-</li>
-<li><p>第一类，BPDU对自身的标识，包括：协议标识、协议版本号、BPDU类型和标志。</p>
-<ul>
-<li>协议标识（Protocol ID，PID），2 Byte，总是0x000。</li>
-<li>协议版本号（Protocol Version ID，PVI），1 Byte，总是0x00。</li>
-<li>BPDU类型（BPDU Type），1 Byte，配置BPDU的类型值为0x00。</li>
-<li>标志（Flag），1 Byte，网络拓扑变化标志，仅使用了最低位和最高位。</li>
-</ul>
-</li>
-<li><p>第二类，用于进行STP计算的参数，包括：当前根桥的BID、根路径开销、发送该BPDU的交换机的BID和发送该BPDU的端口的PID。</p>
-<ul>
-<li>根桥ID（Root ID），8 Byte，当前根桥的BID。</li>
-<li>根路径开销（Root Path Cost，RPC），4 Byte，发送该BPDU的端口累计到根桥的开销。</li>
-<li>网桥ID（Bridge ID，BID），8 Byte，发送该BPDU的交换机的BID。</li>
-<li>接口ID（Port ID，PDID），2 Byte，发送该BPDU的端口ID。</li>
-</ul>
-</li>
-<li><p>第三类，时间参数，包括：消息寿命、最大寿命、Hello时间和转发延迟。</p>
-<ul>
-<li>消息寿命（Message Age），2 Byte，该BPDU消息的年龄。从根桥发出的配置BPDU，Message Age为0。在实际的实现中，配置BPDU每“经过”一个桥，Message Age增加1。</li>
-<li>最大寿命（Max Age），2 Byte，BPDU的最大生命周期，缺省为20s。</li>
-<li>Hello时间（Hello Time），2 Byte，根桥发送配置BPDU的周期，缺省为2s。</li>
-<li>转发延迟（Forward Delay），2 Byte，端口在侦听和学习状态（后续会讲）所停留的时间间隔，缺省为15s。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<h2 id="回顾：STP树的生成过程"><a href="#回顾：STP树的生成过程" class="headerlink" title="回顾：STP树的生成过程"></a><strong>回顾：STP树的生成过程</strong></h2><p><img src="/2021/05/06/RSTP/2.png"></p>
-<blockquote>
-<p>•STP基本原理：</p>
-<ul>
-<li>在一个具有物理环路的交换网络中，交换机通过运行STP，自动生成一个没有环路的工作拓扑，也被称为STP树。树节点为某些特定的交换机，树枝为某些特定的链路。</li>
-</ul>
-<p>•STP采用四个步骤来解决二层环路问题（生成一棵STP树）：</p>
-<ul>
-<li>在一个交换网络中选举一个根桥；在每个非根桥上选举一个根端口；为每个网段选举一个指定端口；阻塞交换机上所有剩余的非根、非指定端口（备用端口）。</li>
-</ul>
-<p>•如何生成STP树？</p>
-<ul>
-<li>主要通过比较4个参数：根桥ID、根路径开销、网桥ID和端口ID，值越小，越优先。而这些参数，都是报文BPDU中的字段。<ul>
-<li>根桥选举：比较根桥ID，最小胜出。</li>
-<li>根端口选举：依次比较RPC、对端BID、对端PID和本端PID，最小胜出。</li>
-<li>指定端口选举：依次比较RPC、本端BID和本端PID，最小胜出。</li>
-<li>在确定了根端口和指定端口之后，交换机上所有剩余的非根端口和非指定端口被阻塞。</li>
-</ul>
-</li>
-</ul>
-<p>•在华为产品的实现中，被阻塞的非指定端口表现为Alternate Port。</p>
-</blockquote>
-<h2 id="回顾：STP的端口状态迁移"><a href="#回顾：STP的端口状态迁移" class="headerlink" title="回顾：STP的端口状态迁移"></a><strong>回顾：STP的端口状态迁移</strong></h2><p><img src="/2021/05/06/RSTP/3.png"></p>
-<blockquote>
-<p>•根据端口是否接收和发送STP协议帧，以及端口是否能转发用户数据帧，STP定义了五种端口状态：Disabled、Blocking、Listening、Learning和Forwarding。</p>
-<ul>
-<li>Disabled状态：端口无法接收和发出任何帧（即：端口不仅不处理BPDU报文，也不转发用户流量），端口处于关闭（down）状态。</li>
-<li>Blocking状态：端口只能接收并处理BPDU，不能发送BPDU，也不能转发用户数据帧（用户流量），是阻塞端口的最终状态。</li>
-<li>Listening状态：端口可以接收并发送BPDU，但不进行MAC地址学习，也不能转发用户数据帧。这是过渡状态，用于确定端口角色，将选举出根桥、根端口和指定端口，同时用于防止临时环路。</li>
-<li>Learning状态：端口可以接收并发送BPDU，也可以进行MAC地址学习，根据收到的用户流量构建MAC地址表，但不能转发用户数据帧（用户流量）。这也是过渡状态，用于防止MAC地址表未建立，网络中出现大量数据帧泛洪。</li>
-<li>Forwarding状态：端口可以接收并发送BPDU，也可以进行MAC地址学习，同时能够转发用户数据帧（用户流量）。只有根端口或指定端口才能进入Forwarding状态。</li>
-</ul>
-<p>•端口状态迁移：</p>
-<ol>
-<li><p>STP交换机的端口在初始启动时，会从Disabled状态进入到Blocking状态。在Blocking状态，端口只接收和分析BPDU，但不发送。</p>
-</li>
-<li><p>在整个过程中，端口一但被关闭或发生了链路故障，就会进入Disabled状态。</p>
-</li>
-<li><p>如果端口被选为根端口或指定端口，则会进入Listening状态，此时端口接收并发送BPDU，这种状态会持续一个Forward Delay的时间长度，缺省为15s，是为了防止临时环路：因为此时网络中可能还存在因STP树的计算过程不同步而产生的临时环路。</p>
-</li>
-<li><p>在端口状态迁移过程中，如果端口的角色被判定为非根端口或非指定端口，则其端口状态就会立即退回到Blocking状态。</p>
-</li>
-<li><p>如果没有因“意外情况”回到Disabled状态，那么端口会进入Learning状态，此时端口不但可以接收并发送BPDU，还会开始构建MAC地址表，为用户流量的转发做好准备。这个状态也会持续一个Forward Delay的时间长度，缺省为15s，是为了防止此时交换机的MAC地址表还未建立，导致大量的数据帧被泛洪<strong>。</strong></p>
-</li>
-<li><p>最后，端口进入Forwarding状态，开始转发用户流量。</p>
-</li>
-</ol>
-</blockquote>
-<h2 id="STP的不足"><a href="#STP的不足" class="headerlink" title="STP的不足"></a>STP的不足</h2><p>STP虽然能够解决环路问题，但是由于网络拓扑收敛慢，影响了用户通信质量。如果网络中的拓扑结构频繁变化，网络也会随之频繁失去连通性，从而导致用户通信频繁中断，这是用户无法忍受的。</p>
-<p>STP的不足：</p>
-<ul>
-<li><p>STP没有细致区分端口状态和端口角色，不利于初学者学习及部署。</p>
-<ul>
-<li>从用户角度来讲，Listening、Learning和Blocking状态并没有区别，都同样不转发用户流量。</li>
-<li>从使用和配置角度来讲，端口之间最本质的区别并不在于端口状态，而是在于端口扮演的角色。</li>
-</ul>
-</li>
-<li><p>STP算法是被动的算法，依赖定时器等待的方式判断拓扑变化，收敛速度慢。</p>
-</li>
-<li><p>STP算法要求在稳定的拓扑中，根桥主动发出配置BPDU报文，而其他设备再进行处理，最终传遍整个STP网络。</p>
-</li>
-</ul>
-<h2 id="STP对计时器的依赖"><a href="#STP对计时器的依赖" class="headerlink" title="STP对计时器的依赖"></a><strong>STP对计时器的依赖</strong></h2><p><img src="/2021/05/06/RSTP/4.png"></p>
-<p><img src="/2021/05/06/RSTP/5.png"></p>
-<h2 id="STP重收敛过程慢"><a href="#STP重收敛过程慢" class="headerlink" title="STP重收敛过程慢"></a><strong>STP重收敛过程慢</strong></h2><p><img src="/2021/05/06/RSTP/6.png"></p>
-<p><img src="/2021/05/06/RSTP/7.png"></p>
-<blockquote>
-<p>•直连故障：</p>
-<ul>
-<li><p>两台交换机间有两条链路，其中一条是主用链路，另一条为备用链路。</p>
-</li>
-<li><p>当网络稳定时，交换机SW2检测到根端口的链路发生故障，则被阻塞的端口会开始端口状态迁移，最终进入用户流量转发状态。</p>
-</li>
-</ul>
-<p>•非直连故障：</p>
-<ul>
-<li><p>当网络正常时，SW3的被阻塞端口会定期收到来自根桥的BPDU。</p>
-</li>
-<li><p>当SW1与SW2之间的链路发生故障时，SW2能够第一时间检测到故障发生，此时它认为自己成为新的根桥，于是向SW3发送自己的配置BPDU（根桥ID为自己的桥ID）。</p>
-</li>
-<li><p>SW3的被阻塞端口将收到上述配置BPDU，但该BPDU并不比当前端口所缓存的配置BPDU更优，因此SW3忽略该配置BPDU。</p>
-</li>
-<li><p>当Max Age计时器超时后，SW3端口上缓存的配置BPDU老化，SW3开始向SW2发送配置BPDU，该配置BPDU由根桥SW1发送的配置BPDU触发，其中的根桥ID字段值为SW1的桥ID。</p>
-</li>
-<li><p>SW2收到上述配置BPDU后，解析该报文并认定SW1为根桥，于是将其连接SW3的端口切换为根端口。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="STP拓扑变更机制"><a href="#STP拓扑变更机制" class="headerlink" title="STP拓扑变更机制"></a><strong>STP拓扑变更机制</strong></h2><p>STP的拓扑变更机制，需要先将拓扑变化信息传递给根桥，再由根桥向下游泛洪拓扑变化信息。</p>
-<p><img src="/2021/05/06/RSTP/8.png"></p>
-<blockquote>
-<p>•拓扑变更，STP处理过程：</p>
-<p>当交换机检测到拓扑更改时，会通知生成树的根桥，然后根桥将该拓扑更改信息泛洪到整个网络。</p>
-<p>拓扑变化过程，如图：</p>
-<ul>
-<li>如果网络中新增一台交换机，导致工作拓扑发生了变化，则位于变化点的交换机可以通过端口状态直接感知到这种变化，但是其他的交换机是无法直接感知到的。</li>
-<li>位于变化点的交换机会以Hello Time（缺省2s）为周期通过其根端口不断向上游发送TCN BPDU，直到接收到从上游交换机发来的、TCA位置1的配置BPDU。TCA位置1是为了通知下游设备停止发送TCN BPDU报文。</li>
-<li>上游交换机收到TCN BPDU后，一方面会通过其指定端口回复TCA位置1的配置BPDU，另一方面会以Hello Time为周期通过其根端口不断向它的上游发送TCN BPDU。</li>
-<li>这个过程一直重复，直到根桥收到TCN BPDU。</li>
-<li>根桥收到TCN BPDU后，会发送TC位置1的配置BPDU，通告所有交换机网络拓扑发生了变化，通知下游设备直接删除桥MAC地址表项。</li>
-</ul>
-</blockquote>
-<h1 id="RSTP概述"><a href="#RSTP概述" class="headerlink" title="RSTP概述"></a><strong>RSTP概述</strong></h1><h2 id="RSTP概述-1"><a href="#RSTP概述-1" class="headerlink" title="RSTP概述"></a><strong>RSTP概述</strong></h2><p>•IEEE 802.1W中定义的RSTP可以视为STP的改进版本，RSTP在许多方面对STP进行了优化，它的收敛速度更快，而且能够兼容STP。</p>
-<p>•RSTP对STP的改进：</p>
-<ul>
-<li>通过端口角色的增补，简化了生成树协议的理解及部署；</li>
-<li>端口状态的重新划分；</li>
-<li>配置BPDU格式的改变，充分利用了STP协议报文中的Flag字段，明确了端口角色；</li>
-<li>配置BPDU的处理发生变化；</li>
-<li>快速收敛；</li>
-<li>增加保护功能。</li>
-</ul>
-<blockquote>
-<p>•RSTP可以兼容STP：RSTP可以和STP互操作，但是此时会丧失快速收敛等RSTP优势。</p>
-<ul>
-<li><p>当一个网段里既有运行STP的交换设备又有运行RSTP的交换设备，STP交换设备会忽略RSTP的BPDU。运行RSTP的交换设备在某端口上接收到运行STP的交换设备发出的配置BPDU，在两个Hello Time时间之后，便把自己的端口转换到STP工作模式，发送配置BPDU，从而实现了互操作。</p>
-</li>
-<li><p>在华为技术有限公司的数据通信设备上可以配置运行STP的交换设备被撤离网络后，运行RSTP的交换设备可迁移回到RSTP工作模式。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="RSTP在园区网络中的应用位置"><a href="#RSTP在园区网络中的应用位置" class="headerlink" title="RSTP在园区网络中的应用位置"></a><strong>RSTP在园区网络中的应用位置</strong></h2><p><img src="/2021/05/06/RSTP/9.png"></p>
-<h1 id="RSTP对STP的改进"><a href="#RSTP对STP的改进" class="headerlink" title="RSTP对STP的改进"></a><strong>RSTP对STP的改进</strong></h1><h2 id="改进点1：端口角色"><a href="#改进点1：端口角色" class="headerlink" title="改进点1：端口角色"></a><strong>改进点1：端口角色</strong></h2><p>通过端口角色的增补，简化了生成树协议的理解与部署。</p>
-<p><img src="/2021/05/06/RSTP/10.png"></p>
-<p><img src="/2021/05/06/RSTP/11.png"></p>
-<blockquote>
-<p>•RSTP的端口角色共有4种：根端口、指定端口、Alternate端口和Backup端口。</p>
-<p>•根端口和指定端口的作用同STP中定义，Alternate端口和Backup端口的描述如下：</p>
-<ul>
-<li><p>从配置BPDU报文发送角度来看：</p>
-<ul>
-<li>Alternate端口就是由于学习到其它网桥发送的配置BPDU报文而阻塞的端口。</li>
-<li>Backup端口就是由于学习到自己发送的配置BPDU报文而阻塞的端口。</li>
-</ul>
-</li>
-<li><p>从用户流量角度来看：</p>
-<ul>
-<li>Alternate端口提供了从指定桥到根的另一条可切换路径，作为根端口的备份端口。</li>
-<li>Backup端口作为指定端口的备份，提供了另一条从根桥到相应网段的备份通路。</li>
-</ul>
-</li>
-</ul>
-<p>•给一个RSTP域内所有端口分配角色的过程就是整个拓扑收敛的过程。</p>
-</blockquote>
-<h2 id="改进点2：端口状态"><a href="#改进点2：端口状态" class="headerlink" title="改进点2：端口状态"></a><strong>改进点2：端口状态</strong></h2><p>RSTP的状态规范缩减为3种，根据端口是否转发用户流量和学习MAC地址来划分:</p>
-<p>▫Discarding状态：不转发用户流量也不学习MAC地址；</p>
-<p>▫Learning状态：不转发用户流量但是学习MAC地址；</p>
-<p>▫Forwarding状：既转发用户流量又学习MAC地址。</p>
-<table>
-<thead>
-<tr>
-<th align="center">STP端口状态</th>
-<th align="center"><strong>RSTP端口状态</strong></th>
-<th align="center"><strong>端口在拓扑中的角色</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">Forwarding</td>
-<td align="center">Forwarding</td>
-<td align="center">包括根端口、指定端口</td>
-</tr>
-<tr>
-<td align="center">Learning</td>
-<td align="center">Learning</td>
-<td align="center">包括根端口、指定端口</td>
-</tr>
-<tr>
-<td align="center">Listening</td>
-<td align="center">Discarding</td>
-<td align="center">包括根端口、指定端口</td>
-</tr>
-<tr>
-<td align="center">Blocking</td>
-<td align="center">Discarding</td>
-<td align="center">包括Alternate端口、Backup端口</td>
-</tr>
-<tr>
-<td align="center">Disabled</td>
-<td align="center">Discarding</td>
-<td align="center">包括Disable端口</td>
-</tr>
-</tbody></table>
-<h2 id="改进点3：配置BPDU-RST-BPDU"><a href="#改进点3：配置BPDU-RST-BPDU" class="headerlink" title="改进点3：配置BPDU - RST BPDU"></a><strong>改进点3：配置BPDU - RST BPDU</strong></h2><p>•RSTP的配置BPDU充分利用了STP报文中的Flag字段，明确了端口角色。</p>
-<p>•除了保证和STP格式基本一致之外，RSTP作了如下变化：</p>
-<ul>
-<li><p>Type字段：配置BPDU类型不再是0而是2，所以运行STP的设备收到RSTP的配置BPDU时会丢弃。</p>
-</li>
-<li><p>Flag字段：使用了原来保留的中间6位，这样改变的配置BPDU叫做RST BPDU。</p>
-</li>
-</ul>
-<p>•<strong>RST BPDU报文格式：</strong></p>
-<p><img src="/2021/05/06/RSTP/12.png"></p>
-<blockquote>
-<p>•RST BPDU与STP配置BPDU报文格式不同点，包括：BPDU类型和Flag字段。</p>
-<ul>
-<li><p>BPDU类型，1 Byte，RST BPDU的类型值为0x02。</p>
-</li>
-<li><p>标志，1 Byte，包括：</p>
-<p>▪bit 7：TCA，表示拓扑变化确认；</p>
-<p>▪bit 6：Agreement，表示同意，用于P/A机制；</p>
-<p>▪bit 5：Forwarding，表示转发状态；</p>
-<p>▪bit 4：Learning，表示学习状态；</p>
-<p>▪bit 3和bit 2：表示端口角色，00表示未知端口，01表示替代或备份端口，10表示根端口，11表示指定端口；</p>
-<p>▪bit 1：Proposal，表示提议，用于P/A机制；</p>
-<p>▪bit 0：TC，表示拓扑变化。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="改进点4：配置BPDU的处理-1"><a href="#改进点4：配置BPDU的处理-1" class="headerlink" title="改进点4：配置BPDU的处理 (1)"></a><strong>改进点4：配置BPDU的处理</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/RSTP/13.png"></p>
-<h2 id="改进点4：配置BPDU的处理-2"><a href="#改进点4：配置BPDU的处理-2" class="headerlink" title="改进点4：配置BPDU的处理 (2)"></a><strong>改进点4：配置BPDU的处理</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/14.png"></p>
-<h2 id="改进点4：配置BPDU的处理-3"><a href="#改进点4：配置BPDU的处理-3" class="headerlink" title="改进点4：配置BPDU的处理 (3)"></a><strong>改进点4：配置BPDU的处理 (3)</strong></h2><p><img src="/2021/05/06/RSTP/15.png"></p>
-<blockquote>
-<p>•STP：</p>
-<ul>
-<li>STP只有指定端口会立即处理次优BPDU，其他端口会忽略次优BPDU，等到Max Age计时器超时后，缓存的次优BPDU才会老化，然后发送自身更优的BPDU，进行新一轮的拓扑收敛。</li>
-</ul>
-<p>•RSTP：</p>
-<ul>
-<li>RSTP处理次优BPDU报文不再依赖于任何定时器（即不再依赖于BPDU老化）解决拓扑收敛，同时RSTP的任何端口角色都会处理次优BPDU，从而加快了拓扑收敛。</li>
-</ul>
-</blockquote>
-<h2 id="改进点5：快速收敛机制-1"><a href="#改进点5：快速收敛机制-1" class="headerlink" title="改进点5：快速收敛机制 (1)"></a><strong>改进点5：快速收敛机制 (1)</strong></h2><p><img src="/2021/05/06/RSTP/16.png"></p>
-<p><img src="/2021/05/06/RSTP/17.png"></p>
-<h2 id="改进点5：快速收敛机制-2"><a href="#改进点5：快速收敛机制-2" class="headerlink" title="改进点5：快速收敛机制 (2)"></a><strong>改进点5：快速收敛机制</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/18.png"></p>
-<blockquote>
-<p>•边缘端口的UP和Down，不会引起网络拓扑的变动。</p>
-</blockquote>
-<h2 id="改进点5：快速收敛机制-3"><a href="#改进点5：快速收敛机制-3" class="headerlink" title="改进点5：快速收敛机制 (3)"></a>改进点5：快速收敛机制 (3)</h2><p><img src="/2021/05/06/RSTP/19.png"></p>
-<blockquote>
-<p>•事实上对于STP，指定端口的选择可以很快完成，主要的速度瓶颈在于：为了避免环路，必须等待足够长的时间，使全网的端口状态全部确定，也就是说必须要等待至少一个Forward Delay所有端口才能进行转发。</p>
-<p>•而RSTP的主要目的就是消除这个瓶颈，通过阻塞自己的非根端口来保证不会出现环路。而使用P/A机制加快了上游端口进入Forwarding状态的速度。</p>
-</blockquote>
-<h3 id="P-A机制详解-1"><a href="#P-A机制详解-1" class="headerlink" title="P/A机制详解(1)"></a><strong>P/A机制详解(1)</strong></h3><p><img src="/2021/05/06/RSTP/20.png"></p>
-<h3 id="P-A机制详解-2"><a href="#P-A机制详解-2" class="headerlink" title="P/A机制详解(2)"></a><strong>P/A机制详解(2)</strong></h3><p><img src="/2021/05/06/RSTP/21.png"></p>
-<blockquote>
-<p>•SW2的下游端口同步过程：替代端口，状态不变；边缘端口，不参与计算；阻塞非边缘指定端口。</p>
-</blockquote>
-<h3 id="P-A机制详解-3"><a href="#P-A机制详解-3" class="headerlink" title="P/A机制详解(3)"></a><strong>P/A机制详解(3)</strong></h3><p><img src="/2021/05/06/RSTP/22.png"></p>
-<h2 id="改进点6：拓扑变更机制"><a href="#改进点6：拓扑变更机制" class="headerlink" title="改进点6：拓扑变更机制"></a><strong>改进点6：拓扑变更机制</strong></h2><p>在RSTP中检测拓扑是否发生变化只有一个标准：一个非边缘端口迁移到Forwarding状态。</p>
-<p><img src="/2021/05/06/RSTP/23.png"></p>
-<blockquote>
-<p>•在STP中，如果拓扑发生了变化，需要先向根桥传递TCN BPDU，再由根桥来通知拓扑变更，泛洪TC置位的配置BPDU。</p>
-<p>•在RSTP中，通过新的拓扑变更机制，TC置位的RST BPDU会快速的在网络中泛洪。</p>
-<p>•如上图所示：</p>
-<ul>
-<li><p>SW3的根端口收不到从根桥发来的RST BPDU后，Alternate端口会快速切换为新的根端口，启动TC While Timer，并清空所有端口学习到的MAC地址。然后向外发出TC置位的RST BPDU。</p>
-</li>
-<li><p>SW2接收到RST BPDU后，会清空接收口以外所有端口学习到的MAC地址，同时开启计时器，并向外发送TC置位的RST BPDU。</p>
-</li>
-<li><p>最终，RST BPDU会在全网泛洪。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="改进点7：保护功能-1"><a href="#改进点7：保护功能-1" class="headerlink" title="改进点7：保护功能 (1)"></a><strong>改进点7：保护功能</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/RSTP/24.png"></p>
-<blockquote>
-<p>•在交换设备上，通常将直接与用户终端（如PC机）或文件服务器等非交换设备相连的端口配置为边缘端口。</p>
-<p>•如上图所示：</p>
-<ul>
-<li><p>SW3与某主机互联，并设置该互联端口为边缘端口。</p>
-</li>
-<li><p>后来该主机被恶意用户侵占，并伪造RST BPDU攻击SW3，因此边缘端口会收到RST BPDU，失去边缘端口特性，并进行生成树计算。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="改进点7：保护功能-2"><a href="#改进点7：保护功能-2" class="headerlink" title="改进点7：保护功能 (2)"></a><strong>改进点7：保护功能</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/25.png"></p>
-<blockquote>
-<p>•由于维护人员的错误配置或网络中的恶意攻击，根桥有可能会收到优先级更高的RST BPDU，使得根桥失去根地位，从而引起网络拓扑结构的错误变动。这种拓扑变化，会导致原来应该通过高速链路的流量被牵引到低速链路上，造成网络拥塞。</p>
-<p>•如上图所示：</p>
-<ul>
-<li><p>网络稳定时，SW1为根桥，向下游设备发送最优RST BPDU。</p>
-</li>
-<li><p>如果SW2被恶意用户侵占，例如恶意修改SW2的桥优先级，使得SW2的桥优先级优于SW1，此时SW2会主动发送自己的RST BPDU。</p>
-</li>
-<li><p>当SW1的指定端口收到该RST BPDU后，会重新进行生成树计算，而SW1也会失去根桥的地位，引起拓扑变动。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="改进点7：保护功能-3"><a href="#改进点7：保护功能-3" class="headerlink" title="改进点7：保护功能 (3)"></a><strong>改进点7：保护功能</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/RSTP/26.png"></p>
-<blockquote>
-<p>•在运行RSTP的网络中，根端口状态是依靠不断接收来自上游交换设备的RST BPDU维持。当由于链路拥塞或者单向链路故障导致根端口收不到来自上游交换设备的RST BPDU时，此时交换设备会重新选择根端口。</p>
-<p>•如图所示，当SW1和SW3之间的链路发生单向链路故障时，SW3由于根端口在超时时间内收不到来自上游设备的BPDU报文，Alternate端口切换成根端口，根端口切换成指定端口，从而形成了环路。</p>
-</blockquote>
-<h2 id="改进点7：保护功能-4"><a href="#改进点7：保护功能-4" class="headerlink" title="改进点7：保护功能 (4)"></a><strong>改进点7：保护功能</strong> <strong>(4)</strong></h2><p><img src="/2021/05/06/RSTP/27.png"></p>
-<blockquote>
-<p>•交换设备在接收到TC置位的RST BPDU报文后，会执行MAC地址表项的删除操作。如果有人伪造TC置位的RST BPDU报文恶意攻击交换设备时，交换设备短时间内会收到很多RST BPDU报文，频繁的删除操作会给设备造成很大的负担，给网络的稳定带来很大隐患。</p>
-<p>•如上图所示：</p>
-<ul>
-<li>如果SW3被恶意用户侵占，伪造大量TC置位的RST BPDU并向外发送。SW2收到这些RST BPDU后，会频繁执行MAC地址表项的删除操作，形成巨大负担。</li>
-</ul>
-</blockquote>
-<h1 id="RSTP的工作过程"><a href="#RSTP的工作过程" class="headerlink" title="RSTP的工作过程"></a><strong>RSTP的工作过程</strong></h1><h2 id="RSTP拓扑收敛过程-1"><a href="#RSTP拓扑收敛过程-1" class="headerlink" title="RSTP拓扑收敛过程(1)"></a><strong>RSTP拓扑收敛过程(1)</strong></h2><p><img src="/2021/05/06/RSTP/28.png"></p>
-<blockquote>
-<p>•RSTP收敛与STP收敛过程类似。</p>
-<p>•网络初始化时，网络中所有的RSTP交换机都认为自己是“根桥”，并设置每个端口都为指定端口，发送RST BPDU。其中SW1的桥ID最优，最终会被选举为根桥。</p>
-</blockquote>
-<h2 id="RSTP拓扑收敛过程-2"><a href="#RSTP拓扑收敛过程-2" class="headerlink" title="RSTP拓扑收敛过程(2)"></a><strong>RSTP拓扑收敛过程(2)</strong></h2><p><img src="/2021/05/06/RSTP/29.png"></p>
-<blockquote>
-<p>•每个认为自己是“根桥”的交换机生成一个RST BPDU报文来协商指定网段的端口状态，此RST BPDU报文Flag字段里面的Proposal位需要置位。</p>
-<p>•当一个端口收到RST BPDU报文时，此端口会比较收到的RST BPDU报文和本地的RST BPDU报文。如果本地的RST BPDU报文优于接收的RST BPDU报文，则端口会丢弃接收的RST BPDU报文，并发送Proposal置位的本地RST BPDU报文来回复对端设备。</p>
-<p>•如图，RSTP上游链路的设备互联端口收敛过程，以SW1与SW2为例。</p>
-</blockquote>
-<h2 id="RSTP拓扑收敛过程-3"><a href="#RSTP拓扑收敛过程-3" class="headerlink" title="RSTP拓扑收敛过程(3)"></a><strong>RSTP拓扑收敛过程(3)</strong></h2><p><img src="/2021/05/06/RSTP/30.png"></p>
-<blockquote>
-<p>•如图，RSTP下游链路的设备互联端口会进入慢收敛过程，以SW2与SW3为例。</p>
-</blockquote>
-<h1 id="RSTP的基本配置"><a href="#RSTP的基本配置" class="headerlink" title="RSTP的基本配置"></a><strong>RSTP的基本配置</strong></h1><h2 id="RSTP的基础配置命令-1"><a href="#RSTP的基础配置命令-1" class="headerlink" title="RSTP的基础配置命令(1)"></a><strong>RSTP的基础配置命令(1)</strong></h2><p><img src="/2021/05/06/RSTP/31.png"></p>
-<h2 id="RSTP的基础配置命令-2"><a href="#RSTP的基础配置命令-2" class="headerlink" title="RSTP的基础配置命令(2)"></a><strong>RSTP的基础配置命令(2)</strong></h2><p><img src="/2021/05/06/RSTP/32.png"></p>
-<blockquote>
-<p>•配置接口路径开销：</p>
-<ul>
-<li><p>dot1d-1998：指定路径开销值的计算方法是IEEE 802.1d-1998标准方法。使用IEEE 802.1d-1998标准方法时取值范围是1～65535。</p>
-</li>
-<li><p>dot1t：指定路径开销值的计算方法是IEEE 802.1t标准方法。使用IEEE 802.1t标准方法时取值范围是1～200,000,000。</p>
-</li>
-<li><p>legacy：指定路径开销值的计算方法是华为计算方法。使用华为计算方法时取值范围是1～200,000。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="RSTP的基础配置命令-3"><a href="#RSTP的基础配置命令-3" class="headerlink" title="RSTP的基础配置命令(3)"></a><strong>RSTP的基础配置命令(3)</strong></h2><p><img src="/2021/05/06/RSTP/33.png"></p>
-<h2 id="RSTP的保护功能配置命令-1"><a href="#RSTP的保护功能配置命令-1" class="headerlink" title="RSTP的保护功能配置命令(1)"></a><strong>RSTP的保护功能配置命令(1)</strong></h2><p><img src="/2021/05/06/RSTP/34.png"></p>
-<h2 id="RSTP的保护功能配置命令-2"><a href="#RSTP的保护功能配置命令-2" class="headerlink" title="RSTP的保护功能配置命令(2)"></a><strong>RSTP的保护功能配置命令(2)</strong></h2><p><img src="/2021/05/06/RSTP/35.png"></p>
-<blockquote>
-<p>•配置后，在<strong>stp</strong> <strong>tc-protection interval</strong>指定的时间内，设备只会处理<strong>stp</strong> <strong>tc-protection threshold</strong>指定数量的拓扑变化报文，对于其他的报文会延迟处理，所以可能会影响生成树的收敛速度。例如，时间设定为10秒，阈值设定为5，则设备收到拓扑变化报文后，在10秒内只会处理最开始收到的5个拓扑变化报文，对于后面收到的报文则会等10秒超时后再统一处理。</p>
-</blockquote>
-<h2 id="案例：RSTP的基础配置"><a href="#案例：RSTP的基础配置" class="headerlink" title="案例：RSTP的基础配置"></a><strong>案例：RSTP的基础配置</strong></h2><p><img src="/2021/05/06/RSTP/36.png"></p>
-<p><img src="/2021/05/06/RSTP/37.png"></p>
-<p><img src="/2021/05/06/RSTP/38.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下哪些是RSTP的端口状态？(   )</p>
-<p>A.Idle</p>
-<p><strong>B.Discarding</strong></p>
-<p><strong>C.Forwarding</strong></p>
-<p><strong>D.Learning</strong></p>
-<p>2.（单选题）RSTP的根保护必须配置在设备的根端口上。(   )</p>
-<p>A.对</p>
-<p><strong>B.错</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•生成树是一个用于局域网中消除环路的协议。运行该协议的设备通过彼此交互信息而发现网络中的环路，并对某些接口进行阻塞以消除环路。由于局域网规模的不断增长，生成树协议已经成为重要的局域网协议之一。</p>
-<p>•RSTP是生成树协议中的其中一个版本，它在STP的基础上，做了很多的改进，大大加快了网络收敛的速度。</p>
-<p>•本章节，主要介绍了RSTP对STP的七个改进点，包括：端口角色、端口状态、配置BPDU格式、配置BPDU的处理方式、快速收敛机制、拓扑变更机制和4种保护特性。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/" itemprop="url">VLAN高级技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T12:20:26+08:00">
-                2021-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="VLAN聚合"><a href="#VLAN聚合" class="headerlink" title="VLAN聚合"></a><strong>VLAN聚合</strong></h1><h2 id="VLAN聚合产生的技术背景"><a href="#VLAN聚合产生的技术背景" class="headerlink" title="VLAN聚合产生的技术背景"></a><strong>VLAN聚合产生的技术背景</strong></h2><p>•在一般的三层交换机中，通常是采用一个VLAN对应一个VLANIF接口的方式实现广播域之间的互通，这在某些情况下导致了IP地址的浪费。</p>
-<p>•因为一个VLAN对应的子网中，子网号、子网广播地址、子网网关地址不能用作VLAN内的主机IP地址，且子网中实际接入的主机可能少于可用IP地址数量，空闲的IP地址也会因不能再被其他VLAN使用而被浪费掉。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png"></p>
-<h2 id="VLAN聚合概述"><a href="#VLAN聚合概述" class="headerlink" title="VLAN聚合概述"></a><strong>VLAN聚合概述</strong></h2><p>•<strong>VLAN聚合</strong>（VLAN Aggregation，也称Super-VLAN）: 指在一个物理网络内，用多个VLAN（称为Sub-VLAN）隔离广播域，并将这些Sub-VLAN聚合成一个逻辑的VLAN（称为Super-VLAN），这些Sub-VLAN使用同一个IP子网和缺省网关，进而达到节约IP地址资源的目的。</p>
-<p>•<strong>Sub-VLAN</strong>：只包含物理接口，不能建立三层VLANIF接口，用于隔离广播域。每个Sub-VLAN内的主机与外部的三层通信是靠Super-VLAN的三层VLANIF接口来实现的。</p>
-<p>•<strong>Super-VLAN</strong>：只建立三层VLANIF接口，不包含物理接口，与子网网关对应。与普通VLAN不同，Super-VLAN的VLANIF接口状态取决于所包含Sub-VLAN的物理接口状态。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png"></p>
-<h2 id="VLAN聚合的原理"><a href="#VLAN聚合的原理" class="headerlink" title="VLAN聚合的原理"></a><strong>VLAN聚合的原理</strong></h2><p>每个Sub-VLAN对应一个广播域，多个Sub-VLAN和一个Super-VLAN关联，只给Super-VLAN分配一个IP子网，所有Sub-VLAN都使用Super-VLAN的IP子网和缺省网关进行三层通信。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/3.png"></p>
-<blockquote>
-<p>•多个Sub-VLAN共享一个网关地址，节约了子网网络地址、子网定向广播地址、子网缺省网关地址，且各Sub-VLAN间的界线也不再是从前的子网界线了，可以根据每个Sub-VLAN内所需的IP地址数量进行灵活的地址规划，从而既保证了各个Sub-VLAN作为一个独立广播域实现广播隔离，又节省了IP地址资源，提高了编址的灵活性。</p>
-</blockquote>
-<h2 id="VLAN聚合的应用"><a href="#VLAN聚合的应用" class="headerlink" title="VLAN聚合的应用"></a><strong>VLAN聚合的应用</strong></h2><p>传统VLAN方式每一个VLAN需要划分不同的IP地址网段，在本例中需要耗费4个IP网段和产生4条路由条目；Super-VLAN方式只需要分配一个IP地址网段，下属二层VLAN共用同一个IP地址网段，共用同一个三层网关，同时VLAN之间保持二层隔离。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/4.png"></p>
-<h2 id="相同Sub-VLAN内部通信"><a href="#相同Sub-VLAN内部通信" class="headerlink" title="相同Sub-VLAN内部通信"></a><strong>相同Sub-VLAN内部通信</strong></h2><p>同一个Sub-VLAN之间属于同一个广播域，因此相同Sub-VLAN之间可以通过二层直接通信。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/5.png"></p>
-<h2 id="不同Sub-VLAN之间通信举例"><a href="#不同Sub-VLAN之间通信举例" class="headerlink" title="不同Sub-VLAN之间通信举例"></a><strong>不同Sub-VLAN之间通信举例</strong></h2><p>Super-VLAN VLANIF100开启ARP代理之后PC1和PC2之间通信过程如下：</p>
-<p>1.PC1发现PC2与自己在同一网段，且自己ARP表无PC2对应表项，则直接发送ARP广播请求PC2的MAC地址。</p>
-<p>2.作为网关的Super-VLAN对应的VLANIF 100收到PC1的ARP请求，由于网关上使能Sub-VLAN间的ARP代理功能，则向Super-VLAN 100的所有Sub-VLAN接口发送一个ARP广播，请求PC2的MAC地址。</p>
-<p>3.PC2收到网关发送的ARP广播后，对此请求进行ARP应答。</p>
-<p>4.网关收到PC2的应答后，就把自己的MAC地址回应给PC1，PC1之后要发给PC2的报文都先发送给网关，由网关做三层转发。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/6.png"></p>
-<blockquote>
-<p>•不同Sub-VLAN之间进行通信，IP地址属于相同网段，因此主机会发送ARP请求，但是实际不同Sub-VLAN之间属于不同的广播域，因而ARP报文无法传递到其他Sub-VLAN，ARP请求得不到响应，设备无法学习到对端MAC地址，从而无法完成Sub-VLAN之间通信。</p>
-<p>•要实现Sub-VLAN之间的通信，需要在Super-VLAN 的VLANIF中开启ARP代理功能。</p>
-</blockquote>
-<h2 id="Sub-VLAN与其他设备的二层通信"><a href="#Sub-VLAN与其他设备的二层通信" class="headerlink" title="Sub-VLAN与其他设备的二层通信"></a><strong>Sub-VLAN与其他设备的二层通信</strong></h2><p>•当Sub-VLAN与其他设备进行二层通信时，与普通的VLAN内二层通信无区别。</p>
-<p>•由于Super-VLAN不属于任何物理接口，即不会处理任何携带Super-VLAN标签的报文。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/7.png"></p>
-<blockquote>
-<p>•Sub-VLAN二层通信过程举例：</p>
-<p>▫从PC1进入SW1的报文会被打上VLAN10的Tag。在SW1中这个Tag不会因为VLAN10是VLAN100的Sub-VLAN而变为VLAN100的Tag。</p>
-<p>▫当报文从SW1的GE0/0/0出去时，依然携带VLAN10的Tag。也就是说，SW1本身不会发出VLAN100的报文。就算其他设备有VLAN100的报文发送到该设备上，这些报文也会因为SW1上没有VLAN100应的物理接口而被丢弃。</p>
-<p>▫对于其他设备而言，有效的VLAN只有Sub-VLAN10，20和30， 所有的报文都是在这些VLAN中交互的。因此，SW1上虽然配置了VLAN聚合，但与其他设备的二层通信，不会涉及到Super-VLAN，与正常的二层通信流程一样。</p>
-<p>•当Sub-VLAN内的PC需要与其他网络进行三层通信时，首先将数据发往默认网关，即Super-VLAN对应的VLANIF，再进行路由。</p>
-</blockquote>
-<h2 id="VLAN聚合关键配置命令"><a href="#VLAN聚合关键配置命令" class="headerlink" title="VLAN聚合关键配置命令"></a><strong>VLAN聚合关键配置命令</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/8.png"></p>
-<h2 id="VLAN聚合配置举例-1"><a href="#VLAN聚合配置举例-1" class="headerlink" title="VLAN聚合配置举例 (1)"></a><strong>VLAN聚合配置举例</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/9.png"></p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/10.png"></p>
-<h2 id="VLAN聚合配置举例-2"><a href="#VLAN聚合配置举例-2" class="headerlink" title="VLAN聚合配置举例(2)"></a><strong>VLAN聚合配置举例(2)</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/11.png"></p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/12.png"></p>
-<h1 id="MUX-VLAN"><a href="#MUX-VLAN" class="headerlink" title="MUX VLAN"></a><strong>MUX VLAN</strong></h1><h2 id="MUX-VLAN产生背景"><a href="#MUX-VLAN产生背景" class="headerlink" title="MUX VLAN产生背景"></a><strong>MUX VLAN产生背景</strong></h2><p>在企业网络中，各个部门之间网络需要相互独立，通常用VLAN技术可以实现这一要求。如果企业规模很大，且拥有大量的合作伙伴，要求各个合作伙伴能够访问公司服务器，但是不能相互访问，这时如果使用传统的VLAN技术，不但需要耗费大量的VLAN ID，还增加了网络管理者的工作量同时也增加了维护量。</p>
-<p>MUX VLAN（Multiplex VLAN）提供了一种通过VLAN进行网络资源控制的机制。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/13.png"></p>
-<h2 id="MUX-VLAN的基本概念"><a href="#MUX-VLAN的基本概念" class="headerlink" title="MUX VLAN的基本概念"></a><strong>MUX VLAN的基本概念</strong></h2><p>MUX VLAN分为Principal VLAN（主VLAN）和Subordinate VLAN（从VLAN），Subordinate VLAN又分为Separate VLAN（隔离型从VLAN）和Group VLAN（互通型从VLAN）。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/14.png"></p>
-<blockquote>
-<p>•在使用MUX VLAN的过程中，无论是Separate VLAN还是Group VLAN都必须与一个Principle VLAN绑定。</p>
-<p>•加入Principal VLAN（主VLAN）中的接口，可以与MUX VLAN内的所有接口进行通信。</p>
-</blockquote>
-<h2 id="MUX-VLAN的应用"><a href="#MUX-VLAN的应用" class="headerlink" title="MUX VLAN的应用"></a><strong>MUX VLAN的应用</strong></h2><p>在交换机上，通过把部门A和部门B所在的VLAN分别设置为互通型从VLAN，把访客区所属的VLAN设置为隔离型从VLAN，把服务器所连接口所属VLAN设置为Principal VLAN，即主VLAN。并且所有从VLAN都与主VLAN绑定。从而实现如下网络设计要求：</p>
-<p>▫部门A内的用户之间能够实现二层互通。</p>
-<p>▫部门B内的用户之间能够实现二层互通。</p>
-<p>▫部门A与部门B的用户之间二层隔离。</p>
-<p>▫部门A和部门B的员工都能够通过二层访问服务器。</p>
-<p>▫访客区内的任意PC除了能访问服务器之外，不能访问其他任意设备，包括其他访客。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/15.png"></p>
-<h2 id="MUX-VLAN配置命令"><a href="#MUX-VLAN配置命令" class="headerlink" title="MUX VLAN配置命令"></a><strong>MUX VLAN配置命令</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/16.png"></p>
-<blockquote>
-<p>•只有使能接口MUX VLAN功能后，才能实现Principal VLAN与Subordinate VLAN之间通信、Group VLAN内的接口可以相互通信及Separate VLAN接口间不能相互通信的目的。</p>
-</blockquote>
-<h2 id="MUX-VLAN配置举例"><a href="#MUX-VLAN配置举例" class="headerlink" title="MUX VLAN配置举例"></a><strong>MUX VLAN配置举例</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/17.png"></p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/18.png"></p>
-<h2 id="MUX-VLAN配置验证"><a href="#MUX-VLAN配置验证" class="headerlink" title="MUX VLAN配置验证"></a><strong>MUX VLAN配置验证</strong></h2><p>查看VLAN配置结果，通过ping命令检测PC5（192.168.1.5/24）与PC6（192.168.1.6/24）之间的网络连通性。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/19.png"></p>
-<h1 id="QinQ"><a href="#QinQ" class="headerlink" title="QinQ"></a><strong>QinQ</strong></h1><h2 id="QinQ概述"><a href="#QinQ概述" class="headerlink" title="QinQ概述"></a><strong>QinQ概述</strong></h2><p>•随着以太网技术在网络中的大量部署，利用VLAN对用户进行隔离和标识受到很大限制。因为IEEE802.1Q中定义的VLAN Tag域只有12个比特，仅能表示4096个VLAN，无法满足城域以太网中标识大量用户的需求，于是QinQ技术应运而生。</p>
-<p>•QinQ（802.1Q in 802.1Q）技术是一项扩展VLAN空间的技术，通过在802.1Q标签报文的基础上再增加一层802.1Q的Tag来达到扩展VLAN空间的功能。</p>
-<p>•如下图所示用户报文在公网上传递时携带了两层Tag，内层是私网Tag，外层是公网Tag。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/20.png"></p>
-<h2 id="QinQ封装结构"><a href="#QinQ封装结构" class="headerlink" title="QinQ封装结构"></a><strong>QinQ封装结构</strong></h2><p>QinQ封装报文是在无标签的以太网数据帧的源MAC地址字段后面加上两个VLAN标签构成。</p>
-<p>•TPID（Tag Protocol Identifier，标签协议标识）表示帧类型。取值为0x8100时表示802.1Q Tag帧。如果不支持802.1Q的设备收到这样的帧，会将其丢弃。</p>
-<p>•对于内层的802.1Q Tag，该值设置为0x8100；对于外层的802.1Q Tag，不同厂商所使用的值可能不相同：</p>
-<p>​    ▫0x8100：Huawei路由器使用</p>
-<p>​    ▫0x88A8：802.1ad规定外层802.1Q Tag中的TPID为0x88a8</p>
-<p>•在华为设备上，外层802.1Q Tag缺省情况下值为0x8100，可以通过命令行调整该值。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/21.png"></p>
-<h2 id="QinQ工作原理"><a href="#QinQ工作原理" class="headerlink" title="QinQ工作原理"></a><strong>QinQ工作原理</strong></h2><p>在公网的传输过程中，设备只根据外层VLAN Tag转发报文，并根据报文的外层VLAN Tag进行MAC地址学习，而用户的私网VLAN Tag将被当作报文的数据部分进行传输。即使私网VLAN Tag相同，也能通过公网VLAN Tag区分不同用户。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/22.png"></p>
-<blockquote>
-<p>•企业A和企业B的私网VLAN分别为VLAN 1～10和VLAN 1～20。公网为企业A和企业B分配的公网VLAN分别为VLAN 3和VLAN 4。当企业A和企业B中带VLAN Tag的报文进入公网时，报文外面就会被分别封装上VLAN 3和VLAN 4的VLAN标签。这样，来自不同企业网络的报文在公网中传输时被完全分开，即使这些企业网络各自的VLAN范围存在重叠，在公网中传输时也不会产生冲突。当报文穿过公网，到达公网另一侧PE设备后，报文会被剥离公网为其添加的公网VLAN标签，然后再传送给用户网络的CE设备。</p>
-</blockquote>
-<h2 id="QinQ实现方式-基本QinQ"><a href="#QinQ实现方式-基本QinQ" class="headerlink" title="QinQ实现方式 - 基本QinQ"></a>QinQ实现方式 - 基本QinQ</h2><p>基本QinQ的报文处理过程:</p>
-<p>1.SW1收到VLAN ID为10和20的报文，将该报文发给SW2。</p>
-<p>2.SW2收到该报文后，在该报文原有Tag的外侧再添加一层VLAN ID 为100的外层Tag。</p>
-<p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
-<p>4.SW3收到VLAN100的报文后，剥离报文的外层Tag（VLAN ID 为100）。将报文发送给SW4，此时报文只有一层Tag（VLAN ID 为10或20）。</p>
-<p>5.SW4收到该报文，根据VLAN ID和目的MAC地址进行相应的转发。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/23.png"></p>
-<blockquote>
-<p>•基本QinQ是基于端口方式实现的。开启端口的基本QinQ功能后，当该端口接收到报文，设备会为该报文打上本端口缺省VLAN 的VLAN Tag。如果接收到的是已经带有VLAN Tag的报文，该报文就成为双Tag的报文；如果接收到的是不带VLAN Tag的报文，该报文就成为带有端口缺省VLAN Tag的报文。</p>
-<p>•基于端口的QinQ的缺点是外层VLAN Tag封装方式固定，不能根据业务种类选择外层VLAN Tag封装的方式，从而很难有效支持多业务的灵活运营。</p>
-</blockquote>
-<h2 id="QinQ实现方式-灵活QinQ"><a href="#QinQ实现方式-灵活QinQ" class="headerlink" title="QinQ实现方式 - 灵活QinQ"></a>QinQ实现方式 - 灵活QinQ</h2><p>灵活QinQ的报文处理过程：</p>
-<p>1.SW1收到VLAN ID为10和20的报文，将该报文转发给SW2。</p>
-<p>2.SW2收到VLAN ID为10的报文后，添加一层VLAN ID 为100 的外层Tag；SW2收到VLAN ID为20的报文后，添加一层VLAN ID为200的外层Tag。</p>
-<p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
-<p>4.SW3收到报文后，剥离报文的外层Tag（VLAN ID 为100或200）。将报文发送给SW4，此时报文只有一层Tag（VLAN ID 为10或20）。</p>
-<p>5.SW4收到报文，根据VLAN ID和目的MAC地址进行相应的转发。</p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/24.png"></p>
-<blockquote>
-<p>•灵活QinQ（Selective QinQ）可根据流分类的结果选择是否打外层VLAN Tag，打上何种外层VLAN Tag。灵活QinQ可根据用户的VLAN标签、优先级、MAC地址、IP协议、IP源地址、IP目的地址、或应用程序的端口号进行流分类。</p>
-<p>•基于VLAN ID的灵活QinQ：为具有不同内层VLAN ID的报文添加不同的外层VLAN Tag。</p>
-<p>•基于802.1p优先级的灵活QinQ：根据报文的原有内层VLAN的802.1p优先级添加不同的外层VLAN Tag。</p>
-<p>•基于流策略的灵活QinQ：根据QoS策略添加不同的外层VLAN Tag。基于流策略的灵活QinQ能够针对业务类型提供差别服务。</p>
-<p>•灵活QinQ功能是对基本QinQ功能的扩展，它比基本QinQ的功能更灵活。二者之间的主要区别是：</p>
-<p>​    ▫基本QinQ：对进入二层QinQ接口的所有帧都加上相同的外    层Tag。</p>
-<p>​    ▫灵活QinQ：对进入二层QinQ接口的帧，可以根据不同的内    层Tag而加上不同的外层Tag，对于用户VLAN的划分更加细    致</p>
-</blockquote>
-<h2 id="QinQ在园区网络中的应用"><a href="#QinQ在园区网络中的应用" class="headerlink" title="QinQ在园区网络中的应用"></a><strong>QinQ在园区网络中的应用</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/25.png"></p>
-<blockquote>
-<p>•BRAS：Broadband Remote Access Server，宽带远程接入服务器。BRAS提供宽带接入服务、实现多种业务的汇聚与转发，能满足不同用户对传输容量和带宽利用率的要求，因此RRAS是宽带用户接入的核心设备。</p>
-<p>•BUM：Broadcast、Unknown unicast、Multicast，广播，未知单播、组播。交换机以泛洪的方式处理以上类型的数据帧。</p>
-</blockquote>
-<h2 id="QinQ配置命令介绍"><a href="#QinQ配置命令介绍" class="headerlink" title="QinQ配置命令介绍"></a><strong>QinQ配置命令介绍</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/26.png"></p>
-<blockquote>
-<p>•配置灵活QinQ的当前接口类型建议为Hybrid，并且必须先通过命令qinq vlan-translation enable先使能VLAN转换功能。灵活QinQ功能只在当前接口的入方向生效。</p>
-<p>•接口配置VLAN Stacking功能后在发送帧时，若需要剥掉外层Tag，该接口要以Untagged方式加入叠加后的stack-vlan；若不需要剥掉外层Tag，该接口要以Tagged方式加入叠加后的stack-vlan。</p>
-</blockquote>
-<h2 id="QinQ配置举例-基本QinQ"><a href="#QinQ配置举例-基本QinQ" class="headerlink" title="QinQ配置举例 - 基本QinQ"></a>QinQ配置举例 - 基本QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/27.png"></p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/28.png"></p>
-<h2 id="QinQ配置举例-灵活QinQ"><a href="#QinQ配置举例-灵活QinQ" class="headerlink" title="QinQ配置举例 - 灵活QinQ"></a>QinQ配置举例 - 灵活QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/29.png"></p>
-<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/30.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）当Sub-VLAN与外部进行二层通信时，在出接口打上的VLAN标记为？</p>
-<p><strong>A.Sub-VLAN</strong></p>
-<p>B.Secondary VLAN</p>
-<p>C.Super-VLAN</p>
-<p>D.Isolate VLAN</p>
-<p>2.（单选题）下面关于QinQ描述错误的是？</p>
-<p>A.QinQ报文在公网中报文根据外层VLAN Tag转发。</p>
-<p><strong>B.QinQ报文在公网中报文根据内层VLAN Tag转发。</strong></p>
-<p>C.QinQ为用户提供了一种更为简单的二层VPN隧道。</p>
-<p>D.QinQ不需要信令协议的支持，可以通过纯静态配置实现。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VLAN聚合通过配置Super-VLAN和Sub-VLAN，不同Sub-VLAN之间进行通信，需要Super-VLAN开启ARP代理。VLAN聚合既避免了由于子网划分带来的网络地址规划复杂的问题，又能够实现通过VLAN隔离不同广播域的目的。</p>
-<p>•MUX VLAN包括Principal VLAN和Subordinate VLAN，同时Subordinate VLAN又分为Separate VLAN和Group VLAN。Separate port只能和Principal port进行通信，和其他类型的接口实现完全隔离。Group port可以和Principal port进行通信，在同一组内的接口也可互相通信，但不能和其他组接口或Separate port通信。</p>
-<p>•QinQ技术不仅扩展了标识VLAN的数量，而且可以实现用户报文携带私网VLAN标签在公网内的透传。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4095,7 +4004,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4108,7 +4017,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

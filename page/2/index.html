@@ -241,6 +241,526 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/" itemprop="url">IP-IPv6地址配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T13:28:33+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IPv6是下一代互联网的核心协议，它解决了IPv4所暴露的诸多缺陷，如地址稀缺、路由表庞大、对移动设备支持不足等。</p>
+<p>•IPv6的一个突出特点是支持网络节点的地址自动配置，真正实现即插即用，极大地简化网络管理者的工作。</p>
+<p>•本课程将介绍IPv6地址自动配置的工作原理与配置实现。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IPv6无状态地址自动配置的工作原理</p>
+<p>▫描述DHCPv6地址自动配置的工作原理</p>
+<p>▫实现IPv6地址自动配置</p>
+<h1 id="1-IPv6地址配置方式"><a href="#1-IPv6地址配置方式" class="headerlink" title="1.IPv6地址配置方式"></a>1.IPv6地址配置方式</h1><h2 id="IPv6地址配置方式"><a href="#IPv6地址配置方式" class="headerlink" title="IPv6地址配置方式"></a>IPv6地址配置方式</h2><p>IPv6地址配置的方式可以分为静态配置和动态配置。其中，动态地址配置又可以分为无状态地址自动配置（Stateless Address Autoconfiguration, SLAAC）和有状态地址自动配置（Stateful Address Autoconfiguration)。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="IPv6地址自动配置的分类"><a href="#IPv6地址自动配置的分类" class="headerlink" title="IPv6地址自动配置的分类"></a>IPv6地址自动配置的分类</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/2.png"></p>
+<h1 id="2-IPv6地址无状态自动配置"><a href="#2-IPv6地址无状态自动配置" class="headerlink" title="2.IPv6地址无状态自动配置"></a>2.IPv6地址无状态自动配置</h1><h2 id="IPv6地址无状态自动配置过程"><a href="#IPv6地址无状态自动配置过程" class="headerlink" title="IPv6地址无状态自动配置过程"></a>IPv6地址无状态自动配置过程</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/3.png"></p>
+<h2 id="IPv6地址无状态自动配置示例"><a href="#IPv6地址无状态自动配置示例" class="headerlink" title="IPv6地址无状态自动配置示例"></a>IPv6地址无状态自动配置示例</h2><p>IPv6无状态地址配置通过交互RS和RA报文完成。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•基于NDP的IPv6地址无状态自动配置具体过程如下（DAD略）：</p>
+<p>1.PC1首先生成链路本地地址FE80::1002，然后向本地链接中所有路由器发送路由器请求（RS）。</p>
+<p>2.R1发送RA携带着用于无状态地址自动配置的前缀信息，本例中，该前缀为2001:DB8::/64。</p>
+<p>3.PC1收到RA报文后，根据RA报文中携带的前缀信息加上接口ID生成IPv6地址2001:DB8::1002。</p>
+</blockquote>
+<h2 id="RA报文中的Flags字段"><a href="#RA报文中的Flags字段" class="headerlink" title="RA报文中的Flags字段"></a>RA报文中的Flags字段</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/5.png"></p>
+<h2 id="RA报文中的可选信息：地址前缀信息"><a href="#RA报文中的可选信息：地址前缀信息" class="headerlink" title="RA报文中的可选信息：地址前缀信息"></a>RA报文中的可选信息：地址前缀信息</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/6.png"></p>
+<h2 id="RA报文中的可选信息：生存周期"><a href="#RA报文中的可选信息：生存周期" class="headerlink" title="RA报文中的可选信息：生存周期"></a>RA报文中的可选信息：生存周期</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/7.png"></p>
+<h1 id="3-DHCPv6"><a href="#3-DHCPv6" class="headerlink" title="3.DHCPv6"></a>3.DHCPv6</h1><h2 id="DHCPv6概述"><a href="#DHCPv6概述" class="headerlink" title="DHCPv6概述"></a>DHCPv6概述</h2><p>•DHCPv6针对IPv6编址方案设计，支持对客户端分配IPv6前缀、IPv6地址和其他网络配置参数，并记录这些信息，便于网络管理。</p>
+<p>•DHCPv6又分为如下三种：</p>
+<ul>
+<li><p>DHCPv6有状态自动配置：DHCPv6服务器自动配置IPv6地址/前缀及其他网络配置参数（DNS、NIS、SNTP服务器地址等参数）。</p>
+</li>
+<li><p>DHCPv6无状态自动配置：主机IPv6地址仍然通过路由通告方式自动生成，DHCPv6服务器只分配除IPv6地址以外的配置参数，包括DNS服务器等参数。</p>
+</li>
+<li><p>DHCPv6 PD（Prefix Delegation，前缀代理）自动配置：下层网络路由器不需要再手工指定用户侧链路的IPv6地址前缀，它只需要向上层网络路由器提出前缀分配申请，上层网络路由器便可以分配合适的地址前缀给下层路由器，下层路由器把获得的前缀（前缀一般长度小于64）进一步自动细分成64位前缀长度的子网网段，把细分的地址前缀再通过路由通告(RA)至与IPv6主机直连的用户链路上，实现主机的地址自动配置，从而完成整个IPv6网络的层次化布局。</p>
+</li>
+</ul>
+<h2 id="DHCPv6网络构成"><a href="#DHCPv6网络构成" class="headerlink" title="DHCPv6网络构成"></a>DHCPv6网络构成</h2><p>DHCPv6基本协议架构中，主要包括以下三种角色：</p>
+<ul>
+<li><p>DHCPv6 Client：DHCPv6客户端，通过与DHCPv6服务器进行报文交互，获取IPv6地址/前缀和其他网络配置参数，完成自身的网络配置。</p>
+</li>
+<li><p>DHCPv6 Server：DHCPv6服务器，负责处理来自客户端或中继的地址分配、地址续租、地址释放等请求，为客户端分配IPv6地址/前缀和其他网络配置参数。</p>
+</li>
+<li><p>DHCPv6 Relay：DHCPv6中继，负责转发来自客户端或服务器的DHCPv6报文，协助DHCPv6客户端和DHCPv6服务器完成地址配置功能。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/8.png"></p>
+<h2 id="DHCPv6中的常用概念"><a href="#DHCPv6中的常用概念" class="headerlink" title="DHCPv6中的常用概念"></a>DHCPv6中的常用概念</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/9.png"></p>
+<blockquote>
+<p>•有效时间（Valid Lifetime）：地址/前缀的生命周期。用于指定地址/前缀的过期时间，过期后所有使用该地址/前缀的用户下线。此时间必须配置为不小于3小时，且不得小于优先级时间。</p>
+<p>•优选时间（Preferred Lifetime）：用于计算续租时间和重绑定时间。此时间必须配置为不小于2小时。</p>
+</blockquote>
+<h2 id="DHCPv6有状态自动配置-四步交互"><a href="#DHCPv6有状态自动配置-四步交互" class="headerlink" title="DHCPv6有状态自动配置 - 四步交互"></a>DHCPv6有状态自动配置 - 四步交互</h2><p>四步交互是指DHCPv6客户端与服务器交互四次来完成前缀/地址等参数获取的过程。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/10.png"></p>
+<h2 id="DHCPv6有状态自动配置-两步交互"><a href="#DHCPv6有状态自动配置-两步交互" class="headerlink" title="DHCPv6有状态自动配置 - 两步交互"></a>DHCPv6有状态自动配置 - 两步交互</h2><p>DHCPv6客户端可以在发送的Solicit消息中携带Rapid Commit选项，标识客户端希望服务器能够快速为其分配地址/前缀和网络配置参数。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•两步交换可以提高DHCPv6分配过程的效率，但适用在网络中只存在一台DHCPv6服务器的情况下。在有多个DHCPv6服务器的网络中，多个DHCPv6服务器都可以为DHCPv6客户端分配IPv6地址/前缀和其他配置参数，但是客户端实际只能使用其中一个服务器为其分配的IPv6地址/前缀和配置参数。</p>
+</blockquote>
+<h2 id="地址-前缀租约更新-1"><a href="#地址-前缀租约更新-1" class="headerlink" title="地址/前缀租约更新 (1)"></a>地址/前缀租约更新 (1)</h2><p>DHCPv6服务器分配的IPv6地址/前缀具有有效时间。地址/前缀的租借时间超过有效时间后，DHCPv6客户端不能再使用该地址/前缀。因此，在有效时间超时之前，如果DHCPv6客户端希望继续使用该地址/前缀，则需要更新地址/前缀的租约。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/12.png"></p>
+<h2 id="地址-前缀租约更新-2"><a href="#地址-前缀租约更新-2" class="headerlink" title="地址/前缀租约更新 (2)"></a>地址/前缀租约更新 (2)</h2><p>如果DHCPv6服务器未响应T1时刻DHCPv6客户端发出的Renew请求，则客户端会在T2（默认为Preferred Lifetime的0.8倍）向所有DHCPv6服务器组播发送Rebind请求更新租约。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/13.png"></p>
+<h2 id="DHCPv6无状态自动配置"><a href="#DHCPv6无状态自动配置" class="headerlink" title="DHCPv6无状态自动配置"></a>DHCPv6无状态自动配置</h2><p>DHCPv6服务器为已经具有IPv6地址/前缀的客户端分配除地址/前缀以外的其他网络配置参数，该过程称为DHCPv6无状态自动配置。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•在主机生成链路本地地址并检测无地址冲突后，会首先发起路由器发现过程，即主机发送RS报文，路由器回应RA报文。如果RA报文中M-bit为0，O-bit为1，则表示主机将通过DHCPv6无状态自动配置来获取除地址/前缀外的其他配置参数，如DNS、SIP、SNTP等服务器配置信息等。</p>
+</blockquote>
+<h2 id="DHCPv6-PD自动配置"><a href="#DHCPv6-PD自动配置" class="headerlink" title="DHCPv6 PD自动配置"></a>DHCPv6 PD自动配置</h2><p>在一个层次化的网络结构中，不同层次的IPv6地址配置一般是手工指定的。手工配置IPv6地址扩展性不佳，不利于IPv6地址的统一规划管理。DHCPv6 PD可以解决这个问题。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•DHCPv6 PD一般用于网络中存在路由器（如本例中的DHCPv6客户端）需要继续为下连的IPv6主机分配前缀的场景，实现主机的地址自动配置，从而完成整个IPv6网络的层次化布局。</p>
+<p>•第1步中，DHCPv6客户端请求DHCPv6服务器为其分配IA_NA地址和IA_PD前缀，IA_NA可以理解为服务器为客户端WAN口分配的地址，IA_PD可以理解为服务器为客户端的LAN侧分配的前缀。</p>
+</blockquote>
+<h2 id="DHCPv6中继工作过程"><a href="#DHCPv6中继工作过程" class="headerlink" title="DHCPv6中继工作过程"></a>DHCPv6中继工作过程</h2><p>当服务器和客户端不在一个网段时，需要使用到DHCPv6中继来完成IPv6地址/前缀和其他网络配置参数的获取。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/16.png"></p>
+<h2 id="DHCPv6地址确认过程"><a href="#DHCPv6地址确认过程" class="headerlink" title="DHCPv6地址确认过程"></a>DHCPv6地址确认过程</h2><p>当客户端有断电、掉线、漫游等情况发生时，客户端会发送Confirm报文确认自己的IPv6地址是否可用。如果客户端确认的地址是合法的，则服务器回应；如果没有回应，则客户端需要重新启动地址申请流程。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/17.png"></p>
+<h2 id="DHCPv6地址冲突检测过程"><a href="#DHCPv6地址冲突检测过程" class="headerlink" title="DHCPv6地址冲突检测过程"></a>DHCPv6地址冲突检测过程</h2><p>客户端完成地址申请后，会在开始使用该地址前发起DAD探测。如果DAD检测到地址存在冲突，则客户端发送Decline消息通知服务器，并不再使用该地址。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/18.png"></p>
+<h2 id="DHCPv6地址释放过程"><a href="#DHCPv6地址释放过程" class="headerlink" title="DHCPv6地址释放过程"></a>DHCPv6地址释放过程</h2><p>当客户端不需要再使用某地址时，将发送Release消息至服务器，发起释放地址的交互流程。</p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/19.png"></p>
+<h2 id="DHCPv6报文总结"><a href="#DHCPv6报文总结" class="headerlink" title="DHCPv6报文总结"></a>DHCPv6报文总结</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/20.png"></p>
+<h2 id="地址自动配置比较"><a href="#地址自动配置比较" class="headerlink" title="地址自动配置比较"></a>地址自动配置比较</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/21.png"></p>
+<h1 id="3-IPv6地址自动配置实现"><a href="#3-IPv6地址自动配置实现" class="headerlink" title="3.IPv6地址自动配置实现"></a>3.IPv6地址自动配置实现</h1><h2 id="IPv6基本配置"><a href="#IPv6基本配置" class="headerlink" title="IPv6基本配置"></a>IPv6基本配置</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/22.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/23.png"></p>
+<h2 id="IPv6地址配置举例-–-静态配置"><a href="#IPv6地址配置举例-–-静态配置" class="headerlink" title="IPv6地址配置举例 – 静态配置"></a>IPv6地址配置举例 – 静态配置</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/24.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/25.png"></p>
+<h2 id="IPv6地址配置举例-–-无状态自动配置"><a href="#IPv6地址配置举例-–-无状态自动配置" class="headerlink" title="IPv6地址配置举例 – 无状态自动配置"></a>IPv6地址配置举例 – 无状态自动配置</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/26.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/27.png"></p>
+<h2 id="IPv6地址配置举例-–-DHCPv6"><a href="#IPv6地址配置举例-–-DHCPv6" class="headerlink" title="IPv6地址配置举例 – DHCPv6"></a>IPv6地址配置举例 – DHCPv6</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/28.png"></p>
+<p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/29.png"></p>
+<h2 id="IPv6地址自动配置实现-–-结果验证"><a href="#IPv6地址自动配置实现-–-结果验证" class="headerlink" title="IPv6地址自动配置实现 – 结果验证"></a>IPv6地址自动配置实现 – 结果验证</h2><p><img src="/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/30.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）基于NDP的无状态地址自动配置，以下说法正确的是（    ）。</p>
+<p>A.基于NDP的无状态地址自动配置可以为主机分配128位的IPv6地址</p>
+<p>B.基于NDP的无状态地址自动配置可以为主机分配IPv6前缀或IPv6地址</p>
+<p>C.基于NDP的无状态地址自动配置只能为主机分配IPv6前缀</p>
+<p><strong>D.基于NDP的无状态地址自动配置可以为主机分配DNS</strong></p>
+<p>2.（多选题）在DHCPv6的工作过程中，以下哪些过程用到了Reply报文（    ）。</p>
+<p><strong>A.DHCPv6信息获取过程</strong></p>
+<p><strong>B.DHCPv6前缀分配两步交互过程</strong></p>
+<p><strong>C.DHCPv6地址分配四步交互过程</strong></p>
+<p><strong>D.DHCPv6地址释放过程</strong></p>
+<p><strong>E.DHCPv6地址续约过程</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•IPv6地址配置可以分为静态配置和动态配置。网络设备互联IPv6地址、环回接口IPv6地址等往往采用静态配置的方式，而终端通常采用动态自动配置方式。</p>
+<p>•本课程重点介绍了IPv6地址动态自动配置的两种方式：基于NDP的无状态地址自动配置和基于DHCPv6的有状态地址自动配置。无状态地址自动配置只支持分配64bit的前缀，扩展性较差，对地址的管控较弱。有状态地址自动配置可以实现更加丰富的功能，如PD前缀分配等。</p>
+<p>•客户端采用何种IPv6地址自动配置方式是由路由器RA报文中的M-bit和O-bit的配置决定的，实际网络中，需要结合实际场景决定合理的地址配置方式。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-ICMPv6%E5%92%8CNDP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/" itemprop="url">IP-ICMPv6和NDP</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T13:28:03+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在IPv4中，ICMP允许主机或设备报告差错情况。ICMP报文作为IP报文的数据部分，再封装上IP报文首部，组成完整的IP报文发送出去。常用的Ping、Tracert等命令都是基于ICMP实现的。</p>
+<p>•IPv6定义了ICMPv6（Internet Control Message Protocol for IPv6），除了提供类似ICMP的功能外，还有诸多扩展。邻居发现协议（Neighbor Discovery Protocol，以下简称NDP）便是基于ICMPv6实现的，作为IPv6的关键协议，NDP提供了如前缀发现、重复地址检测、地址解析、重定向等功能。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述ICMPv6的功能</p>
+<p>▫描述ICMPv6的报文格式</p>
+<p>▫描述ICMPv6的报文类型</p>
+<p>▫描述NDP的功能</p>
+<h1 id="1-ICMPv6介绍"><a href="#1-ICMPv6介绍" class="headerlink" title="1.ICMPv6介绍"></a>1.ICMPv6介绍</h1><h2 id="ICMPv6概述"><a href="#ICMPv6概述" class="headerlink" title="ICMPv6概述"></a>ICMPv6概述</h2><h3 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h3><p>Internet控制消息协议ICMP (Internet Control Message Protocol)是IP协议的辅助协议。</p>
+<p>ICMP协议用来在网络设备间传递各种差错和控制信息，对于收集各种网络信息、诊断和排除各种网络故障等方面起着至关重要的作用。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/1.png"></p>
+<blockquote>
+<p>•为了更有效地转发IP数据报文和提高数据报文交互成功的机会，在网络层使用ICMP协议。ICMP允许主机或设备报告差错情况和提供有关异常情况的报告。</p>
+<p>•ICMP消息：</p>
+<ul>
+<li><p>ICMP消息封装在IP报文中，IP报文头部Protocol值为1时表示ICMP协议。</p>
+</li>
+<li><p>字段解释：</p>
+<ul>
+<li>ICMP消息的格式取决于Type和Code字段，其中Type字段为消息类型，Code字段包含该消息类型的具体参数。</li>
+<li>校验和字段用于检查消息是否完整。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="ICMP差错检测"><a href="#ICMP差错检测" class="headerlink" title="ICMP差错检测"></a>ICMP差错检测</h3><p>ICMP Echo消息常用于诊断源和目的地之间的网络连通性，同时还可以提供其他信息，如报文往返时间等。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/2.png"></p>
+<blockquote>
+<p>•ICMP的一个典型应用是Ping。Ping是检测网络连通性的常用工具，同时也能够收集其他相关信息。用户可以在Ping命令中指定不同参数，如ICMP报文长度、发送的ICMP报文个数、等待回复响应的超时时间等，设备根据配置的参数来构造并发送ICMP报文，进行Ping测试。</p>
+</blockquote>
+<h3 id="ICMP错误报告"><a href="#ICMP错误报告" class="headerlink" title="ICMP错误报告"></a>ICMP错误报告</h3><p>ICMP定义了各种错误消息，用于诊断网络连接性问题；根据这些错误消息，源设备可以判断出数据传输失败的原因。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/3.png"></p>
+<h3 id="ICMPv6概述-1"><a href="#ICMPv6概述-1" class="headerlink" title="ICMPv6概述"></a>ICMPv6概述</h3><p>•ICMPv6是IPv6的基础协议之一。</p>
+<p>•在IPv6报文头部中，Next Header字段值为58则对应为ICMPv6报文。</p>
+<p>•ICMPv6报文用于通告相关信息或错误。</p>
+<p>•ICMPv6报文被广泛应用于其它协议中，包括NDP、Path MTU发现机制等。</p>
+<p>•ICMPv6控制着IPv6中的地址自动配置、地址解析、地址冲突检测、路由选择、以及差错控制等关键环节。</p>
+<h2 id="ICMPv6报文格式"><a href="#ICMPv6报文格式" class="headerlink" title="ICMPv6报文格式"></a>ICMPv6报文格式</h2><h3 id="ICMPv6报文格式-1"><a href="#ICMPv6报文格式-1" class="headerlink" title="ICMPv6报文格式"></a>ICMPv6报文格式</h3><p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/4.png"></p>
+<blockquote>
+<p>•ICMPv6报文载荷由ICMPv6报文类型决定，因报文类型的不同而不同。</p>
+<p>•<strong>Type：</strong>表明消息的类型。</p>
+<p>•<strong>Code：</strong>表示消息类型的细分。</p>
+<p>•<strong>Checksum：</strong>表示ICMPv6报文的校验和。</p>
+</blockquote>
+<h2 id="ICMPv6报文类型及作用"><a href="#ICMPv6报文类型及作用" class="headerlink" title="ICMPv6报文类型及作用"></a>ICMPv6报文类型及作用</h2><h3 id="ICMPv6报文类型"><a href="#ICMPv6报文类型" class="headerlink" title="ICMPv6报文类型"></a>ICMPv6报文类型</h3><p>ICMPv6报文分为两类：差错报文和信息报文。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/5.png"></p>
+<h3 id="ICMPv6差错报文应用-Path-MTU发现"><a href="#ICMPv6差错报文应用-Path-MTU发现" class="headerlink" title="ICMPv6差错报文应用 - Path MTU发现"></a>ICMPv6差错报文应用 - Path MTU发现</h3><p>•在IPv6中，中间转发设备不对IPv6报文进行分片，报文的分片将在源节点进行。</p>
+<p>•PMTU（Path MTU）就是路径上的最小接口MTU。</p>
+<p>•PMTUD（Path MTU发现机制）的主要目的是发现路径上的MTU，当数据包被从源转发到目的地的过程中避免分段。</p>
+<p>•依赖PMTUD，数据的发送方可以使用所发现到的最优PMTU与目的地节点进行通信，这样可以避免数据包在从源传输到目的的过程之中，被中途的路由器分片而导致性能的下降。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/6.png"></p>
+<blockquote>
+<p>1.首先PC1用1500字节作为MTU向PC2发送IPv6数据包。</p>
+<p>2.R1意识到数据包过大，出站接口MTU为1400字节，于是回复一个ICMPv6（Type=2）报文给PC1，指定MTU值为1400字节。</p>
+<p>3.然后，PC1开始使用1400作为MTU发送IPv6数据。</p>
+<p>4.数据包到达R2后，R2意识到出站接口MTU为1300字节，于是发送一个ICMPv6（Type=2）报文给PC1，指定MTU值为1300字节。</p>
+<p>5.PC1开始使用1300作为MTU发送IPv6数据。</p>
+</blockquote>
+<h3 id="ICMPv6信息报文应用-Ping"><a href="#ICMPv6信息报文应用-Ping" class="headerlink" title="ICMPv6信息报文应用 - Ping"></a>ICMPv6信息报文应用 - Ping</h3><p>Ping基于ICMPv6信息报文实现</p>
+<ul>
+<li><p>Echo Request：用于发送到目标节点，以使目标节点立即发回一个Echo Reply应答报文。Echo Request报文的Type字段值为128，Code字段的值为0。</p>
+</li>
+<li><p>Echo Reply：当收到一个Echo Request报文时，ICMPv6会用Echo Reply报文响应。Echo Reply报文的Type字段的值为129，Code字段的值为0。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/7.png"></p>
+<h3 id="ICMPv6其它常用的报文"><a href="#ICMPv6其它常用的报文" class="headerlink" title="ICMPv6其它常用的报文"></a>ICMPv6其它常用的报文</h3><p>•邻居发现（RFC2461和RFC4861）</p>
+<p>​    ▫Type=133  路由器请求（Router Solicitation）</p>
+<p>​    ▫Type=134  路由器公告（Router Advertisement）</p>
+<p>​    ▫Type=135  邻居请求（Neighbor Solicitation）</p>
+<p>​    ▫Type=136  邻居公告（Neighbor Advertisement）</p>
+<p>​    ▫Type=137  重定向 （Redirect）</p>
+<p>•组播侦听者发现协议（RFC2710和RFC3810）</p>
+<p>​    ▫Type=130  查询消息</p>
+<p>​    ▫Type=131  报告消息</p>
+<p>​    ▫Type=132  离开消息</p>
+<p>​    ▫Type=143  MLDv2报告消息</p>
+<h1 id="2-NDP介绍"><a href="#2-NDP介绍" class="headerlink" title="2.NDP介绍"></a>2.NDP介绍</h1><h2 id="NDP概述"><a href="#NDP概述" class="headerlink" title="NDP概述"></a>NDP概述</h2><h3 id="NDP概述-1"><a href="#NDP概述-1" class="headerlink" title="NDP概述"></a>NDP概述</h3><p>RFC2461定义了IPv6邻居发现协议NDP。NDP是IPv6中非常核心的组件。其主要功能如下：</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/8.png"></p>
+<h3 id="NDP报文类型及功能"><a href="#NDP报文类型及功能" class="headerlink" title="NDP报文类型及功能"></a>NDP报文类型及功能</h3><p>NDP使用以下几种ICMPv6报文：</p>
+<p>▫RS（Router Solicitation）：路由器请求报文</p>
+<p>▫RA（Router Advertisement）：路由器通告报文</p>
+<p>▫NS（Neighbor Solicitation）：邻居请求报文</p>
+<p>▫NA（Neighbor Advertisement）：邻居通告报文</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/9.png"></p>
+<h2 id="路由器发现"><a href="#路由器发现" class="headerlink" title="路由器发现"></a>路由器发现</h2><h3 id="路由器发现-1"><a href="#路由器发现-1" class="headerlink" title="路由器发现"></a>路由器发现</h3><p>•路由器发现是指主机发现本地链路上路由器和确定其配置信息的过程。</p>
+<p>•路由器发现可以同时实现以下三个功能：</p>
+<ul>
+<li><p>路由器发现 （Router Discovery）：主机定位邻居路由器以及选择哪一个路由器作为缺省网关的过程。</p>
+</li>
+<li><p>前缀发现 （Prefix Discovery）：主机发现本地链路上的一组IPv6前缀的过程，用于主机的地址自动配置。</p>
+</li>
+<li><p>参数发现 （Parameter Discovery）：主机发现相关操作参数的过程，如输出报文的缺省跳数限制、地址配置方式等信息。</p>
+</li>
+</ul>
+<p>•使用报文：</p>
+<ul>
+<li><p>RS 路由器请求 </p>
+</li>
+<li><p>RA 路由器通告</p>
+</li>
+</ul>
+<p>•协议交互主要有两种情况：</p>
+<ul>
+<li><p>主机发送RS触发路由器回应RA</p>
+</li>
+<li><p>路由器周期发送RA</p>
+</li>
+</ul>
+<h3 id="路由器发现流程-主机请求触发"><a href="#路由器发现流程-主机请求触发" class="headerlink" title="路由器发现流程 - 主机请求触发"></a>路由器发现流程 - 主机请求触发</h3><p>当主机启动时，主机会向本地链路范围内所有的路由器发送RS报文，触发路由器响应RA报文。主机发现本地链路上的路由器后，自动配置缺省路由器，建立缺省路由表、前缀列表和设置其它的配置参数。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/10.png"></p>
+<h3 id="路由器发现流程-路由器周期性发送"><a href="#路由器发现流程-路由器周期性发送" class="headerlink" title="路由器发现流程 - 路由器周期性发送"></a>路由器发现流程 - 路由器周期性发送</h3><p>•路由器周期性的发送RA报文，RA发送间隔是一个有范围的随机值，缺省的最大时间间隔是600秒，最小时间间隔是200秒。</p>
+<p>•对于定期发送的RA报文，其地址有如下要求：</p>
+<p>▫Source Address：必须是发送接口的链路本地地址。</p>
+<p>▫Destination Address ：FF02::1。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/11.png"></p>
+<blockquote>
+<p>•ipv6 nd ra { max-interval maximum-interval | min-interval minimum-interval }命令用来配置发送周期。</p>
+</blockquote>
+<h2 id="地址解析"><a href="#地址解析" class="headerlink" title="地址解析"></a>地址解析</h2><h3 id="地址解析-1"><a href="#地址解析-1" class="headerlink" title="地址解析"></a>地址解析</h3><p>•IPv6地址解析通过ICMPv6（NS和NA报文）来实现。</p>
+<p>•在三层完成地址解析，主要带来以下几个好处：</p>
+<ul>
+<li>地址解析在三层完成，不同的二层介质可以采用相同的地址解析协议。</li>
+<li>可以使用三层的安全机制避免地址解析攻击。</li>
+<li>使用组播方式发送请求报文，减少了二层网络的性能压力。</li>
+</ul>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/12.png"></p>
+<blockquote>
+<p>•本例中，当PC1要传送数据包到PC2时，如果不知道PC2的链路层地址，则需要完成以下协议交互过程：</p>
+<ul>
+<li><p>PC1发送一个NS报文到网络上，目的地址为PC2对应的被请求节点组播地址（FF02::1:FF84:EFDC），选项字段中带上PC1的链路层地址000D-88F8-03B0。</p>
+</li>
+<li><p>PC2侦听到该NS报文后，由于报文的目的地址FF02::1:FF84:EFDC，自己在该组播组，处理该报文；同时，根据NS报文的源地址和源链路层地址选项更新自己的邻居缓存表项。</p>
+</li>
+<li><p>PC2发送一个NA报文应答NS，同时在消息的目标链路层地址选项中带上自己的链路层地址0013-7284-EFDC。</p>
+</li>
+<li><p>PC1接收到NA报文后，获悉了PC2的链路层地址，创建一个目标节点的邻居缓存表项。</p>
+</li>
+</ul>
+<p>•这样通过交互后，PC1和PC2就知道了对方的链路层地址，建立其对方的邻居缓存表项（类似于IPv4的ARP表），就可以相互通信了。</p>
+</blockquote>
+<h2 id="邻居状态跟踪"><a href="#邻居状态跟踪" class="headerlink" title="邻居状态跟踪"></a>邻居状态跟踪</h2><h3 id="IPv6邻居状态表"><a href="#IPv6邻居状态表" class="headerlink" title="IPv6邻居状态表"></a>IPv6邻居状态表</h3><p>IPv6邻居状态表中缓存了IPv6地址与MAC地址的映射，可以通过display ipv6 neighbors命令来查看IPv6邻居状态表。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/13.png"></p>
+<h3 id="IPv6邻居状态"><a href="#IPv6邻居状态" class="headerlink" title="IPv6邻居状态"></a>IPv6邻居状态</h3><p>IPv6节点需要维护一张邻居表，每个邻居都有相应的状态，状态之间可以迁移。5种邻居状态分别是：未完成（Incomplete）、可达（Reachable）、陈旧（Stale）、延迟（Delay）、探查（Probe）。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/14.png"></p>
+<h3 id="邻居状态迁移"><a href="#邻居状态迁移" class="headerlink" title="邻居状态迁移"></a>邻居状态迁移</h3><p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/15.png"></p>
+<blockquote>
+<p>•R1先发送NS报文，并生成缓存条目，此时，邻居状态为Incomplete。</p>
+<p>•若收到R2回复的NA报文，则邻居状态由Incomplete变为Reachable，否则固定时间后邻居状态由Incomplete变为Empty。</p>
+<p>•经过邻居可达时间（默认30s），邻居状态由Reachable变为Stale，即未知是否可达。</p>
+<ul>
+<li>如果在Reachable状态，R1收到R2的非请求NA报文，且其中携带的R2的链路层地址和表项中不同，则邻居状态马上变为Stale。</li>
+</ul>
+<p>•在Stale状态若R1要向R2发送数据，则邻居状态由Stale变为Delay，并发送NS请求。</p>
+<p>•在经过一段固定时间后，邻居状态由Delay变为Probe，其间若有NA应答，则邻居状态由Delay变为Reachable。</p>
+<p>•在Probe状态，R1每隔一定时间间隔（默认1s）发送单播NS，发送固定次数后，有应答则邻居状态变为Reachable，否则邻居状态变为Empty。</p>
+</blockquote>
+<h2 id="重复地址检测"><a href="#重复地址检测" class="headerlink" title="重复地址检测"></a>重复地址检测</h2><h3 id="重复地址检测-1"><a href="#重复地址检测-1" class="headerlink" title="重复地址检测 (1)"></a>重复地址检测 (1)</h3><p>•重复地址检测(Duplicate Address Detect，DAD)是指接口在使用某个IPv6地址之前，需要先探测是否有其它的节点使用了该地址，从而确保网络中没有两个相同的单播地址。</p>
+<p>•接口在启用任何一个单播IPv6地址前都需要先进行DAD，包括Link-Local地址。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/16.png"></p>
+<blockquote>
+<p>•重复地址检测是节点确定即将使用的地址是否被另一节点使用的过程。在节点自动配置某个接口的IPv6单播地址之前，必须在本地链路范围内验证要使用的地址是唯一的，并且未被其他节点使用过。只要NS报文发送到本地链路上（缺省发送一次NS报文），如果在规定时间内没有NA报文进行应答，则认为这个临时单播地址在本地链路上是唯一的，可以分配给接口；反之，这个临时地址是重复的，不能配置到接口。</p>
+</blockquote>
+<h3 id="重复地址检测-2"><a href="#重复地址检测-2" class="headerlink" title="重复地址检测 (2)"></a>重复地址检测 (2)</h3><p>•一个地址在通过重复地址检测之前称为“tentative地址”，即“试验地址”。此时该接口不能使用这个试验地址进行单播通讯。</p>
+<p>•若2个节点配置相同地址，同时作重复地址检测时，当一方收到对方发出的DAD NS报文，则接收方将不启用该地址。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/17.png"></p>
+<blockquote>
+<p>•特殊情况：有两台主机同时分配到同一个IP地址。假设PC1和PC2都想使用2000::1这个地址，那么进一步假设PC1先发送NS，PC2收到以后将不会发送NS了（当然也不会发送NA），直接停止使用2000::1这个地址，等待其他方式生成新的地址。如果同时收到NS报文，则都会放弃使用2000::1地址。</p>
+</blockquote>
+<h2 id="重定向"><a href="#重定向" class="headerlink" title="重定向"></a>重定向</h2><h3 id="重定向-1"><a href="#重定向-1" class="headerlink" title="重定向"></a>重定向</h3><p>重定向是指网关设备发现报文从其它网关设备转发更优，它就会发送重定向报文告知报文的发送者，让报文发送者选择另一个网关设备。</p>
+<p><img src="/2021/05/17/IP-ICMPv6%E5%92%8CNDP/18.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）ICMPv6报文类型分为哪几大类？</p>
+<p><strong>A.差错报文</strong></p>
+<p><strong>B.信息报文</strong></p>
+<p>C.其他报文</p>
+<p>D.参数报文</p>
+<p>2.（多选题） IPv6地址解析通过以下哪种报文实现？</p>
+<p>A.RS</p>
+<p>B.RA</p>
+<p><strong>C.NS</strong></p>
+<p><strong>D.NA</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•ICMPv6是IPv6的基础协议之一，具有差错报文和信息报文两种，用于IPv6节点报告报文处理过程中的错误和信息。其中，差错报文用于报告在转发IPv6数据包过程中出现的错误，如常见的目的不可达、超时等等；信息报文则可以实现路由器发现，重复地址检测，组播成员管理等等。</p>
+<p>•NDP是5个ICMPv6信息报文的“打包”，Type133、134为RS、RA报文，可以实现路由器发现，实现主机的网关发现，地址的自动配置；Type135、136为NS、NA报文，可以实现邻居链路层地址解析，重复地址检测；Type137为重定向报文，可以实现重定向。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IPv6%E6%A6%82%E8%BF%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3247,683 +3767,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/" itemprop="url">BGP-EVPN基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T21:21:55+08:00">
-                2021-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•标准BGP-4仅支持IPv4单播地址，为了支持更多的网络层协议，MP-BGP（Multiprotocol Extensions for BGP-4）（RFC4760）被提出作为BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。</p>
-<p>•随着SDN的发展和商用，EVPN（Ethernet VPN）在各解决方案中占据重要角色，应用覆盖全场景包括园区网络、数据中心网络、广域IP承载网络和SD-WAN。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MP-BGP的基本概念</p>
-<p>▫描述EVPN的起源</p>
-<p>▫描述EVPN的常见路由类型</p>
-<p>▫描述EVPN的典型应用场景</p>
-<h1 id="MP-BGP"><a href="#MP-BGP" class="headerlink" title="MP-BGP"></a>MP-BGP</h1><h2 id="MP-BGP-1"><a href="#MP-BGP-1" class="headerlink" title="MP-BGP"></a>MP-BGP</h2><p>MP-BGP（Multiprotocol Extensions for BGP-4）在RFC4760中被定义，用于实现BGP-4的扩展以允许BGP携带多种网络层协议（例如IPv6、L3VPN、EVPN等）。这种扩展有很好的后向兼容性，即一个支持MP-BGP的路由器可以和一个仅支持BGP-4的路由器交互。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/1.png"></p>
-<blockquote>
-<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4760/">https://datatracker.ietf.org/doc/rfc4760/</a></p>
-</blockquote>
-<h2 id="BGP-4扩展"><a href="#BGP-4扩展" class="headerlink" title="BGP-4扩展"></a>BGP-4扩展</h2><p>•BGP-4中IPv4特有的三个信息是NEXT_HOP属性、AGGREGATOR和IPv4 NLRI。因此为了支持多种网络层协议，BGP-4需要增加两种能力：</p>
-<p>​    ▫关联其他网络层协议下一跳信息的能力。</p>
-<p>​    ▫关联其他网络层协议NLRI的能力。</p>
-<p>•这种两种能力被互联网数字分配机构（IANA）统称为地址族（Address Family，AF）。</p>
-<p>•为了实现后向兼容性，协议规定MP-BGP增加两种新的属性，MP_REACH_NLRI和MP_UNREACH_NLRI，分别用于表示可达的目的信息和不可达的目的信息。这两种属性都属于可选非过渡（optional and non-transitive）。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/2.png"></p>
-<blockquote>
-<p>•BGP-4规定IPv4的NEXT_HOP和AGGREGATOR属于Path attributes字段，IPv4的NLRI中携带IPv4的路由条目。</p>
-<p>•MP-BGP新增Path attributes的字段，将对应的网络层协议的NEXT_HOP字段和NLRI归属于MP_REACH_NLRI。MP_REACH_NLRI为Path attributes的新增字段。</p>
-</blockquote>
-<h2 id="MP-REACH-NLRI"><a href="#MP-REACH-NLRI" class="headerlink" title="MP_REACH_NLRI"></a>MP_REACH_NLRI</h2><p>•MP_REACH_NLRI被携带于BGP Update报文中，有以下作用：</p>
-<p>​    ▫通告可达的路由给BGP邻居</p>
-<p>​    ▫通告可达路的路由的下一跳给BGP邻居</p>
-<p>•其详细字段如下：</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/3.png"></p>
-<blockquote>
-<p>•SAFI字段中1表示单播，2表示组播。值由IANA分配，其分配原则被定义于RFC2434（Guidelines for Writing an IANA Considerations Section in RFCs）。</p>
-<p>•本章节后续学习EVPN的AFI为25 (L2VPN) ，SAFI为70 (EVPN)。</p>
-</blockquote>
-<h2 id="MP-UNREACH-NLRI"><a href="#MP-UNREACH-NLRI" class="headerlink" title="MP_UNREACH_NLRI"></a>MP_UNREACH_NLRI</h2><p>•MP_UNREACH_NLRI被携带于BGP Update报文中，用于撤销不可达的路由。</p>
-<p>•其详细字段如下：</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/4.png"></p>
-<blockquote>
-<p>•例如EVPN的AFI为25 (L2VPN) ，SAFI为70 (EVPN)。</p>
-</blockquote>
-<h1 id="EVPN"><a href="#EVPN" class="headerlink" title="EVPN"></a>EVPN</h1><h2 id="EVPN简介"><a href="#EVPN简介" class="headerlink" title="EVPN简介"></a>EVPN简介</h2><h3 id="MPLS简介"><a href="#MPLS简介" class="headerlink" title="MPLS简介"></a>MPLS简介</h3><p>•MPLS （Multiprotocol Label Switching，多协议标记交换）位于TCP/IP协议栈中的数据链路层和网络层之间，在两层之间增加了额外的MPLS头部。报文转发直接基于MPLS头部。MPLS头部又被称为MPLS标签（Label）。</p>
-<p>•MPLS以标签交换替代IP转发，实现了基于标签的快速转发。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/5.png"></p>
-<blockquote>
-<p>•MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）、Appletalk、DECnet、CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
-<p>•MPLS以标签交换替代IP转发。标签是一个短而定长的、只具有本地意义的连接标识符，与ATM的VPI/VCI以及Frame Relay的DLCI类似。</p>
-<p>•MPLS域（MPLS Domain）：一系列连续的运行MPLS的网络设备构成了一个MPLS域。</p>
-</blockquote>
-<h3 id="VPLS简介"><a href="#VPLS简介" class="headerlink" title="VPLS简介"></a>VPLS简介</h3><p>VPLS（Virtual Private LAN Service）是一种基于以太网的二层VPN技术，它在MPLS网络上提供了类似LAN的业务，允许用户可以从多个地址位置接入网络、相互访问。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/6.png"></p>
-<h3 id="传统L2VPN"><a href="#传统L2VPN" class="headerlink" title="传统L2VPN"></a>传统L2VPN</h3><p>•传统的L2VPN业务例如VPLS（Virtual Private LAN Service），提供用户远程站点之间二层连接服务。它组建二层交换网，像二层交换机一样透传以太报文。本例中PE1和PE2组建的VPLS网络透传CE1和CE2之间的VLAN流量。</p>
-<p>•因此在传统L2VPN中对于远端MAC地址的学习依靠ARP广播泛洪，PE设备将需要承载广播流量。广播占用较多的接口带宽，这是传统L2VPN的一个典型问题。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/7.png"></p>
-<blockquote>
-<p>•VPLS有更多的问题，例如不支持多活接入、故障收敛慢、不支持负载均衡等不在本课程介绍，请学习HCIE-HCIE-Datacom《Etherent VPN》和RFC 7209 - Requirements for Ethernet VPN (EVPN)。</p>
-</blockquote>
-<h3 id="EVPN的诞生"><a href="#EVPN的诞生" class="headerlink" title="EVPN的诞生"></a>EVPN的诞生</h3><p>•随着新技术和新场景对网络需求，VPLS被暴露出更多的问题无法满足二层VPN的需求。业界重新审视了对Ethernet VPN的需求（RFC 7209），提出新的解决方案EVPN（Ethernet VPN）。</p>
-<p>•EVPN最初在RFC 7432中被定义，EVPN引入控制平面，用于更好的控制MAC地址学习过程。</p>
-<p>•EVPN的控制平面采用MP-BGP，数据平面支持MPLS LSPs或者IP/GRE tunneling。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/8.png"></p>
-<blockquote>
-<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7209/">https://datatracker.ietf.org/doc/rfc7209/</a></p>
-<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7432/">https://datatracker.ietf.org/doc/rfc7432/</a></p>
-</blockquote>
-<h3 id="EVPN的优势"><a href="#EVPN的优势" class="headerlink" title="EVPN的优势"></a>EVPN的优势</h3><p>•EVPN颠覆了传统L2 VPN数据面学习的方式，引入控制面学习MAC和IP指导数据转发，实现了转控分离。</p>
-<p>•EVPN解决传统L2 VPN的典型问题，带来双活，快速收敛，简化运维等更多的价值。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/9.png"></p>
-<blockquote>
-<p>•更多详细EVPN原理，请参考HCIE-Datacom《Ethernet VPN》。</p>
-</blockquote>
-<h2 id="EVPN常见路由"><a href="#EVPN常见路由" class="headerlink" title="EVPN常见路由"></a>EVPN常见路由</h2><h3 id="EVPN-NLRI"><a href="#EVPN-NLRI" class="headerlink" title="EVPN NLRI"></a>EVPN NLRI</h3><p>•EVPN定义了一种新的BGP NLRI（Network Layer Reachable Information）来承载所有的EVPN路由，被称为EVPN NLRI。</p>
-<p>•EVPN NLRI是MP-BGP的新型扩展，被包含于MP_REACH_NLRI中，定义了新的NLRI。它规定了EVPN的AFI（Address Family Identifier）是25，SAFI（Subsequent Address Family Identifier）是70。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/10.png"></p>
-<h3 id="EVPN路由"><a href="#EVPN路由" class="headerlink" title="EVPN路由"></a>EVPN路由</h3><p>EVPN NLRI格式采用TLV（Type-Length-Value）三元组结构，使得报文具有很强的灵活性和扩展性：</p>
-<p>▫Route Type定义了不同的EVPN路由。RFC 7432中首先定义了四类路由。</p>
-<p>▫Length定义了字段的长度。</p>
-<p>▫Route Type Specifc则表示不同的路由类型有不同的字段填充。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/11.png"></p>
-<blockquote>
-<p>•The NLRI field in the MP_REACH_NLRI/MP_UNREACH_NLRI attribute contains the EVPN NLRI (encoded as specified above). </p>
-<p>•The EVPN NLRI is carried in BGP [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4271">RFC4271</a>] using BGP Multiprotocol Extensions [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4760">RFC4760</a>] with an Address Family Identifier (AFI) of 25 (L2VPN) and a Subsequent Address Family Identifier (SAFI) of 70 (EVPN). The NLRI field in the MP_REACH_NLRI/MP_UNREACH_NLRI attribute contains the EVPN NLRI (encoded as specified above). </p>
-<p>•In order for two BGP speakers to exchange labeled EVPN NLRI, they must use BGP Capabilities Advertisements to ensure that they both are capable of properly processing such NLRI. This is done as specified in [<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4760">RFC4760</a>], by using capability code 1 (multiprotocol BGP) with an AFI of 25 (L2VPN) and a SAFI of 70 (EVPN).</p>
-</blockquote>
-<h3 id="EVPN更多类型路由及作用"><a href="#EVPN更多类型路由及作用" class="headerlink" title="EVPN更多类型路由及作用"></a>EVPN更多类型路由及作用</h3><p>EVPN不仅限于二层VPN的应用，随着其EVPN路由类型的增加，支持更多的应用例如L3 VPN功能。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/12.png"></p>
-<blockquote>
-<p>•Type5类路由IP Prefix Route在标准化进程中目前处于草案阶段，draft-ietf-bess-evpn-prefix-advertisement。</p>
-</blockquote>
-<h3 id="EVPN协议标准"><a href="#EVPN协议标准" class="headerlink" title="EVPN协议标准"></a>EVPN协议标准</h3><p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/13.png"></p>
-<h2 id="EVPN典型应用场景"><a href="#EVPN典型应用场景" class="headerlink" title="EVPN典型应用场景"></a>EVPN典型应用场景</h2><h3 id="EVPN在广域IP承载网的应用"><a href="#EVPN在广域IP承载网的应用" class="headerlink" title="EVPN在广域IP承载网的应用"></a>EVPN在广域IP承载网的应用</h3><p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/14.png"></p>
-<blockquote>
-<p>•E-LINE、E-TREE、E-LAN是EVC定义的三种类型，具体请参考城域以太网标准。<a target="_blank" rel="noopener" href="https://wiki.mef.net/display/CESG/E-Line">https://wiki.mef.net/display/CESG/E-Line</a></p>
-<p>•MEF中提到了三种EVC的服务种类，点到点EVC（Point-to-Point EVC）、多点到多点EVC（Mutlipoint-to-Multipoint EVC）和根到多点EVC（Rooted-Multipoint EVC）。</p>
-<ul>
-<li>E-LINE：一条点到点的EVC将两个UNI严格地关联。</li>
-<li>E-LAN：一个多点到多点EVC可以将两个或者两个以上的UNI关联起来，而且用户/运营商可以在不影响其他UNI的前提下根据需要向这个EVC中添加任意个UNI，或者将这个EVC中的某些UNI剔除。</li>
-<li>E-TREE：这种EVC类似于三层VPN中的Hub-Spoke模式，它包含一个或多个根UNI（Root）和若干叶子UNI（Leaf），其中根UNI可以和EVC中的所有UNI直接通信，而叶子UNI只能和EVC中的根UNI直接通信，两个叶子UNI之间不能直接通信。 </li>
-</ul>
-</blockquote>
-<h3 id="EVPN在数据中心网络的应用"><a href="#EVPN在数据中心网络的应用" class="headerlink" title="EVPN在数据中心网络的应用"></a>EVPN在数据中心网络的应用</h3><p>•在云数据中心采用EVPN的NVO（Network Virtualization Overlay）解决方案（RFC 8365）。</p>
-<p>•推荐数据平面使用VXLAN封装与控制平面EVPN结合，构建灵活的数据中心Overlay网络。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/15.png"></p>
-<h3 id="EVPN在园区网的应用"><a href="#EVPN在园区网的应用" class="headerlink" title="EVPN在园区网的应用"></a>EVPN在园区网的应用</h3><p>•园区网虚拟化园区解决方案同在云数据中心相同，采用EVPN的NVO解决方案（RFC 8365）。</p>
-<p>•在不同的底层组网上使用VXLAN封装与控制平面EVPN结合，构建灵活的数据中心Overlay网络。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/16.png"></p>
-<h3 id="EVPN在SD-WAN的应用"><a href="#EVPN在SD-WAN的应用" class="headerlink" title="EVPN在SD-WAN的应用"></a>EVPN在SD-WAN的应用</h3><p>•SD-WAN是新一代的企业分支互联解决方案，支持智能动态选路、ZTP和可视化等特性。</p>
-<p>•SD-WAN解决方案中，在RR与CPE之间部署EVPN用于在控制平面传播SD-WAN的Overlay VPN路由，数据平面采用IPSec VPN构建安全的转发通道。</p>
-<p><img src="/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/17.png"></p>
-<blockquote>
-<p>•Overlay VPN路由包括站点VPN路由前缀、下一跳TNP路由信息以及用于CPE之间数据通道的数据加密所需要的IPSec相关密钥等信息。详细内容请参考SD-WAN课程。</p>
-<p>•CPE（Customer Premise Equipment，客户终端设备）。</p>
-</blockquote>
-<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（简答题）请简述EVPN的原理和常见的路由类型。</p>
-<p><strong>EVPN是MP-BGP的扩展，常见有五种路由类型，被用于作为L2或者L3隧道的控制平面。</strong></p>
-<p>2.（简答题）请简述EVPN的应用场景。</p>
-<p><strong>EVPN可以被广泛用于企业全场景，例如SD-WAN、园区网、数据中心和广域网。在数据中心和园区中，EVPN与VXLAN结合构建业务 Overlay。在SD-WAN场景中EVPN与IPSec结合构建企业分支互联网络。在广域网中EVPN可以与各种底层隧道/标签技术结合，例如MPLS/SR/VPLS/VPWS等。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MP-BGP对BGP-4的扩展允许不同类型的地址族在BGP中同时分发，例如IPv4组播、IPv6、L3VPN、EVPN等。</p>
-<p>•本章节简单介绍EVPN的提出用于解决Ethernet二层VPN的问题。随着应用场景的逐渐丰富和协议的扩展，EVPN可以被用于多场景包括广域IP承载网络、数据中心网络、园区网络和SD-WAN。</p>
-<h1 id="拓展信息"><a href="#拓展信息" class="headerlink" title="拓展信息"></a>拓展信息</h1><p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc4760/">https://datatracker.ietf.org/doc/rfc4760/</a></p>
-<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7209/">https://datatracker.ietf.org/doc/rfc7209/</a></p>
-<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc7432/">https://datatracker.ietf.org/doc/rfc7432/</a></p>
-<p>•<a target="_blank" rel="noopener" href="https://datatracker.ietf.org/doc/rfc8365/">https://datatracker.ietf.org/doc/rfc8365/</a></p>
-<p>•<a target="_blank" rel="noopener" href="https://wiki.mef.net/display/CESG/MEF+6.3+-+EVC+Ethernet+Services+Definitions">https://wiki.mef.net/display/CESG/MEF+6.3+-+EVC+Ethernet+Services+Definitions</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/" itemprop="url">BGP路由优选</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T17:56:08+08:00">
-                2021-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•BGP是一个应用非常广泛的边界网关路由协议，在全球范围内被大量部署。BGP定义了多种路径属性，并且拥有丰富的路由策略工具，这使得BGP在路由操控和路径决策上变得非常灵活。</p>
-<p>•针对BGP路由的各种属性的操作都可能影响路由的优选，从而对网络的流量产生影响，因此掌握BGP路由的优选规则十分重要。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP路由优选规则</p>
-<p>▫实现BGP路由控制</p>
-<h1 id="BGP路由优选"><a href="#BGP路由优选" class="headerlink" title="BGP路由优选"></a>BGP路由优选</h1><h2 id="BGP路由优选规则"><a href="#BGP路由优选规则" class="headerlink" title="BGP路由优选规则"></a>BGP路由优选规则</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p><strong>丢弃下一跳不可达的路由。</strong></p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<blockquote>
-<p><strong>↑</strong>  <strong>取值越大越优</strong></p>
-</blockquote>
-<hr>
-<blockquote>
-<p><strong>↓</strong>  <strong>取值越小越优</strong></p>
-</blockquote>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<blockquote>
-<p>当前8条属性全部相同时可以形成路由负载分担</p>
-<p>•上述规则依序排列，BGP进行路由优选时，从第一条规则开始执行，如果根据第一条规则无法作出判断，例如路由的Preferred-Value属性值相同，则继续执行下一条规则，如果根据当前的规则，BGP能够决策出最优的路由，则不再继续往下执行。</p>
-<p>•本文选取了BGP路由优选规则中最为关键的12条，接下来将逐一讲解并验证上述规则。</p>
-<p>•在后续的内容中可能会提到诸如“第8条选路规则”之类的术语，则对应本页所罗列的第8条选路规则。</p>
-<p>•AIGP（Accumulated Interior Gateway Protocol，累加IGP度量值）用于传递并累加IGP metric值，该属性值并不常用，在BGP路由优选规则中并不涉及。</p>
-</blockquote>
-<hr>
-<h2 id="拓扑说明-1"><a href="#拓扑说明-1" class="headerlink" title="拓扑说明 (1)"></a>拓扑说明 (1)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/2.png"></p>
-<p>•AS、设备互联地址如图所示，所有设备均创建Loopback0接口，IP地址为10.0.x.x（x为设备编号），所有设备使用环回口地址作为Router ID。</p>
-<p>•AS200内运行OSPF，在内部互联接口（不包含连接外部AS的接口）、Loopback接口上激活OSPF。</p>
-<h2 id="拓扑说明-2"><a href="#拓扑说明-2" class="headerlink" title="拓扑说明 (2)"></a>拓扑说明 (2)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/3.png"></p>
-<p>•AS内部基于Loopback0接口建立IBGP对等体关系，AS之间基于直连接口建立EBGP对等体关系。</p>
-<p>•R4、R5上存在相同的网段：10.0.45.0/24，通过import-route命令将该网段的直连路由注入到BGP，用于验证BGP路由优选规则。</p>
-<h2 id="BGP路由优选规则-1"><a href="#BGP路由优选规则-1" class="headerlink" title="BGP路由优选规则"></a>BGP路由优选规则</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   <strong>丢弃下一跳不可达的路由。</strong></p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h2 id="丢弃下一跳不可达的路由-1"><a href="#丢弃下一跳不可达的路由-1" class="headerlink" title="丢弃下一跳不可达的路由 (1)"></a>丢弃下一跳不可达的路由 (1)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/4.png"></p>
-<p>•R4、R5将BGP路由10.0.45.0/24通告给AS200时Next_Hop属性值为10.0.24.4、10.0.34.5。</p>
-<p>•R2、R3将路由通告给R1时不修改Next_Hop属性值，R1学习到的两条BGP路由10.0.45.0/24下一跳为10.0.24.4、10.0.34.5。</p>
-<p>•R1进行BGP路由下一跳迭代查询时，由于R2、R3未在连接外部AS的接口上激活OSPF，导致路由迭代失败，R1上的BGP路由10.0.45.0/24下一跳不可达。</p>
-<p>•在R1上通过<strong>display bgp routing</strong>查看BGP路由表，此时BGP路由10.0.45.0/24为非有效路由条目。</p>
-<h2 id="丢弃下一跳不可达的路由-2"><a href="#丢弃下一跳不可达的路由-2" class="headerlink" title="丢弃下一跳不可达的路由 (2)"></a>丢弃下一跳不可达的路由 (2)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/5.png"></p>
-<p>在R2、R3上通过<strong>next-hop-local</strong>命令修改Next_Hop属性值为本地更新源地址。</p>
-<p>R2、R3向R1通告BGP路由时Next_Hop属性值将会变为：10.0.2.2、10.0.3.3。</p>
-<p>这两个下一跳地址在R1上能够成功进行路由迭代，BGP路由的下一跳地址将会变成可达。</p>
-<h2 id="丢弃下一跳不可达的路由-3"><a href="#丢弃下一跳不可达的路由-3" class="headerlink" title="丢弃下一跳不可达的路由 (3)"></a>丢弃下一跳不可达的路由 (3)</h2><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/6.png"></p>
-<h2 id="BGP路由优选规则1"><a href="#BGP路由优选规则1" class="headerlink" title="BGP路由优选规则1"></a>BGP路由优选规则1</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p><strong>1.优选Preferred-Value属性值最大的路由。</strong></p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="修改Preferred-Value"><a href="#修改Preferred-Value" class="headerlink" title="修改Preferred-Value"></a>修改Preferred-Value</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/7.png"></p>
-<p>使用<strong>preferred-value</strong>命令修改R3通告的BGP路由其Preferred-Value为100 ，优于R2通告BGP路由的默认Preferred-Value ，R1将会优选R3通告的BGP路由10.0.45.0/24。</p>
-<h3 id="查看R1-BGP路由表"><a href="#查看R1-BGP路由表" class="headerlink" title="查看R1 BGP路由表"></a>查看R1 BGP路由表</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/8.png"></p>
-<p>R3（10.0.3.3）通告的BGP路由拥有更高的Preferred-Value（100），因此R1将会优选R3通告的BGP路由10.0.45.0/24。</p>
-<h2 id="BGP路由优选规则2"><a href="#BGP路由优选规则2" class="headerlink" title="BGP路由优选规则2"></a>BGP路由优选规则2</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p><strong>2.优选Local_Preference属性值最大的路由。</strong></p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="修改Local-Preference-1"><a href="#修改Local-Preference-1" class="headerlink" title="修改Local_Preference (1)"></a>修改Local_Preference (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/9.png"></p>
-<h3 id="修改Local-Preference-2"><a href="#修改Local-Preference-2" class="headerlink" title="修改Local_Preference (2)"></a>修改Local_Preference (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/10.png"></p>
-<p>下一跳可达、相同Preferred-Value的情况下将会比较Local_Preference，R3通告的BGP路由Local_Preference值为200，高于R2通告的BGP路由，R1将会优选R3通告的BGP路由。</p>
-<h2 id="BGP路由优选规则3"><a href="#BGP路由优选规则3" class="headerlink" title="BGP路由优选规则3"></a>BGP路由优选规则3</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p><strong>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</strong></p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="本地优先"><a href="#本地优先" class="headerlink" title="本地优先"></a>本地优先</h3><p>•本条规则可以概括为在相同条件下，优选本地生成的路由，从对等体学习到的路由条目为次优。</p>
-<p>•同时本地生成的路由也可能存在多种途径，当本地存在多种途径学习到相同路由时，从高到低优先级如下：</p>
-<ul>
-<li>手动聚合：手动通过aggregate命令在BGP视图内聚合生成的聚合路由</li>
-<li>自动聚合：Summary automatic命令生成的自动聚合路由</li>
-<li>Network方式注入的路由</li>
-<li>Import-route方式注入的路由</li>
-</ul>
-<blockquote>
-<p>•本条规则我们验证了：</p>
-<p>​    ▫本地产生的BGP路由优于从对等体学习的BGP路由</p>
-<p>​    ▫手动聚合产生的BGP路由优于自动聚合产生的BGP路由</p>
-</blockquote>
-<h3 id="手动聚合-1"><a href="#手动聚合-1" class="headerlink" title="手动聚合 (1)"></a>手动聚合 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/11.png"></p>
-<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/12.png"></p>
-<h3 id="手动聚合-2"><a href="#手动聚合-2" class="headerlink" title="手动聚合 (2)"></a>手动聚合 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/13.png"></p>
-<blockquote>
-<p>•BGP路由表中“s”标志代表该路由条目被抑制。</p>
-</blockquote>
-<h3 id="手动聚合-3"><a href="#手动聚合-3" class="headerlink" title="手动聚合 (3)"></a>手动聚合 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/14.png"></p>
-<p>•R3上通过<strong>display bgp routing-table</strong> <strong>10.0.45.0</strong> <strong>24</strong>查看BGP路由10.0.45.0/24的详细信息，存在两条有效路由，其中最优的为手动聚合产生的路由。</p>
-<p>•在本案例中我们验证了本地产生的BGP路由优于从对等体学习的BGP路由。</p>
-<h3 id="自动聚合-1"><a href="#自动聚合-1" class="headerlink" title="自动聚合 (1)"></a>自动聚合 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/15.png"></p>
-<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/16.png"></p>
-<h3 id="自动聚合-2"><a href="#自动聚合-2" class="headerlink" title="自动聚合 (2)"></a>自动聚合 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/17.png"></p>
-<h3 id="自动聚合-3"><a href="#自动聚合-3" class="headerlink" title="自动聚合 (3)"></a>自动聚合 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/18.png"></p>
-<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/19.png"></p>
-<h3 id="自动聚合-4"><a href="#自动聚合-4" class="headerlink" title="自动聚合 (4)"></a>自动聚合 (4)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/20.png"></p>
-<p>•R3上通过<strong>display bgp routing-table</strong> <strong>10.0.0.0</strong> 查看BGP路由10.0.0.0/8的详细信息，存在三条有效路由，其中最优的条目由聚合产生，并且存在Atomic-aggregate属性，由此可以看出该聚合条目为手动聚合产生的条目。</p>
-<p>•R3上相同的BGP聚合路由：手动聚合 &gt; 自动聚合。</p>
-<p>•在该案例中我们验证了手动聚合产生的BGP路由优于自动聚合产生的BGP路由。</p>
-<blockquote>
-<p>•本地Network优于本地import，此案例不再展示。</p>
-<p>•自动聚合产生的聚合路由并不会携带Atomic-aggregate属性。</p>
-</blockquote>
-<h2 id="BGP路由优选规则4"><a href="#BGP路由优选规则4" class="headerlink" title="BGP路由优选规则4"></a>BGP路由优选规则4</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p><strong>4.优选AS_Path属性值最短的路由。</strong></p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="优选AS-Path最短-1"><a href="#优选AS-Path最短-1" class="headerlink" title="优选AS_Path最短 (1)"></a>优选AS_Path最短 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/21.png"></p>
-<h3 id="优选AS-Path最短-2"><a href="#优选AS-Path最短-2" class="headerlink" title="优选AS_Path最短 (2)"></a>优选AS_Path最短 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/22.png"></p>
-<h2 id="BGP路由优选规则5"><a href="#BGP路由优选规则5" class="headerlink" title="BGP路由优选规则5"></a>BGP路由优选规则5</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p><strong>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</strong></p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="Origin属性验证-1"><a href="#Origin属性验证-1" class="headerlink" title="Origin属性验证 (1)"></a>Origin属性验证 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/23.png"></p>
-<p>•R4、R5上默认采用import-route方式将路由10.0.45.0/24注入到BGP，R1的BGP路由表中两条BGP路由10.0.45.0/24其Origin属性都是“？”，此时R1优选R4注入的BGP路由。</p>
-<p>•在R5上修改注入路由的方式为network</p>
-<p>•之后在R1上再次查看BGP路由表。</p>
-<h3 id="Origin属性验证-2"><a href="#Origin属性验证-2" class="headerlink" title="Origin属性验证 (2)"></a>Origin属性验证 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/24.png"></p>
-<p>•此时R5注入的BGP路由10.0.45.0/24其Origin属性为“i”，在前几条优选规则相同情况下，起源类型为“i”的BGP路由成为优选路由。</p>
-<h2 id="BGP路由优选规则6"><a href="#BGP路由优选规则6" class="headerlink" title="BGP路由优选规则6"></a>BGP路由优选规则6</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p><strong>6.优选MED属性值最小的路由。</strong></p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="优选MED最小-1"><a href="#优选MED最小-1" class="headerlink" title="优选MED最小 (1)"></a>优选MED最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/25.png"></p>
-<h3 id="优选MED最小-2"><a href="#优选MED最小-2" class="headerlink" title="优选MED最小 (2)"></a>优选MED最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/26.png"></p>
-<h2 id="BGP路由优选规则7"><a href="#BGP路由优选规则7" class="headerlink" title="BGP路由优选规则7"></a>BGP路由优选规则7</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p><strong>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</strong></p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="优选从EBGP对等体学来的路由-1"><a href="#优选从EBGP对等体学来的路由-1" class="headerlink" title="优选从EBGP对等体学来的路由 (1)"></a>优选从EBGP对等体学来的路由 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/27.png"></p>
-<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/28.png"></p>
-<h3 id="优选从EBGP对等体学来的路由-2"><a href="#优选从EBGP对等体学来的路由-2" class="headerlink" title="优选从EBGP对等体学来的路由 (2)"></a>优选从EBGP对等体学来的路由 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/29.png"></p>
-<h2 id="BGP路由优选规则8"><a href="#BGP路由优选规则8" class="headerlink" title="BGP路由优选规则8"></a>BGP路由优选规则8</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p><strong>8.优选到Next_Hop的IGP度量值最小的路由。</strong></p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="IGP-Cost"><a href="#IGP-Cost" class="headerlink" title="IGP Cost"></a>IGP Cost</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/30.png"></p>
-<p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/31.png"></p>
-<h3 id="优选IGP-Cost值最小-1"><a href="#优选IGP-Cost值最小-1" class="headerlink" title="优选IGP Cost值最小 (1)"></a>优选IGP Cost值最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/32.png"></p>
-<h3 id="优选IGP-Cost值最小-2"><a href="#优选IGP-Cost值最小-2" class="headerlink" title="优选IGP Cost值最小 (2)"></a>优选IGP Cost值最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/33.png"></p>
-<h3 id="优选IGP-Cost值最小-3"><a href="#优选IGP-Cost值最小-3" class="headerlink" title="优选IGP Cost值最小 (3)"></a>优选IGP Cost值最小 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/34.png"></p>
-<p>•R1上通过<strong>display bgp routing-table</strong> <strong>10.0.45.0 24</strong> 查看BGP路由的详细信息，下一跳10.0.2.2的BGP路由其IGP cost值变为了10，而下一跳为10.0.3.3的BGP路由其IGP cost为默认值1，所以R1优选下一跳为10.0.3.3的路由。</p>
-<p>•在R1的路由详细信息中可以看到如下内容：</p>
-<p>​    <strong>not preferred for IGP cost</strong></p>
-<p>​    表明该路由因为IGP cost未被优选。</p>
-<h3 id="BGP路由等价负载分担"><a href="#BGP路由等价负载分担" class="headerlink" title="BGP路由等价负载分担"></a>BGP路由等价负载分担</h3><p>•在大型网络中，到达同一目的地通常会存在多条有效BGP路由，设备只会优选一条最优的BGP路由，将该路由加载到路由表中使用，这一特点往往会造成很多流量负载不均衡的情况。</p>
-<p>•通过配置BGP负载分担，可以使得设备同时将多条等代价的BGP路由加载到路由表，实现流量负载均衡，减少网络拥塞。</p>
-<p>•值得注意的是，尽管配置了BGP负载分担，设备依然只会在多条到达同一目的地的BGP路由中优选一条路由，并只将这条路由通告给其他对等体。</p>
-<p>•在设备上使能BGP负载分担功能后，只有满足条件的多条BGP路由才会成为等价路由，进行负载分担。</p>
-<blockquote>
-<p>•默认情况下设备只会对AS_Path完全相同的路由进行负载分担，可以使用<strong>load-balancing as-path-ignore</strong>忽略AS_Path路径不一致。</p>
-<p>•在公网中到达同一目的地的路由形成负载分担时，系统会首先判断最优路由的类型。若最优路由为IBGP路由则只是IBGP路由参与负载分担，若最优路由为EBGP路由则只是EBGP路由参与负载分担，即公网中到达同一目的地的IBGP和EBGP路由不能形成负载分担。</p>
-</blockquote>
-<h3 id="形成BGP路由等价负载分担的条件"><a href="#形成BGP路由等价负载分担的条件" class="headerlink" title="形成BGP路由等价负载分担的条件"></a>形成BGP路由等价负载分担的条件</h3><p>•Preferred-Value属性值相同。</p>
-<p>•Local_Preference属性值相同。</p>
-<p>•都是聚合路由或者非聚合路由。</p>
-<p>•AS_Path属性长度相同。</p>
-<p>•Origin类型（IGP、EGP、Incomplete）相同。</p>
-<p>•MED属性值相同。</p>
-<p>•都是EBGP路由或都是IBGP路由。</p>
-<p>•AS内部IGP的Metric相同。</p>
-<p>•AS_Path属性完全相同。</p>
-<h3 id="配置BGP路由负载分担"><a href="#配置BGP路由负载分担" class="headerlink" title="配置BGP路由负载分担"></a>配置BGP路由负载分担</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/35.png"></p>
-<p>以左侧拓扑为例，R1上两条BGP路由在不做任何路由策略、配置的情况下，前8条优选规则无法比较出优选路由。因此可以配置IBGP路由的负载分担。</p>
-<h3 id="配置BGP路由负载分担后"><a href="#配置BGP路由负载分担后" class="headerlink" title="配置BGP路由负载分担后"></a>配置BGP路由负载分担后</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/36.png"></p>
-<h2 id="BGP路由优选规则9"><a href="#BGP路由优选规则9" class="headerlink" title="BGP路由优选规则9"></a>BGP路由优选规则9</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p><strong>9.优选Cluster_List最短的路由。</strong></p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="优选Cluster-List最短案例-1"><a href="#优选Cluster-List最短案例-1" class="headerlink" title="优选Cluster_List最短案例 (1)"></a>优选Cluster_List最短案例 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/37.png"></p>
-<p>对拓扑做如下修改：</p>
-<p>•只在R5上将10.0.45.0/24发布到BGP</p>
-<p>•配置R1为RR，R3为R1的客户端。</p>
-<p>•R2、R3之间基于环回口建立IBGP对等体关系</p>
-<p>R2上将收到R3通告的BGP路由10.0.45.0/24、R1反射的BGP路由10.0.45.0/24。</p>
-<p>默认配置下，前面介绍的规则无法比较出优选路由，此时将根据Cluster_List进行优选。</p>
-<h3 id="优选Cluster-List最短案例-2"><a href="#优选Cluster-List最短案例-2" class="headerlink" title="优选Cluster_List最短案例 (2)"></a>优选Cluster_List最短案例 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/38.png"></p>
-<p>从BGP路由表中无法看出优选的是R1反射的BGP路由还是R3通告的BGP路由，此时可以通过命令<strong>display</strong> <strong>bgp routing</strong> <strong>10.0.45.0</strong> <strong>24</strong>查看BGP路由详细信息。</p>
-<h3 id="优选Cluster-List最短案例-3"><a href="#优选Cluster-List最短案例-3" class="headerlink" title="优选Cluster_List最短案例 (3)"></a>优选Cluster_List最短案例 (3)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/39.png"></p>
-<p>•经由R1反射的路由不是最优路由，原因也被标出：</p>
-<p><strong>not preferred for Cluster List</strong>*</p>
-<p>•R3直接通告给R2的BGP路由因为没有经过路由反射器，不存在Cluster_List属性，即被认为Cluster_List长度为0，小于由R1反射的BGP路由其Cluster_List长度（1），所以R3通告的BGP路由为优选路由。</p>
-<h2 id="BGP路由优选规则10"><a href="#BGP路由优选规则10" class="headerlink" title="BGP路由优选规则10"></a>BGP路由优选规则10</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p><strong>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</strong></p>
-<p>11.优选具有最小IP地址的对等体通告的路由。</p>
-<h3 id="优选Router-ID最小-1"><a href="#优选Router-ID最小-1" class="headerlink" title="优选Router ID最小 (1)"></a>优选Router ID最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/40.png"></p>
-<p>在我们的讲解拓扑中，默认配置下R1从R2、R3都会收到BGP路由10.0.45.0/24，并且前面的优选规则无法比较出优选路由，最终将会根据本条规则，优选Router ID最小的对等体通告的BGP路由，在本案例中也就是R2通告的BGP路由。</p>
-<h3 id="优选Router-ID最小-2"><a href="#优选Router-ID最小-2" class="headerlink" title="优选Router ID最小 (2)"></a>优选Router ID最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/41.png"></p>
-<p>查看R1的BGP路由表详细信息，来自10.0.3.3的BGP路由因Router ID原因没有被优选：<br> <strong>not preferred for router ID</strong></p>
-<h3 id="优选Orginator-ID最小-1"><a href="#优选Orginator-ID最小-1" class="headerlink" title="优选Orginator_ID最小 (1)"></a>优选Orginator_ID最小 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/42.png"></p>
-<p>如果BGP路由携带Originator_ID属性，则在本条规则的优选过程中，将比较Originator_ID的大小，并优选Originator_ID最小的BGP路由。</p>
-<h3 id="优选Orginator-ID最小-2"><a href="#优选Orginator-ID最小-2" class="headerlink" title="优选Orginator_ID最小 (2)"></a>优选Orginator_ID最小 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/43.png"></p>
-<h2 id="BGP路由优选规则11"><a href="#BGP路由优选规则11" class="headerlink" title="BGP路由优选规则11"></a>BGP路由优选规则11</h2><p>当到达同一个目的网段存在多条路由时，BGP通过如下的次序进行路由优选：</p>
-<p>   丢弃下一跳不可达的路由。</p>
-<p>1.优选Preferred-Value属性值最大的路由。</p>
-<p>2.优选Local_Preference属性值最大的路由。</p>
-<p>3.本地始发的BGP路由优于从其他对等体学习到的路由，本地始发的路由优先级：优选手动聚合&gt;自动聚合&gt;network&gt;import&gt;从对等体学到的。</p>
-<p>4.优选AS_Path属性值最短的路由。</p>
-<p>5.优选Origin属性最优的路由。Origin属性值按优先级从高到低的排列是：IGP、EGP及Incomplete。</p>
-<p>6.优选MED属性值最小的路由。</p>
-<p>7.优选从EBGP对等体学来的路由（EBGP路由优先级高于IBGP路由）。</p>
-<p>8.优选到Next_Hop的IGP度量值最小的路由。</p>
-<p>9.优选Cluster_List最短的路由。</p>
-<p>10.优选Router ID（Orginator_ID）最小的设备通告的路由。</p>
-<p><strong>11.优选具有最小IP地址的对等体通告的路由。</strong></p>
-<h3 id="优选具有最小IP地址的对等体-1"><a href="#优选具有最小IP地址的对等体-1" class="headerlink" title="优选具有最小IP地址的对等体 (1)"></a>优选具有最小IP地址的对等体 (1)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/44.png"></p>
-<p>•当前面所有规则都无法比较出优选路由时，此时会根据对等体地址大小来进行优选，对等体地址较小者发送的路由较优。</p>
-<p>•修改前一条规则的验证拓扑，R2、R3都与R4相连，R4作为RR客户端，只在R4上将路由发布到BGP，此时R2、R3反射的BGP路由将拥有相同的Originator ID：10.0.4.4。</p>
-<h3 id="优选具有最小IP地址的对等体-2"><a href="#优选具有最小IP地址的对等体-2" class="headerlink" title="优选具有最小IP地址的对等体 (2)"></a>优选具有最小IP地址的对等体 (2)</h3><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/45.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）从EBGP对等体收到的BGP路由通告给IBGP对等体时如何修改next_hop属性值为自身更新源地址？</p>
-<p><strong>使用peer next-hop-local命令指定next_hop属性为TCP连接源地址。</strong></p>
-<p>2.（判断题）当前三条优选规则相同的情况下，BGP会比较AS_Path长度，当AS_Path长度相同时会比较AS号的大小。</p>
-<p>A.对</p>
-<p><strong>B.错</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•BGP采用路径属性进行路由优选，这让BGP拥有丰富的可选比较项，可以在不同的场景下根据不同的路径属性选择出最适合的路由。</p>
-<p>•BGP定义了一套详细的最优路径选择算法，这使得路由器能够在任何复杂的、高冗余性的网络环境下选择出最优的路径，这套算法也被称作BGP路由优选规则，或者BGP选路原则。</p>
-<p>•BGP选路原则在实际中频繁应用，需要熟练掌握。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3978,7 +3821,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3991,7 +3834,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
