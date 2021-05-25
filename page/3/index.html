@@ -1879,6 +1879,8 @@
 </blockquote>
 <h2 id="IS-IS开销值"><a href="#IS-IS开销值" class="headerlink" title="IS-IS开销值"></a>IS-IS开销值</h2><p>•IS-IS使用Cost（开销）作为路由度量值，Cost值越小，则路径越优。IS-IS链路的Cost与设备的接口有关，与OSPF类似，每一个激活了IS-IS的接口都会维护接口Cost。然而与OSPF不同的是，IS-IS接口的Cost在缺省情况下并不与接口带宽相关（在实际部署时，IS-IS也支持根据带宽调整Cost值），无论接口带宽多大，缺省时Cost为10。</p>
 <p>•一条IS-IS路径的Cost等于本路由器到达目标网段沿途的所有链路的Cost总和。</p>
+<p>•窄带 接口 1-63 全局 1-2的10次幂-1</p>
+<p>•宽带 接口带宽1-2的24次幂-1 全局1-2的32次幂-1</p>
 <p>•IS-IS有三种方式来确定接口的开销，按照优先级由高到低分别是：</p>
 <p>​    ▫接口开销：为单个接口设置开销。</p>
 <p>​    ▫全局开销：为所有接口设置开销。</p>
@@ -1978,11 +1980,21 @@
 <p><img src="/2021/05/10/IS-IS/18.png"></p>
 <h2 id="链路状态数据库同步"><a href="#链路状态数据库同步" class="headerlink" title="链路状态数据库同步"></a>链路状态数据库同步</h2><h3 id="LSP"><a href="#LSP" class="headerlink" title="LSP"></a>LSP</h3><p>•IS-IS链路状态报文LSP用于交换链路状态信息。LSP分为两种：Level–1 LSP和Level–2 LSP。Level–1 LSP由Level-1路由器传送，Level–2 LSP由Level-2路由器传送，Level-1-2路由器则可传送以上两种LSP。</p>
 <p>•两类LSP有相同的报文格式。</p>
-<p><strong>Remaining Lifetime</strong> : LSP的生存时间，以秒为单位。 </p>
+<p><strong>Remaining Lifetime</strong> : LSP的生存时间，以秒为单位。 1200-0s递减。</p>
 <p><strong>LSP ID</strong>:由三部分组成，System ID、伪节点ID和LSP分片后的编号。 </p>
 <p><strong>Sequence Number</strong>: LSP的序列号。在路由器启动时所发送的第一个LSP报文中的序列号为1，以后当需要生成新的LSP时，新LSP的序列号在前一个LSP序列号的基础上加1。更高的序列号意味着更新的LSP。</p>
 <p><strong>Checksum</strong>： LSP的校验和。 </p>
-<p><strong>ATT（Attachment）</strong>：由Level-1-2路由器产生，用来指明始发路由器是否与其它区域相连。虽然此标志位也存在于Level-1和Level-2的LSP中，但实际上此字段只和Level-1-2路由器始发的L1 LSP有关。</p>
+<p><strong>ATT（Attachment）</strong>：由Level-1-2路由器产生，用来指明始发路由器是否与其它区域相连。虽然此标志位也存在于Level-1和Level-2的LSP中，但实际上此字段只和Level-1-2路由器始发的L1 LSP有关。接受到ATT置位的LSP的路由器生成一条到发送该ATT置位的路由，若路径开销相同，则负载分担。</p>
+<p>ATT置位的条件</p>
+<ul>
+<li><p>有L1的邻接关系</p>
+</li>
+<li><p>有和自己处于不同区域的L2的邻接关系路由器</p>
+</li>
+<li><p>活跃的数据库</p>
+<p>L1/L2可以计算完全的路由信息（cost计算方法不一样就不可以）</p>
+</li>
+</ul>
 <p><strong>OL（LSDB Overload，1bit）</strong>：过载标志位。设置了过载标志位的LSP虽然还会在网络中扩散，但是在计算通过超载路由器的路由时不会被采用。即对路由器设置过载位后，其它路由器在进行SPF计算时不会考虑这台路由器。当路由器内存不足时，系统自动在发送的LSP报文中设置过载标志位。 </p>
 <p>**IS Type(2bit)**：生成LSP的路由器的类型。用来指明是Level-1还是Level-2路由器（01表示Level-1，11表示Level-2）。 </p>
 <p><img src="/2021/05/10/IS-IS/19.png"></p>
@@ -2628,6 +2640,18 @@
 <blockquote>
 <p>•注意：虚连接的创建使OSPF协议可以通过非骨干区域通信，违背了OSPF区域间的防环规则，在某些场景下会导致路由环路的产生，因此不建议部署OSPF虚连接。</p>
 </blockquote>
+<h3 id="虚连接的优缺点"><a href="#虚连接的优缺点" class="headerlink" title="虚连接的优缺点"></a>虚连接的优缺点</h3><p><strong>优点</strong></p>
+<ol>
+<li>解决骨干区域被分割的问题</li>
+<li>解决骨干区域到非骨干区域不相连</li>
+<li>增强冗余性和可靠性</li>
+<li>解决次优路径</li>
+</ol>
+<p><strong>缺点</strong></p>
+<ol>
+<li>配置不当时可能会导致环路</li>
+<li>虚连接不能路由汇总</li>
+</ol>
 <h2 id="思考题-1"><a href="#思考题-1" class="headerlink" title="思考题"></a>思考题</h2><p>1.（判断题）一条Network Summary LSA只能描述一条路由信息。</p>
 <p>A.错</p>
 <p><strong>B.对</strong></p>
@@ -2667,6 +2691,10 @@
 <p>•<strong>Metric-Type-2</strong></p>
 <p>▫当ASBR到AS之外的开销远远大于在AS之内到达ASBR的开销时，可以认为这类路由的可信程度较低，将其配置成Metric-Type-2。</p>
 <p>▫Metric-Type-2外部路由的开销等于AS外部开销。</p>
+<p><strong>•相同的路由时路由路径的选择方法</strong></p>
+<p>▫先比外部cost (Type 1&gt;Type2)</p>
+<p>▫当外部cost相同时，比较内部cost值</p>
+<p>▫若内部cost也相同，则负载均衡</p>
 <p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/47.png"></p>
 <h2 id="区分OSPF外部路由的2种度量值类型-2"><a href="#区分OSPF外部路由的2种度量值类型-2" class="headerlink" title="区分OSPF外部路由的2种度量值类型 (2)"></a>区分OSPF外部路由的2种度量值类型 (2)</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/48.png"></p>
 <p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/49.png"></p>
@@ -2937,11 +2965,11 @@
 <h3 id="影响邻居建立的因素"><a href="#影响邻居建立的因素" class="headerlink" title="影响邻居建立的因素"></a>影响邻居建立的因素</h3><ol>
 <li><p><strong>Router ID</strong>：直连不能相同，非直连相同导致路由震荡</p>
 </li>
-<li><p><strong>认证</strong>：认证必须配置一直，否则不能建立邻居</p>
+<li><p><strong>认证</strong>：认证必须配置一致，否则不能建立邻居</p>
 </li>
 <li><p><strong>Area ID</strong>:必须一致，否则不能建立</p>
 </li>
-<li><p><strong>Hello间隔</strong>:必须一直否者不能建立</p>
+<li><p><strong>Hello间隔</strong>:必须一致否则不能建立</p>
 <table>
 <thead>
 <tr>
@@ -2961,8 +2989,8 @@
 </tr>
 <tr>
 <td>Hello dead time</td>
-<td>30</td>
-<td>30</td>
+<td>40</td>
+<td>40</td>
 <td>120</td>
 <td>120</td>
 </tr>
