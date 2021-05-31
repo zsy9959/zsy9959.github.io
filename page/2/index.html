@@ -241,6 +241,378 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/" itemprop="url">IP-华为防火墙技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T19:42:33+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•“防火墙”一词起源于建筑领域，用来隔离火灾，阻止火势从一个区域蔓延到另一个区域。引入到通信领域，防火墙这一具体设备通常用于两个网络之间有针对性的、逻辑意义上的隔离。这种隔离是选择性的，隔离“火”的蔓延，而又保证“人”可以穿墙而过。这里的“火”是指网络中的各种攻击，而“人”是指正常的通信报文。</p>
+<p>•本课程将介绍在通信领域中什么是防火墙，为什么需要防火墙，以及防火墙的基本工作原理和配置。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述防火墙的定义、类型和发展历史</p>
+<p>▫区分防火墙与路由器和交换机</p>
+<p>▫阐明防火墙的基本概念，例如安全区域、安全策略、会话表和Server-map等</p>
+<p>▫实现防火墙的基本配置</p>
+<h1 id="1-防火墙概述"><a href="#1-防火墙概述" class="headerlink" title="1.防火墙概述"></a>1.防火墙概述</h1><h2 id="为什么需要防火墙？"><a href="#为什么需要防火墙？" class="headerlink" title="为什么需要防火墙？"></a>为什么需要防火墙？</h2><p>•安全无处不在。路由器和交换机构建了互联互通的网络，带来便利的同时也带来了安全隐患。</p>
+<p>•例如在网络边界，企业有了如下安全诉求：</p>
+<p>▫外部网络安全隔离</p>
+<p>▫内部网络安全管控</p>
+<p>▫内容安全过滤</p>
+<p>▫入侵防御</p>
+<p>▫防病毒</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/1.png"></p>
+<h2 id="什么是防火墙？"><a href="#什么是防火墙？" class="headerlink" title="什么是防火墙？"></a>什么是防火墙？</h2><p>•在通信领域，防火墙是一种安全设备。它用于保护一个网络区域免受来自另一个网络区域的攻击和入侵，通常被应用于网络边界，例如企业互联网出口、企业内部业务边界、数据中心边界等。</p>
+<p>•防火墙根据设备形态分为，框式防火墙、盒式防火墙和软件防火墙，支持在云上云下灵活部署。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/2.png"></p>
+<blockquote>
+<p>•严格意义上，防火墙还有更多的部署形态，例如桌面型防火墙（盒式防火墙的一种）。桌面型防火墙适用于小型企业、行业分支、连锁商业机构等场景。华为盒式防火墙同时支持传统模式和云管理模式。云管理模式由云端统一管理分支机构的安全接入，支持设备即插即用、业务配置自动化、运维可视化和网络大数据分析。</p>
+<p>•本课程不过多介绍桌面型防火墙和软件防火墙，后续内容聚焦的框式/盒式硬件防火墙。</p>
+</blockquote>
+<h2 id="防火墙与交换机、路由器功能对比"><a href="#防火墙与交换机、路由器功能对比" class="headerlink" title="防火墙与交换机、路由器功能对比"></a>防火墙与交换机、路由器功能对比</h2><p>•以园区网为例，交换机作用是接入终端和汇聚内部路由，组建内部互联互通的局域网。</p>
+<p>•路由器作用是路由的分发、寻址和转发，构建外部连接网络。</p>
+<p>•防火墙作用是流量控制和安全防护，区分和隔离不同安全区域。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/3.png"></p>
+<h2 id="防火墙与路由器转发流程对比"><a href="#防火墙与路由器转发流程对比" class="headerlink" title="防火墙与路由器转发流程对比"></a>防火墙与路由器转发流程对比</h2><p>•防火墙的转发流程比路由器复杂。以框式设备为例，硬件上除了接口、LPU（Line Processing Unit）、交换网板等外，防火墙还特有SPU（Service Processing Unit），用于实现防火墙的安全功能。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/4.png"></p>
+<h2 id="防火墙的典型应用场景"><a href="#防火墙的典型应用场景" class="headerlink" title="防火墙的典型应用场景"></a>防火墙的典型应用场景</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/5.png"></p>
+<blockquote>
+<p>•DMZ（Demilitarized Zone）起源于军方，是介于严格的军事管制区和松散的公共区域之间的一种有着部分管制的区域。防火墙设备引用了这一术语，指代一个逻辑上和物理上都与内部网络和外部网络分离的安全区域。在企业中一般用于服务器的放置。</p>
+<p>•数据中心网络一般采用Spine-Leaf架构。Spine为骨干节点负责流量高速转发，Leaf为叶子节点负责服务器、防火墙或其他设备接入。Spine-Leaf之间全三层互联。</p>
+</blockquote>
+<h2 id="防火墙的发展历程"><a href="#防火墙的发展历程" class="headerlink" title="防火墙的发展历程"></a>防火墙的发展历程</h2><p>•纵观防火墙的发展历史，防火墙经历了从低级到高级、从功能简单到功能复杂的过程。网络技术的不断发展和新需求的不断提出，推动着防火墙的发展。</p>
+<p>•防火墙从包过滤防火墙发展起经历了状态检测、统一威胁管理、NGFW等到AI防火墙，有以下特点：</p>
+<ul>
+<li><p>访问控制越来越精细</p>
+</li>
+<li><p>防护能力越来越强</p>
+</li>
+<li><p>性能越来越高</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/6.png"></p>
+<blockquote>
+<p>•更多防火墙发展历史，请参考《强叔侃墙》</p>
+</blockquote>
+<h2 id="包过滤防火墙"><a href="#包过滤防火墙" class="headerlink" title="包过滤防火墙"></a>包过滤防火墙</h2><p>•包过滤是指基于五元组对每个数据包进行检测，根据配置的安全策略转发或丢弃数据包。</p>
+<p>•包过滤防火墙的基本原理是：通过配置访问控制列表（Access Control List，ACL）实施数据包的过滤。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/7.png"></p>
+<blockquote>
+<p>•包过滤防火墙主要基于数据包中的源/目的IP地址、源/目的端口号、IP 标识和报文传递的方向等信息。</p>
+<p>•包过滤防火墙的设计简单，非常易于实现，而且价格便宜。</p>
+<p>•包过滤防火墙的缺点主要表现以下几点：</p>
+<ul>
+<li><p>随着ACL复杂度和长度的增加，其过滤性能呈指数下降；</p>
+</li>
+<li><p>静态的ACL规则难以适应动态的安全要求；</p>
+</li>
+<li><p>包过滤不检查会话状态也不分析数据，这很容易让黑客蒙混过关。例如，攻击者可以使用假冒地址进行欺骗，通过把自己主机IP地址设成一个合法主机IP地址，就能很轻易地通过报文过滤器。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="状态检测防火墙"><a href="#状态检测防火墙" class="headerlink" title="状态检测防火墙"></a>状态检测防火墙</h2><p>•状态检测是包过滤技术的发展，它考虑报文前后的关联性，检测的是连接状态而非单个报文。</p>
+<p>•状态检测防火墙就是支持状态检测功能的防火墙。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/8.png"></p>
+<blockquote>
+<p>•状态检测防火墙通过对连接的首个数据包（后续简称首包）检测而确定一条连接的状态。后续数据包根据所属连接的状态进行控制（转发或阻塞）。</p>
+</blockquote>
+<h2 id="AI防火墙"><a href="#AI防火墙" class="headerlink" title="AI防火墙"></a>AI防火墙</h2><p>•AI防火墙是结合AI技术的新一代防火墙。它通过结合AI算法或AI芯片等多种方式，进一步提高了防火墙的安全防护能力和性能。</p>
+<p>•华为AI防火墙，内置的恶意文件检测引擎CDE、诱捕Sensor、APT检测引擎和探针，支持与沙箱和华为大数据分析平台CIS联动检测，打造智能防御体系。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/9.png"></p>
+<blockquote>
+<p>•华为HiSecEngine USG6000E系列是业界首批推出的AI防火墙。AI防火墙没有统一的标准，例如通过用大量数据和算法“训练”防火墙，让其学会自主识别威胁；通过内置AI芯片，提高应用识别和转发性能，都可以被称为AI防火墙。</p>
+<p>•APT（Advanced Persistent Threat，高级持续性威胁）是指用先进的攻击手段对特定目标进行长期持续性攻击的攻击形式。</p>
+<p>•沙箱（Sandbox）是一个用于检测病毒的安全设备，它为疑似病毒构建虚拟环境，通过观察其后续行为检测病毒。沙箱是APT检测的重要设备。华为的沙箱产品为Firehunter。</p>
+<p>•CIS（Cybersecurity Intelligence System）能够对网络中的流量及各类设备的网络、安全日志等海量网络基础数据执行有效采集，通过大数据实时及离线分析，结合机器学习技术、专家信誉、情报驱动，有效的发现网络中的潜在威胁和高级威胁，实现企业内部的全网安全态势感知，同时可以结合华为HiSec解决方案高效地完成威胁的处置闭环，防患未然。</p>
+<p>•自研恶意文件检测引擎（CDE）引入PE Class 2.0 AI算法，对全文件进行还原，对文件内容进行深度检测。（业界主流基于流检测。流检测的检测速度快，但只还原文件头，不对文件内容进行检查。</p>
+<p>•华为独创的AIE APT检测引擎，引入AI算法，持续防御最新威胁。</p>
+<p>•更多AI防火墙相关内容请参考<a target="_blank" rel="noopener" href="https://e.huawei.com/cn/products/enterprise-networking/security%E5%92%8Chttps://e.huawei.com/cn/material/networking/e1869bfff9ca42c1b4f6a83f69118215%E3%80%82">https://e.huawei.com/cn/products/enterprise-networking/security和https://e.huawei.com/cn/material/networking/e1869bfff9ca42c1b4f6a83f69118215。</a></p>
+</blockquote>
+<h2 id="本节小结"><a href="#本节小结" class="headerlink" title="本节小结"></a>本节小结</h2><p>•本章节主要介绍防火墙的基本概念、应用场景和发展历史：</p>
+<p>▫防火墙是一种安全设备，有灵活的设备形态包括框式、盒式、桌面型和软件防火墙。</p>
+<p>▫防火墙可被用于但不仅限于企业边界防护、内网管控与安全隔离、数据中心边界防护和数据中心安全联动。</p>
+<p>▫防火墙技术不断的发展，从早期的包过滤防火墙发展到当前的AI防火墙。</p>
+<h1 id="2-防火墙的基本概念"><a href="#2-防火墙的基本概念" class="headerlink" title="2.防火墙的基本概念"></a>2.防火墙的基本概念</h1><h2 id="防火墙基本概念：安全区域"><a href="#防火墙基本概念：安全区域" class="headerlink" title="防火墙基本概念：安全区域"></a>防火墙基本概念：安全区域</h2><p>•安全区域（Security Zone），简称为区域（Zone），是防火墙的重要概念。防火墙大部分的安全策略都基于安全区域实施。</p>
+<p>•一个安全区域是防火墙若干接口所连网络的集合，一个区域内的用户具有相同的安全属性。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/10.png"></p>
+<h2 id="默认安全区域"><a href="#默认安全区域" class="headerlink" title="默认安全区域"></a>默认安全区域</h2><p>•华为防火墙确认已创建四个区域，untrust、dmz、trust和local区域。安全区域有以下特性：</p>
+<ul>
+<li><p>默认的安全区域不能删除，也不允许修改安全优先级。</p>
+</li>
+<li><p>每个Zone都必须设置一个安全优先级（Priority），值越大，则Zone的安全优先级越高。</p>
+</li>
+<li><p>用户可根据自己的需求创建自定义的Zone。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/11.png"></p>
+<blockquote>
+<p>防火墙默认安全区域均为小写字母，且大小写敏感，包括：</p>
+<p>•非受信区域（untrust）：通常用于定义Internet等不安全的网络。</p>
+<p>•非军事化区域（dmz）：通常用于定义内网服务器所在区域。因为这种设备虽然部署在内网，但是经常需要被外网访问，存在较大安全隐患，同时一般又不允许其主动访问外网，所以将其部署一个优先级比trust低，但是比untrust高的安全区域中。</p>
+<ul>
+<li><p>DMZ（Demilitarized Zone）起源于军方，是介于严格的军事管制区和松散的公共区域之间的一种有着部分管制的区域。防火墙设备引用了这一术语，指代一个逻辑上和物理上都与内部网络和外部网络分离的安全区域。</p>
+</li>
+<li><p>DMZ安全区域很好地解决了服务器的放置问题。该安全区域可以放置需要对外提供网络服务的设备，如WWW服务器、FTP服务器等。上述服务器如果放置于内部网络，外部恶意用户则有可能利用某些服务的安全漏洞攻击内部网络；如果放置于外部网络，则无法保障它们的安全。</p>
+</li>
+</ul>
+<p>•受信区域（trust）：通常用于定义内网终端用户所在区域。</p>
+<p>•本地区域（local）：local区域定义的是设备本身，包括设备的各接口本身。凡是由设备构造并主动发出的报文均可认为是从Local区域中发出，凡是需要设备响应并处理（而不仅是检测或直接转发）的报文均可认为是由local区域接收。用户不能改变local区域本身的任何配置，包括向其中添加接口。</p>
+<ul>
+<li>由于local区域的特殊性，在很多需要设备本身进行报文收发的应用中，需要开放对端所在安全区域与local区域之间的安全策略。</li>
+</ul>
+</blockquote>
+<h2 id="区域间（Interzone）示例"><a href="#区域间（Interzone）示例" class="headerlink" title="区域间（Interzone）示例"></a>区域间（Interzone）示例</h2><p>流量的源、目的地址决定了互访的区域。本例1中PC访问防火墙的接口的流量实际上是从trust zone到达local zone；本例2中PC访问Internet的流量实际上是从trust zone到达untrust zone。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/12.png"></p>
+<h2 id="防火墙基本概念：安全策略"><a href="#防火墙基本概念：安全策略" class="headerlink" title="防火墙基本概念：安全策略"></a>防火墙基本概念：安全策略</h2><p>•安全策略是控制防火墙对流量转发以及对流量进行内容安全一体化检测的策略。</p>
+<p>•当防火墙收到流量后，对流量的属性（五元组、用户、时间段等）进行识别，然后与安全策略的条件进行匹配。如果条件匹配，则此流量被执行对应的动作。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/13.png"></p>
+<h2 id="安全策略组成"><a href="#安全策略组成" class="headerlink" title="安全策略组成"></a>安全策略组成</h2><p>•安全策略的组成有匹配条件、动作和安全配置文件（可选）。安全配置文件实现内容安全。</p>
+<p>•安全策略动作如果为“允许”则可配置安全配置文件，如果为“禁止”则可配置反馈报文。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/14.png"></p>
+<blockquote>
+<p>•动作说明：</p>
+<p>▫允许：如果动作为“允许”，则对流量进行如下处理：</p>
+<ul>
+<li><p>如果没有配置内容安全检测，则允许流量通过。</p>
+</li>
+<li><p>如果配置内容安全检测，最终根据内容安全检测的结论来判断是否对流量进行放行。内容安全检测包括反病毒、入侵防御等，它是通过在安全策略中引用安全配置文件实现的。如果其中一个安全配置文件阻断该流量，则防火墙阻断该流量。如果所有的安全配置文件都允许该流量转发，则防火墙允许该流量转发。</p>
+</li>
+</ul>
+<p>▫禁止：表示拒绝符合条件的流量通过。</p>
+<ul>
+<li>如果动作为“禁止”，防火墙不仅可以将报文丢弃，还可以针对不同的报文类型选择发送对应的反馈报文。发起连接请求的客户端/服务器收到防火墙发送的阻断报文后，可以快速结束会话并让用户感知到请求被阻断。<ul>
+<li>Reset客户端：防火墙向TCP客户端发送TCP reset报文。</li>
+<li>Reset服务器：防火墙向TCP服务器发送TCP reset报文。</li>
+<li>ICMP不可达：FW向报文客户端发送ICMP不可达报文。</li>
+</ul>
+</li>
+</ul>
+<p>•更多详细信息，可以参考文档，“安全策略”章节，<a target="_blank" rel="noopener" href="https://support.huawei.com/hedex/hdx.do?docid=EDOC1100084128&amp;lang=zh&amp;idPath=24030814%7C9856724%7C21430823%7C22984765%7C23176238%E3%80%82">https://support.huawei.com/hedex/hdx.do?docid=EDOC1100084128&amp;lang=zh&amp;idPath=24030814%7C9856724%7C21430823%7C22984765%7C23176238。</a></p>
+</blockquote>
+<h2 id="安全策略的匹配过程"><a href="#安全策略的匹配过程" class="headerlink" title="安全策略的匹配过程"></a>安全策略的匹配过程</h2><p>•当配置多条安全策略规则时，安全策略的匹配按照策略列表的顺序执行，即从策略列表顶端开始逐条向下匹配。如果流量匹配了某个安全策略，将不再进行下一个策略的匹配。</p>
+<p>•安全策略的配置顺序很重要，需要先配置条件精确的策略，再配置宽泛的策略。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/15.png"></p>
+<blockquote>
+<p>•系统默认存在一条缺省安全策略default。缺省安全策略位于策略列表的最底部，优先级最低，所有匹配条件均为any，动作默认为禁止。如果所有配置的策略都未匹配，则将匹配缺省安全策略default。</p>
+</blockquote>
+<h2 id="防火墙基本概念：会话表"><a href="#防火墙基本概念：会话表" class="headerlink" title="防火墙基本概念：会话表"></a>防火墙基本概念：会话表</h2><p>•会话表是用来记录TCP、UDP、ICMP等协议连接状态的表项，是防火墙转发报文的重要依据。</p>
+<p>•防火墙采用了基于“状态”的报文控制机制：只对首包或者少量报文进行检测就确定一条连接的状态，大量报文直接根据所属连接的状态进行控制。这种状态检测机制迅速提高了防火墙的检测和转发效率。会话表就是为了记录连接的状态而存在的。设备在转发TCP、UDP和ICMP报文时都需要查询会话表，来判断该报文所属的连接并采取相应的处理措施。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/16.png"></p>
+<blockquote>
+<p>•本例中PC1向PC2发起HTTP连接，所以在防火墙会话表中标示出“http”协议和连接信息，并识别出此流量在公共路由表中被转发（图中VPN:public）。</p>
+</blockquote>
+<h2 id="会话表的创建和包处理过程"><a href="#会话表的创建和包处理过程" class="headerlink" title="会话表的创建和包处理过程"></a>会话表的创建和包处理过程</h2><p>•防火墙状态检测开启情况下，流量的首包会创建会话表项，后续包即可直接匹配会话表项。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/17.png"></p>
+<blockquote>
+<p>•本流程只是一个示意图，展示了华为防火墙各个模块的基本处理顺序。实际不同的报文处理并非严格按照此流程图依次进行（若无对应配置），且与具体产品实现相关。</p>
+<p>•更多详细信息，可以参考指定型号防火墙产品文档，“报文转发流程”章节。</p>
+</blockquote>
+<h2 id="会话表的老化时间与长连接"><a href="#会话表的老化时间与长连接" class="headerlink" title="会话表的老化时间与长连接"></a>会话表的老化时间与长连接</h2><p>•防火墙为各种协议设定了会话老化机制。当一条会话在老化时间内没有被任何报文匹配，则会被从会话表中删除。这种机制可以避免防火墙的设备资源被大量无用、陈旧的会话表项消耗。</p>
+<p>•但是对于某些特殊业务中，一条会话的两个连续报文可能间隔时间很长。例如：</p>
+<ul>
+<li><p>用户通过FTP下载大文件，需要间隔很长时间才会在控制通道继续发送控制报文。</p>
+</li>
+<li><p>用户需要查询数据库服务器上的数据，这些查询操作的时间间隔远大于TCP的会话老化时间。</p>
+</li>
+</ul>
+<p>•此时如果其会话表项被删除，则该业务会中断。长连接（Long Link）机制可以给部分连接设定超长的老化时间，有效解决这个问题。</p>
+<h2 id="多通道协议在防火墙上的问题"><a href="#多通道协议在防火墙上的问题" class="headerlink" title="多通道协议在防火墙上的问题"></a>多通道协议在防火墙上的问题</h2><p>•如果在防火墙上配置严格的单向安全策略，那么防火墙将只允许业务单方向发起访问。这会导致一些特殊的协议无法工作，例如FTP。</p>
+<p>•FTP主动模式传输文件时，首先需要客户端主动向服务器端发起控制连接，然后需要服务器端向客户端发起数据连接。如果设备上配置的安全策略仅允许客户端报文单方向通过，则FTP文件传输不能成功。</p>
+<p>•同FTP，通信过程中需占用两个或两个以上端口的协议被称为多通道协议。多通道协议都需要考虑此类问题。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/18.png"></p>
+<blockquote>
+<p>•单通道协议：通信过程中只需占用一个端口的协议。如：WWW只需占用80端口。</p>
+<p>•多通道协议：通信过程中需占用两个或两个以上端口的协议。</p>
+<p>•FTP协议是一个典型的多通道协议，在其工作过程中，FTP Client和FTP Server之间将会建立两条连接：控制连接和数据连接。控制连接用来传输FTP指令和参数，其中就包括建立数据连接所需要的信息。数据连接用来获取服务器目录及传输数据。数据连接使用的端口号是在控制连接中临时协商的。根据数据连接的发起方式FTP协议分为两种工作模式：主动模式（PORT模式）和被动模式（PASV模式）。主动模式中，FTP Server 20号端口主动向FTP Client随机端口发起数据连接；被动模式中，FTP Server被动接收FTP Client发起的数据连接。模式在一般的FTP客户端中都是可以设置的，这里我们以主动模式为例。</p>
+<p>•多通道协议存在时，防火墙配置较为宽泛的安全策略也可以解决协议不可用问题，但是存在安全隐患。</p>
+</blockquote>
+<h2 id="多通道协议-–-FTP过程详解"><a href="#多通道协议-–-FTP过程详解" class="headerlink" title="多通道协议 – FTP过程详解"></a>多通道协议 – FTP过程详解</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/19.png"></p>
+<blockquote>
+<p>•大部分多媒体应用协议（如H.323、SIP）、FTP、netmeeting等协议使用约定的固定端口来初始化一个控制连接，再动态的协商出端口用于数据传输。端口的选择是不可预测的。其中的某些应用甚至可能要同时用到多个端口。传统的包过滤防火墙可以通过配置ACL过滤规则匹配单通道协议的应用传输，保障内部网络不受攻击，但只能阻止一些使用固定端口的应用，无法匹配使用协商出随机端口传输数据的多通道协议应用，留下了许多安全隐患。</p>
+</blockquote>
+<h2 id="ASPF与Server-map"><a href="#ASPF与Server-map" class="headerlink" title="ASPF与Server-map"></a>ASPF与Server-map</h2><p>•为了解决多通道协议的问题，防火墙需要识别协议在应用层协商的地址和端口。这需要开启ASPF （Application Specific Packet Filter，针对应用层的包过滤）功能。</p>
+<p>•ASPF也称作基于状态的报文过滤，ASPF功能可以自动检测某些报文的应用层信息并根据应用层信息放开相应的访问规则，即生成Server-map表。</p>
+<p>•Server-map表也记录了类似会话表中连接的状态。Server-map表中的信息相对简单，是简化的会话表，在真实流量到达前生成。在流量真实到达防火墙时，防火墙会基于Server-map表生成会话表，然后执行转发。</p>
+<p>•开启ASPF解决多通道协议问题，是生成Server-map表的一种方式。</p>
+<blockquote>
+<p>•在防火墙配置了ASPF、NAT Server和No-PAT方式的源NAT时，都会生成相应的Server-map表项。</p>
+</blockquote>
+<h2 id="ASPF与Server-map示例"><a href="#ASPF与Server-map示例" class="headerlink" title="ASPF与Server-map示例"></a>ASPF与Server-map示例</h2><p>•防火墙上配置了ASPF功能后，会检测FTP控制连接中协商的数据连接端口信息，然后生成Server-map表项。Server-map表项包含了FTP控制通道中协商的数据通道的信息。防火墙为命中Server-map表的数据创建会话表。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/20.png"></p>
+<blockquote>
+<p>Server-map表与会话表的关系如下：</p>
+<p>▫Server-map表记录了应用层数据中的关键信息，报文命中该表后，不再受安全策略的控制；</p>
+<p>▫会话表是通信双方连接状态的具体体现；</p>
+<p>▫Server-map表不是当前的连接信息，而是防火墙对当前连接分析后得到的即将到来报文的预测；</p>
+<p>▫防火墙收到报文先检查是否命中会话表；</p>
+<p>▫如果没有命中则检查是否命中Server-map表；</p>
+<p>▫命中Server-map表的报文不受安全策略控制；</p>
+<p>▫防火墙最后为命中Server-map表的数据创建会话表。</p>
+</blockquote>
+<h2 id="Server-map表与简化的包转发过程"><a href="#Server-map表与简化的包转发过程" class="headerlink" title="Server-map表与简化的包转发过程"></a>Server-map表与简化的包转发过程</h2><p>•当防火墙接收到一个报文且没有命中会话表时，防火墙进入首包处理流程，查询是否有命中的Server-map表。如果有，则会生成会话表转发报文；如果没有，则执行其他包处理过程。</p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/21.png"></p>
+<h2 id="本节小结-1"><a href="#本节小结-1" class="headerlink" title="本节小结"></a>本节小结</h2><p>•本章节主要介绍防火墙的基本概念和基础特性，它们有：</p>
+<p>​    ▫安全区域</p>
+<p>​    ▫安全策略</p>
+<p>​    ▫防火墙的会话表</p>
+<p>​    ▫防火墙的Server-map</p>
+<h1 id="3-防火墙的基础配置"><a href="#3-防火墙的基础配置" class="headerlink" title="3.防火墙的基础配置"></a>3.防火墙的基础配置</h1><h2 id="防火墙基础配置-接口"><a href="#防火墙基础配置-接口" class="headerlink" title="防火墙基础配置 - 接口"></a>防火墙基础配置 - 接口</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/22.png"></p>
+<h2 id="防火墙基础配置-安全区域"><a href="#防火墙基础配置-安全区域" class="headerlink" title="防火墙基础配置 - 安全区域"></a>防火墙基础配置 - 安全区域</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/23.png"></p>
+<h2 id="防火墙基础配置-安全策略"><a href="#防火墙基础配置-安全策略" class="headerlink" title="防火墙基础配置 - 安全策略"></a>防火墙基础配置 - 安全策略</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/24.png"></p>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/25.png"></p>
+<blockquote>
+<p>•安全策略规则视图中指定源、目的IP地址可以有很多的可选参数，例如IP地址组、地区和地区组等，本课程不做过多介绍。更多详细内容请参考产品文档。</p>
+</blockquote>
+<h2 id="防火墙配置案例"><a href="#防火墙配置案例" class="headerlink" title="防火墙配置案例"></a>防火墙配置案例</h2><p>案例描述：</p>
+<p>防火墙将网络隔离为三个安全区域，trust、untrust和OM，其中OM区域优先级为95。现有需求如下：</p>
+<ul>
+<li><p>允许防火墙接口GE1/0/1响应Ping请求。</p>
+</li>
+<li><p>允许OM区域ICMP流量访问untrust区域。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/26.png"></p>
+<h3 id="配置案例-接口"><a href="#配置案例-接口" class="headerlink" title="配置案例 - 接口"></a>配置案例 - 接口</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/27.png"></p>
+<h3 id="配置案例-安全区域"><a href="#配置案例-安全区域" class="headerlink" title="配置案例 - 安全区域"></a>配置案例 - 安全区域</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/28.png"></p>
+<h3 id="配置案例-安全策略"><a href="#配置案例-安全策略" class="headerlink" title="配置案例 - 安全策略"></a>配置案例 - 安全策略</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/29.png"></p>
+<h3 id="配置案例-结果验证-1"><a href="#配置案例-结果验证-1" class="headerlink" title="配置案例 - 结果验证 (1)"></a>配置案例 - 结果验证 (1)</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/30.png"></p>
+<h3 id="配置案例-结果验证-2"><a href="#配置案例-结果验证-2" class="headerlink" title="配置案例 - 结果验证 (2)"></a>配置案例 - 结果验证 (2)</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/31.png"></p>
+<h2 id="本节小结-2"><a href="#本节小结-2" class="headerlink" title="本节小结"></a>本节小结</h2><p>•本小结主要介绍防火墙的基础配置命令。通过学习你已实现使用命令行：</p>
+<p>​    ▫配置防火墙接口</p>
+<p>​    ▫划分防火墙安全区域</p>
+<p>​    ▫配置安全策略</p>
+<p>​    ▫查看防火墙会话信息</p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）缺省情况下，防火墙有几个安全区域？（  ）</p>
+<p>A. 1</p>
+<p>B. 2      </p>
+<p>C. 3     </p>
+<p><strong>D. 4</strong></p>
+<p>2.（判断题）防火墙在生产会话表之前，都需要先生成Server-map。 （  ）</p>
+<p>A.对</p>
+<p><strong>B.错</strong></p>
+<p>3.（多选题）以下对于华为AI防火墙说法正确的是？ （  ）</p>
+<p><strong>A. 内置恶意文件检测引擎（CDE)</strong></p>
+<p><strong>B. 内置探针</strong></p>
+<p><strong>C. 内置APT检测引擎（AIE）</strong></p>
+<p><strong>D. 内置独创诱捕Sensor</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•防火墙是通信领域极为重要的安全设备之一，本章帮助您初步学习防火墙的基本概念、发展历史和基础配置。</p>
+<p>•安全区域、安全策略、会话表和Server-map是防火墙基础的、重要的概念，是进一步学习防火墙技术的必要前提。</p>
+<p>•防火墙有更多的安全功能，例如内容安全过滤、反病毒和入侵防御等。更多防火墙技术学习请参考华为安全认证。</p>
+<h1 id="更多信息"><a href="#更多信息" class="headerlink" title="更多信息"></a>更多信息</h1><p>•华为HiSecEngine USG6000E系列AI防火墙相关文档。</p>
+<p>•<a target="_blank" rel="noopener" href="https://support.huawei.com/enterprise/zh/security/usg6600e-pid-23176231">https://support.huawei.com/enterprise/zh/security/usg6600e-pid-23176231</a></p>
+<p>•更多相关教材和视频请关注<a target="_blank" rel="noopener" href="https://e.huawei.com/cn/talent/#/home">https://e.huawei.com/cn/talent/#/home</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IPv6%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2546,7 +2918,7 @@
 <p>•通过中间设备直连可以实现通过中间设备缩短堆叠成员交换机之间的检测链路长度，适用于成员交换机相距较远的场景。与通过中间设备直连相比，Full-mesh方式直连可以避免由中间设备故障导致的MAD检测失败，但是每两台成员交换机之间都建立全连接会占用较多的接口，所以该方式适用于成员交换机数目较少的场景。</p>
 </blockquote>
 <h2 id="MAD检测-代理检测"><a href="#MAD检测-代理检测" class="headerlink" title="MAD检测 - 代理检测"></a>MAD检测 - 代理检测</h2><p>代理检测方式是在堆叠系统Eth-Trunk上启用代理检测，在代理设备上启用MAD检测功能。此种检测方式要求堆叠系统中的所有成员交换机都与代理设备连接，并将这些链路加入同一个Eth-Trunk内。与直连检测方式相比，代理检测方式无需占用额外的接口，Eth-Trunk接口可同时运行MAD代理检测和其他业务。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/22.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/23.png"></p>
 <blockquote>
 <p>•在代理检测方式中，堆叠系统正常运行时，堆叠成员交换机以30s为周期通过检测链路发送MAD报文。堆叠成员交换机对在正常工作状态下收到的MAD报文不做任何处理；堆叠分裂后，分裂后的两个堆叠系统以1s为周期通过检测链路发送MAD报文进行多主冲突处理。</p>
 </blockquote>
@@ -3046,7 +3418,7 @@
 <p><strong>A.交换机的二层接口类型有Access、Trunk、Hybrid。</strong></p>
 <p><strong>B.Access接口只能加入一个VLAN。</strong></p>
 <p><strong>C.缺省情况下，Trunk接口允许VLAN1的流量通过，而且在发送时不携带VLAN Tag。</strong></p>
-<p>**D.在Hybrid接口上可通过命令指定接口在发送特定VLAN的流量时，是否携带VLAN Tag。 **</p>
+<p><strong>D.在Hybrid接口上可通过命令指定接口在发送特定VLAN的流量时，是否携带VLAN Tag。</strong></p>
 <p>2.（多选题）以太网链路聚合技术有哪些优势？(   )</p>
 <p><strong>A.增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</strong></p>
 <p><strong>B.提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</strong></p>
@@ -3222,7 +3594,7 @@
 <blockquote>
 <p>•除了该方式之外，接口策略路由还可以使用MQC的方式进行配置。</p>
 </blockquote>
-<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png"></p>
+<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/12.png"></p>
 <p>需求：</p>
 <p>▫内网存在两个网段，网段1：10.1.1.0/24，网段2：10.1.2.0/24，在RTA的GE0/0/0接口部署PBR，实现网段1访问Internet通过ISP1、网段2访问Internet通过ISP2。</p>
 <p>▫RTA上旁挂了一台服务器，要求在RTA上部署的策略路由不影响内网用户访问该服务器。</p>
@@ -3314,459 +3686,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/" itemprop="url">IP-路由策略与路由控制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:08:48+08:00">
-                2021-05-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在复杂的数据通信网络中，根据实际组网需求，往往需要实施一些路由策略对路由信息进行过滤、属性设置等操作，通过对路由的控制，可以影响数据流量转发。</p>
-<p>•路由策略并非单一的技术或者协议，而是一个技术专题或方法论，里面包含了多种工具及方法。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫使用ACL匹配感兴趣路由</p>
-<p>▫使用IP-Prefix匹配感兴趣路由</p>
-<p>▫使用Filter-Policy进行路由过滤</p>
-<p>▫使用Route-Policy进行路由过滤及路由属性修改</p>
-<h1 id="1-路由控制概述"><a href="#1-路由控制概述" class="headerlink" title="1.路由控制概述"></a>1.<strong>路由控制概述</strong></h1><h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/1.png"></p>
-<p>•R1上将业务A、B、C的网段路由引入时希望不引入业务C网段路由，同时R3上将OSPF路由引入到IS-IS中时，同样只希望引入B业务网段路由。</p>
-<p>•此时需要一个工具在引入路由时进行限制。</p>
-<h2 id="路由控制概述"><a href="#路由控制概述" class="headerlink" title="路由控制概述"></a>路由控制概述</h2><p>路由控制可以通过路由策略（Route-Policy）实现，路由策略应用灵活而广泛，有以下几种常见方式：</p>
-<p>▫控制路由的发布：通过路由策略对发布的路由进行过滤，只发布满足条件的路由。</p>
-<p>▫控制路由的接收：通过路由策略对接收的路由进行过滤，只接收满足条件的路由。</p>
-<p>▫控制路由的引入：通过路由策略控制从其他路由协议引入的路由条目，只有满足条件的路由才会被引入。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/2.png"></p>
-<h1 id="2-路由控制工具"><a href="#2-路由控制工具" class="headerlink" title="2.路由控制工具"></a>2.路由控制工具</h1><h2 id="路由匹配工具"><a href="#路由匹配工具" class="headerlink" title="路由匹配工具"></a>路由匹配工具</h2><h3 id="匹配工具1：访问控制列表"><a href="#匹配工具1：访问控制列表" class="headerlink" title="匹配工具1：访问控制列表"></a>匹配工具1：访问控制列表</h3><p>•访问控制列表（Access Control List，ACL）是一个匹配工具，能够对报文及路由进行匹配和区分。</p>
-<p>•ACL由若干条permit或deny语句组成。每条语句就是该ACL的一条规则，每条语句中的permit或deny就是与这条规则相对应的处理动作。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/3.png"></p>
-<blockquote>
-<p>ACL的组成：</p>
-<p>▫ACL编号：在网络设备上配置ACL时，每个ACL都需要分配一个编号，称为ACL编号，用来标识ACL。不同分类的ACL编号范围不同，这个后面具体讲。</p>
-<p>▫规则：前面提到了，一个ACL通常由若干条“permit/deny”语句组成，每条语句就是该ACL的一条规则。</p>
-<p>▫规则编号：每条规则都有一个相应的编号，称为规则编号，用来标识ACL规则。可以自定义，也可以系统自动分配。ACL规则的编号范围是0～4294967294，所有规则均按照规则编号从小到大进行排序。</p>
-<p>▫动作：每条规则中的permit或deny，就是与这条规则相对应的处理动作。permit指“允许”，deny指“拒绝”，但是ACL一般是结合其他技术使用，不同的场景，处理动作的含义也有所不同。</p>
-<ul>
-<li>比如：ACL如果与流量过滤技术结合使用（即流量过滤中调用ACL），permit就是“允许通行”的意思，deny就是“拒绝通行”的意思。</li>
-</ul>
-<p>▫匹配项：ACL定义了极其丰富的匹配项。例子中体现的源地址，ACL还支持很多其他规则匹配项。例如，二层以太网帧头信息（如源MAC、目的MAC、以太帧协议类型）、三层报文信息（如目的地址、协议类型）以及四层报文信息（如TCP/UDP端口号）等。</p>
-</blockquote>
-<h4 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/4.png"></p>
-<p>匹配规则：</p>
-<ul>
-<li>“0”表示“匹配”；“1”表示“无需匹配”</li>
-</ul>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/5.png"></p>
-<blockquote>
-<p>•当进行IP地址匹配的时候，后面会跟着32位掩码位，这32位称为通配符。</p>
-<p>•通配符，也是点分十进制格式，换算成二进制后，“0”表示“匹配”，“1”表示“不匹配”。通配符中的1或者0可以不连续。</p>
-<p>•具体看下这2条规则：</p>
-<ul>
-<li><p>rule 5: 拒绝源IP地址为10.1.1.1报文通过——因为通配符为全0，所以每一位都要严格匹配，因此匹配的是主机IP地址10.1.1.1；</p>
-</li>
-<li><p>rule 15:允许源IP地址为10.1.1.0/24网段地址的报文通过——因为通配符：0.0.0.11111111，后8位为1，表示不关心，因此10.1.1.xxxxxxxx 的后8位可以为任意值，所以匹配的是10.1.1.0/24网段。</p>
-</li>
-</ul>
-<p>•例子：如果要精确匹配192.168.1.1/24这个IP地址对应的网段地址，通配符是多少？</p>
-<ul>
-<li>可以得出：网络位需要严格匹配，主机位无所谓，因此通配符为“0.0.0.255”。</li>
-</ul>
-<p>•两个特殊的通配符：</p>
-<ul>
-<li><p>当通配符全为0来匹配IP地址时，表示精确匹配某个IP地址；</p>
-</li>
-<li><p>当通配符全为1来匹配0.0.0.0地址时，表示匹配了所有IP地址。</p>
-</li>
-</ul>
-</blockquote>
-<h4 id="ACL的分类与基本ACL"><a href="#ACL的分类与基本ACL" class="headerlink" title="ACL的分类与基本ACL"></a>ACL的分类与基本ACL</h4><p>•基于ACL规则定义方式的划分</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/6.png"></p>
-<p>•基本ACL</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/7.png"></p>
-<blockquote>
-<p>•对于使用ACL进行路由匹配的场景，用户只能使用基本ACL。</p>
-</blockquote>
-<h4 id="ACL的匹配机制"><a href="#ACL的匹配机制" class="headerlink" title="ACL的匹配机制"></a>ACL的匹配机制</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/8.png"></p>
-<blockquote>
-<p>•ACL的匹配机制概括来说就是：</p>
-<ul>
-<li><p>配置ACL的设备接收报文后，会将该报文与ACL中的规则逐条进行匹配，如果不能匹配上，就会继续尝试去匹配下一条规则。</p>
-</li>
-<li><p>一旦匹配上，则设备会对该报文执行这条规则中定义的处理动作，并且不再继续尝试与后续规则匹配。</p>
-</li>
-</ul>
-<p>•匹配流程：首先系统会查找设备上是否配置了ACL。</p>
-<ul>
-<li><p>如果ACL不存在，则返回ACL匹配结果为：不匹配。</p>
-</li>
-<li><p>如果ACL存在，则查找设备是否配置了ACL规则。</p>
-<ul>
-<li>如果规则不存在，则返回ACL匹配结果为：不匹配。</li>
-<li>如果规则存在，则系统会从ACL中编号最小的规则开始查找。<ul>
-<li>如果匹配上了permit规则，则停止查找规则，并返回ACL匹配结果为：匹配（允许）。</li>
-<li>如果匹配上了deny规则，则停止查找规则，并返回ACL匹配结果为：匹配（拒绝）。</li>
-<li>如果未匹配上规则，则继续查找下一条规则，以此循环。如果一直查到最后一条规则，报文仍未匹配上，则返回ACL匹配结果为：不匹配。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>•从整个ACL匹配流程可以看出，报文与ACL规则匹配后，会产生两种匹配结果：“匹配”和“不匹配”。</p>
-<ul>
-<li><p>匹配（命中规则）：指存在ACL，且在ACL中查找到了符合匹配条件的规则。不论匹配的动作是“permit”还是“deny”，都称为“匹配”，而不是只是匹配上permit规则才算“匹配”。</p>
-</li>
-<li><p>不匹配（未命中规则）：指不存在ACL，或ACL中无规则，再或者在ACL中遍历了所有规则都没有找到符合匹配条件的规则。以上三种情况，都叫做“不匹配”。</p>
-</li>
-</ul>
-<p>•匹配原则：一旦命中即停止匹配。</p>
-</blockquote>
-<h4 id="ACL的匹配顺序及匹配结果"><a href="#ACL的匹配顺序及匹配结果" class="headerlink" title="ACL的匹配顺序及匹配结果"></a>ACL的匹配顺序及匹配结果</h4><p>配置顺序（config模式）</p>
-<p>▫系统按照ACL规则编号从小到大的顺序进行报文匹配，规则编号越小越容易被匹配。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/9.png"></p>
-<blockquote>
-<p>•一条ACL可以由多条“deny或permit”语句组成，每一条语句描述一条规则，这些规则可能存在包含关系，也可能有重复或矛盾的地方，因此ACL的匹配顺序是十分重要的。</p>
-<p>•华为设备支持两种匹配顺序：自动排序（auto模式）和配置顺序（config模式）。缺省的ACL匹配顺序是config模式。</p>
-<ul>
-<li><p>自动排序，是指系统使用“深度优先”的原则，将规则按照精确度从高到低进行排序，并按照精确度从高到低的顺序进行报文匹配。——这个比较复杂，这里就不具体展开了，</p>
-</li>
-<li><p>配置顺序，系统按照ACL规则编号从小到大的顺序进行报文匹配，规则编号越小越容易被匹配。——这个就是前面提到的匹配顺序。</p>
-<ul>
-<li>如果后面又添加了一条规则，则这条规则会被加入到相应的位置，报文仍然会按照从小到大的顺序进行匹配。</li>
-</ul>
-</li>
-</ul>
-<p>•注意：ACL技术总是与其他技术结合在一起使用的，因此，所结合的技术不同，“允许 (permit)”及“拒绝 (deny)”的实际作用也会不同。例如，当ACL技术与路由过滤技术结合使用时，permit就是“匹配该条路由条目”的意思，deny就是“不匹配该条路由条目”的意思。</p>
-</blockquote>
-<h4 id="常用匹配举例"><a href="#常用匹配举例" class="headerlink" title="常用匹配举例"></a>常用匹配举例</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/10.png"></p>
-<h4 id="基本ACL的基础配置命令"><a href="#基本ACL的基础配置命令" class="headerlink" title="基本ACL的基础配置命令"></a>基本ACL的基础配置命令</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/11.png"></p>
-<blockquote>
-<p>•创建基本ACL</p>
-<p>•[Huawei] <strong>acl</strong> [ <strong>number</strong> ] <em>acl-number</em> [ <strong>match-order</strong> <strong>config</strong> ]</p>
-<ul>
-<li><p><em>acl-number</em>：指定访问控制列表的编号。</p>
-</li>
-<li><p><strong>match-order</strong> <strong>config</strong>：指定ACL规则的匹配顺序，config表示配置顺序。</p>
-</li>
-</ul>
-<p>•[Huawei] <strong>acl</strong> <strong>name</strong> <em>acl-name</em> { <strong>basic</strong> | <em>acl-number</em> } [ <strong>match-order</strong> <strong>config</strong> ]</p>
-<ul>
-<li><p><em>acl-name</em>：指定创建的ACL的名称。</p>
-</li>
-<li><p><strong>basic</strong>：指定ACL的类型为基本ACL。</p>
-</li>
-</ul>
-<p>•配置基本ACL规则</p>
-<p>•[Huawei-acl-basic-2000] <strong>rule</strong> [ <em>rule-id</em> ] { <strong>deny</strong> | <strong>permit</strong> } [ <strong>source</strong> { <em>source-address source-wildcard</em> | <strong>any</strong> } | <strong>time-range</strong> <em>time-name</em> ] </p>
-<ul>
-<li><p><em>rule-id</em>：指定ACL的规则ID。</p>
-</li>
-<li><p><strong>deny</strong>：指定拒绝符合条件的报文。</p>
-</li>
-<li><p><strong>permit</strong>：指定允许符合条件的报文。</p>
-</li>
-<li><p><strong>source</strong> { <em>source-address source-wildcard</em> | <strong>any</strong> }：指定ACL规则匹配报文的源地址信息。如果不配置，表示报文的任何源地址都匹配。其中：</p>
-<ul>
-<li><em>source-address</em>：指定报文的源地址。</li>
-<li><em>source-wildcard</em>：指定源地址通配符。</li>
-<li><strong>any</strong>：表示报文的任意源地址。相当于source-address为0.0.0.0或者source-wildcard为255.255.255.255。</li>
-</ul>
-</li>
-<li><p><strong>time-range</strong> <em>time-name</em>：指定ACL规则生效的时间段。其中，time-name表示ACL规则生效时间段名称。如果不指定时间段，表示任何时间都生效。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="匹配工具2：IP前缀列表"><a href="#匹配工具2：IP前缀列表" class="headerlink" title="匹配工具2：IP前缀列表"></a>匹配工具2：IP前缀列表</h3><p>•IP前缀列表（IP-Prefix List）是将路由条目的网络地址、掩码长度作为匹配条件的过滤器，可在各路由协议发布和接收路由时使用。</p>
-<p>•不同于ACL，IP-Prefix List能够同时匹配IP地址前缀长度以及掩码长度，增强了匹配的精确度。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/12.png"></p>
-<p>1、<strong>ip-prefix-name</strong>：地址前缀列表名称<br>2、<strong>序号</strong>：本匹配项在地址前缀列表中的序号，匹配时根据序号从小到大进行顺序匹配<br>3、<strong>动作</strong>：permit/deny，地址前缀列表的匹配模式为允许/拒绝，表示匹配/不匹配<br>4、<strong>IP网段与掩码</strong>：匹配路由的网络地址，以及限定网络地址的前多少位需严格匹配<br>5、<strong>掩码范围</strong>：匹配路由前缀长度，掩码长度的匹配范围 mask-length&lt;=greater-equal-value&lt;=less-equal-value&lt;=32</p>
-<h4 id="IP-Prefix的匹配机制"><a href="#IP-Prefix的匹配机制" class="headerlink" title="IP-Prefix的匹配机制"></a>IP-Prefix的匹配机制</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/13.png"></p>
-<h4 id="IP-Prefix的匹配示例"><a href="#IP-Prefix的匹配示例" class="headerlink" title="IP-Prefix的匹配示例"></a>IP-Prefix的匹配示例</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/14.png"></p>
-<h4 id="IP-Prefix的基础配置命令"><a href="#IP-Prefix的基础配置命令" class="headerlink" title="IP-Prefix的基础配置命令"></a>IP-Prefix的基础配置命令</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/15.png"></p>
-<blockquote>
-<p>•<strong>ip-prefix-name</strong>：指定地址前缀列表的名称。字符串形式，长度范围是1～169，不支持空格，区分大小写。</p>
-<p>•<strong>index</strong> <em>index-number</em>：指定本匹配项在地址前缀列表中的序号。整数形式，取值范围是1～4294967295。缺省情况下，该序号值按照配置先后顺序依次递增，每次加10，第一个序号值为10。</p>
-<p>•<strong>permit</strong>：指定地址前缀列表的匹配模式为允许。在该模式下，如果过滤的IP地址在定义的范围内，则通过过滤，进行相应的设置；否则，必须进行下一节点的测试。</p>
-<p>•<strong>deny</strong>：指定地址前缀列表的匹配模式为拒绝。在该模式下，如果过滤的IP地址在定义的范围内，该IP地址不能通过过滤从而不能进入下一节点的测试；否则，将进行下一节点的测试。</p>
-<p>•<em>ipv4-address mask-length</em>：指定IP地址和指定掩码长度。其中掩码长度为整数形式，取值范围是0～32。</p>
-<p>•<strong>greater-equal</strong> <em>greater-equal-value</em>：指定掩码长度匹配范围的下限。若不配置<strong>greater-equal</strong> <em>greater-equal-value</em>和<strong>less-equal</strong> <em>less-equal-value</em>，则使用mask-length作为掩码长度。 </p>
-<ul>
-<li><p>参数<em>greater-equal-value</em>的取值限制为：<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>&lt;=32。</p>
-</li>
-<li><p>如果只配置了<strong>greater-equal</strong>，则掩码长度范围在<em>greater-equal-value</em>和32之间。</p>
-</li>
-</ul>
-<p>•<strong>less-equal</strong> <em>less-equal-value</em>：指定掩码长度匹配范围的上限。若不配置<strong>greater-equal</strong> <em>greater-equal-value</em>和<strong>less-equal</strong> <em>less-equal-value</em>，则使用<em>mask-length</em>作为掩码长度。</p>
-<ul>
-<li><p>参数less-equal-value的取值限制为：<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>&lt;=32<em>。</em></p>
-</li>
-<li><p>如果只配置了<strong>less-equal</strong>，则掩码长度范围在<em>mask-length</em>和<em>less-equal-value</em>之间。</p>
-</li>
-</ul>
-</blockquote>
-<h4 id="IP-Prefix的配置举例-1"><a href="#IP-Prefix的配置举例-1" class="headerlink" title="IP-Prefix的配置举例 (1)"></a>IP-Prefix的配置举例 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/16.png"></p>
-<blockquote>
-<p>•Case1说明：这种情况属于单节点的精确匹配，只有目的地址，掩码完全相同的路由才会匹配成功，而且节点的匹配模式为Permit，所以路由10.1.1.0/24被Permit，属于匹配成功并被Permit，其他路由由于未匹配成功被Deny。</p>
-<p>•Case2说明：这种情况属于单节点的精确匹配，但节点的匹配模式为deny，所以路由10.1.1.0/24还是被Deny，属于匹配成功但被Deny，其他路由则属于未匹配成功被默认Deny。</p>
-</blockquote>
-<h4 id="IP-Prefix的配置举例-2"><a href="#IP-Prefix的配置举例-2" class="headerlink" title="IP-Prefix的配置举例 (2)"></a>IP-Prefix的配置举例 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/17.png"></p>
-<blockquote>
-<p>•Case1说明：这种情况属于多节点的精确匹配。</p>
-<ul>
-<li><p>路由10.1.1.0/24在匹配index 10时，满足匹配条件，但匹配模式是deny，属于匹配成功但被Deny。</p>
-</li>
-<li><p>路由10.1.1.1/32在匹配index 10时，不满足匹配条件，则继续匹配index 20，此时匹配成功，且index 20的匹配模式是permit，属于匹配成功并被Permit。</p>
-</li>
-<li><p>其他路由由于都不符合index 10和20的条件，属于未匹配成功被默认Deny。</p>
-</li>
-</ul>
-<p>•Case2说明：此时<em>greater-equal-value</em>=26，<em>less-equal-value</em>=32。配置时，需满足<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>，否则配置不成功。</p>
-</blockquote>
-<h4 id="IP-Prefix的配置举例-3"><a href="#IP-Prefix的配置举例-3" class="headerlink" title="IP-Prefix的配置举例 (3)"></a>IP-Prefix的配置举例 (3)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/18.png"></p>
-<blockquote>
-<p>•Case1说明：此时<em>greater-equal-value</em>=8，<em>less-equal-value</em>=32，前8个bit与10.0.0.0相同，掩码长度在8-32之间的路由全部被匹配。</p>
-<p>•Case2说明：</p>
-<ul>
-<li><p>对于index 10，<em>greater-equal-value</em>=24，<em>less-equal-value</em>=32，前24个bit与10.1.1.0相同，所有掩码长度在24到32的路由全部被Deny；</p>
-</li>
-<li><p>对于index 20，<em>greater-equal-value</em>=0，<em>less-equal-value</em>=32，前16个bit与10.1.0.0相同，掩码长度在16到32的路由被匹配，此时只有10.1.0.0/16被匹配，剩下的被默认deny。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="路由策略工具"><a href="#路由策略工具" class="headerlink" title="路由策略工具"></a>路由策略工具</h2><h3 id="策略工具1：Filter-Policy"><a href="#策略工具1：Filter-Policy" class="headerlink" title="策略工具1：Filter-Policy"></a>策略工具1：Filter-Policy</h3><p>•Filter-Policy（过滤-策略）是一个很常用的路由信息过滤工具，能够对接收、发布、引入的路由进行过滤，可应用于IS-IS、OSPF、BGP等协议。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/19.png"></p>
-<p>•如图所示，R1、R2、R3之间运行BGP路由协议，路由在各个设备之间传递，当需要根据实际需求过滤某些路由信息的时候可以使用Filter-Policy实现。</p>
-<h4 id="Filter-Policy在距离矢量路由协议中的应用"><a href="#Filter-Policy在距离矢量路由协议中的应用" class="headerlink" title="Filter-Policy在距离矢量路由协议中的应用"></a>Filter-Policy在距离矢量路由协议中的应用</h4><p>在距离矢量路由协议中，设备之间传递的是路由信息，如果需要对这种路由信息进行某种过滤，可以使用Filter-Policy实现，出方向和入方向的生效位置如图所示。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/20.png"></p>
-<blockquote>
-<p>•距离矢量协议是基于路由表生成路由的，因此过滤器会影响从邻居接收的路由和向邻居发布的路由。</p>
-<p>•如果要过滤掉上游设备到下游设备的路由，只需要在上游设备配置filter-policy export或者在下游设备上配置filter-policy import。</p>
-</blockquote>
-<h4 id="Filter-Policy在链路状态路由协议中的应用"><a href="#Filter-Policy在链路状态路由协议中的应用" class="headerlink" title="Filter-Policy在链路状态路由协议中的应用"></a>Filter-Policy在链路状态路由协议中的应用</h4><p>在链路状态路由协议中，各路由设备之间传递的是LSA信息，然后设备根据LSA汇总成的LSDB信息计算出路由表。但是Filter-Policy只能过滤路由信息，无法过滤LSA。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/21.png"></p>
-<blockquote>
-<p>•OSPF把网络中所泛洪的LSA存储到自己的LSDB中，并且运行SPF算法，计算出一颗以自己为根，无环的最短路径树，Filter-Policy对OSPF计算出来的路由（加载到路由表之前）进行过滤，而不会对LSA进行过滤。</p>
-<p>•上面的实例以OSPF为例，展示了Filter-Policy在链路状态中的应用。</p>
-</blockquote>
-<h4 id="Filter-Policy的基础配置命令-1"><a href="#Filter-Policy的基础配置命令-1" class="headerlink" title="Filter-Policy的基础配置命令 (1)"></a>Filter-Policy的基础配置命令 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/22.png"></p>
-<blockquote>
-<p>命令：[Huawei-ospf-100] <strong>filter-policy</strong> { acl-number | <strong>acl-name</strong> acl-name | <strong>ip-prefix</strong> ip-prefix-name | <strong>route-policy</strong> route-policy-name [ <strong>secondary</strong> ] } <strong>import</strong></p>
-<ul>
-<li>acl-number：指定基本访问控制列表号。整数形式，取值范围是2000～2999。</li>
-<li><strong>acl-name</strong> acl-name：指定访问控制列表名称。字符串形式，不支持空格，区分大小写，长度范围是1～32，以英文字母a～z或A～Z开始。</li>
-<li><strong>ip-prefix</strong> ip-prefix-name：指定地址前缀列表名称。字符串形式，长度范围是1～169，不支持空格，区分大小写。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
-<li><strong>route-policy</strong> route-policy-name：指定路由策略名称。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
-<li><strong>secondary</strong>：设置优选次优路由。</li>
-</ul>
-<p>命令：[Huawei-ospf-100] <strong>filter-policy</strong> { acl-number | <strong>acl-name</strong> acl-name | <strong>ip-prefix</strong> ip-prefix-name | <em>9</em>route-policy** route-policy-name } <strong>export</strong> [ protocol [ process-id ] ]</p>
-<ul>
-<li>protocol process-id：指定需要对引入的特定的路由协议进行过滤。目前的协议包括direct、isis、bgp、ospf、unr和static。当指定路由协议为RIP、IS-IS、OSPF时，还可以指定进程号。整数类型，取值范围是1～65535，缺省值是1。</li>
-</ul>
-</blockquote>
-<h4 id="Filter-Policy的基础配置命令-2"><a href="#Filter-Policy的基础配置命令-2" class="headerlink" title="Filter-Policy的基础配置命令 (2)"></a>Filter-Policy的基础配置命令 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/23.png"></p>
-<h4 id="Filter-Policy的基础配置命令-3"><a href="#Filter-Policy的基础配置命令-3" class="headerlink" title="Filter-Policy的基础配置命令 (3)"></a>Filter-Policy的基础配置命令 (3)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/24.png"></p>
-<h4 id="OSPF中使用Filter-Policy"><a href="#OSPF中使用Filter-Policy" class="headerlink" title="OSPF中使用Filter-Policy"></a>OSPF中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/25.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/26.png"></p>
-<blockquote>
-<p>•OSPF的路由信息记录在LSDB中，<strong>filter-policy import</strong>命令实际上是对OSPF计算出来的路由进行过滤，不是对发布和接收的LSA进行过滤。</p>
-<p>•<strong>filter-policy export</strong>命令通过指定<em>protocol</em>或<em>process-id</em>对特定的某一种协议或某一进程的路由进行过滤。如果没有指定<em>protocol</em>和<em>process-id</em>，则OSPF将对所有引入的路由信息进行过滤。</p>
-</blockquote>
-<h4 id="IS-IS中使用Filter-Policy"><a href="#IS-IS中使用Filter-Policy" class="headerlink" title="IS-IS中使用Filter-Policy"></a>IS-IS中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/27.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/28.png"></p>
-<blockquote>
-<p>•IS-IS的路由表项需要被成功下发到IP路由表中，才能用来指导IP报文转发。如果IS-IS路由表中有到达某个目的网段的路由，但是并不希望将该路由下发到IP路由表中，可以使用<strong>filter-policy import</strong>命令结合基本ACL、IP-Prefix、路由策略等方式，只将部分IS-IS路由下发到IP路由表中。</p>
-</blockquote>
-<h4 id="BGP中使用Filter-Policy"><a href="#BGP中使用Filter-Policy" class="headerlink" title="BGP中使用Filter-Policy"></a>BGP中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/29.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/30.png"></p>
-<h3 id="策略工具2：Route-Policy"><a href="#策略工具2：Route-Policy" class="headerlink" title="策略工具2：Route-Policy"></a>策略工具2：Route-Policy</h3><p>•Route-Policy是一个策略工具，用于过滤路由信息，以及为过滤后的路由信息设置路由属性。</p>
-<p>•一个Route-Policy由一个或多个节点（Node）构成，每个节点都可以是一系列条件语句（匹配条件）以及执行语句（执行动作）的集合，这些集合按照编号从小到大的顺序排列。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/31.png"></p>
-<p>•每个节点内可包含多个条件语句。节点内的多个条件语句之间的关系为“与”，即匹配所有条件语句才会执行本节点内的动作。</p>
-<p>•节点之间的关系为“或”，route-policy根据节点编号大小从小到大顺序执行，匹配中一个节点将不会继续向下匹配。</p>
-<blockquote>
-<p>•当使用Route-Policy时，Node的值小的节点先进行匹配。一个节点匹配成功后，路由将不再匹配其他节点。全部节点匹配失败后，路由将被过滤。</p>
-</blockquote>
-<h4 id="Route-Policy的组成"><a href="#Route-Policy的组成" class="headerlink" title="Route-Policy的组成"></a>Route-Policy的组成</h4><p>一个Route-Policy由一个或多个节点构成，每个节点包括多个if-match和apply子句。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/32.png"></p>
-<p>•permit或deny：指定Route-Policy节点的匹配模式为允许或拒绝。</p>
-<p>•node：指定Route-Policy的节点号。整数形式，取值范围是0～65535。</p>
-<p>•if-match子句：定义该节点的匹配条件。</p>
-<p>•apply子句：定义针对被匹配路由执行的操作。</p>
-<h4 id="Route-Policy的匹配顺序"><a href="#Route-Policy的匹配顺序" class="headerlink" title="Route-Policy的匹配顺序"></a>Route-Policy的匹配顺序</h4><p>路由策略使用不同的匹配条件和匹配模式选择路由和改变路由属性。</p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/33.png"></p>
-<blockquote>
-<p>•一个路由策略中包含N（N&gt;=1）个节点（Node）。路由进入路由策略后，按节点序号从小到大依次检查各个节点是否匹配。匹配条件由If-match子句定义。</p>
-<ul>
-<li><p>当路由与该节点的所有If-match子句都匹配成功后，进入匹配模式选择，不再匹配其他节点。匹配模式分permit和deny两种：</p>
-<ul>
-<li><p>permit：路由将被允许通过，并且执行该节点的apply子句对路由信息的一些属性进行设置。</p>
-</li>
-<li><p>deny：路由将被拒绝通过。</p>
-</li>
-</ul>
-</li>
-<li><p>当路由与该节点的任意一个If-match子句匹配失败后，进入下一节点。如果和所有节点都匹配失败，路由信息将被拒绝通过。</p>
-</li>
-</ul>
-</blockquote>
-<h4 id="Route-Policy的基础配置命令-1"><a href="#Route-Policy的基础配置命令-1" class="headerlink" title="Route-Policy的基础配置命令 (1)"></a>Route-Policy的基础配置命令 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/34.png"></p>
-<blockquote>
-<p>•命令：<strong>route-policy</strong> <em>route-policy-name</em> { <strong>permit</strong> | <strong>deny</strong> } <strong>node</strong> <em>node</em></p>
-<ul>
-<li><p><strong>permit</strong>：指定Route-Policy节点的匹配模式为允许。如果路由与节点所有的if-match子句匹配成功，则执行此节点apply子句；否则，进行下一节点。</p>
-</li>
-<li><p><strong>deny</strong>：指定Route-Policy节点的匹配模式为拒绝。如果路由与节点所有的if-match子句匹配成功，则该路由将被拒绝通过；否则进行下一节点。</p>
-</li>
-<li><p><strong>node</strong> <em>node</em>：指定Route-Policy的节点号。当使用Route-Policy时，node的值小的节点先进行匹配。一个节点匹配成功后，路由将不再匹配其他节点。全部节点匹配失败后，路由将被过滤。整数形式，取值范围是0～65535。</p>
-</li>
-</ul>
-</blockquote>
-<h4 id="Route-Policy的基础配置命令-2"><a href="#Route-Policy的基础配置命令-2" class="headerlink" title="Route-Policy的基础配置命令 (2)"></a>Route-Policy的基础配置命令 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/35.png"></p>
-<blockquote>
-<p>•apply子句用来为路由策略指定动作，用来设置匹配成功的路由的属性。在一个节点中，如果没有配置apply子句，则该节点仅起过滤路由的作用。如果配置一个或多个apply子句，则通过节点匹配的路由将执行所有apply子句。</p>
-</blockquote>
-<h1 id="3-路由控制案例"><a href="#3-路由控制案例" class="headerlink" title="3.路由控制案例"></a>3.路由控制案例</h1><h2 id="对接收的路由进行过滤"><a href="#对接收的路由进行过滤" class="headerlink" title="对接收的路由进行过滤"></a>对接收的路由进行过滤</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/36.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/37.png"></p>
-<blockquote>
-<p>•通过Filter-Policy进行路由过滤，只影响本地的路由表，因此R3可以正常学习到192.168.1.0/24网段的路由。</p>
-</blockquote>
-<h2 id="对发布的路由进行过滤"><a href="#对发布的路由进行过滤" class="headerlink" title="对发布的路由进行过滤"></a>对发布的路由进行过滤</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/38.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/39.png"></p>
-<h2 id="修改路由属性"><a href="#修改路由属性" class="headerlink" title="修改路由属性"></a>修改路由属性</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/40.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/41.png"></p>
-<h2 id="双点双向路由重发布"><a href="#双点双向路由重发布" class="headerlink" title="双点双向路由重发布"></a>双点双向路由重发布</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/42.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\43.png"></p>
-<h2 id="次优路径问题"><a href="#次优路径问题" class="headerlink" title="次优路径问题"></a>次优路径问题</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/44.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/45.png"></p>
-<h2 id="解决次优路径问题-1"><a href="#解决次优路径问题-1" class="headerlink" title="解决次优路径问题 (1)"></a>解决次优路径问题 (1)</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/46.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/47.png"></p>
-<h2 id="解决次优路径问题-2"><a href="#解决次优路径问题-2" class="headerlink" title="解决次优路径问题 (2)"></a>解决次优路径问题 (2)</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/48.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/49.png"></p>
-<h2 id="路由环路问题"><a href="#路由环路问题" class="headerlink" title="路由环路问题"></a>路由环路问题</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/50.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/51.png"></p>
-<h3 id="解决路由环路问题-1"><a href="#解决路由环路问题-1" class="headerlink" title="解决路由环路问题 (1)"></a>解决路由环路问题 (1)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/52.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/53.png"></p>
-<h3 id="解决路由环路问题-2"><a href="#解决路由环路问题-2" class="headerlink" title="解决路由环路问题 (2)"></a>解决路由环路问题 (2)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/54.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/55.png"></p>
-<h3 id="解决路由环路问题-3"><a href="#解决路由环路问题-3" class="headerlink" title="解决路由环路问题 (3)"></a>解决路由环路问题 (3)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/56.png"></p>
-<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/57.png"></p>
-<h2 id="场景思考"><a href="#场景思考" class="headerlink" title="场景思考"></a>场景思考</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/58.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）Filter-Policy export在OSPF、BGP中的作用分别是？</p>
-<p><strong>在OSPF中的作用为过滤从其他路由协议引入到OSPF中的路由条目；在BGP中的作用为限制本地对外发布的路由条目。</strong></p>
-<p>2.（简答题）Route-Policy多个节点之间的逻辑关系为？一个节点内多个条件语句的逻辑关系为？</p>
-<p><strong>节点之间的逻辑关系为或，条件语句间的逻辑关系为与。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•控制路由的发布、接收时需要先将相应的路由使用匹配器进行抓取，最常见的匹配器有ACL、 IP-Prefix List 。</p>
-<p>•Filter-Policy、Route-Policy都可用来在发布、接收路由时进行过滤，但需要注意在链路状态路由协议中使用Filter-Policy并不能正常的过滤链路状态信息，只是影响了本地的路由表。</p>
-<p>•Route-Policy在发布、接收路由时可以对路由的属性进行灵活地修改，以实现XXX。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3821,7 +3740,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">56</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3834,7 +3753,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

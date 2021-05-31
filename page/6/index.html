@@ -241,6 +241,323 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/26/IPv6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/26/IPv6/" itemprop="url">IPv6</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-26T15:06:24+08:00">
+                2021-04-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="产生背景"><a href="#产生背景" class="headerlink" title="产生背景"></a>产生背景</h2><h3 id="IPv4现状"><a href="#IPv4现状" class="headerlink" title="IPv4现状"></a>IPv4现状</h3><p>2011年2月3日，IANA ( Internet Assigned Numbers Authority，因特网地址分配组织）宣布将其最后的468万个IPv4地址平均分配到全球5个RIR ( Regional Internet Registry，区域互联网注册管理机构），此后IANA再没有可分配的IPv4地址。<br><img src="/2021/04/26/IPv6/IPv4%E7%8E%B0%E7%8A%B6.png" alt="IPv4现状"></p>
+<h3 id="IPv6优势"><a href="#IPv6优势" class="headerlink" title="IPv6优势"></a>IPv6优势</h3><table>
+<thead>
+<tr>
+<th>优势</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“无限”地址空间</td>
+<td align="left">地址长度为128 bit，海量的地址空间，满足物联网等新兴业务、有利于业务演进及扩展。</td>
+</tr>
+<tr>
+<td>层次化的地址结构</td>
+<td align="left">相较于IPv4地址，IPv6地址的分配更加规范，利于路由聚合（缩减IPv6路由表规模)、路由快速查询。</td>
+</tr>
+<tr>
+<td>即插即用</td>
+<td align="left">IPv6支持无状态地址自动配置( SLAAC)，终端接入更简单。</td>
+</tr>
+<tr>
+<td>简化的报文头部</td>
+<td align="left">简化报文头，提高效率;通过扩展包头支持新应用，利于路由器等网络设备的转发处理，降低投资成本。</td>
+</tr>
+<tr>
+<td>安全特性</td>
+<td align="left">lPsec、真实源地址认证等保证端到端安全;避免NAT破坏端到端通信的完整性。</td>
+</tr>
+<tr>
+<td>移动性</td>
+<td align="left">对移动网络实时通信有较大改进，整个移动网络性能有比较大的提升。</td>
+</tr>
+<tr>
+<td>增强的QoS特性</td>
+<td align="left">额外定义了流标签字段，可为应用程序或者终端所用，针对特殊的服务和数据流，分配特定的资源。</td>
+</tr>
+</tbody></table>
+<h2 id="IPv6包头格式"><a href="#IPv6包头格式" class="headerlink" title="IPv6包头格式"></a>IPv6包头格式</h2><h3 id="基本包头"><a href="#基本包头" class="headerlink" title="基本包头"></a>基本包头</h3><ul>
+<li>IPv6包头由一个IPv6基本包头（必须存在)和多个扩展包头(可能不存在)组成。</li>
+<li>基本包头提供报文转发的基本信息，会被转发路径上的所有设备解析。</li>
+</ul>
+<p><img src="/2021/04/26/IPv6/IPv6%E5%9F%BA%E6%9C%AC%E5%8C%85%E5%A4%B4.png" alt="基本包头"></p>
+<h3 id="扩展包头"><a href="#扩展包头" class="headerlink" title="扩展包头"></a>扩展包头</h3><ul>
+<li><p>Extension Header Length:扩展包头长度，长度为8 bit。表示扩展包头的长度（不包含Next Header字段)。</p>
+</li>
+<li><p>Extension Header Data:扩展包头数据，长度可变。扩展包头的内容，为一系列选项字段和填充字段的组合。</p>
+</li>
+</ul>
+<p><img src="/2021/04/26/IPv6/IPv6%E6%89%A9%E5%B1%95%E5%8C%85%E5%A4%B4.png" alt="扩展包头"></p>
+<h3 id="报文处理机制"><a href="#报文处理机制" class="headerlink" title="报文处理机制"></a>报文处理机制</h3><p><img src="/2021/04/26/IPv6/IPv6%E6%8A%A5%E6%96%87%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6.png" alt="IPv6报文处理机制"></p>
+<h2 id="IPv6地址"><a href="#IPv6地址" class="headerlink" title="IPv6地址"></a>IPv6地址</h2><h3 id="IPv6地址结构"><a href="#IPv6地址结构" class="headerlink" title="IPv6地址结构"></a>IPv6地址结构</h3><ul>
+<li><p>IPv6地址的长度为128 bit。一般用冒号分割为8段，每一段16 bit，每一段内用十六进制表示。</p>
+</li>
+<li><p>与IPv4地址类似，IPv6也用“IPv6地址/掩码长度”的方式来表示IPv6地址。</p>
+<p>例如2001:0DB8:2345:CD30:1230:4567:89AB:CDEF/64<br><strong>IPv6地址</strong>: 2001:0DB8:2345:CD30:1230:4567:89AB:CDEF<br><strong>子网号</strong>: 2001:ODB8:2345:CD30::/64</p>
+</li>
+</ul>
+<h3 id="IPv6地址缩写规范"><a href="#IPv6地址缩写规范" class="headerlink" title="IPv6地址缩写规范"></a>IPv6地址缩写规范</h3><ol>
+<li>每组16 bit的单元中的前导0可以省略，但是如果16 bit单元的所有比特都为0，那么至少要保留一个“0”字符;拖尾的O不能被省略。</li>
+<li>一个或多个连续的16 bit字符为0时，可用“:”表示，但整个IPv6地址缩写中只允许有一个“::”。</li>
+</ol>
+<blockquote>
+<p>若缩写后的IPv6地址出现两个“::”，会导致无法还原为原始IPv6地址。</p>
+</blockquote>
+<p><img src="/2021/04/26/IPv6/IPv6%E7%BC%A9%E5%86%99%E7%A4%BA%E4%BE%8B.png" alt="IPv6缩写示例"></p>
+<h3 id="IPv6地址分类"><a href="#IPv6地址分类" class="headerlink" title="IPv6地址分类"></a>IPv6地址分类</h3><p>根据IPv6地址前缀，可将IPv6地址分为为单播地址、组播地址和任播地址。</p>
+<p>单播地址又分为全球单播地址（2000::/3）、唯—本地地址(FD00::/8)、链路本地地址(FE80::/10)、特殊地址、其他单播地址。</p>
+<h3 id="IPv6单播地址"><a href="#IPv6单播地址" class="headerlink" title="IPv6单播地址"></a>IPv6单播地址</h3><h4 id="IPv6单播地址结构"><a href="#IPv6单播地址结构" class="headerlink" title="IPv6单播地址结构"></a>IPv6单播地址结构</h4><ul>
+<li><p>一个IPv6单播地址可以分为如下两部分:</p>
+<p>1.网络前缀(Network Prefix ) : n bit，相当于IPv4地址中的网络ID。</p>
+<p>2.接口标识( Interface identify ) : ( 128-n ) bit ，相当于IPv4地址中的主机ID。</p>
+</li>
+<li><p>常见的IPv6单播地址如全球单播地址、链路本地地址等，要求网络前缀和接口标识必须为64 bit。</p>
+</li>
+</ul>
+<h4 id="IPv6单播地址接口标识"><a href="#IPv6单播地址接口标识" class="headerlink" title="IPv6单播地址接口标识"></a>IPv6单播地址接口标识</h4><p>接口标识可通过三种方法生成：手工配置、系统自动生成或通过IEEE EUI-64规范生成</p>
+<p>其中EUl-64规范最为常用，此规范将MAC地址从中间劈开插入FFFE且第7bit取反得到IPv6接口标识。</p>
+<p><img src="/2021/04/26/IPv6/EUI-64%E8%A7%84%E8%8C%83.png" alt="EUI-64规范"></p>
+<h4 id="IPv6单播地址-GUA"><a href="#IPv6单播地址-GUA" class="headerlink" title="IPv6单播地址-GUA"></a>IPv6单播地址-GUA</h4><p>GUA ( Global Unicast Address，全球单播地址)，也被称为可聚合全球单播地址。该类地址全球唯一，用于需要有互联网访问需求的主机，相当于IPv4的公网地址。</p>
+<p><img src="/2021/04/26/IPv6/GUI.png" alt="GUI"></p>
+<ul>
+<li>通常GUA的网络部分长度为64 bit，接口标识也为64 bit。</li>
+<li>全局路由前缀:由提供商指定给一个组织机构，一般至少为45 bit。</li>
+<li>子网ID:组织机构根据自身网络需求划分子网。·接口标识:用来标识一个设备（的接口)。</li>
+</ul>
+<h4 id="IPv6常见单播地址-ULA"><a href="#IPv6常见单播地址-ULA" class="headerlink" title="IPv6常见单播地址-ULA"></a>IPv6常见单播地址-ULA</h4><p>ULA ( Unique Local Address，唯一本地地址）是IPv6私网地址，只能够在内网中使用。该地址空间在IPv6公网中不可被路由，因此不能直接访问公网。</p>
+<p><img src="/2021/04/26/IPv6/ULA.png" alt="ULA"></p>
+<ul>
+<li>唯一本地地址使用FCOO::/7地址块，目前仅使用了FDO0:/8地址段。FCOO::/8预留为以后拓展用。 </li>
+<li>ULA虽然只在有限范围内有效，但也具有全球唯一的前缀（虽然随机方式产生，但是冲突概率很低）。</li>
+</ul>
+<h4 id="lPv6常见单播地址-LLA"><a href="#lPv6常见单播地址-LLA" class="headerlink" title="lPv6常见单播地址-LLA"></a>lPv6常见单播地址-LLA</h4><p>LLA ( Link-Local Address，链路本地地址）是IPv6中另一种应用范围受限制的地址类型。LLA的有效范围是本地链路，前缀为FE80::/10。</p>
+<p><img src="/2021/04/26/IPv6/LLA.png" alt="LLA"></p>
+<ul>
+<li>LLA用于一条单一链路层面的通信，例如IPv6地址无状态自动配置、IPv6邻居发现等。</li>
+<li>源或目的IPv6地址为链路本地地址的数据包将不会被转发到始发的链路之外，换句话说，链路本地地址的有效范围为本地链路。</li>
+<li>每一个IPv6接口都必须具备一个链路本地地址。华为设备支持自动生成和手工指定两种配置方式。</li>
+</ul>
+<h3 id="IPv6组播地址"><a href="#IPv6组播地址" class="headerlink" title="IPv6组播地址"></a>IPv6组播地址</h3><ul>
+<li><p>IPv6组播地址标识多个接口，一般用于“一对多”的通信场景。</p>
+</li>
+<li><p>IPv6组播地址只可以作为IPv6报文的目的地址。</p>
+</li>
+</ul>
+<p><img src="/2021/04/26/IPv6/IPv6%E7%BB%84%E6%92%AD%E5%9C%B0%E5%9D%80.png" alt="IPv6组播地址"></p>
+<pre><code>Flags:用来表示永久或临时组播组。
+Scope:表示组播组的范围。
+Group ID:组播组ID。
+</code></pre>
+<p><img src="/2021/04/26/IPv6/%E7%BB%84%E6%92%AD.png" alt="组播"></p>
+<h4 id="被请求节点组播地址"><a href="#被请求节点组播地址" class="headerlink" title="被请求节点组播地址"></a>被请求节点组播地址</h4><p>当一个节点具有了单播或任播地址，就会对应生成一个被请求节点组播地址，并且加入这个组播组。该地址主要用于邻居发现机制和地址重复检测功能。被请求节点组播地址的有效范围为本地链路范围。</p>
+<p><img src="/2021/04/26/IPv6/%E8%A2%AB%E8%AF%B7%E6%B1%82%E8%8A%82%E7%82%B9%E7%9A%84%E7%BB%84%E6%92%AD%E5%9C%B0%E5%9D%80.png" alt="被请求节点的组播地址"></p>
+<h3 id="任播地址"><a href="#任播地址" class="headerlink" title="任播地址"></a>任播地址</h3><ul>
+<li>任播地址标识一组网络接口（通常属于不同的节点)。</li>
+<li>任播地址可以作为IPv6报文的源地址，也可以作为目的地址。</li>
+</ul>
+<p><img src="/2021/04/26/IPv6/%E4%BB%BB%E6%92%AD.png" alt="任播"></p>
+<h2 id="IPv6地址配置"><a href="#IPv6地址配置" class="headerlink" title="IPv6地址配置"></a>IPv6地址配置</h2><h3 id="主机和路由器的IPv6地址"><a href="#主机和路由器的IPv6地址" class="headerlink" title="主机和路由器的IPv6地址"></a>主机和路由器的IPv6地址</h3><p>一般情况下，主机和路由器的单播IPv6地址以及加入的组播地址如下所示:</p>
+<p><img src="/2021/04/26/IPv6/%E5%9C%B0%E5%9D%80%E7%A4%BA%E4%BE%8B.png"></p>
+<h3 id="lPv6单播地址业务流程"><a href="#lPv6单播地址业务流程" class="headerlink" title="lPv6单播地址业务流程"></a>lPv6单播地址业务流程</h3><p>一个接口在发送IPv6报文之前要经历地址配置、DAD、地址解析这三个阶段，NDP ( Neighbor Discovery Protocol，邻居发现协议)扮演了重要角色。</p>
+<p><img src="/2021/04/26/IPv6/%E6%B5%81%E7%A8%8B.png" alt="流程"></p>
+<h3 id="NDP"><a href="#NDP" class="headerlink" title="NDP"></a>NDP</h3><ul>
+<li>RFC2461定义了NDP，该RFC后来被RFC4861替代。</li>
+<li>NDP使用ICMPv6报文实现其功能。</li>
+</ul>
+<p><img src="/2021/04/26/IPv6/NDP.png" alt="NDP"></p>
+<h3 id="IPv6动态配置地址"><a href="#IPv6动态配置地址" class="headerlink" title="IPv6动态配置地址"></a>IPv6动态配置地址</h3><h4 id="有状态地址配置"><a href="#有状态地址配置" class="headerlink" title="有状态地址配置"></a>有状态地址配置</h4><p><img src="/2021/04/26/IPv6/%E6%9C%89%E7%8A%B6%E6%80%81%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE.png" alt="有状态地址配置"></p>
+<ul>
+<li>通过DHCPv6报文交互，DHCPv6服务器端自动配置IPv6地址/前缀及其他网络配置参数(DNS、NIS.SNTP服务器地址等参数)。</li>
+</ul>
+<h4 id="无状态地址配置"><a href="#无状态地址配置" class="headerlink" title="无状态地址配置"></a>无状态地址配置</h4><p><img src="/2021/04/26/IPv6/%E6%97%A0%E7%8A%B6%E6%80%81%E5%9C%B0%E5%9D%80%E9%85%8D%E7%BD%AE.png" alt="无状态地址配置"></p>
+<ul>
+<li>主机根据RA中的地址前缀，并结合本地生成的64 bit接口标识（例如EUI-64 )，生成单播地址。</li>
+<li>仅可以获得IPv6地址信息，无法获得NIS、SNTP服务器等参数，需要配合DHCPv6或者手工配置来获取其他配置信息。</li>
+</ul>
+<h3 id="DAD"><a href="#DAD" class="headerlink" title="DAD"></a>DAD</h3><p>DAD ( Duplicate Address Detection，重复地址检测）类似于IPv4中的免费ARP检测,用于检测当前地址是否与其他接口冲突。</p>
+<p>无论通过何种方式配置了IPv6单播地址，主机或路由器都会:</p>
+<ul>
+<li>通过ICMPv6报文进行DAD</li>
+<li>仅当DAD通过之后才会使用该单播地址</li>
+</ul>
+<p><img src="/2021/04/26/IPv6/DAD.png" alt="DAD"></p>
+<h3 id="地址解析"><a href="#地址解析" class="headerlink" title="地址解析"></a>地址解析</h3><p>lPv6使用ICMPv6的NS和NA报文来取代ARP在IPv4中的地址解析功能。</p>
+<p><img src="/2021/04/26/IPv6/%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90.png" alt="地址解析"></p>
+<h2 id="IPv6地址配置基础命令"><a href="#IPv6地址配置基础命令" class="headerlink" title="IPv6地址配置基础命令"></a>IPv6地址配置基础命令</h2><p>1.使能lPv6</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ipv6</span><br></pre></td></tr></table></figure>
+<p>使能设备转发IPv6单播报文，包括本地IPv6报文的发送与接收。[Huawei-GigabitEtherneto/o/0] ipv6 enable<br>在接口视图下，在接口上使能该接口的IPv6功能。</p>
+<p>2.配置接口的链路本地地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] ipv6 address ipv6-address link-local</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] ipv6 address auto link-local</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，通过手工或者自动的方式，配置接口的链路本地地址。</p>
+<p>3.配置接口的全球单播地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] ipv6 address &#123; ipv6-address prefix-length l ipv6-address&#x2F; prefix-length &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] ipv6 address auto &#123; global | dhcp &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在接口视图下，通过手工或者自动（有状态或无状态）的方式，配置接口的全球单播地址。<br>4.配置lPv6静态路由</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ipv6 route-static dest-ipv6-address prefix-length &#123; interface-type interface-number [ nexthop-ipv6-address ] | nexthop-ipv6-address &#125; [ preference preference j</span><br></pre></td></tr></table></figure>
+<p>5.查看接口的IPv6信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] display ipv6 interface [ interface-type interface-number | brief ]</span><br></pre></td></tr></table></figure>
+<p>6.查看邻居表项信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] display ipv6 neighbors</span><br></pre></td></tr></table></figure>
+<p>7.使能系统发布RA报文功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0]undo ipv6 nd ra halt</span><br></pre></td></tr></table></figure>
+<p>默认情况下，华为路由器接口不发送ICMPv6 RA报文，则该接口所连链路上的其他设备无法进行无状态地址自动配置。若想进行IPv6无状态地址配置，需要手工开启发送RA报文。</p>
+<h2 id="IPv6配置案例-配置一个小型IPv6网络"><a href="#IPv6配置案例-配置一个小型IPv6网络" class="headerlink" title="IPv6配置案例-配置一个小型IPv6网络"></a>IPv6配置案例-配置一个小型IPv6网络</h2><p><img src="/2021/04/26/IPv6/IPv6%E6%8B%93%E6%89%91.png" alt="IPv6拓扑"></p>
+<h3 id="R1和R2之间使用静态IPv6地址互联。"><a href="#R1和R2之间使用静态IPv6地址互联。" class="headerlink" title="R1和R2之间使用静态IPv6地址互联。"></a>R1和R2之间使用静态IPv6地址互联。</h3><p>1.在R1、R2、R3、R4全局和相关接口使能IPv6功能，同时自动生成链路本地地址（以R1配置为例)</p>
+<p>[R1]ipv6<br>[R1]interface GigabitEthernet 0/0/0</p>
+<p>[R1-GigabitEthernet0/0/0]ipv6 enable</p>
+<p>[R1-GigabitEthernet0/0/0]ipv6 address auto link-local</p>
+<p>2.在R1、R2相应接口配置静态IPv6全球单播地址</p>
+<p>[R1]interface GigabitEthernet 0/0/0</p>
+<p>[R1-GigabitEthernet0/0/0]ipv6 address 2001::1 64    </p>
+<p>[R2]interface GigabitEthernet 1/0/0</p>
+<p>[R2-GigabitEthernet1/0/0]ipv6 address 2001:2 64</p>
+<p>[R2-GigabitEthernet1/0/0]interface GigabitEthernet 0/0/0</p>
+<p>[R2-GigabitEtherneto/0/0]ipv6 address 2002::1 64</p>
+<p>[R2-GigabitEtherneto/0/0]interface GigabitEthernet 0/0/1</p>
+<p>[R2-GigabitEtherneto/0/1]ipv6 address 2003:1 64</p>
+<h3 id="R2作为DHCPv6服务器给R3的GE0-0-0分配全球单播地址。"><a href="#R2作为DHCPv6服务器给R3的GE0-0-0分配全球单播地址。" class="headerlink" title="R2作为DHCPv6服务器给R3的GE0/0/0分配全球单播地址。"></a>R2作为DHCPv6服务器给R3的GE0/0/0分配全球单播地址。</h3><p>3.在R2上配置DHCPv6服务器功能，R3接口通过DHCPv6方式获取全球单播地址</p>
+<p>[R2]dhcp enable[R2]dhcpv6 pool pool1</p>
+<p>[R2-dhcpv6-pool-pool1]address prefix 2002::/64    </p>
+<p>[R2]interface GigabitEthernet 0/0/0</p>
+<p>[R2-GigabitEtherneto/0/0]dhcpv6 server pool1</p>
+<p>[R3]dhcp enable</p>
+<p>[R3]interface GigabitEthernet 0/0/0</p>
+<p>[R3-GigabitEthernetO/0/0]ipv6 address auto dhcp</p>
+<h3 id="R4的GE0-0-0接口通过R2的RA进行无状态地址自动配置。"><a href="#R4的GE0-0-0接口通过R2的RA进行无状态地址自动配置。" class="headerlink" title="R4的GE0/0/0接口通过R2的RA进行无状态地址自动配置。"></a>R4的GE0/0/0接口通过R2的RA进行无状态地址自动配置。</h3><p>4.在R2使能发布RA报文的功能，R4通过无状态地址配置的方式获取地址</p>
+<p>[R2]interface GigabitEthernet 0/0/1</p>
+<p>[R2-GigabitEthernet0/0/1]undo ipv6 nd ra halt</p>
+<p>[R4]interface GigabitEthernet 0/0/0</p>
+<p>[R4-GigabitEtherneto/0/0]ipv6 address auto global</p>
+<h3 id="配置静态路由-实现各设备之间互访。"><a href="#配置静态路由-实现各设备之间互访。" class="headerlink" title="配置静态路由,实现各设备之间互访。"></a>配置静态路由,实现各设备之间互访。</h3><p>5.在R4上配置静态路由</p>
+<p>[R4]ipv6 route-static 2001:: 64 2003::1   </p>
+<p>[R4]ipv6 route-static 2002:: 64 2003::1</p>
+<p>6.在R1上配置聚合后的静态路由</p>
+<p>[R1]ipv6 route-static 2002:: 15 2001::2</p>
+<p>7.在R3上配置默认路由</p>
+<p>[R3]ipv6 route-static :: 0 2002::1</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/25/%E4%BB%A5%E5%A4%AA%E7%BD%91%E9%93%BE%E8%B7%AF%E8%81%9A%E5%90%88%E4%B8%8E%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E3%80%81%E9%9B%86%E7%BE%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2056,7 +2373,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">56</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2069,7 +2386,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-count">61</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
