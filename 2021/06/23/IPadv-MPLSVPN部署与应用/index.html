@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IPadv-9-MPLS VPN部署与应用," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•BGP&#x2F;MPLS IP VPN因其支持地址空间重叠、组网方式灵活、可扩展性好，并能够方便地支持MPLS TE等一系列优点，已经在广域IP承载网络得到了广泛的应用。 •针对不同客户的业务需求以及组网情况，MPLS VPN的部署方式不尽相同。 •本课程将介绍几种常见的MPLS VPN应用场景与这些场景下MPLS VPN的部署方法，此外还将介绍OSPF对MPLS VPN的扩展特性与功能。 目标▫描">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPadv-MPLSVPN部署与应用">
+<meta property="og:url" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•BGP&#x2F;MPLS IP VPN因其支持地址空间重叠、组网方式灵活、可扩展性好，并能够方便地支持MPLS TE等一系列优点，已经在广域IP承载网络得到了广泛的应用。 •针对不同客户的业务需求以及组网情况，MPLS VPN的部署方式不尽相同。 •本课程将介绍几种常见的MPLS VPN应用场景与这些场景下MPLS VPN的部署方法，此外还将介绍OSPF对MPLS VPN的扩展特性与功能。 目标▫描">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/1.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/2.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/3.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/4.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/5.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/6.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/7.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/8.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/9.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/10.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/11.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/12.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/13.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/14.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/15.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/16.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/17.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/18.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/19.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/20.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/21.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/22.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/23.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/24.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/27.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/28.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/29.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/30.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/31.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/32.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/33.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/34.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/35.png">
+<meta property="article:published_time" content="2021-06-23T07:17:09.000Z">
+<meta property="article:modified_time" content="2021-06-23T07:55:32.402Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IPadv-9-MPLS VPN部署与应用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/06/23/IPadv-MPLSVPN部署与应用/"/>
+
+
+
+
+
+  <title>IPadv-MPLSVPN部署与应用 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IPadv-MPLSVPN部署与应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T15:17:09+08:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•BGP/MPLS IP VPN因其支持地址空间重叠、组网方式灵活、可扩展性好，并能够方便地支持MPLS TE等一系列优点，已经在广域IP承载网络得到了广泛的应用。</p>
+<p>•针对不同客户的业务需求以及组网情况，MPLS VPN的部署方式不尽相同。</p>
+<p>•本课程将介绍几种常见的MPLS VPN应用场景与这些场景下MPLS VPN的部署方法，此外还将介绍OSPF对MPLS VPN的扩展特性与功能。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MPLS VPN的应用场景与组网类型</p>
+<p>▫部署MPLS VPN的Intranet方案</p>
+<p>▫部署MPLS VPN的Hub&amp;Spoke方案</p>
+<p>▫描述OSPF对MPLS VPN扩展功能与特性</p>
+<h1 id="1-MPLS-VPN应用与组网概述"><a href="#1-MPLS-VPN应用与组网概述" class="headerlink" title="1.MPLS VPN应用与组网概述"></a>1.MPLS VPN应用与组网概述</h1><h2 id="MPLS-VPN典型应用"><a href="#MPLS-VPN典型应用" class="headerlink" title="MPLS VPN典型应用"></a>MPLS VPN典型应用</h2><p>•目前，MPLS VPN的主要应用包括企业互连和虚拟业务网络。</p>
+<p>▫企业互连应用：可通过MPLS VPN将分布在各地的分支机构、出差员工和合作伙伴的IP网络连接在一起；</p>
+<p>▫虚拟业务网络：可在同一物理网络上运行多种业务，如VoIP、IPTV等，为每个业务建立一个VPN，实现业务隔离。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/1.png"></p>
+<blockquote>
+<p>•MPLS VPN的主要优点包括但不限于以下几项：</p>
+<ul>
+<li>可以实现“一点接入，全网连通”，支持异种介质的互连。而不像传统专线那样在每一对用户设备间采用同样的介质连接，可方便地提供普遍服务。</li>
+<li>可以实现“弹性带宽”，采用流量监管技术，在保证用户基本带宽的同时，对突发流量尽力而为，同时基本带宽也可以“软扩容”，即根据用户的需求在一个范围内连续选择。</li>
+<li>在资源隔离或隧道绑定的MPLS VPN技术保证下，充分保证每个VPN的专有带宽，满足各类业务有不同的用户，不同的流量模型，不同的QoS要求。</li>
+</ul>
+</blockquote>
+<h2 id="MPLS-VPN基本组网-Intranet"><a href="#MPLS-VPN基本组网-Intranet" class="headerlink" title="MPLS VPN基本组网 - Intranet"></a>MPLS VPN基本组网 - Intranet</h2><p>当采用Intranet组网方案时，一个VPN中的所有用户形成闭合用户群，相互之间能够进行流量转发，VPN中的用户不能与任何本VPN以外的用户通信，其站点通常是属于同一个组织。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/2.png"></p>
+<h2 id="MPLS-VPN基本组网-Extranet"><a href="#MPLS-VPN基本组网-Extranet" class="headerlink" title="MPLS VPN基本组网 - Extranet"></a>MPLS VPN基本组网 - Extranet</h2><p>当采用Extranet组网方案时，VPN用户可将部分站点中的网络资源给其他VPN用户进行访问。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/3.png"></p>
+<h2 id="MPLS-VPN基本组网-Hub-amp-Spoke-1"><a href="#MPLS-VPN基本组网-Hub-amp-Spoke-1" class="headerlink" title="MPLS VPN基本组网 - Hub&amp;Spoke (1)"></a>MPLS VPN基本组网 - Hub&amp;Spoke (1)</h2><p>当采用Hub&amp;Spoke方案时，可以将多个站点中的一个站点设置为Hub站点，其余站点为Spoke站点。站点间的互访必须通过Hub站点，通过Hub站点集中管控站点间的数据传输。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/4.png"></p>
+<h2 id="MPLS-VPN基本组网-Hub-amp-Spoke-2"><a href="#MPLS-VPN基本组网-Hub-amp-Spoke-2" class="headerlink" title="MPLS VPN基本组网 - Hub&amp;Spoke (2)"></a>MPLS VPN基本组网 - Hub&amp;Spoke (2)</h2><p>从Site1到Site2的路由发布过程如下：</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/5.png"></p>
+<h2 id="MCE组网"><a href="#MCE组网" class="headerlink" title="MCE组网"></a>MCE组网</h2><p>•当一个私网需要根据业务或者网络划分VPN时，不同VPN用户间的业务需要完全隔离。此时，为每个VPN单独配置一台CE将增加用户的设备开支和维护成本。</p>
+<p>•具有MCE（Multi-VPN-Instance，CE多实例CE）功能的CE设备可以在MPLS VPN组网应用中承担多个VPN实例的CE功能，减少用户网络设备的投入。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/6.png"></p>
+<h2 id="MPLS-VPN跨域组网"><a href="#MPLS-VPN跨域组网" class="headerlink" title="MPLS VPN跨域组网"></a>MPLS VPN跨域组网</h2><p>•随着MPLS VPN解决方案的广泛应用，服务的终端用户的规格和范围也在增长，在一个企业内部的站点数目越来越大，某个地理位置与另外一个服务提供商相连的需求变得非常的普遍，例如国内运营商的不同城域网之间，或相互协作的运营商的骨干网之间都存在着跨越不同自治系统（AS，Autonomous System）的情况。</p>
+<p>•一般的MPLS VPN体系结构都是在一个AS内运行，任何VPN的路由信息都是只能在一个AS内按需扩散。AS之间的MPLS VPN部署需要通过跨域（Inter-AS） MPLS VPN解决方案来实现。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/7.png"></p>
+<blockquote>
+<p>•RFC2547中提出了三种跨域VPN解决方案，分别是：</p>
+<ul>
+<li>跨域VPN-OptionA（Inter-Provider Backbones Option A）方式：需要跨域的VPN在ASBR（AS Boundary Router）间通过专用的接口管理自己的VPN路由，也称为VRF-to-VRF；</li>
+<li>跨域VPN-OptionB（Inter-Provider Backbones Option B）方式：ASBR间通过MP-EBGP发布标签VPN-IPv4路由，也称为EBGP redistribution of labeled VPN-IPv4 routes；</li>
+<li>跨域VPN-OptionC（Inter-Provider Backbones Option C）方式：PE间通过Multi-hop MP-EBGP发布标签VPN-IPv4路由，也称为Multihop EBGP redistribution of labeled VPN-IPv4 routes。</li>
+</ul>
+<p>•更多跨域MPLS VPN相关内容，请参考HCIE-Datacom相关课程。</p>
+</blockquote>
+<h1 id="2-MPLS-VPN典型场景部署介绍"><a href="#2-MPLS-VPN典型场景部署介绍" class="headerlink" title="2.MPLS VPN典型场景部署介绍"></a>2.MPLS VPN典型场景部署介绍</h1><h2 id="Intranet场景"><a href="#Intranet场景" class="headerlink" title="Intranet场景"></a>Intranet场景</h2><h3 id="部署Intranet场景的MPLS-VPN"><a href="#部署Intranet场景的MPLS-VPN" class="headerlink" title="部署Intranet场景的MPLS VPN"></a>部署Intranet场景的MPLS VPN</h3><p>•如图所示，客户X及Y各自有2个站点，现需要通过MPLS VPN实现站点之间的互联，分别对应VPNX和VPNY；</p>
+<p>•互联接口、AS号及IP地址信息，CE与PE通过如图的协议或方法交换路由信息；</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/8.png"></p>
+<blockquote>
+<p>•注：本课程仅讨论非跨域的MPLS VPN部署场景。</p>
+</blockquote>
+<h3 id="部署思路"><a href="#部署思路" class="headerlink" title="部署思路"></a>部署思路</h3><p>1.MPLS VPN骨干网配置</p>
+<p>1.1 IGP配置，实现骨干网的IP连通性。</p>
+<p>1.2 MPLS与MPLS LDP配置，建立MPLS LSP公网隧道，传输VPN数据。</p>
+<p>1.3 MP-BGP配置，建立后续传递VPNv4路由的MP-BGP对等体关系。</p>
+<p>2.VPN用户接入配置</p>
+<p>2.1 创建VPN实例并配置参数（RT、RD）</p>
+<p>2.2 将接口加入VPN实例</p>
+<p><strong>2.3</strong> <strong>配置PE与CE之间的路由交换</strong></p>
+<h3 id="PE-CE之间部署OSPF-1"><a href="#PE-CE之间部署OSPF-1" class="headerlink" title="PE-CE之间部署OSPF (1)"></a>PE-CE之间部署OSPF (1)</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/9.png"></p>
+<h3 id="PE-CE之间部署OSPF-2"><a href="#PE-CE之间部署OSPF-2" class="headerlink" title="PE-CE之间部署OSPF (2)"></a>PE-CE之间部署OSPF (2)</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/10.png"></p>
+<h3 id="PE-CE之间部署静态路由"><a href="#PE-CE之间部署静态路由" class="headerlink" title="PE-CE之间部署静态路由"></a>PE-CE之间部署静态路由</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/11.png"></p>
+<h3 id="PE-CE之间部署EBGP"><a href="#PE-CE之间部署EBGP" class="headerlink" title="PE-CE之间部署EBGP"></a>PE-CE之间部署EBGP</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/12.png"></p>
+<h3 id="特殊场景下的BGP配置-AS号替换"><a href="#特殊场景下的BGP配置-AS号替换" class="headerlink" title="特殊场景下的BGP配置 - AS号替换"></a>特殊场景下的BGP配置 - AS号替换</h3><p>在MPLS VPN场景中，若PE与CE之间运行EBGP交互路由信息，则可能会出现两个站点的AS号相同的情况。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/13.png"></p>
+<h3 id="特殊场景下的BGP配置-SoO"><a href="#特殊场景下的BGP配置-SoO" class="headerlink" title="特殊场景下的BGP配置 - SoO"></a>特殊场景下的BGP配置 - SoO</h3><p>•在CE多归属场景，若使能了BGP的AS号替换功能，可能会引起路由环路，需要SoO（Site of Origin）特性来避免环路。</p>
+<ul>
+<li><p>CE1与CE3处于同一个VPN站点1，CE2位于站点Site2，Site1和Site2站点所在的AS号都为65001。PE与CE之间运行的都是EBGP路由协议，为了Site 1和Site 2之间的路由可以正常学习，需要在PE1和PE2上配置AS号替换功能。</p>
+</li>
+<li><p>CE1传递站点内的路由给PE1，PE1传递该路由给CE3，由于配置AS号替换，CE3会接收该路由，可能会导致产生路由环路。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/14.png"></p>
+<blockquote>
+<p>•注：192.168.100.1和192.168.200.1分别是CE1和CE3上和PE1建立BGP对等体的接口地址。</p>
+</blockquote>
+<h3 id="PE-CE之间部署IS-IS"><a href="#PE-CE之间部署IS-IS" class="headerlink" title="PE-CE之间部署IS-IS"></a>PE-CE之间部署IS-IS</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/15.png"></p>
+<h2 id="Hub-amp-Spoke场景"><a href="#Hub-amp-Spoke场景" class="headerlink" title="Hub&amp;Spoke场景"></a>Hub&amp;Spoke场景</h2><h3 id="部署Hub-amp-Spoke场景的MPLS-VPN"><a href="#部署Hub-amp-Spoke场景的MPLS-VPN" class="headerlink" title="部署Hub&amp;Spoke场景的MPLS VPN"></a>部署Hub&amp;Spoke场景的MPLS VPN</h3><p>•Hub&amp;Spoke有以下组网方案：</p>
+<p>​    ▫方式一：Hub-CE与Hub-PE，Spoke-PE与Spoke-CE使用EBGP</p>
+<p>​    ▫方式二：Hub-CE与Hub-PE，Spoke-PE与Spoke-CE使用IGP</p>
+<p>​    ▫方式三：Hub-CE与Hub-PE使用EBGP，Spoke-PE与Spoke-CE使用IGP</p>
+<p>•<strong>无法</strong>通过Hub-CE与Hub-PE使用IGP，Spoke-PE与Spoke-CE使用EBGP来部署Hub&amp;Spoke组网的MPLS VPN。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/16.png"></p>
+<h3 id="VRF配置"><a href="#VRF配置" class="headerlink" title="VRF配置"></a>VRF配置</h3><p>•Spoke-PE上创建一个VPN实例，RT配置如图。</p>
+<p>•Hub-PE上创建VPN_in和VPN_out两个VPN实例，分别用于从Spoke-PE接收私网路由或向Spoke-PE发布私网路由，RT配置如图。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/17.png"></p>
+<h3 id="方式一部署-路由发布过程"><a href="#方式一部署-路由发布过程" class="headerlink" title="方式一部署 - 路由发布过程"></a>方式一部署 - 路由发布过程</h3><p>•Spoke-CE与Spoke-PE之间通过EBGP交互路由信息，建立EBGP连接后，把相关的路由发布到BGP即可。</p>
+<p>•Hub-PE与Hub-CE之间建立两条EBGP连接，分别用来发布和接收私网路由。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/18.png"></p>
+<blockquote>
+<p>•以路由从Spoke-CE1发布到Spoke-CE2为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过EBGP将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将该路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表，并通过EBGP发布给Hub-CE。</p>
+<p>4.Hub-CE通过EBGP连接学习到该路由，并通过另一个EBGP连接将该路由发布给Hub-PE的VPN实例（VPN_out）。</p>
+<p>5.Hub-PE发布携带VPN_out的Export Target属性的路由给所有Spoke-PE。</p>
+<p>6.Spoke-PE2通过EBGP将该路由发布给Spoke-CE2。</p>
+</blockquote>
+<h3 id="方式一部署-Hub-PE与Hub-CE间配置"><a href="#方式一部署-Hub-PE与Hub-CE间配置" class="headerlink" title="方式一部署 - Hub-PE与Hub-CE间配置"></a>方式一部署 - Hub-PE与Hub-CE间配置</h3><p>•Hub-PE通过VPN_in对应的EBGP连接将从Spoke站点学习的路由发布到Hub站点。</p>
+<p>•Hub-CE通过VPN_out对应的EBGP将这些路由发布到Spoke站点。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/19.png"></p>
+<h3 id="方式二部署-路由发布过程"><a href="#方式二部署-路由发布过程" class="headerlink" title="方式二部署 - 路由发布过程"></a>方式二部署 - 路由发布过程</h3><p>•以选用OSPF作为IGP协议为例：</p>
+<p>▫Spoke-CE与Spoke-PE之间通过OSPF（进程100）邻居关系交互路由信息。</p>
+<p>▫Hub-PE通过两个OSPF进程与Hub-CE建立OSPF邻居，分别负责私网路由的发送和接收。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/20.png"></p>
+<blockquote>
+<p>•以路由从Spoke-CE1发布到Spoke-CE2为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过OSPF100将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表；通过将BGP引入OSPF100的配置进而将从Spoke-PE1传递来的路由发布给Hub-CE。</p>
+<p>4.Hub-CE通过OSPF100接收该路由；并通过配置路由引入将路由发布到OSPF200，OSPF200再将路由发布给Hub-PE。</p>
+<p>5.Hub-PE的BGP-VPN实例（VPN_out）引入OSPF200多实例的路由，将携带Export Target属性的路由发布给所有Spoke-PE。</p>
+<p>6.Spoke-PE2通过OSPF100将该路由发布给Spoke-CE2。</p>
+</blockquote>
+<h3 id="方式二部署-Hub-PE与Hub-CE间配置"><a href="#方式二部署-Hub-PE与Hub-CE间配置" class="headerlink" title="方式二部署 - Hub-PE与Hub-CE间配置"></a>方式二部署 - Hub-PE与Hub-CE间配置</h3><p>•Hub-PE通过VPN_in对应的OSPF（进程100）将从Spoke站点学习的路由发布到Hub站点。</p>
+<p>•Hub-CE通过VPN_out对应的OSPF（进程200）将这些路由发布到Hub-PE，进而发布给所有Spoke站点。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/21.png"></p>
+<h3 id="方式三部署-路由发布过程"><a href="#方式三部署-路由发布过程" class="headerlink" title="方式三部署 - 路由发布过程"></a>方式三部署 - 路由发布过程</h3><p>•以选用OSPF作为IGP协议为例，Spoke-CE与Spoke-PE之间通过OSPF（进程100）邻居关系交互路由信息。</p>
+<p>•Hub-PE与Hub-CE之间建立两条EBGP连接，分别用来发布和接收私网路由，Hub-PE与Hub-CE的配置与方式一相同。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/22.png"></p>
+<blockquote>
+<p>•以路由从Spoke-CE1发布到Spoke-CE2为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过OSPF100将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表，并通过EBGP发布给Hub-CE。</p>
+<p>4.Hub-CE通过EBGP连接学习到该路由，并通过另一个EBGP连接将该路由发布给Hub-PE的VPN实例（VPN_out）。</p>
+<p>5.Hub-PE发布携带VPN_out的Export Target属性的路由给Spoke-PE2。</p>
+<p>6.Spoke-PE2通过OSPF100将该路由发布给Spoke-CE2。</p>
+</blockquote>
+<h3 id="为什么没有方式四？"><a href="#为什么没有方式四？" class="headerlink" title="为什么没有方式四？"></a>为什么没有方式四？</h3><p>•<strong>无法</strong>通过Hub-CE与Hub-PE使用IGP，Spoke-PE与Spoke-CE使用EBGP来部署Hub&amp;Spoke组网的MPLS VPN</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/23.png"></p>
+<blockquote>
+<p>•以从Spoke-CE1向Spoke-CE2发布路由（目的地址为192.168.1.0/24）为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过EBGP将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过BGP-VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表；并通过OSPF100多实例发布给Hub-CE。</p>
+<p>4.Hub-CE通过OSPF100学习到该路由；并通过OSPF200将路由发布给Hub-PE。</p>
+<p>5.Hub-PE的BGP-VPN实例（VPN_out）引入OSPF200多实例路由，并将携带VPN_out的Export Target属性的路由发布给所有Spoke-PE。</p>
+<p>6.Spoke-PE2的VPN实例根据Import Target属性引入该路由；Spoke-PE2通过EBGP发布给本地Spoke-CE2。</p>
+<p>•Hub-PE的BGP-VPN实例（VPN_out）通过Export Target属性将路由发布给Spoke-PE2的同时，也会将该路由发布给Spoke-PE1。此时，这条路由是Hub-PE通过IGP（OSPF200多实例）引入的，由于IGP路由不携带AS-PATH属性，AS_Path为空；而原来从Spoke-CE1来的192.168.1.0/24路由，其AS_Path不为空，所以从Hub-PE返回的路由会优于从Spoke-CE1来的路由。这样会引起路由振荡，其过程如下：</p>
+<p>1.Spoke-CE1发来的路由因为AS_Path变成非最佳路由</p>
+<p>2.Spoke-PE1发布Update撤销路由的报文给Hub-PE来撤销192.168.1.0/24路由</p>
+<p>3.Hub-PE（通过撤销相应的OSPF LSA）撤销发给Hub-CE的路由</p>
+<p>4.Hub-CE（原理同上）撤销发给Hub-PE的路由</p>
+<p>5.Hub-PE发布Update撤销路由撤销发给Spoke-PE1的路由</p>
+<p>•于是在Spoke-PE1上从Spoke-CE1来的路由又变成最佳路由。Spoke-PE1又通过IBGP将路由发布给Hub-PE。Hub-PE又会返回该路由，从Spoke-CE1来的路由又变成非最佳路由。如此反复。</p>
+</blockquote>
+<h1 id="3-OSPF-VPN拓展"><a href="#3-OSPF-VPN拓展" class="headerlink" title="3.OSPF VPN拓展"></a>3.OSPF VPN拓展</h1><h2 id="OSPF与BGP互操作"><a href="#OSPF与BGP互操作" class="headerlink" title="OSPF与BGP互操作"></a>OSPF与BGP互操作</h2><h3 id="MPLS-VPN中的OSPF-BGP"><a href="#MPLS-VPN中的OSPF-BGP" class="headerlink" title="MPLS VPN中的OSPF/BGP"></a>MPLS VPN中的OSPF/BGP</h3><p>•当PE-CE间部署OSPF交互路由信息时，若在PE上使用标准BGP/OSPF过程（简称为BGP/OSPF互操作）互来传递路由信息，则远端PE在将BGP引入VPN实例的OSPF进程时，会直接产生Type5 LSA，不同站点都会将其他站点的路由视为自治系统外部路由（AS_external）。</p>
+<p>•为了解决标准BGP/OSPF的互操作导致的OSPF路由信息丢失的问题，BGP和OSPF都做了相应的拓展。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/24.png"></p>
+<blockquote>
+<p>•在实际应用中，如果两个要互通的Site都在相同的AS内，那么每个Site都应该将另一个Site的路由看成区域间路由，而不是AS外部路由。</p>
+</blockquote>
+<h3 id="BGP扩展团体属性"><a href="#BGP扩展团体属性" class="headerlink" title="BGP扩展团体属性"></a>BGP扩展团体属性</h3><p>•为了保留OSPF的路由信息，BGP新增了部分可携带OSPF路由信息的团体属性：</p>
+<ul>
+<li><p>Domain ID：域标识符用来标识和区分不同的域。</p>
+</li>
+<li><p>Route Type：包含被引入到BGP的OSPF路由的 Area-ID 以及Route Type</p>
+<ul>
+<li>Area-ID：PE 的VPN实例的OSPF进程与CE建立邻接关系的区域号</li>
+<li>Route Type：被引入的 OSPF 路由的类型<ul>
+<li>1 或 2：表示路由的类型为区域内部路由， 也就是 PE 根据 Type-1 及 Type-2 LSA 所计算出来的路由。</li>
+<li>3：表示路由的类型为区域间路由。</li>
+<li>5：表示路由的类型为 OSPF 外部路由，也就是 PE 通过 Type-5 LSA 计算得出的路由。当 Route-Type 字段的值为 5 时， Area-ID 字段的值需为 0.0.0.0。</li>
+<li>7：表示路由的类型为 NSSA 路由，也就是 PE 通过 Type-7 LSA 计算得出的路由。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Domain-ID"><a href="#Domain-ID" class="headerlink" title="Domain ID"></a>Domain ID</h3><p>•在PE上将OSPF引入BGP时，PE将根据本地的配置为BGP路由增加域ID属性，域ID作为BGP的扩展团体属性传播。</p>
+<p>•在PE将BGP路由引入OSPF时，若BGP路由携带的Domain ID与本地相同，则认为两个站点属于同一个OSPF路由域。若不相同，则认为不在同一个路由域。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/27.png"></p>
+<blockquote>
+<p>•Domain ID需要在绑定到VRF的OSPF进程视图下使用命令<strong>domain-id</strong>配置。</p>
+<ul>
+<li><p>缺省情况下，Domain ID的值为0（NULL）。如果不同OSPF域都使用NULL作为Domain ID，将无法区分OSPF域，因此它们之间的路由将被当作区域内路由。</p>
+</li>
+<li><p>如果一个OSPF域配置了非0（即非NULL）的Domain ID，NULL不再是该OSPF域的Domain ID。</p>
+</li>
+</ul>
+<p>•建议与同一个VPN相关的所有OSPF实例都使用相同的Domain ID，或者都使用缺省的Domain ID。</p>
+</blockquote>
+<h3 id="Domain-ID与Route-Type"><a href="#Domain-ID与Route-Type" class="headerlink" title="Domain ID与Route Type"></a>Domain ID与Route Type</h3><p>根据BGP路由中的Domain ID与Route Type属性，PE将产生不同类型的OSPF LSA类型发布到VRF的OSPF进程中</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/28.png"></p>
+<h2 id="OSPF防环"><a href="#OSPF防环" class="headerlink" title="OSPF防环"></a>OSPF防环</h2><h3 id="Type3路由防环-案例"><a href="#Type3路由防环-案例" class="headerlink" title="Type3路由防环 - 案例"></a>Type3路由防环 - 案例</h3><p>•如图是Type3 LSA路由产生环路的一个例子：</p>
+<p>​    ▫其中站点1和站点2都属于VPN1。</p>
+<p>​    ▫站点1通过OSPF Area0接入骨干网的PE1；</p>
+<p>​    ▫站点2通过OSPF Area0分别接入骨干网的PE2和PE3（双归属负载分担场景）。</p>
+<blockquote>
+<p>•环路产生过程如下：</p>
+<p>1.Site1的CE1通过Type3 LSA发布到192.168.1.0/24的路由给PE1。</p>
+<p>2.PE1向BGP引入OSPF VPN1进程，通过MP-IBGP将该路由发布给PE2和PE3。</p>
+<p>3.由于PE2上配置了BGP到OSPF的路由引入，故PE2将产生Type3 LSA给CE2，CE2将来自PE2的Type3 LSA发布给PE3。</p>
+<p>4.此时PE3收到两条到达192.168.1.0/24的路由：一条是PE1发布的，另一条是PE2上路由引入产生的。由于缺省情况下，IGP（OSPF）路由优先级高于IBGP路由，PE3将选择OSPF路由。</p>
+<p>5.PE3将优选的学自OSPF通过MP-IBGP发布给PE1。</p>
+<p>▫此时，PE1上存在两条到达目的地192.168.1.0/24网段的路由，一条通过OSPF学习自CE1，另一条通过MP-IBGP学习自PE3。可能会导致以下问题：</p>
+<ul>
+<li>PE1撤销192.168.1.0/24这条路由，但由于PE1与PE2之间的链路阻塞，BGP Update（撤销报文）无法及时发送给PE2，导致PE3发给PE1的路由依然存在（正常情况下会随着PE1发送给PE2的Update报文被撤销），PE1上到达目的地192.168.1.0/24的下一跳为PE3。此时路由环路产生。</li>
+<li>若PE1上MP-IBGP的路由优先级高于OSPF，则PE1会优选PE3通告的BGP路由，此时PE1需要撤销发给PE2的BGP路由，导致PE3撤销发布给PE1的路由，PE1上的OSPF再次被优选。如此反复，形成路由震荡。</li>
+</ul>
+</blockquote>
+<h3 id="Type3路由防环-DN位"><a href="#Type3路由防环-DN位" class="headerlink" title="Type3路由防环 - DN位"></a>Type3路由防环 - DN位</h3><p>•为了防止3类LSA环路，OSPF多实例进程使用LSA Options域中一个原先未使用的比特作为标志位，称为DN位。使用DN位可以防止Type3 LSA环路。</p>
+<p>•PE路由器的OSPF实例进程在进行SPF计算时，忽略DN置位的Type3 LSA。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/29.png"></p>
+<h3 id="Type5-7路由防环-案例"><a href="#Type5-7路由防环-案例" class="headerlink" title="Type5/7路由防环 - 案例"></a>Type5/7路由防环 - 案例</h3><p>•如图是Type5 LSA路由产生环路的一个例子：</p>
+<p>​    ▫其中站点1和站点2都属于VPN1。</p>
+<p>​    ▫站点1通过EBGP接入骨干网的PE1；</p>
+<p>​    ▫站点2通过OSPF分别接入骨干网的PE2和PE3。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/30.png"></p>
+<blockquote>
+<p>•环路产生过程如下：</p>
+<p>1.CE1通过EBGP发布到192.168.1.0/24的路由给PE1，AS_Path为65001。</p>
+<p>2.PE1通过MP-IBGP将该路由发布给PE2和PE3。</p>
+<p>3.PE2在OSPF VPN1实例进程中引入BGP路由，发布到192.168.1.0/24的Type5 LSA给CE2；</p>
+<p>4.CE2将该Type5 LSA发布给PE3。</p>
+<p>5.PE3将优选择OSPF路由（OSPF优先级高于IBGP），并通过MP-IBGP发布Update消息给PE1。</p>
+<p>6.PE1收到PE3发送的MP-IBGP Update消息。由于其中的路由是PE3的BGP引入的IGP（OSPF）路由，其AS_Path为空，因此PE3发布的MP-IBGP路由优先级比从CE1发布的EBGP路由优先级高，PE1将优选用PE3发布的路由。</p>
+<p>7.此时形成一条路由环路：PE3—&gt;CE2—&gt;PE2—&gt;PE1—&gt;PE3。</p>
+<p>•由于PE1不再优选CE1学来的路由，故PE1会撤销发给PE2的路由，PE2中的OSPF VPN实例进程进程中也要对应撤销引入的BGP路由，继而CE2、PE3都相继撤销该OSPF路由。PE3向PE1发布的BGP路由也被撤销，在PE1上，从CE1学来的路由又变成最优路由。这样，形成了路由振荡。</p>
+<p>•Type7 LSA环路的产生和消除的过程与Type5类似，此处不再赘述。</p>
+</blockquote>
+<h3 id="Type5-7路由防环-VPN-Route-Tag"><a href="#Type5-7路由防环-VPN-Route-Tag" class="headerlink" title="Type5/7路由防环 - VPN Route Tag"></a>Type5/7路由防环 - VPN Route Tag</h3><p>•可以使用VPN Route Tag（VPN路由标记）来防止此5类或7类路由环路。</p>
+<p>•PE在根据收到的BGP的私网路由生成5/7类LSA时，携带VPN路由标记。当PE发现LSA的VPN路由标记和本地配置的一样，就会忽略这条LSA，因此可以避免上述环路。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/31.png"></p>
+<blockquote>
+<p>•VPN路由标记不在BGP的扩展团体属性中传递，只是本地概念，只在收到BGP路由并且产生OSPF LSA的PE设备上有意义。</p>
+<p>•缺省情况下，VPN的路由标记是根据BGP的AS号计算得到的。如果没有配置BGP，则默认值为0。</p>
+<p>•可以通过指令<strong>route-tag</strong>配置VPN的路由标记。</p>
+</blockquote>
+<h2 id="OSPF-sham-link"><a href="#OSPF-sham-link" class="headerlink" title="OSPF sham link"></a>OSPF sham link</h2><h3 id="Sham-link的应用场景"><a href="#Sham-link的应用场景" class="headerlink" title="Sham link的应用场景"></a>Sham link的应用场景</h3><p>•通常情况下，BGP对等体之间通过BGP扩展团体属性在MPLS VPN骨干网上承载路由信息。另一端PE上运行的OSPF可利用这些信息来生成PE到CE的Type 3 LSA，这些路由是区域间路由（Inter_Area route）。</p>
+<p>•若在CE1和CE2之间增加一条后门（Backdoor）链路，并且直接运行OSPF交互路由。通过后门链路学习到的路由类型为区域内路由（Intra_Area route）。</p>
+<p>•由于区域内路由优于区域间路由，故后门链路会被优选，若想实现后门链路作为备份链路，可采用sham link实现。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/32.png"></p>
+<h3 id="Sham-link的工作机制"><a href="#Sham-link的工作机制" class="headerlink" title="Sham link的工作机制"></a>Sham link的工作机制</h3><p>•Sham link在两台PE之间创建了一条区域内链路。当LSA在伪装链路中泛洪，所有的OSPF路由类型都不会改变，不会转换成LSA3或者LSA5的类型。</p>
+<p>•Sham link被看成是两个VPN实例之间的链路，链路的两端是PE上的端点地址，分别作为建立连接时的源和目的地址。伪连接的源地址和目的地址使用32位掩码的Loopback接口地址，该Loopback接口需要绑定到VPN实例中，并通过BGP发布。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/33.png"></p>
+<blockquote>
+<p>•同一个OSPF进程的多条Sham link可以共用端点地址，但不同OSPF进程不能拥有两条端点地址完全相同的Sham link。</p>
+</blockquote>
+<h3 id="Sham-link的配置示例"><a href="#Sham-link的配置示例" class="headerlink" title="Sham link的配置示例"></a>Sham link的配置示例</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/34.png"></p>
+<blockquote>
+<p>•在配置Sham link时可以指定Sham link的路由开销。缺省值为1。</p>
+</blockquote>
+<h3 id="sham-link的配置验证"><a href="#sham-link的配置验证" class="headerlink" title="sham link的配置验证"></a>sham link的配置验证</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/35.png"></p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（多选题）在MPLS VPN组网中，当PE向OSPF引入从其他PE学习来的VPN路由时，可能会产生以下哪几类LSA（    ）。</p>
+<p>A.Type 1 LSA</p>
+<p><strong>B.Type 3 LSA</strong></p>
+<p><strong>C.Type 5 LSA</strong></p>
+<p><strong>D.Type 7 LSA</strong></p>
+<p>2.（判断）CE通过BGP传递路由给PE时，可能会携带SoO属性。（    ）。</p>
+<p>A. 正确</p>
+<p><strong>B. 错误</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS VPN在针对不同类型的场景下有不同的组网方案，常见的有Intranet组网、Extranet组网以及Hub&amp;Spoke组网。此外，根据MPLS VPN骨干网是否跨域又可以分为跨域组网和单域组网。</p>
+<p>•PE-CE之间进行路由信息交互时，可以使用静态路由、OSPF、IS-IS或BGP中的任何一种。其中OSPF为MPLS VPN做了许多扩展特性，如：</p>
+<p>​    ▫Domain ID：用来区分VPN实例中引入的路由是否来自同一个OSPF域</p>
+<p>​    ▫DN位：用来防止因为3类LSA产生的路由环路</p>
+<p>​    ▫VPN Route Tag：用来方式因为5类或7类LSA产生的路由环路</p>
+<p>​    ▫sham link：用于特殊场景下的OSPF路由选路控制</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IPadv-9-MPLS-VPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="tag"># IPadv-9-MPLS VPN部署与应用</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="next" title="IPadv-MPLSVPN原理与配置">
+                <i class="fa fa-chevron-left"></i> IPadv-MPLSVPN原理与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-MPLS-VPN%E5%BA%94%E7%94%A8%E4%B8%8E%E7%BB%84%E7%BD%91%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">1.MPLS VPN应用与组网概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">MPLS VPN典型应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E5%9F%BA%E6%9C%AC%E7%BB%84%E7%BD%91-Intranet"><span class="nav-number">3.2.</span> <span class="nav-text">MPLS VPN基本组网 - Intranet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E5%9F%BA%E6%9C%AC%E7%BB%84%E7%BD%91-Extranet"><span class="nav-number">3.3.</span> <span class="nav-text">MPLS VPN基本组网 - Extranet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E5%9F%BA%E6%9C%AC%E7%BB%84%E7%BD%91-Hub-amp-Spoke-1"><span class="nav-number">3.4.</span> <span class="nav-text">MPLS VPN基本组网 - Hub&amp;Spoke (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E5%9F%BA%E6%9C%AC%E7%BB%84%E7%BD%91-Hub-amp-Spoke-2"><span class="nav-number">3.5.</span> <span class="nav-text">MPLS VPN基本组网 - Hub&amp;Spoke (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MCE%E7%BB%84%E7%BD%91"><span class="nav-number">3.6.</span> <span class="nav-text">MCE组网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS-VPN%E8%B7%A8%E5%9F%9F%E7%BB%84%E7%BD%91"><span class="nav-number">3.7.</span> <span class="nav-text">MPLS VPN跨域组网</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-MPLS-VPN%E5%85%B8%E5%9E%8B%E5%9C%BA%E6%99%AF%E9%83%A8%E7%BD%B2%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.</span> <span class="nav-text">2.MPLS VPN典型场景部署介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Intranet%E5%9C%BA%E6%99%AF"><span class="nav-number">4.1.</span> <span class="nav-text">Intranet场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2Intranet%E5%9C%BA%E6%99%AF%E7%9A%84MPLS-VPN"><span class="nav-number">4.1.1.</span> <span class="nav-text">部署Intranet场景的MPLS VPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%80%9D%E8%B7%AF"><span class="nav-number">4.1.2.</span> <span class="nav-text">部署思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PE-CE%E4%B9%8B%E9%97%B4%E9%83%A8%E7%BD%B2OSPF-1"><span class="nav-number">4.1.3.</span> <span class="nav-text">PE-CE之间部署OSPF (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PE-CE%E4%B9%8B%E9%97%B4%E9%83%A8%E7%BD%B2OSPF-2"><span class="nav-number">4.1.4.</span> <span class="nav-text">PE-CE之间部署OSPF (2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PE-CE%E4%B9%8B%E9%97%B4%E9%83%A8%E7%BD%B2%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-number">4.1.5.</span> <span class="nav-text">PE-CE之间部署静态路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PE-CE%E4%B9%8B%E9%97%B4%E9%83%A8%E7%BD%B2EBGP"><span class="nav-number">4.1.6.</span> <span class="nav-text">PE-CE之间部署EBGP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84BGP%E9%85%8D%E7%BD%AE-AS%E5%8F%B7%E6%9B%BF%E6%8D%A2"><span class="nav-number">4.1.7.</span> <span class="nav-text">特殊场景下的BGP配置 - AS号替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84BGP%E9%85%8D%E7%BD%AE-SoO"><span class="nav-number">4.1.8.</span> <span class="nav-text">特殊场景下的BGP配置 - SoO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PE-CE%E4%B9%8B%E9%97%B4%E9%83%A8%E7%BD%B2IS-IS"><span class="nav-number">4.1.9.</span> <span class="nav-text">PE-CE之间部署IS-IS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hub-amp-Spoke%E5%9C%BA%E6%99%AF"><span class="nav-number">4.2.</span> <span class="nav-text">Hub&amp;Spoke场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2Hub-amp-Spoke%E5%9C%BA%E6%99%AF%E7%9A%84MPLS-VPN"><span class="nav-number">4.2.1.</span> <span class="nav-text">部署Hub&amp;Spoke场景的MPLS VPN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRF%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.2.</span> <span class="nav-text">VRF配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%80%E9%83%A8%E7%BD%B2-%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.3.</span> <span class="nav-text">方式一部署 - 路由发布过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%80%E9%83%A8%E7%BD%B2-Hub-PE%E4%B8%8EHub-CE%E9%97%B4%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.4.</span> <span class="nav-text">方式一部署 - Hub-PE与Hub-CE间配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%BA%8C%E9%83%A8%E7%BD%B2-%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.5.</span> <span class="nav-text">方式二部署 - 路由发布过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%BA%8C%E9%83%A8%E7%BD%B2-Hub-PE%E4%B8%8EHub-CE%E9%97%B4%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.6.</span> <span class="nav-text">方式二部署 - Hub-PE与Hub-CE间配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%89%E9%83%A8%E7%BD%B2-%E8%B7%AF%E7%94%B1%E5%8F%91%E5%B8%83%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.7.</span> <span class="nav-text">方式三部署 - 路由发布过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B2%A1%E6%9C%89%E6%96%B9%E5%BC%8F%E5%9B%9B%EF%BC%9F"><span class="nav-number">4.2.8.</span> <span class="nav-text">为什么没有方式四？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-OSPF-VPN%E6%8B%93%E5%B1%95"><span class="nav-number">5.</span> <span class="nav-text">3.OSPF VPN拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E4%B8%8EBGP%E4%BA%92%E6%93%8D%E4%BD%9C"><span class="nav-number">5.1.</span> <span class="nav-text">OSPF与BGP互操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS-VPN%E4%B8%AD%E7%9A%84OSPF-BGP"><span class="nav-number">5.1.1.</span> <span class="nav-text">MPLS VPN中的OSPF&#x2F;BGP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BGP%E6%89%A9%E5%B1%95%E5%9B%A2%E4%BD%93%E5%B1%9E%E6%80%A7"><span class="nav-number">5.1.2.</span> <span class="nav-text">BGP扩展团体属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Domain-ID"><span class="nav-number">5.1.3.</span> <span class="nav-text">Domain ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Domain-ID%E4%B8%8ERoute-Type"><span class="nav-number">5.1.4.</span> <span class="nav-text">Domain ID与Route Type</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF%E9%98%B2%E7%8E%AF"><span class="nav-number">5.2.</span> <span class="nav-text">OSPF防环</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Type3%E8%B7%AF%E7%94%B1%E9%98%B2%E7%8E%AF-%E6%A1%88%E4%BE%8B"><span class="nav-number">5.2.1.</span> <span class="nav-text">Type3路由防环 - 案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type3%E8%B7%AF%E7%94%B1%E9%98%B2%E7%8E%AF-DN%E4%BD%8D"><span class="nav-number">5.2.2.</span> <span class="nav-text">Type3路由防环 - DN位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type5-7%E8%B7%AF%E7%94%B1%E9%98%B2%E7%8E%AF-%E6%A1%88%E4%BE%8B"><span class="nav-number">5.2.3.</span> <span class="nav-text">Type5&#x2F;7路由防环 - 案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type5-7%E8%B7%AF%E7%94%B1%E9%98%B2%E7%8E%AF-VPN-Route-Tag"><span class="nav-number">5.2.4.</span> <span class="nav-text">Type5&#x2F;7路由防环 - VPN Route Tag</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPF-sham-link"><span class="nav-number">5.3.</span> <span class="nav-text">OSPF sham link</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sham-link%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">5.3.1.</span> <span class="nav-text">Sham link的应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sham-link%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="nav-number">5.3.2.</span> <span class="nav-text">Sham link的工作机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sham-link%E7%9A%84%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.3.3.</span> <span class="nav-text">Sham link的配置示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sham-link%E7%9A%84%E9%85%8D%E7%BD%AE%E9%AA%8C%E8%AF%81"><span class="nav-number">5.3.4.</span> <span class="nav-text">sham link的配置验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

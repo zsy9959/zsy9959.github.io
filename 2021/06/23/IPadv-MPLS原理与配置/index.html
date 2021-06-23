@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IPadv-6-MPLS原理与配置," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•90年代中期，互联网流量的快速增长。传统IP报文依赖路由器查询路由表转发，但由于硬件技术存在限制导致转发性能低，路由器的查表转发成为了网络数据转发的瓶颈。  •因此，旨在提高路由器转发速度的MPLS（Multi-Protocol Label Switching，多协议标签交换）被提出。与传统IP路由方式相比，MPLS在数据转发时，只在网络边缘分析IP报文头，在网络内部采用更为高效的标签（La">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPadv-MPLS原理与配置">
+<meta property="og:url" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•90年代中期，互联网流量的快速增长。传统IP报文依赖路由器查询路由表转发，但由于硬件技术存在限制导致转发性能低，路由器的查表转发成为了网络数据转发的瓶颈。  •因此，旨在提高路由器转发速度的MPLS（Multi-Protocol Label Switching，多协议标签交换）被提出。与传统IP路由方式相比，MPLS在数据转发时，只在网络边缘分析IP报文头，在网络内部采用更为高效的标签（La">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png">
+<meta property="article:published_time" content="2021-06-23T05:09:54.000Z">
+<meta property="article:modified_time" content="2021-06-23T05:35:06.407Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IPadv-6-MPLS原理与配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/06/23/IPadv-MPLS原理与配置/"/>
+
+
+
+
+
+  <title>IPadv-MPLS原理与配置 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IPadv-MPLS原理与配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T13:09:54+08:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•90年代中期，互联网流量的快速增长。传统IP报文依赖路由器查询路由表转发，但由于硬件技术存在限制导致转发性能低，路由器的查表转发成为了网络数据转发的瓶颈。 </p>
+<p>•因此，旨在提高路由器转发速度的MPLS（Multi-Protocol Label Switching，多协议标签交换）被提出。与传统IP路由方式相比，MPLS在数据转发时，只在网络边缘分析IP报文头，在网络内部采用更为高效的标签（Label）转发，节约了处理时间。</p>
+<p>•随着设备硬件性能不断提升，MPLS在提高数据转发速度上的优势逐渐弱化，但其支持多层标签嵌套和设备内转控分离的特点，使其在VPN（Virtual Private Network，虚拟私有网络）、QoS（Quality of Service，服务质量）等新兴应用中得到广泛应用。</p>
+<p>•本课程主要介绍MPLS的工作原理以及标签的转发流程，静态标签交换路径的配置方法等。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MPLS的基本概念及术语</p>
+<p>▫描述MPLS的工作原理</p>
+<p>▫实现静态LSP的配置</p>
+<p>▫描述MPLS的转发流程</p>
+<h1 id="1-MPLS基础"><a href="#1-MPLS基础" class="headerlink" title="1.MPLS基础"></a>1.MPLS基础</h1><h2 id="MPLS概述"><a href="#MPLS概述" class="headerlink" title="MPLS概述"></a>MPLS概述</h2><h3 id="传统IP路由转发"><a href="#传统IP路由转发" class="headerlink" title="传统IP路由转发"></a>传统IP路由转发</h3><p>•传统的IP转发采用的是逐跳转发。数据报文经过每一台路由器，都要被解封装查看报文网络层信息，然后根据路由最长匹配原则查找路由表指导报文转发。各路由器重复进行解封装查找路由表和再封装的过程，所以转发性能低。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h3 id="MPLS基本概念"><a href="#MPLS基本概念" class="headerlink" title="MPLS基本概念"></a>MPLS基本概念</h3><p>•MPLS位于TCP/IP协议栈中的数据链路层和网络层之间，可以向所有网络层提供服务。</p>
+<p>•通过在数据链路层和网络层之间增加额外的MPLS头部，基于MPLS头部实现数据快速转发。</p>
+<p>•本课程仅介绍MPLS在IP网络中的应用。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）、Appletalk、DECnet、CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
+<p>•MPLS以标签交换替代IP转发。标签是一个短而定长的、只具有本地意义的标识符。</p>
+</blockquote>
+<h2 id="MPLS术语"><a href="#MPLS术语" class="headerlink" title="MPLS术语"></a>MPLS术语</h2><h3 id="MPLS术语介绍-LSR与MPLS域"><a href="#MPLS术语介绍-LSR与MPLS域" class="headerlink" title="MPLS术语介绍 - LSR与MPLS域"></a>MPLS术语介绍 - LSR与MPLS域</h3><p>•MPLS域（MPLS Domain）：一系列连续的运行MPLS的网络设备构成了一个MPLS域。</p>
+<p>•LSR（Label Switching Router，标签交换路由器）：支持MPLS的路由器（实际上也指支持MPLS的交换机或其他网络设备）。位于MPLS域边缘、连接其它网络的LSR称为边沿路由器LER（Label Edge Router），区域内部的LSR称为核心LSR（Core LSR）。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<h3 id="MPLS术语介绍-LSR分类"><a href="#MPLS术语介绍-LSR分类" class="headerlink" title="MPLS术语介绍 - LSR分类"></a>MPLS术语介绍 - LSR分类</h3><p>•除了根据LSR在MPLS域中的位置进行分类之外，还可以根据对数据处理方式的不同进行分类：</p>
+<p>▫入站LSR（Ingress LSR）：通常是向IP报文中压入MPLS头部并生成MPLS报文的LSR。</p>
+<p>▫中转LSR（Transit LSR）：通常是将MPLS报文进行例如标签置换操作，并将报文继续在MPLS域中转发的LSR。</p>
+<p>▫出站LSR（Egress LSR）：通常是将MPLS报文中MPLS头部移除，还原为IP报文的LSR。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<h3 id="MPLS术语介绍-LSP"><a href="#MPLS术语介绍-LSP" class="headerlink" title="MPLS术语介绍 - LSP"></a>MPLS术语介绍 - LSP</h3><p>•LSP（Label Switched Path，标签交换路径）是标签报文穿越MPLS网络到达目的地所走的路径。</p>
+<p>•同一个FEC的报文通常采用相同的LSP穿越MPLS域，所以对同一个FEC，LSR总是用相同的标签转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<blockquote>
+<p>•一条LSP包含一台入站LSR、一台出站LSR以及数量可变的中转LSR，因此LSP也可以看做是这些LSR的有序集合。</p>
+<p>•LSP需要在数据转发开始前建立完成，只有这样报文才能顺利穿越MPLS域。</p>
+<p>•LSP可通过静态和动态两种方式建立。</p>
+<p>•需要注意的是，LSP是一个从“起点”到“终点”的单向路径，若需要双向数据互通，则需要在双方之间建立双向的LSP。</p>
+</blockquote>
+<h2 id="MPLS标签"><a href="#MPLS标签" class="headerlink" title="MPLS标签"></a>MPLS标签</h2><h3 id="MPLS标签-1"><a href="#MPLS标签-1" class="headerlink" title="MPLS标签"></a>MPLS标签</h3><p>•IP报文进入MPLS域之前，会被入站LSR压入MPLS头部（又叫MPLS标签），形成一个MPLS标签报文。一个标签报文可以包含一个或多个MPLS标签。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>•EXP字段在早期的MPLS标准中被定义，意为试验性的字段，但实际上该字段主要被用于CoS。为了避免歧义，RFC5462重新定义了该字段，命名为流分类（Traffic Class）。</p>
+</blockquote>
+<h3 id="MPLS标签栈"><a href="#MPLS标签栈" class="headerlink" title="MPLS标签栈"></a>MPLS标签栈</h3><p>•MPLS支持一层或多层标签头部，这些标签头部的有序集合被称为标签栈（Label Stack）。</p>
+<p>•当标签栈中存在多个标签时，这些标签的顺序是非常讲究的：</p>
+<p>​    ▫最靠近二层头部的标签是栈顶标签，标签中的S字段为0。</p>
+<p>​    ▫最靠近IP头部的标签是栈底标签，标签中的S字段为1。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<blockquote>
+<p>•当上层为MPLS标签栈时，以太网头部中的Type字段为0x8847，PPP头部中的Protocol字段为0x8281。</p>
+</blockquote>
+<h3 id="标签空间"><a href="#标签空间" class="headerlink" title="标签空间"></a>标签空间</h3><p>•标签是一个短而定长的、只具有本地意义的标识符。标签空间就是指标签的取值范围。标签值的范围及规划如下：</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h3 id="MPLS标签的处理"><a href="#MPLS标签的处理" class="headerlink" title="MPLS标签的处理"></a>MPLS标签的处理</h3><p>LSR对标签的操作类型包括标签压入（Push）、标签交换（Swap）和标签弹出（Pop）。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<h1 id="2-MPLS转发"><a href="#2-MPLS转发" class="headerlink" title="2.MPLS转发"></a>2.MPLS转发</h1><h2 id="MPLS转发概述"><a href="#MPLS转发概述" class="headerlink" title="MPLS转发概述"></a>MPLS转发概述</h2><p>•MPLS转发的本质就是将数据归到对应的FEC并按照提前建立好的LSP进行转发。</p>
+<ul>
+<li><p>对于整个MPLS域，LSP是某一给定的FEC进入域和离开域的路径，可以看成是LSR的有序集合。</p>
+</li>
+<li><p>对于单台LSR，需要建立标签转发表，用标签来标识FEC，并绑定相应的标签处理和转发等行为。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<blockquote>
+<p>•同一个FEC，若进入MPLS域的Ingress LSR（入站LSR）不同，转发时的LSP也不相同。</p>
+<p>•同一个FEC，LSR的处理方式相同，不论这个FEC来自哪里（进入设备的接口）。</p>
+<p>•LSR的转发动作决定了LSP，而标签转发表确定转发动作，所以建立标签转发表也可以理解为建立LSP。</p>
+<p>•如图所示，因为有着相同的目的地，所以这三份数据属于同一个转发等价类FEC1。同时由于入站LSR不同，这些数据将分别在LSP1、LSP2和LSP3上被转发。因为标签仅具有本地意义，所以每台LSR上给同一FEC分配的标签，可以相同，也可以不同。</p>
+</blockquote>
+<h2 id="MPLS体系结构"><a href="#MPLS体系结构" class="headerlink" title="MPLS体系结构"></a>MPLS体系结构</h2><p>MPLS的体系结构由控制平面 (Control Plane)和转发平面 (Forwarding Plane)组成。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•控制平面：</p>
+<ul>
+<li><p>控制平面是无连接的，主要功能是负责产生和维护路由信息以及标签信息。</p>
+</li>
+<li><p>控制平面包括：</p>
+<ul>
+<li>路由信息表RIB（Routing Information Base）：由IP路由协议（IP Routing Protocol）、静态路由和直连路由共同生成，用于选择路由。</li>
+<li>标签信息表LIB（Label Information Base）：用于管理标签信息，LIB中的表项可由标签交换协议（LDP、RSVP等协议）或静态配置生成。</li>
+</ul>
+</li>
+</ul>
+<p>•转发平面：</p>
+<ul>
+<li><p>转发平面也称为数据平面，是面向连接的， 主要功能是负责普通IP报文的转发以及带MPLS标签报文的转发。</p>
+</li>
+<li><p>转发平面包括：</p>
+<ul>
+<li>转发信息表FIB（Forwarding Information Base）：从RIB提取必要的路由信息生成，负责普通IP报文的转发。</li>
+<li>标签转发信息表LFIB（Label Forwarding Information Base）：简称标签转发表，负责带MPLS标签报文的转发。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="控制平面与转发平面"><a href="#控制平面与转发平面" class="headerlink" title="控制平面与转发平面"></a>控制平面与转发平面</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<h2 id="LSP建立原则"><a href="#LSP建立原则" class="headerlink" title="LSP建立原则"></a>LSP建立原则</h2><p>•当网络层协议为IP协议时，FEC所对应的路由必须存在于LSR的IP路由表中，否则该FEC的标签转发表项不生效。</p>
+<p>•LSR用标签标识指定FEC，所以该FEC的数据被发送至LSR时，必须携带正确的标签，才能被LSR正确的处理。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<h2 id="LSP建立方式"><a href="#LSP建立方式" class="headerlink" title="LSP建立方式"></a>LSP建立方式</h2><p>•MPLS需要为报文事先分配好标签，建立一条LSP，才能进行报文转发。LSP分为静态LSP和动态LSP两种。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•静态LSP：</p>
+<ul>
+<li>由于静态LSP各节点上不能相互感知到整个LSP的情况，因此静态LSP是一个本地的概念。</li>
+</ul>
+<p>•动态LSP：</p>
+<ul>
+<li>其他标签分布协议：<ul>
+<li>RSVP-TE：Resource Reservation Protocol Traffic Engineering，它是对RSVP的扩展，用于建立基于约束的LSP。它拥有普通LDP LSP没有的功能，如发布带宽预留请求、带宽约束、链路颜色和显式路径等。</li>
+<li>MP-BGP：Multiprotocol Border Gateway Protocol，MP-BGP是在BGP协议基础上扩展的协议。MP-BGP支持为MPLS VPN业务中私网路由和跨域VPN的标签路由分配标签。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="MPLS标签转发"><a href="#MPLS标签转发" class="headerlink" title="MPLS标签转发"></a>MPLS标签转发</h2><p>LSR处理报文时主要根据FTN、 NHLFE和ILM。</p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•Tunnel ID：为了给使用隧道的上层应用（如VPN、路由管理）提供统一的接口，系统自动为隧道分配了一个ID，也称为Tunnel ID。该Tunnel ID的长度为32比特，只是本地有效。在MPLS转发过程中，FIB、ILM和NHLFE表项是通过Tunnel ID关联的。</p>
+</blockquote>
+<h2 id="Ingress-LSR的处理"><a href="#Ingress-LSR的处理" class="headerlink" title="Ingress LSR的处理"></a>Ingress LSR的处理</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<blockquote>
+<p>•在Ingress LSR，通过查询FIB表（得到FTN信息）和NHLFE表指导报文的转发。</p>
+<p>•当IP报文进入MPLS域时，首先查看FIB表，检查目的IP地址对应的Tunnel ID值是否为0x0。</p>
+<p>​    ▫如果Tunnel ID值为0x0，则进入正常的IP转发流程。</p>
+<p>​    ▫如果Tunnel ID值不为0x0，则进入MPLS转发流程。</p>
+</blockquote>
+<h2 id="Transit-LSR的处理"><a href="#Transit-LSR的处理" class="headerlink" title="Transit LSR的处理"></a>Transit LSR的处理</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<blockquote>
+<p>•在Transit LSR，通过查询ILM表和NHLFE表指导MPLS报文的转发。</p>
+</blockquote>
+<h2 id="Egress-LSR的处理"><a href="#Egress-LSR的处理" class="headerlink" title="Egress LSR的处理"></a>Egress LSR的处理</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<blockquote>
+<p>•在Egress LSR，通过查询ILM表指导MPLS报文的转发。</p>
+</blockquote>
+<h2 id="MPLS详细转发过程"><a href="#MPLS详细转发过程" class="headerlink" title="MPLS详细转发过程"></a>MPLS详细转发过程</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<h1 id="3-静态LSP配置"><a href="#3-静态LSP配置" class="headerlink" title="3.静态LSP配置"></a>3.静态LSP配置</h1><h2 id="MPLS基本配置命令"><a href="#MPLS基本配置命令" class="headerlink" title="MPLS基本配置命令"></a>MPLS基本配置命令</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<h2 id="静态LSP配置命令-1"><a href="#静态LSP配置命令-1" class="headerlink" title="静态LSP配置命令 (1)"></a>静态LSP配置命令 (1)</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<blockquote>
+<p>•out-label占用的是下游LSR的标签空间，而下游空间采用的标签分发方式不确定，所以out-label的标签空间为16~1048575。</p>
+<p>•in-label占用的是当前LSR的标签空间，采用静态LSP时，标签空间为16~1023。</p>
+</blockquote>
+<h2 id="静态LSP配置命令-2"><a href="#静态LSP配置命令-2" class="headerlink" title="静态LSP配置命令 (2)"></a>静态LSP配置命令 (2)</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<h2 id="静态LSP配置案例"><a href="#静态LSP配置案例" class="headerlink" title="静态LSP配置案例"></a>静态LSP配置案例</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<h2 id="静态LSP配置案例-检查配置"><a href="#静态LSP配置案例-检查配置" class="headerlink" title="静态LSP配置案例 - 检查配置"></a>静态LSP配置案例 - 检查配置</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<h2 id="静态LSP配置案例-抓包分析"><a href="#静态LSP配置案例-抓包分析" class="headerlink" title="静态LSP配置案例 - 抓包分析"></a>静态LSP配置案例 - 抓包分析</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选）下面对MPLS头部的描述正确的是 （   )</p>
+<p><strong>A.MPLS头部的长度为32比特</strong></p>
+<p>B.MPLS头部中的Label字段取值范围为0~65535</p>
+<p><strong>C.MPLS可以实现多层MPLS头部的嵌套</strong></p>
+<p>D.可以通过MPLS头部中的max_hop字段防止标签报文被无限制转发</p>
+<p>2.（单选）在配置Transit LSR上的静态LSP时，入标签和出标签的取值均为16~1023 </p>
+<p>A.正确</p>
+<p><strong>B.错误</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS最初是为了解决传统IP路由器查表转发速度慢而被提出的，是一种通过标签头部实现快速转发的技术。</p>
+<p>•MPLS标签是一个短而定长的、只具有本地意义的标识符，用于唯一标识一个分组所属的FEC。LSR对标签的操作类型包括标签压入、标签交换和标签弹出。</p>
+<p>•MPLS包含控制平面和数据平面，控制平面主要负责路由信息的传递和标签的分发，数据平面主要负责数据的转发。</p>
+<p>•随着技术的发展，MPLS在数据转发速度上的优势逐渐弱化，但其特性使其在VPN领域得到广泛应用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IPadv-6-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="tag"># IPadv-6-MPLS原理与配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" rel="next" title="IPadv-IGP高级特性">
+                <i class="fa fa-chevron-left"></i> IPadv-IGP高级特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="IPadv-MPLSLDP原理与配置">
+                IPadv-MPLSLDP原理与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-MPLS%E5%9F%BA%E7%A1%80"><span class="nav-number">3.</span> <span class="nav-text">1.MPLS基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">MPLS概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9FIP%E8%B7%AF%E7%94%B1%E8%BD%AC%E5%8F%91"><span class="nav-number">3.1.1.</span> <span class="nav-text">传统IP路由转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.2.</span> <span class="nav-text">MPLS基本概念</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E6%9C%AF%E8%AF%AD"><span class="nav-number">3.2.</span> <span class="nav-text">MPLS术语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E6%9C%AF%E8%AF%AD%E4%BB%8B%E7%BB%8D-LSR%E4%B8%8EMPLS%E5%9F%9F"><span class="nav-number">3.2.1.</span> <span class="nav-text">MPLS术语介绍 - LSR与MPLS域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E6%9C%AF%E8%AF%AD%E4%BB%8B%E7%BB%8D-LSR%E5%88%86%E7%B1%BB"><span class="nav-number">3.2.2.</span> <span class="nav-text">MPLS术语介绍 - LSR分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E6%9C%AF%E8%AF%AD%E4%BB%8B%E7%BB%8D-LSP"><span class="nav-number">3.2.3.</span> <span class="nav-text">MPLS术语介绍 - LSP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E6%A0%87%E7%AD%BE"><span class="nav-number">3.3.</span> <span class="nav-text">MPLS标签</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E6%A0%87%E7%AD%BE-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">MPLS标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E6%A0%87%E7%AD%BE%E6%A0%88"><span class="nav-number">3.3.2.</span> <span class="nav-text">MPLS标签栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E7%A9%BA%E9%97%B4"><span class="nav-number">3.3.3.</span> <span class="nav-text">标签空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MPLS%E6%A0%87%E7%AD%BE%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">3.3.4.</span> <span class="nav-text">MPLS标签的处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-MPLS%E8%BD%AC%E5%8F%91"><span class="nav-number">4.</span> <span class="nav-text">2.MPLS转发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E8%BD%AC%E5%8F%91%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">MPLS转发概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-number">4.2.</span> <span class="nav-text">MPLS体系结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E4%B8%8E%E8%BD%AC%E5%8F%91%E5%B9%B3%E9%9D%A2"><span class="nav-number">4.3.</span> <span class="nav-text">控制平面与转发平面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSP%E5%BB%BA%E7%AB%8B%E5%8E%9F%E5%88%99"><span class="nav-number">4.4.</span> <span class="nav-text">LSP建立原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSP%E5%BB%BA%E7%AB%8B%E6%96%B9%E5%BC%8F"><span class="nav-number">4.5.</span> <span class="nav-text">LSP建立方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E6%A0%87%E7%AD%BE%E8%BD%AC%E5%8F%91"><span class="nav-number">4.6.</span> <span class="nav-text">MPLS标签转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ingress-LSR%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">4.7.</span> <span class="nav-text">Ingress LSR的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transit-LSR%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">4.8.</span> <span class="nav-text">Transit LSR的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Egress-LSR%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">4.9.</span> <span class="nav-text">Egress LSR的处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E8%AF%A6%E7%BB%86%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B"><span class="nav-number">4.10.</span> <span class="nav-text">MPLS详细转发过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E9%9D%99%E6%80%81LSP%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">3.静态LSP配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MPLS%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">5.1.</span> <span class="nav-text">MPLS基本配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81LSP%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="nav-number">5.2.</span> <span class="nav-text">静态LSP配置命令 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81LSP%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-2"><span class="nav-number">5.3.</span> <span class="nav-text">静态LSP配置命令 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81LSP%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B"><span class="nav-number">5.4.</span> <span class="nav-text">静态LSP配置案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81LSP%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE"><span class="nav-number">5.5.</span> <span class="nav-text">静态LSP配置案例 - 检查配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81LSP%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B-%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90"><span class="nav-number">5.6.</span> <span class="nav-text">静态LSP配置案例 - 抓包分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

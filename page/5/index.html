@@ -241,6 +241,1077 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/WLAN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/02/WLAN/" itemprop="url">WLAN</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T16:55:54+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="WLAN概述"><a href="#WLAN概述" class="headerlink" title="WLAN概述"></a>WLAN概述</h2><h3 id="什么是WLAN"><a href="#什么是WLAN" class="headerlink" title="什么是WLAN"></a>什么是WLAN</h3><p>WLAN即Wireless LAN(无线局域网），是指通过无线技术构建的无线局域网络。WLAN广义上是指以无线电波、激光、红外线等无线信号来代替有线局域网中的部分或全部传输介质所构成的网络。</p>
+<p><img src="/2021/05/02/WLAN/1.png"></p>
+<h3 id="IEEE-802-11、WLAN与Wi-Fi"><a href="#IEEE-802-11、WLAN与Wi-Fi" class="headerlink" title="IEEE 802.11、WLAN与Wi-Fi"></a>IEEE 802.11、WLAN与Wi-Fi</h3><p>IEEE 802.11标准与Wi-Fi的世代</p>
+<p><img src="/2021/05/02/WLAN/2.png"></p>
+<h3 id="Wi-Fi在办公场景的发展趋势"><a href="#Wi-Fi在办公场景的发展趋势" class="headerlink" title="Wi-Fi在办公场景的发展趋势"></a>Wi-Fi在办公场景的发展趋势</h3><p><img src="/2021/05/02/WLAN/3.png"></p>
+<h2 id="WLAN的基本概念"><a href="#WLAN的基本概念" class="headerlink" title="WLAN的基本概念"></a>WLAN的基本概念</h2><h3 id="WLAN设备介绍"><a href="#WLAN设备介绍" class="headerlink" title="WLAN设备介绍"></a>WLAN设备介绍</h3><p><img src="/2021/05/02/WLAN/4.png"></p>
+<h3 id="基本的WLAN组网架构"><a href="#基本的WLAN组网架构" class="headerlink" title="基本的WLAN组网架构"></a>基本的WLAN组网架构</h3><p><img src="/2021/05/02/WLAN/5.png"></p>
+<h3 id="敏捷分布式AP架构"><a href="#敏捷分布式AP架构" class="headerlink" title="敏捷分布式AP架构"></a>敏捷分布式AP架构</h3><p>架构特点</p>
+<ul>
+<li>AP的一种特殊架构，将AP拆分为中心AP和敏分AP两部分，中心AP可管理多台敏分AP，在适用的场景下，成本低，覆盖好。敏捷分布式AP可以用于FAT AP、AC+FIT AP、云管理架构。</li>
+<li>适用范围:房间分布密集的场景。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/6.png"></p>
+<h3 id="有线侧组网概念-CAPWAP协议"><a href="#有线侧组网概念-CAPWAP协议" class="headerlink" title="有线侧组网概念:CAPWAP协议"></a>有线侧组网概念:CAPWAP协议</h3><h4 id="什么是CAPWAP隧道"><a href="#什么是CAPWAP隧道" class="headerlink" title="什么是CAPWAP隧道"></a>什么是CAPWAP隧道</h4><p>CAPWAP ( Control And Provisioning of WirelessAccess Points Protocol，无线接入点控制和配置协议）∶该协议定义了如何对AP进行管理、业务配置，即AC通过CAPWAP隧道来实现对AP的集中管理和控制。</p>
+<h4 id="CAPWAP隧道的功能"><a href="#CAPWAP隧道的功能" class="headerlink" title="CAPWAP隧道的功能"></a>CAPWAP隧道的功能</h4><ul>
+<li>AP与AC间的状态维护。</li>
+<li>AC通过CAPWAP隧道对AP进行管理、业务配置下发。</li>
+<li>当采用隧道转发模式时，AP将STA发出的数据通过CAPWAP隧道实现与AC之间的交互。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/7.png"></p>
+<h3 id="有线侧组网概念-AP-AC组网方式"><a href="#有线侧组网概念-AP-AC组网方式" class="headerlink" title="有线侧组网概念:AP-AC组网方式"></a>有线侧组网概念:AP-AC组网方式</h3><p>AP和AC间的组网分为:二层组网和三层组网。</p>
+<h4 id="二层组网"><a href="#二层组网" class="headerlink" title="二层组网"></a>二层组网</h4><ul>
+<li>二层组网:AP与AC之间的网络为直连或者二层网络。</li>
+<li>由于二层组网比较简单，适用于简单临时的组网，能够进行比较快速的组网配置,但不适用于大型组网架构。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/8.png"></p>
+<h4 id="三层组网"><a href="#三层组网" class="headerlink" title="三层组网"></a>三层组网</h4><ul>
+<li><p>AP与AC之间的网络为三层网络。</p>
+</li>
+<li><p>在实际组网中，一台AC可以连接几十甚至几百台AP，组网一般比较复杂，在大型组网中一般采用三层组网。</p>
+</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/9.png"></p>
+<h3 id="有线侧组网概念-AC连接方式"><a href="#有线侧组网概念-AC连接方式" class="headerlink" title="有线侧组网概念:AC连接方式"></a>有线侧组网概念:AC连接方式</h3><p>AC的连接方式分为:直连式组网和旁挂式组网。</p>
+<h4 id="直连式组网"><a href="#直连式组网" class="headerlink" title="直连式组网"></a>直连式组网</h4><ul>
+<li>直连式组网可以认为AP、AC与上层网络串联在一起，所有数据必须通过AC到达上层网络。</li>
+<li>直连式组网中AC同时扮演AC和汇聚交换机的功能,AP的数据业务和管理业务都由AC集中转发和处理。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/10.png"></p>
+<h4 id="旁挂式组网"><a href="#旁挂式组网" class="headerlink" title="旁挂式组网"></a>旁挂式组网</h4><ul>
+<li><p>旁挂式组网，AC旁挂在AP与上行网络的直连网络中，不再直接连接AP。</p>
+</li>
+<li><p>旁挂式组网，AC旁挂在AP与上行网络的直连网络上,AP的业务数据可以不经AC而直接到达上行网络。</p>
+<p><img src="/2021/05/02/WLAN/11.png"></p>
+</li>
+</ul>
+<h3 id="无线侧组网概念-无线通信系统"><a href="#无线侧组网概念-无线通信系统" class="headerlink" title="无线侧组网概念:无线通信系统"></a>无线侧组网概念:无线通信系统</h3><p>无线通信系统中，信息可以是图像、文字、声音等。信息需要先经过信源编码转换为方便于电路计算和处理的数字信号，再经过信道编码和调制，转换为无线电波发射出去。</p>
+<p><img src="/2021/05/02/WLAN/12.png"></p>
+<h3 id="无线侧组网概念-无线电磁波"><a href="#无线侧组网概念-无线电磁波" class="headerlink" title="无线侧组网概念:无线电磁波"></a>无线侧组网概念:无线电磁波</h3><p>无线电磁波是频率介于3赫兹和约300G赫兹之间的电磁波，也叫作射频电波，或简称射频、射电。无线电技术将声音讯号或其他信号经过转换，利用无线电磁波传播。</p>
+<p><img src="/2021/05/02/WLAN/13.png"></p>
+<h3 id="无线侧组网概念-无线信道"><a href="#无线侧组网概念-无线信道" class="headerlink" title="无线侧组网概念:无线信道"></a>无线侧组网概念:无线信道</h3><p>信道是传输信息的通道，无线信道就是空间中的无线电磁波。</p>
+<h4 id="2-4GHz频段"><a href="#2-4GHz频段" class="headerlink" title="2.4GHz频段"></a>2.4GHz频段</h4><p><img src="/2021/05/02/WLAN/14.png"></p>
+<p>2.4GHz频段被划分为14个有重叠的、频率宽度是20MHz的信道。其中包含重叠信道和非重叠信道。</p>
+<ul>
+<li>重叠信道:在一个空间内同时存在重叠信道，则会产生干扰问题。</li>
+<li>非重叠信道:在一个空间内可以同时存在非重叠信道，不会产生干扰问题。</li>
+</ul>
+<h4 id="5GHz频段"><a href="#5GHz频段" class="headerlink" title="5GHz频段"></a>5GHz频段</h4><p><img src="/2021/05/02/WLAN/15.png"></p>
+<p>对于5G频段，支持更宽频谱，频率资源更为丰富，AP不仅支持20MHz带宽的信道，还支持40MHz、80MHz及更大带宽的信道。</p>
+<h3 id="无线侧组网概念-BSS-SSID-BSS"><a href="#无线侧组网概念-BSS-SSID-BSS" class="headerlink" title="无线侧组网概念:BSS/SSID/BSS"></a>无线侧组网概念:BSS/SSID/BSS</h3><h4 id="基本服务集BSS-Basic-Service-Set"><a href="#基本服务集BSS-Basic-Service-Set" class="headerlink" title="基本服务集BSS (Basic Service Set)"></a>基本服务集BSS (Basic Service Set)</h4><ul>
+<li>一个AP所覆盖的范围。</li>
+<li>在一个BSS的服务区域内，STA可以相互通信。</li>
+</ul>
+<h4 id="基本服务集标识符BSSID-Basic-Service-Setldentifier"><a href="#基本服务集标识符BSSID-Basic-Service-Setldentifier" class="headerlink" title="基本服务集标识符BSSID (Basic Service Setldentifier)"></a>基本服务集标识符BSSID (Basic Service Setldentifier)</h4><ul>
+<li>是无线网络的一个身份标识，用AP的MAC地址表示。</li>
+</ul>
+<h4 id="服务集标识符SSID-Service-Set-ldentifier"><a href="#服务集标识符SSID-Service-Set-ldentifier" class="headerlink" title="服务集标识符SSID (Service Set ldentifier)"></a>服务集标识符SSID (Service Set ldentifier)</h4><ul>
+<li>是无线网络的一个身份标识，用字符串表示。</li>
+<li>为了便于用户辨识不同的无线网络，用SSID代替BSSID。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/16.png"></p>
+<h3 id="无线侧组网概念-VAP"><a href="#无线侧组网概念-VAP" class="headerlink" title="无线侧组网概念:VAP"></a>无线侧组网概念:VAP</h3><p>早期的AP只支持1个BSS，如果要在同一空间内部署多个BSS，则需要安放多个AP，这不但增加了成本，还占用了信道资源。为了改善这种状况，现在的AP通常支持创建出多个虚拟AP (Virtual Access Point, VAP)。</p>
+<p>虚拟接入点VAP:</p>
+<ul>
+<li>VAP就是在一个物理实体AP上虚拟出的多个AP。每一个被虚拟出的AP就是一个VAP。每个VAP提供和物理实体AP一样的功能。</li>
+<li>每个VAP对应1个BSS。这样1个AP，就可以提供多个BSS,<br>可以再为这些BSS，设置不同的SSID。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/17.png"></p>
+<h3 id="无线侧组网概念-ESS"><a href="#无线侧组网概念-ESS" class="headerlink" title="无线侧组网概念: ESS"></a>无线侧组网概念: ESS</h3><p>为了满足实际业务的需求，需要对BSS的覆盖范围进行扩展。同时用户从一个BSS移动到另一个BSS时，不能感知到SSID的变化，则可以通过扩展服务集ESS实现。</p>
+<p>扩展服务集ESS (Extend Service Set):</p>
+<ul>
+<li>由多个使用相同SSID的BSS组成，是采用相同的SSID的多个BSS组成的更大规模的虚拟BSS。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/18.png"></p>
+<h2 id="WLAN的工作原理"><a href="#WLAN的工作原理" class="headerlink" title="WLAN的工作原理"></a>WLAN的工作原理</h2><h3 id="WLAN工作流程概述"><a href="#WLAN工作流程概述" class="headerlink" title="WLAN工作流程概述"></a>WLAN工作流程概述</h3><p><img src="/2021/05/02/WLAN/19.png"></p>
+<h3 id="步骤1-AP上线"><a href="#步骤1-AP上线" class="headerlink" title="步骤1-AP上线"></a>步骤1-AP上线</h3><p><img src="/2021/05/02/WLAN/20.png"></p>
+<p>其中包含五步</p>
+<h4 id="1-AP获取IP地址"><a href="#1-AP获取IP地址" class="headerlink" title="1.AP获取IP地址"></a>1.AP获取IP地址</h4><p>AP必须获得IP地址才能够与AC通信，WLAN网络才能够正常工作。</p>
+<p>AP获取IP地址的方式包括以下:</p>
+<ul>
+<li>静态方式:登录到AP设备上手工配置IP地址。</li>
+<li>DHCP方式:通过配置DHCP服务器，使AP作为DHCP客户端向DHCP服务器请求lIP地址。</li>
+</ul>
+<p>典型方案:</p>
+<ul>
+<li>部署专门的DHCP Server为AP分配IP地址。</li>
+<li>使用AC的DHCP服务为AP分配IP地址。</li>
+<li>使用网络中的设备，例如核心交换机为AP分配IP地址。</li>
+</ul>
+<h5 id="AP获取IP地址-DHCP方式"><a href="#AP获取IP地址-DHCP方式" class="headerlink" title="AP获取IP地址:DHCP方式"></a>AP获取IP地址:DHCP方式</h5><p><img src="/2021/05/02/WLAN/21.png"></p>
+<h4 id="2-CAPWAP隧道建立"><a href="#2-CAPWAP隧道建立" class="headerlink" title="2.CAPWAP隧道建立"></a>2.CAPWAP隧道建立</h4><p>AC通过CAPWAP隧道来实现对AP的集中管理和控制。</p>
+<p>Step 1: Discovery阶段（AP发现AC阶段)</p>
+<ul>
+<li>AP通过发送Discovery Request报文，找到可用的AC。</li>
+<li>AP发现AC有两种方式:静态方式、动态方式</li>
+</ul>
+<p>Step 2:建立CAPWAP隧道阶段</p>
+<ul>
+<li>AP与AC关联，完成CAPWAP隧道建立。包括数据隧道和控制隧道:数据隧道、控制隧道</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/22.png"></p>
+<h5 id="Step1-AP动态发现AC"><a href="#Step1-AP动态发现AC" class="headerlink" title="Step1 : AP动态发现AC"></a>Step1 : AP动态发现AC</h5><p><img src="/2021/05/02/WLAN/23.png"></p>
+<h5 id="Step2-建立CAPWAP隧道"><a href="#Step2-建立CAPWAP隧道" class="headerlink" title="Step2:建立CAPWAP隧道"></a>Step2:建立CAPWAP隧道</h5><p>AP与AC关联，完成CAPWAP隧道建立。包括数据隧道和控制隧道:</p>
+<ul>
+<li>数据隧道:AP接收的业务数据报文经过CAPWAP数据隧道集中到AC上转发。同时还可以选择对数据隧道进行数据传输层安全DTLS ( Datagram Transport Layer Security )加密，使能DTLS加密功能后，CAPWAP数据报文都会经过DTLS加解密。</li>
+<li>控制隧道:通过CAPWAP控制隧道实现AP与AC之间的管理报文的交互。同时还可以选择对控制隧道进行数据传输层安全DTLS加密，使能DTLS加密功能后，CAPWAP控制报文都会经过DTLS加解密。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/24.png"></p>
+<h4 id="3-AP接入控制"><a href="#3-AP接入控制" class="headerlink" title="3.AP接入控制"></a>3.AP接入控制</h4><p>AP接入控制</p>
+<ul>
+<li>AP发现AC后，会发送Join Request报文。AC收到后会判断是否允许该AP接入，并响应Join Response报文。</li>
+<li>AC上支持三种对AP的认证方式:MAC认证、序列号(SN)认证和不认证。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/25.png"></p>
+<h4 id="4-AP的版本升级（可选）"><a href="#4-AP的版本升级（可选）" class="headerlink" title="4.AP的版本升级（可选）"></a>4.AP的版本升级（可选）</h4><ul>
+<li>AP根据收到的Join Response报文中的参数判断当前的系统软件版本是否与AC上指定的一致。如果不一致，则AP通过发送Image Data Request报文请求软件版本，然后进行版本升级，升级方式包括AC模式、FTP模式和SFTP模式。</li>
+<li>AP在软件版本更新完成后重新启动，重复进行前面三个步骤。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/26.png"></p>
+<h4 id="5-CAPWAP隧道维持"><a href="#5-CAPWAP隧道维持" class="headerlink" title="5.CAPWAP隧道维持"></a>5.CAPWAP隧道维持</h4><p>数据隧道维持:</p>
+<ul>
+<li>AP与AC之间交互Keepalive报文来检测数据隧道的连通状态</li>
+</ul>
+<p>控制隧道维持:</p>
+<ul>
+<li>AP与AC交互Echo报文来检测控制隧道的连通状态。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/27.png"></p>
+<h4 id="AC预配置"><a href="#AC预配置" class="headerlink" title="AC预配置"></a>AC预配置</h4><p>为确保AP能够上线,AC需预先配置如下内容</p>
+<p><img src="/2021/05/02/WLAN/28.png"></p>
+<h3 id="步骤2-WLAN业务下发配置"><a href="#步骤2-WLAN业务下发配置" class="headerlink" title="步骤2-WLAN业务下发配置"></a>步骤2-WLAN业务下发配置</h3><p><img src="/2021/05/02/WLAN/30.png"></p>
+<h4 id="配置模板"><a href="#配置模板" class="headerlink" title="配置模板"></a>配置模板</h4><p>为了方便用户配置和维护WLAN的各个功能，针对WLAN的不同功能和特性设计了各种类型的模板，这些模板统称为WLAN模板。</p>
+<p><img src="/2021/05/02/WLAN/31.png"></p>
+<h5 id="VAP模板"><a href="#VAP模板" class="headerlink" title="VAP模板"></a>VAP模板</h5><p><img src="/2021/05/02/WLAN/32.png"></p>
+<h3 id="步骤3-STA接入"><a href="#步骤3-STA接入" class="headerlink" title="步骤3-STA接入"></a>步骤3-STA接入</h3><p><img src="/2021/05/02/WLAN/33.png"></p>
+<p>步骤3中又包含七步。</p>
+<h4 id="1-扫描"><a href="#1-扫描" class="headerlink" title="1.扫描"></a>1.扫描</h4><ul>
+<li>STA可以通过主动扫描，定期搜索周围的无线网络，获取到周围的无线网络信息。</li>
+<li>根据Probe Request帧（探测请求帧）是否携带SSID，可以将主动扫描分为两种:</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/34.png"></p>
+<h4 id="无线接入安全协议"><a href="#无线接入安全协议" class="headerlink" title="无线接入安全协议"></a>无线接入安全协议</h4><p>链路认证和接入认证常用的安全策略。</p>
+<p><img src="/2021/05/02/WLAN/35.png"></p>
+<h4 id="2-链路认证"><a href="#2-链路认证" class="headerlink" title="2.链路认证"></a>2.链路认证</h4><p>为了保证无线链路的安全，接入过程中AP需要完成对STA的认证，802.11链路定义了两种认证机制:开放系统认证和共享密钥认证。</p>
+<p>开放系统认证(Open System Authentication)</p>
+<p><img src="/2021/05/02/WLAN/36.png"></p>
+<ul>
+<li>开放系统认证:即不认证，任意STA都可以认证成功。</li>
+</ul>
+<p>共享密钥认证(Shared-key Authentication)</p>
+<p><img src="/2021/05/02/WLAN/37.png"></p>
+<ul>
+<li>共享密钥认证:STA和AP预先配置相同的共享密钥，验证两边的密钥配置是否相同。如果一致，则认证成功;否则，认证失败。</li>
+</ul>
+<h4 id="3-关联"><a href="#3-关联" class="headerlink" title="3.关联"></a>3.关联</h4><ul>
+<li>完成链路认证后，STA会继续发起链路服务协商，具体的协商通过Association报文实现。</li>
+<li>终端关联过程实质上就是链路服务协商的过程，协商内容包括:支持的速率、信道等。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/38.png"></p>
+<h4 id="4-接入认证"><a href="#4-接入认证" class="headerlink" title="4.接入认证"></a>4.接入认证</h4><ul>
+<li>接入认证即对用户进行区分，并在用户访问网络之前限制其访问权限。相对于链路认证，接入认证安全性更高。</li>
+<li>主要包含:PSK认证和802.1X认证。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/39.png"></p>
+<h4 id="5-STA地址分配"><a href="#5-STA地址分配" class="headerlink" title="5.STA地址分配"></a>5.STA地址分配</h4><ul>
+<li>STA获取到自身的IP地址，是STA正常上线的前提条件。</li>
+<li>如果STA是通过DHCP方式获取IP地址，可以用AC设备或汇聚交换机作为DHCP服务器为STA分配IP地址。一般情况下使用汇聚交换机作为DHCP服务器。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/40.png"></p>
+<h4 id="6-用户认证"><a href="#6-用户认证" class="headerlink" title="6.用户认证"></a>6.用户认证</h4><ul>
+<li>用户认证是一种“端到端”的安全结构，包括:802.1X认证、MAC认证和Portal认证。</li>
+</ul>
+<p>Portal认证</p>
+<ul>
+<li>也称Web认证，一般将Portal认证网站称为门户网站。</li>
+<li>用户上网时，必须在门户网站进行认证。只有认证通过后才可以使用网络资源。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/41.png"></p>
+<h3 id="步骤4-WLAN业务数据转发"><a href="#步骤4-WLAN业务数据转发" class="headerlink" title="步骤4-WLAN业务数据转发"></a>步骤4-WLAN业务数据转发</h3><p><img src="/2021/05/02/WLAN/42.png"></p>
+<h4 id="数据转发方式"><a href="#数据转发方式" class="headerlink" title="数据转发方式"></a>数据转发方式</h4><p><img src="/2021/05/02/WLAN/43.png"></p>
+<h2 id="WLAN的基础配置命令"><a href="#WLAN的基础配置命令" class="headerlink" title="WLAN的基础配置命令"></a>WLAN的基础配置命令</h2><h3 id="配置AP上线"><a href="#配置AP上线" class="headerlink" title="配置AP上线"></a>配置AP上线</h3><p>1.配置AC作为DHCP服务器，配置Option 43字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-ip-pool-pool1] option code [ sub-option sub-code ] &#123; ascii asci-string l hex hex-string | cipher cipher-string lip-address ip-address</span><br></pre></td></tr></table></figure>
+<p>配置DHCP服务器分配给DHCP客户端的自定义选项。</p>
+<p>2.创建域管理模板，并配置国家码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC] wlan</span><br><span class="line">[AC-wlan-view]</span><br></pre></td></tr></table></figure>
+<p>进入WLAN视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] regulatory-domain-profile name profile-name</span><br><span class="line">[AC-wlan-regulate-domain-profile-name]</span><br></pre></td></tr></table></figure>
+<p>创建域管理模板，并进入模板视图，若模板已存在则直接进入模板视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-regulate-domain-profile-name] country-code country-code</span><br></pre></td></tr></table></figure>
+<p>配置设备的国家码标识。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-group name group-name</span><br><span class="line">[AC-wlan-ap-group-group-name]</span><br></pre></td></tr></table></figure>
+<p>创建AP组，并进入AP组视图，若AP组已存在则直接进入AP组视图。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-ap-group-group-name] regulatory-domain-profile profile-name</span><br></pre></td></tr></table></figure>
+<p>将指定的域管理模板引用到AP或AP组。<br>3．配置源接口或源地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC] capwap source interface &#123; loopback loopback-number | vlanif </span><br><span class="line">vlan-id &#125;</span><br></pre></td></tr></table></figure>
+<p>配置AC与AP建立CAPWAP隧道的源接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] capwap source ip-address ip-address</span><br></pre></td></tr></table></figure>
+<p>配置AC的源IP地址。<br>4.添加AP设备–离线导入AP</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap auth-mode &#123; mac-auth | sn-auth &#125;</span><br></pre></td></tr></table></figure>
+<p>配置AP认证模式为MAC地址认证，或SN认证，缺省为MAC地址认证。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-id ap-id [ [ type-id type-id | ap-type ap-type ] &#123; ap-mac ap-mac | ap-sn ap-sn | ap-mac ap-mac ap-sn ap-sn &#125; ]</span><br><span class="line">[AC-wlan-ap-ap-id] ap-name ap-name</span><br></pre></td></tr></table></figure>
+<p>离线增加AP设备或进入AP视图，并配置单个AP的名称。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-id 0</span><br><span class="line">[AC-wlan-ap-0] ap-group ap-group</span><br></pre></td></tr></table></figure>
+<p>配置AP所加入的组。<br>5．检查AP上线结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] display ap &#123; all | ap-group ap-group &#125;</span><br></pre></td></tr></table></figure>
+<p>查看AP信息。</p>
+<h3 id="配置射频"><a href="#配置射频" class="headerlink" title="配置射频"></a>配置射频</h3><p>1.进入射频视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-id 0</span><br><span class="line">[AC-wlan-ap-0] radio radio-id</span><br><span class="line">[AC-wlan-radio-0]</span><br></pre></td></tr></table></figure>
+<p>2.配置指定射频的工作带宽和信道</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] channel &#123; 20mhz | 40mhz-minus &#x2F; 40mhz-plus | 80mhz &#x2F; 160mhz &#125; channel</span><br><span class="line">lWarning: This action may cause service interruption.Continue?[Y&#x2F;N]y</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] channel 80+80mhz channel1 channel2</span><br><span class="line">Warning: This action may cause service interruption.Continue?[Y&#x2F;N]y</span><br></pre></td></tr></table></figure>
+<p>配置AP组中所有AP或单个AP指定射频的工作带宽和信道。<br>3.配置天线的增益</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] antenna-gain antenna-gain</span><br></pre></td></tr></table></figure>
+<p>配置AP组中所有AP或单个AP指定射频的天线增益。<br>4．配置射频的发射功率</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] eirp eirp</span><br></pre></td></tr></table></figure>
+<p>配置AP组中所有AP或单个AP指定射频的发射功率。</p>
+<p>5.配置射频覆盖距离参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] coverage distance distance</span><br></pre></td></tr></table></figure>
+<p>配置AP组中所有AP或单个AP指定射频的射频覆盖距离参数。</p>
+<p>6.配置射频工作的频段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-radio-0&#x2F;0] frequency &#123; 2.4g | 5g &#125;</span><br></pre></td></tr></table></figure>
+<p>7．创建射频模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] radio-2g-profile name profile-name</span><br></pre></td></tr></table></figure>
+<p>创建2G射频模板，并进入模板视图，若模板已存在则直接进入模板视图。<br>8.引用射频模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-group name group-name</span><br><span class="line">[AC-wlan-ap-group-group-name] radio-2g-profile profile-name radio &#123; radio-id | all &#125;</span><br></pre></td></tr></table></figure>
+<p>在AP组中，将指定的2G射频模板引用到2G射频。</p>
+<h3 id="配置VAP"><a href="#配置VAP" class="headerlink" title="配置VAP"></a>配置VAP</h3><p>1．创建VAP模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] vap-profile name profile-name</span><br><span class="line">[AC-wlan-vap-prof-profile-name]</span><br></pre></td></tr></table></figure>
+<p>创建VAP模板，并进入模板视图，若模板已存在则直接进入模板视图。</p>
+<p>2.配置数据转发方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-vap-prof-profile-name] forward-mode &#123; direct-forward | tunnel &#125;</span><br></pre></td></tr></table></figure>
+<p>配置VAP模板下的数据转发方式，可以是直接转发或隧道转发。<br>3.配置业务VLAN</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-vap-prof-profile-name] service-vlan &#123; vlan-id vlan-id | vlan-pool pool-name &#125;</span><br></pre></td></tr></table></figure>
+<p>配置VAP的业务VLAN。</p>
+<p>4.配置安全模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] security-profile name profile-name</span><br><span class="line">[AC-wlan-sec-prof-profile-name]</span><br></pre></td></tr></table></figure>
+<p>创建安全模板或者进入安全模板视图。<br>缺省情况下，系统已经创建名称为default、default-wds和default-mesh的安全模板。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] vap-profile name profile-name</span><br><span class="line">[AC-wlan-vap-prof-profile-name] security-profile profile-name</span><br></pre></td></tr></table></figure>
+<p>在指定VAP模板中引用安全模板。</p>
+<p>5.配置SSID模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ssid-profile name profile-name</span><br><span class="line">[AC-wlan-ssid-prof-profile-name]</span><br></pre></td></tr></table></figure>
+<p>创建SSID模板，并进入模板视图，若模板已存在则直接进入模板视图。<br>缺省情况下，系统上存在名为default的SSID模板。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-ssid-prof-profile-name] ssid ssid</span><br></pre></td></tr></table></figure>
+<p>配置当前SSID模板中的服务组合识别码SSID ( Service Set ldentifier ) 。缺省情况下，SSID模板中的SSID为HUAWEI-WLAN。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] vap-profile name profile-name</span><br><span class="line">[AC-wlan-vap-prof-profile-name] ssid-profile profile-name</span><br></pre></td></tr></table></figure>
+<p>在指定VAP模板中引用SSID模板。</p>
+<p>6.引用VAP模板</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[AC-wlan-view] ap-group name group-name</span><br><span class="line">[AC-wlan-ap-group-group-name] vap-profile profile-name wlan wlan-id radio &#123; radio-id | all &#125; [service-vlan&#123; vlan-id vlan-id \ vlan-pool pool-name &#125; ]</span><br></pre></td></tr></table></figure>
+<p>在AP组中，将指定的VAP模板引用到射频。<br>7．查看VAP信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] display vap &#123; ap-group ap-group-name |&#123;  	 ap-name ap-name | ap-id ap-id &#125; [ radio radio-id ] &#125; [ ssid ssid ]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[AC] display vap &#123; all | ssid ssid &#125;</span><br></pre></td></tr></table></figure>
+<p>查看业务型VAP的相关信息。</p>
+<h3 id="案例-旁挂二层组网隧道转发"><a href="#案例-旁挂二层组网隧道转发" class="headerlink" title="案例:旁挂二层组网隧道转发"></a>案例:旁挂二层组网隧道转发</h3><p><img src="/2021/05/02/WLAN/44.png"> </p>
+<p><img src="/2021/05/02/WLAN/45.png"></p>
+<h4 id="配置网络互通"><a href="#配置网络互通" class="headerlink" title="配置网络互通"></a>配置网络互通</h4><p><img src="/2021/05/02/WLAN/53.png"></p>
+<p><img src="/2021/05/02/WLAN/46.png"></p>
+<h4 id="配置AP上线-1"><a href="#配置AP上线-1" class="headerlink" title="配置AP上线"></a>配置AP上线</h4><p><img src="/2021/05/02/WLAN/53.png"></p>
+<p><img src="/2021/05/02/WLAN/47.png"></p>
+<p><img src="/2021/05/02/WLAN/48.png"></p>
+<h4 id="查看AP上线"><a href="#查看AP上线" class="headerlink" title="查看AP上线"></a>查看AP上线</h4><p>将AP上电后，当执行命令display ap all查看到AP的“State”字段为“nor”时，表示AP正常上线。</p>
+<p><img src="/2021/05/02/WLAN/49.png"></p>
+<h4 id="配置WLAN业务参数"><a href="#配置WLAN业务参数" class="headerlink" title="配置WLAN业务参数"></a>配置WLAN业务参数</h4><p><img src="/2021/05/02/WLAN/53.png"></p>
+<p><img src="/2021/05/02/WLAN/50.png"></p>
+<p><img src="/2021/05/02/WLAN/51.png"></p>
+<h4 id="查看VAP模板信息"><a href="#查看VAP模板信息" class="headerlink" title="查看VAP模板信息"></a>查看VAP模板信息</h4><p>WLAN业务配置会自动下发给AP，配置完成后，通过执行命令display vap ssid wlan-net查看如下信息，当“Status”项显示为“ON”时，表示AP对应的射频上的VAP已创建成功。</p>
+<p><img src="/2021/05/02/WLAN/52.png"></p>
+<h2 id="新一代WLAN解决方案"><a href="#新一代WLAN解决方案" class="headerlink" title="新一代WLAN解决方案"></a>新一代WLAN解决方案</h2><h3 id="华为WLAN方案满足未来无线建网需求"><a href="#华为WLAN方案满足未来无线建网需求" class="headerlink" title="华为WLAN方案满足未来无线建网需求"></a>华为WLAN方案满足未来无线建网需求</h3><p><img src="/2021/05/02/WLAN/54.png"></p>
+<h3 id="双轮驱动-技术与应用发展助推Wi-Fi-6时代到来"><a href="#双轮驱动-技术与应用发展助推Wi-Fi-6时代到来" class="headerlink" title="双轮驱动:技术与应用发展助推Wi-Fi 6时代到来"></a>双轮驱动:技术与应用发展助推Wi-Fi 6时代到来</h3><p><img src="/2021/05/02/WLAN/55.png"></p>
+<h3 id="Wi-Fi-6-Vs-Wi-Fi-5"><a href="#Wi-Fi-6-Vs-Wi-Fi-5" class="headerlink" title="Wi-Fi 6 Vs Wi-Fi 5"></a>Wi-Fi 6 Vs Wi-Fi 5</h3><p><img src="/2021/05/02/WLAN/56.png"></p>
+<h3 id="下—代园区网络-智简园区（中小型园区网络"><a href="#下—代园区网络-智简园区（中小型园区网络" class="headerlink" title="下—代园区网络:智简园区（中小型园区网络)"></a>下—代园区网络:智简园区（中小型园区网络)</h3><p>基本概念</p>
+<ul>
+<li>通过云管理平台，可以实现任意地点对设备进行集中的管理和维护，大大降低网络部署运维成本。</li>
+<li>适用范围:中小型企业。</li>
+</ul>
+<p>优势(对比AC+FIT AP架构)</p>
+<ul>
+<li>即插即用，自动开局，减少网络部署成本。</li>
+<li>统一运维:所有云管理网元统一在云管理平台上进行监控和管理。</li>
+<li>工具化:通常情况下，云解决方案会在云端提供各类工具，有效降低各类开支。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/57.png"></p>
+<h3 id="下一代园区网络-智简园区-大中型园区网络"><a href="#下一代园区网络-智简园区-大中型园区网络" class="headerlink" title="下一代园区网络:智简园区(大中型园区网络)"></a>下一代园区网络:智简园区(大中型园区网络)</h3><p>架构特点</p>
+<ul>
+<li>AP需要配合iMaster NCE使用，由iMaster NCE统一管理和配置，功能丰富，进一步和有线网络融合，结合大数据和Al技术实现园区网络的极简、智慧和安全。</li>
+<li>适用范围:大中型企业。</li>
+</ul>
+<p><img src="/2021/05/02/WLAN/58.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/" itemprop="url">广域网技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T16:55:45+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="广域网技术概述"><a href="#广域网技术概述" class="headerlink" title="广域网技术概述"></a>广域网技术概述</h2><h3 id="什么是广域网"><a href="#什么是广域网" class="headerlink" title="什么是广域网"></a>什么是广域网</h3><p>广域网 （WAN）是连接不同地区局域网的网络，通常所覆盖的范围从几十公里到几千公里。它能连接多个地区、城市和国家，或横跨几个洲提供远距离通信，形成国际性的远程网络。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/1.png"></p>
+<h3 id="广域网与局域网区别"><a href="#广域网与局域网区别" class="headerlink" title="广域网与局域网区别"></a>广域网与局域网区别</h3><ul>
+<li>局域网是一种覆盖地理区域比较小的计算机网络。</li>
+<li>广域网是一种通过租用ISP网络或者自建专用网络来构建的覆盖地理区域比较广的计算机网络。</li>
+</ul>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/2.png"></p>
+<h3 id="早期广域网技术介绍"><a href="#早期广域网技术介绍" class="headerlink" title="早期广域网技术介绍"></a>早期广域网技术介绍</h3><p>早期广域网与局域网的区别在于数据链路层和物理层的差异性，在TCP/IP参考模型中，其他各层无差异。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/3.png"></p>
+<h3 id="广域网络设备角色介绍"><a href="#广域网络设备角色介绍" class="headerlink" title="广域网络设备角色介绍"></a>广域网络设备角色介绍</h3><p>广域网络设备基本角色有三种，CE ( Customer Edge，用户边缘设备）、PE ( Provider Edge，服务提供商边缘设备）和P ( Provider ，服务提供商设备)。具体定义是:</p>
+<ul>
+<li>CE:用户端连接服务提供商的边缘设备。CE连接一个或多PE，实现用户接入。</li>
+<li>PE:服务提供商连接CE的边缘设备。PE同时连接CE和P设备，是重要的网络节点。</li>
+<li>P︰服务提供商不连接任何CE的设备。</li>
+</ul>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/4.png"></p>
+<h3 id="早期广域网技术的应用"><a href="#早期广域网技术的应用" class="headerlink" title="早期广域网技术的应用"></a>早期广域网技术的应用</h3><p>早期的广域网技术王要定针刈个可日1份在ED笔里干解决用户接入广域网的长距离传输问题。仕ISP之间常用的广域网封装协议有PPP/HDLC/FR等，用于解决用内部常用的广域网协议主要是ATM，它用于解决骨干网高速转发的问题。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/5.png"></p>
+<h2 id="PPP协议原理与配置"><a href="#PPP协议原理与配置" class="headerlink" title="PPP协议原理与配置"></a>PPP协议原理与配置</h2><h3 id="PPP协议概述"><a href="#PPP协议概述" class="headerlink" title="PPP协议概述"></a>PPP协议概述</h3><ul>
+<li><p>PPP ( Point-to-Point Protocol，点到点协议）是一种常见的广域网数据链路层协议，主要用于在全双工的链路上进行点到点的数据传输封装。</p>
+</li>
+<li><p>PPP提供了安全认证协议族PAP ( Password Authentication Protocol，密码验证协议）和CHAP (Challenge Handshake Authentication Protocol，挑战握手认证协议）。</p>
+</li>
+<li><p>PPP协议具有良好的扩展性，例如，当需要在以太网链路上承载PPP协议时，PPP可以扩展为PPPoE。</p>
+</li>
+<li><p>PPP协议提供LCP(Link Control Protocol，链路控制协议)，用于各种链路层参数的协商，例如最大接收单元，认证模式等。</p>
+</li>
+<li><p>PPP协议提供各种NCP (Network Control protocol，网络控制协议），如IPCP ( IP Control Protocol ，IP控制协议)，用于各网络层参数的协商，更好地支持了网络层协议。</p>
+</li>
+</ul>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/6.png"></p>
+<h3 id="PPP链路建立流程"><a href="#PPP链路建立流程" class="headerlink" title="PPP链路建立流程"></a>PPP链路建立流程</h3><p>PPP链路的建立有三个阶段的协商过程，链路层协商、认证协商（可选）和网络层协商。</p>
+<ul>
+<li>链路层协商（LCP）:通过LCP报文进行链路参数协商，建立链路层连接。</li>
+<li>认证协商（可选)︰通过链路建立阶段协商的认证方式进行链路认证。</li>
+<li>网络层协商（NCP）∶通过NCP协商来选择和配置一个网络层协议并进行网络层参数协商。</li>
+</ul>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/7.png"></p>
+<h3 id="PPP链路接口状态机"><a href="#PPP链路接口状态机" class="headerlink" title="PPP链路接口状态机"></a>PPP链路接口状态机</h3><p>PPP协商由链路两端的接口完成。接口的状态表示了协议的协商阶段。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/8.png"></p>
+<h3 id="LCP报文格式"><a href="#LCP报文格式" class="headerlink" title="LCP报文格式"></a>LCP报文格式</h3><p>PPP报文可由Protocol字段标识不同类型的PPP报文。例如，当Protocol字段为OxC021时，代表是LCP报文。此时又由Code字段标识不同类型LCP报文，如下表所示。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/9.png"></p>
+<h3 id="LCP协商过程"><a href="#LCP协商过程" class="headerlink" title="LCP协商过程"></a>LCP协商过程</h3><h4 id="LCP协商过程-正常协商"><a href="#LCP协商过程-正常协商" class="headerlink" title="LCP协商过程-正常协商"></a>LCP协商过程-正常协商</h4><p>LCP协商由不同的LCP报文交互完成。协商由任意一方发送Configure-Request报文发起。如果对端接收此报文且参数匹配，则通过回复Configure-Ack响应协商成功。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/10.png"></p>
+<h4 id="LCP协商过程-参数不匹配"><a href="#LCP协商过程-参数不匹配" class="headerlink" title="LCP协商过程-参数不匹配"></a>LCP协商过程-参数不匹配</h4><p>在LCP报文交互中出现LCP参数不匹配时，接收方回复Configure-Nak响应告知对端修改参数然后重新协商。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/11.png"></p>
+<h4 id="LCP协商过程-参数不识别"><a href="#LCP协商过程-参数不识别" class="headerlink" title="LCP协商过程-参数不识别"></a>LCP协商过程-参数不识别</h4><p>在LCP报文交互中出现LCP参数不识别时，接收方回复Configure-Reject响应告知对端删除不识别的参数然后重新协商。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/12.png"></p>
+<h3 id="PPP认证过程"><a href="#PPP认证过程" class="headerlink" title="PPP认证过程"></a>PPP认证过程</h3><p>链路协商成功后，进行认证协商（此过程可选）。认证协商有两种模式，PAP和CHAP。</p>
+<h4 id="PPP认证模式-PAP"><a href="#PPP认证模式-PAP" class="headerlink" title="PPP认证模式- PAP"></a>PPP认证模式- PAP</h4><p>PAP认证双方有两次握手。协商报文以明文的形式在链路上传输。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/13.png"></p>
+<h4 id="PPP认证模式-CHAP"><a href="#PPP认证模式-CHAP" class="headerlink" title="PPP认证模式- CHAP"></a>PPP认证模式- CHAP</h4><p>CHAP认证双方有三次握手。协商报文被加密后再在链路上传输。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/14.png"></p>
+<h5 id="认证方不携带用户名，被认证方接口有密码"><a href="#认证方不携带用户名，被认证方接口有密码" class="headerlink" title="认证方不携带用户名，被认证方接口有密码"></a>认证方不携带用户名，被认证方接口有密码</h5><p>认证方不带用户名时，被认证方首先使用<strong>自己的接口密码</strong>+random+id生成MD5发送给认证方。</p>
+<p>认证方收到回复帧后，到自己的AAA库中找与<strong>被认证方</strong>接口用户名相对应的密码，生成一个MD5值。</p>
+<p>最后如果被认证方发送的MD5值和认证方生成的MD5值相同的话，则认证通过，显示Success，若不通过则显示Failure.</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%AE%A4%E8%AF%81%E6%96%B9%E4%B8%8D%E5%B8%A6%E7%94%A8%E6%88%B7%E5%90%8D.png"></p>
+<h5 id="认证方（双方）携带用户名，被认证方接口无密码"><a href="#认证方（双方）携带用户名，被认证方接口无密码" class="headerlink" title="认证方（双方）携带用户名，被认证方接口无密码"></a>认证方（双方）携带用户名，被认证方接口无密码</h5><p>认证方携带用户名时，被认证方接受到挑战帧后，首先进入自己AAA库中找到与<strong>认证方</strong>发送过来用户名相对应的密码+random+id生成MD5发送给认证方。</p>
+<p>认证方接受到被认证方发送过来的MD5值后，首先也同样进入AAA库中找到与<strong>被认证方</strong>发送过来的用户名相对应的密码+random+id生成自己的MD5值。</p>
+<p>最后如果被认证方发送的MD5值和认证方生成的MD5值相同的话，则认证通过，显示Success，若不通过则显示Failure.</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%AE%A4%E8%AF%81%E6%96%B9%E5%B8%A6%E7%94%A8%E6%88%B7%E5%90%8D.png"></p>
+<blockquote>
+<p>第三次握手中，如果是Success，MESSAGE =”welcome to XXX”。 XXX是认证方接口用户名。</p>
+</blockquote>
+<h5 id="认证方（双方）携带用户名，被认证方接口有密码"><a href="#认证方（双方）携带用户名，被认证方接口有密码" class="headerlink" title="认证方（双方）携带用户名，被认证方接口有密码"></a>认证方（双方）携带用户名，被认证方接口有密码</h5><p>认证方携带用户名时，被认证方接受到挑战帧，此使被认证方<strong>使用自己的接口密码</strong>生成MD5值，<strong>不再使用AAA库中与认证方用户名相对应的密码</strong>生成MD5值了。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%A2%AB%E8%AE%A4%E8%AF%81%E6%96%B9%E6%8E%A5%E5%8F%A3%E6%9C%89%E5%AF%86%E7%A0%81.png"></p>
+<h5 id="双方携带用户名，认证方AAA库中无密码"><a href="#双方携带用户名，认证方AAA库中无密码" class="headerlink" title="双方携带用户名，认证方AAA库中无密码"></a>双方携带用户名，认证方AAA库中无密码</h5><p>此时因为被认证方发送过来的MD5与认证方生成MD5比较失败无法通过认证。</p>
+<blockquote>
+<p>比较失败的原因是认证方AAA库中没有对应的密码。</p>
+</blockquote>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/%E8%AE%A4%E8%AF%81%E6%96%B9aaa%E5%BA%93%E4%B8%AD%E6%97%A0%E5%AF%B9%E5%BA%94%E5%AF%86%E7%A0%81.png"></p>
+<h3 id="NCP协商"><a href="#NCP协商" class="headerlink" title="NCP协商"></a>NCP协商</h3><p>PPP认证协商后，双方进入NCP协商阶段，协商在数据链路上所传输的数据包的格式与类型。以常见的IPCP协议为例，它分为静态IP地址协商和动态IP地址协商。</p>
+<h4 id="NCP协商-静态IР地址协商"><a href="#NCP协商-静态IР地址协商" class="headerlink" title="NCP协商-静态IР地址协商"></a>NCP协商-静态IР地址协商</h4><p>静态IP地址协商需要手动在链路两端配置IP地址。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/15.png"></p>
+<h4 id="NCP协商-动态IP地址协商"><a href="#NCP协商-动态IP地址协商" class="headerlink" title="NCP协商-动态IP地址协商"></a>NCP协商-动态IP地址协商</h4><p>动态IP地址协商支持PPP链路─端为对端配置IP地址。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/16.png"></p>
+<h3 id="PPP协议配置"><a href="#PPP协议配置" class="headerlink" title="PPP协议配置"></a>PPP协议配置</h3><h4 id="PPP基础配置命令"><a href="#PPP基础配置命令" class="headerlink" title="PPP基础配置命令"></a>PPP基础配置命令</h4><p>1.配置接口封装PPP协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0]link-protocol ppp</span><br></pre></td></tr></table></figure>
+<p>在接口视图下，将接口封装协议改为ppp，华为串行接口默认封装协议为ppp。<br>2.配置协商超时时间间隔</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp timer negotiate seconds</span><br></pre></td></tr></table></figure>
+<p>在PPPLCP协商过程中，本端设备会向对端设备发送LCP协商报文，如果在指定协商时间间隔内没有收到对端的应答报文，则重新发送。</p>
+<h4 id="PAP认证配置命令"><a href="#PAP认证配置命令" class="headerlink" title="PAP认证配置命令"></a>PAP认证配置命令</h4><p>1.配置验证方以PAP方式认证对端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password &#123; cipher | irreversible-cipher &#125; password</span><br><span class="line">[Huawei-aaa] local-user user-name service-type ppp</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp authentication-mode pap</span><br></pre></td></tr></table></figure>
+<p>配置验证方以PAP方式认证对端，首先需要通过AAA将被验证方的用户名和密码加入本地用户列表，然后选择认证模式。<br>2.配置被验证方以PAP方式被对端认证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp pap local-user user-name password &#123; cipher simple &#125; password</span><br></pre></td></tr></table></figure>
+<p>配置本地被对端以PAP方式验证时，本地发送PAP用户名和口令。</p>
+<h4 id="CHAP认证配置命令"><a href="#CHAP认证配置命令" class="headerlink" title="CHAP认证配置命令"></a>CHAP认证配置命令</h4><p>1.配置验证方以CHAP方式认证对端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-aaa] local-user user-name password &#123; cipher | irreversible-cipher &#125; password</span><br><span class="line">[Huawei-aaa] local-user user-name service-type ppp</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp authentication-mode chap</span><br></pre></td></tr></table></figure>
+<p>2.配置被验证方以CHAP方式被对端认证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp chap user user-name</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Serial0&#x2F;0&#x2F;0] ppp chap password &#123; cipher | simple &#125; password</span><br></pre></td></tr></table></figure>
+<p>配置本地用户名，配置本地被对端以CHAP方式验证时的口令。</p>
+<h3 id="配置举例"><a href="#配置举例" class="headerlink" title="配置举例"></a>配置举例</h3><h4 id="配置举例-PAP认证"><a href="#配置举例-PAP认证" class="headerlink" title="配置举例- PAP认证"></a>配置举例- PAP认证</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/17.png"></p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/18.png"></p>
+<h4 id="配置举例-CHAP认证"><a href="#配置举例-CHAP认证" class="headerlink" title="配置举例-CHAP认证"></a>配置举例-CHAP认证</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/19.png"></p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/20.png"></p>
+<h2 id="PPPoE原理与配置"><a href="#PPPoE原理与配置" class="headerlink" title="PPPoE原理与配置"></a>PPPoE原理与配置</h2><h3 id="什么是PPPoE"><a href="#什么是PPPoE" class="headerlink" title="什么是PPPoE"></a>什么是PPPoE</h3><p>PPPoE ( PPP over Ethernet，以太网承载PPP协议)是一种把PPP帧封装到以太网帧中的链路层协议。PPPoE可以使以太网网络中的多台主机连接到远端的宽带接入服务器。</p>
+<p>PPPoE集中了PPP和Ethernet两个技术的优点。既有以太网的组网灵活优势，又可以利用PPP协议实现认证、计费等功能。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/21.png"></p>
+<h3 id="PPPoE应用场景"><a href="#PPPoE应用场景" class="headerlink" title="PPPoE应用场景"></a>PPPoE应用场景</h3><p>PPPoE实现了在以太网上提供点到点的连接。PPPoE客户端与PPPoE服务器端之间建立PPP会话，封装PPP数据报文，为以太网上的主机提供接入服务，实现用户控制和计费，在企业网络与运营商网络中应用广泛。</p>
+<p>PPPoE的常见应用场景有家庭用户拨号上网、企业用户拨号上网等</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/22.png"></p>
+<h3 id="PPPoE会话建立"><a href="#PPPoE会话建立" class="headerlink" title="PPPoE会话建立"></a>PPPoE会话建立</h3><p>PPPoE的会话建立有三个阶段，PPPoE发现阶段、PPPoE会话阶段和PPPoE终结阶段。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/23.png"></p>
+<h3 id="PPPoE报文"><a href="#PPPoE报文" class="headerlink" title="PPPoE报文"></a>PPPoE报文</h3><p>PPPoE会话的建立通过不同的PPPoE报文交互实现。PPPoE报文结构及常见的报文类型如下所示:</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/24.png"></p>
+<h3 id="PPPoE发现阶段"><a href="#PPPoE发现阶段" class="headerlink" title="PPPoE发现阶段"></a>PPPoE发现阶段</h3><p>PPPoE协议发现有四个步骤:客户端发送请求、服务端响应请求、客户端确认响应和建立会话。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/25.png"></p>
+<h3 id="PPPoE会话阶段"><a href="#PPPoE会话阶段" class="headerlink" title="PPPoE会话阶段"></a>PPPoE会话阶段</h3><p>PPPoE会话阶段会进行PPP协商，分为LCP协商、认证协商、NCP协商三个阶段。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/26.png"></p>
+<h3 id="PPPoE会话终结阶段"><a href="#PPPoE会话终结阶段" class="headerlink" title="PPPoE会话终结阶段"></a>PPPoE会话终结阶段</h3><p>当PPPoE客户端希望关闭连接时，会向PPPoE服务器端发送一个PADT报文，用于关闭连接。同样，如果PPPoE服务器端希望关闭连接时，也会向PPPoE客户端发送一个PADT报文。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/27.png"></p>
+<h3 id="PPPoE基础配置"><a href="#PPPoE基础配置" class="headerlink" title="PPPoE基础配置"></a>PPPoE基础配置</h3><p>1.通过拨号规则来配置发起PPPoE会话的条件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] dialer-rule</span><br></pre></td></tr></table></figure>
+<p>2.配置拨号接口用户名，此用户名必须与对端服务器用户名相同</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Dialer1]dialer user username</span><br></pre></td></tr></table></figure>
+<p>3.将接口置于一个拨号访问组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Dialer1]dialer-group group-number</span><br></pre></td></tr></table></figure>
+<p>4.指定当前拨号接口使用的拨号绑定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Dialer1]dialer-bundle number</span><br></pre></td></tr></table></figure>
+<p>5.将物理端口与dialer-bundle进行绑定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-EthernetO&#x2F;0&#x2F;0]pppoe-client dial-bundle-number number</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置实例"><a href="#配置实例" class="headerlink" title="配置实例"></a>配置实例</h3><h4 id="配置实例-PPPoE客户端"><a href="#配置实例-PPPoE客户端" class="headerlink" title="配置实例-PPPoE客户端"></a>配置实例-PPPoE客户端</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/28.png"></p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/29.png"></p>
+<h4 id="配置实例-PPPoE服务器端"><a href="#配置实例-PPPoE服务器端" class="headerlink" title="配置实例-PPPoE服务器端"></a>配置实例-PPPoE服务器端</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/30.png"></p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/31.png"></p>
+<h4 id="配置验证"><a href="#配置验证" class="headerlink" title="配置验证"></a>配置验证</h4><p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/32.png"></p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/33.png"></p>
+<h2 id="广域网技术的发展"><a href="#广域网技术的发展" class="headerlink" title="广域网技术的发展"></a>广域网技术的发展</h2><h3 id="传统IР路由转发"><a href="#传统IР路由转发" class="headerlink" title="传统IР路由转发"></a>传统IР路由转发</h3><p>传统的IP转发采用的是逐跳转发。数据报文经过每一台路由器，都要被解封装查看报又网络层信忌，然后依掂哈出取囚四乩原则查找路由表指导报文转发。各路由器重复进行解封装查找路由表和再封装的过程，所以转发性能低。</p>
+<p>传统IP路由转发的特点:</p>
+<ul>
+<li>所有路由器需要知道全网的路由。</li>
+<li>传统lP转发是面向无连接的，无法提供较好的端到端QoS保证。</li>
+</ul>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/34.png"></p>
+<h3 id="MPLS标签转发"><a href="#MPLS标签转发" class="headerlink" title="MPLS标签转发"></a>MPLS标签转发</h3><ul>
+<li>MPLS是一种IP骨干网技术。</li>
+<li>MPLS是种隧道技术，在IP路由和控制协议的基础上，向网络层提供面向连接的交换。能够提供较好的QoS保证。</li>
+<li>MPLS标签指导报文转发的过程中，使用本地标签查找替代传统IP转发的路由查找，大大提高转发效率。</li>
+<li>MPLS转发过程中使用的标签，既可以通过手工静态配置，又可以通过动态标签分发协议分配。</li>
+</ul>
+<p>MPLS的标签分发有静态和动态两种方式，均面临着不同的问题</p>
+<ul>
+<li>静态标签分发为手工配置。</li>
+<li>动态标签分发的问题。</li>
+</ul>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/35.png"></p>
+<h3 id="Segment-Routing简介"><a href="#Segment-Routing简介" class="headerlink" title="Segment Routing简介"></a>Segment Routing简介</h3><p>为解决传统IP转发和MPLS转发的问题，业界提出了SR ( Segment Routing，分段路由）。SR的转发机制有很大改进，主要体现在以下几个方面:</p>
+<p>1.基于现有协议进行扩展:</p>
+<ul>
+<li>扩展后的IGP/BGP具有标签分发能力，因此网络中无需其他任何标签分发协议，实现协议简化。</li>
+</ul>
+<p>2.引入源路由机制:</p>
+<ul>
+<li>基于源路由机制，支持通过控制器进行集中算路。</li>
+</ul>
+<p>3.由业务来定义网络:</p>
+<ul>
+<li>业务驱动网络，由应用提出需求（时延、带宽、丢包率等），控制器收集网络拓扑、带宽利用率、时延等信息，根据业务需求计算显式路径。</li>
+</ul>
+<h3 id="Segment-Routing转发原理"><a href="#Segment-Routing转发原理" class="headerlink" title="Segment Routing转发原理"></a>Segment Routing转发原理</h3><p>SR将网络路径分成一个个的段( Segment )，并且为这些段分配SID ( Segment ID ) 。</p>
+<p>SID的分配对象有两种，转发节点或者邻接链路。本例中转发节点SID 1600X，X为路由器编号;邻接链路SID160xx，XX表示链路两端的节点编号。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/36.png"></p>
+<p>邻接链路和网络节点的SID有序排列形成段序列( Segment List )，它代表一条转发路径。SR由源节点将段序列编码在数据包头部，随数据包传输。SR的本质是指令，指引报文去哪里和怎么去。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/37.png"></p>
+<h3 id="SR的部署方式"><a href="#SR的部署方式" class="headerlink" title="SR的部署方式"></a>SR的部署方式</h3><p>SR部署分为有控制器部署和无控制器部署。控制器配合方式由控制<br>器收集信息，预留路径资源和计算路径，最后将结果下发到头结点，是更为推荐的部署方式。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/38.png"></p>
+<h3 id="Seg-ment-Routing的应用"><a href="#Seg-ment-Routing的应用" class="headerlink" title="Seg ment Routing的应用"></a>Seg ment Routing的应用</h3><p>SR可以简易的指定的报文转发路径，在现网中可以为不同业务定义不同的路径。例如本例定义了数据下载、视频和语音三条显式路径，实现了业务驱动网络。设备由控制器纳管，支持路径实时快速发放。</p>
+<p><img src="/2021/05/02/%E5%B9%BF%E5%9F%9F%E7%BD%91%E6%8A%80%E6%9C%AF/39.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/NFV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/02/NFV/" itemprop="url">NFV</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T12:03:39+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="NFV的背景-同样来自IT行业变革的启示"><a href="#NFV的背景-同样来自IT行业变革的启示" class="headerlink" title="NFV的背景:同样来自IT行业变革的启示"></a>NFV的背景:同样来自IT行业变革的启示</h2><p>来自IT界的启示，给网络产业带来了网络架构和设备架构两个层面的思考。网络架构层面引入对SDN控制器的思考，设备架构层面引入对设备部署形态的思考。</p>
+<h3 id="IT产业的变革"><a href="#IT产业的变革" class="headerlink" title="IT产业的变革"></a>IT产业的变革</h3><p>近年虚拟化和云计算等IT技术蓬勃发展，传统部署于硬件的应用逐渐云化。应用以软件的方式部署于私有云、公有云或者混合云上。</p>
+<p><img src="/2021/05/02/NFV/1.png"></p>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><ul>
+<li>网络产业思考:能否以软件化的方式部署网络应用呢?</li>
+<li>这些思考引发了NFV ( Network Functions Virtualization，网络功能虚拟化）。</li>
+</ul>
+<h2 id="NFV的起源"><a href="#NFV的起源" class="headerlink" title="NFV的起源"></a>NFV的起源</h2><ul>
+<li>2012年10月，13家Top运营商(AT&amp;T、Verizon、VDF、DT、T-Mobile、BT、Telefonica等）在SDN和Open Flow世界大会上发布NFV ( Network Functions Virtualization )第一版白皮书，同时成立了ISG ( Industry Specification Group )来推动网络虚拟化的需求定义和系统架构制定。</li>
+<li>2013年，ETSI下NFV ISG(行业规范工作组)进行第一阶段研究，已完成相关标准制定。主要定义网络功能虚拟化的需求和架构，并梳理不同接口的标准化进程。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/2.png"></p>
+<h2 id="NFV的价值"><a href="#NFV的价值" class="headerlink" title="NFV的价值"></a>NFV的价值</h2><p>NFV ( Network Functions Virtualization )是运营商为了解决电信网络硬件繁多、部署运维复杂、业务创新困难等问题而提出的。NFV在重构电信网络的同时，给运营商带来的价值如下:</p>
+<ul>
+<li>缩短业务上线时间</li>
+<li>降低建网成本</li>
+<li>提升网络运维效率</li>
+<li>构建开放的生态系统</li>
+</ul>
+<h2 id="NFV关键技术-虚拟化"><a href="#NFV关键技术-虚拟化" class="headerlink" title="NFV关键技术:虚拟化"></a>NFV关键技术:虚拟化</h2><ul>
+<li>在NFV的道路上，虚拟化是基础，云化是关键。</li>
+<li>传统电信网络中，各个网元都是由专用硬件实现，成本高、运维难。虚拟化具有分区、隔离、封装和相对于硬件独立的特征，能够很好匹配NFV的需求。运营商引入此模式，将网元软件化，运行在通用基础设施上。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/3.png"></p>
+<h2 id="NFV关键技术-云化"><a href="#NFV关键技术-云化" class="headerlink" title="NFV关键技术:云化"></a>NFV关键技术:云化</h2><ul>
+<li>美国国家标准与技术研究院（NIST）定义︰云计算是一种模型，它可以实现随时随地，便捷地，随需应变地从可配置计算资源共享池中获取所需的资源（例如，网络、服务器、存储、应用、及服务），资源能够快速供应并释放，使管理资源的工作量和与服务提供商的交互减小到最低限度。</li>
+<li>云计算拥有诸多好处。运营商网络中网络功能的云化更多的是利用了资源池化和快速弹性伸缩两个特征。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/4.png"></p>
+<h2 id="NFV架构间介"><a href="#NFV架构间介" class="headerlink" title="NFV架构间介"></a>NFV架构间介</h2><p>NFV架构分NFVI ( Network Functions Virtualization Infrastructure，基础设施层)、VNF ( Virtualized Network Function，虚拟化网络功能层）和MANO ( Management and Orchestration，管理编排域)，同还要支持现有的BSS/OSS ( Business support system/ Operation support system )。</p>
+<p><img src="/2021/05/02/NFV/5.png"></p>
+<h2 id="NFV的标准架构"><a href="#NFV的标准架构" class="headerlink" title="NFV的标准架构"></a>NFV的标准架构</h2><p>ETSI定义了NFV标准架构，由NFVI、VNF以及MANO主要组件组成。NFVI包括通用的硬件设施及其虚书化，VNF使用软件实现虚拟化网络功能，MANO实现NFV架构的管理和编排。</p>
+<p><img src="/2021/05/02/NFV/6.png"></p>
+<h2 id="NFV架构功能模块"><a href="#NFV架构功能模块" class="headerlink" title="NFV架构功能模块"></a>NFV架构功能模块</h2><p>NFV标准架构定义的主要功能模块:</p>
+<p>**OSS/BSS **</p>
+<p>服务提供商的管理功能，不属于NFV框架内的功能组件，但MANO和网元需要提供对OSS/BSS 的接口支持。</p>
+<p><strong>MANO</strong></p>
+<p>NFV管理和编排。包括VIM，VNFM及NFVO，提供对VNF及l层统一的管理和编排功能。</p>
+<ul>
+<li>VIM: Virtualized Infrastructure Managers，NFVI官理候坎，应市1于APP1oor0 I/ANIE笞理塔快功能包括:资源的发现、虚拟资源的管理分配、故障处理等。VNFM: VNF Managers , VNF管理模块，主要对VNF的生命周期（实例化、配置、关闭等）进行控制。</li>
+<li>NFVO: NFV Orchestration，实现对整个NFV基础架构、软件资源、网络服务的编排和管理。</li>
+</ul>
+<p><strong>VNF</strong></p>
+<p>指虚拟机及部署在虚拟机上的业务网元、网络功能软件等。</p>
+<p><strong>NFVI</strong></p>
+<p>NFV基础设施,包括所需的硬件及软件。为VNF提供运行环境. </p>
+<ul>
+<li>Hardware:硬件层，包括提供计算、网络、存储资源能力的硬件设备。</li>
+<li>Virtualization Layer:虚拟化层，主要完成对硬件资源的抽象，形成虚拟资源，如虚拟计算资源、虚拟存储资源、虚拟网络资源。其虚拟化功能由Hypervisor实现。</li>
+</ul>
+<h2 id="NFV架构接口"><a href="#NFV架构接口" class="headerlink" title="NFV架构接口"></a>NFV架构接口</h2><p>NFV标准架构的主要接口:</p>
+<p><img src="/2021/05/02/NFV/8.png"></p>
+<h2 id="华为NFV解决方案"><a href="#华为NFV解决方案" class="headerlink" title="华为NFV解决方案"></a>华为NFV解决方案</h2><ul>
+<li>华为NFV架构中，虚拟化层及VIM的功能由华为云Stack NFVI平台实现。华为云Stack可以实现计算资源、存储资源和网络资源的全面虚拟化，并能够对物理硬件虚拟化资源进行统一的管理、监控和优化。</li>
+<li>华为提供运营商无线网、承载网、传输网、接入网、核心网等全面云化的解决方案。</li>
+</ul>
+<p><img src="/2021/05/02/NFV/7.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/SDN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/02/SDN/" itemprop="url">SDN</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T12:03:32+08:00">
+                2021-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="传统网络的缺点"><a href="#传统网络的缺点" class="headerlink" title="传统网络的缺点"></a>传统网络的缺点</h2><h3 id="计算机时代的演进"><a href="#计算机时代的演进" class="headerlink" title="计算机时代的演进"></a>计算机时代的演进</h3><p><img src="/2021/05/02/SDN/1.png"></p>
+<h3 id="网络产业发展-来自IT行业的启示"><a href="#网络产业发展-来自IT行业的启示" class="headerlink" title="网络产业发展:来自IT行业的启示"></a>网络产业发展:来自IT行业的启示</h3><ul>
+<li>IT产业的变革引发了网络产业的思考。业界开始提出SDN (Software Defined Networking )的概念，并不断在其商用化进程上作出尝试。目的是希望网络变得更开放、灵活和简单。</li>
+</ul>
+<p><img src="/2021/05/02/SDN/2.png"></p>
+<h3 id="网络界的现状-经典IP网络–分布式网络"><a href="#网络界的现状-经典IP网络–分布式网络" class="headerlink" title="网络界的现状:经典IP网络–分布式网络"></a>网络界的现状:经典IP网络–分布式网络</h3><ul>
+<li>经典的IP网络是一个分布式的、对等控制的网络。每台网络设备存在独立的数据平台、控制平面和管理平面.设备的控制平面对等的交互路由协议，然后独立的生成数据平面指导报文转发。</li>
+<li>经典IP网络的优势在于设备与协议解耦，厂家之间兼容性较好且故障场景下协议保证网络收敛。</li>
+</ul>
+<p><img src="/2021/05/02/SDN/3.png"></p>
+<h3 id="网络界的思考-经典网络面临的问题"><a href="#网络界的思考-经典网络面临的问题" class="headerlink" title="网络界的思考:经典网络面临的问题"></a>网络界的思考:经典网络面临的问题</h3><h4 id="网络易拥塞"><a href="#网络易拥塞" class="headerlink" title="网络易拥塞"></a>网络易拥塞</h4><p><img src="/2021/05/02/SDN/4.png"></p>
+<h4 id="网络技术太复杂"><a href="#网络技术太复杂" class="headerlink" title="网络技术太复杂"></a>网络技术太复杂</h4><p>网络协议多︰如果您准备成为一名网络技术专家，您需要阅读网络设备相关RFC 2500篇。如果一天阅读一篇，需要长达6年时间，而这只是整个RFC的 1/3，其数量还在持续增加。</p>
+<p>网络配置难:如果您准备成为某个设备商设备的百事通，您需要掌握的命令行超过10000条，而其数量还在增加。</p>
+<p><img src="/2021/05/02/SDN/5.png"></p>
+<h4 id="网络故障定位、诊断困难"><a href="#网络故障定位、诊断困难" class="headerlink" title="网络故障定位、诊断困难"></a>网络故障定位、诊断困难</h4><p><img src="/2021/05/02/SDN/6.png"></p>
+<h4 id="网络业务的部署速度太慢"><a href="#网络业务的部署速度太慢" class="headerlink" title="网络业务的部署速度太慢"></a>网络业务的部署速度太慢</h4><p><img src="/2021/05/02/SDN/7.png"></p>
+<h2 id="SDN定义"><a href="#SDN定义" class="headerlink" title="SDN定义"></a>SDN定义</h2><h3 id="SDN的起源"><a href="#SDN的起源" class="headerlink" title="SDN的起源"></a>SDN的起源</h3><ul>
+<li>SDN ( Software Defined Networking )即软件定义网络。是由斯坦福大学Clean Slate研究组提出的一种新型网络创新架构。其核心理念通过将网络设备控制平面与数据平面分离，从而实现了网络控制平面的集中控制，为网络应用的创新提供了良好的支撑。</li>
+<li>SDN起源提出了三个特征，“转控分离”、“集中控制”和“开放可编程接口”。</li>
+</ul>
+<p><img src="/2021/05/02/SDN/8.png"></p>
+<h3 id="OpenFlow基本概念"><a href="#OpenFlow基本概念" class="headerlink" title="OpenFlow基本概念"></a>OpenFlow基本概念</h3><p>OpenFlow是控制器与交换机之间的一种南向接口协议。它定义了三种类型的消息，Controller-to-Switch、Asynchronous和Symmetric。每一种消息又包含了更多的子类型。</p>
+<p><strong>Controller-to-Switch</strong><br>该消息由Controller发送。用于管理Switch和查询Switch的相关信息。<br><strong>Asynchronous</strong><br>该消息由Switch发起。当Switch状态发生改变时，发送该消息告诉Controller状态变化。<br><strong>Symmetric</strong><br>该消息没有固定发起方，可由Switch或者Controller发起。例如Hello、Echo、Error等。</p>
+<p><img src="/2021/05/02/SDN/9.png"></p>
+<h3 id="Flow-Table简介"><a href="#Flow-Table简介" class="headerlink" title="Flow Table简介"></a>Flow Table简介</h3><ul>
+<li>OpenFlow交换机基于流表(Flow Table )转发报文。</li>
+<li>每个流表项由匹配字段、优先级、计数器、指令、超时、Cookie、Flags这七部分组成。其中关于转发的关键的两个内容是匹配字段和指令。<ul>
+<li>匹配字段是匹配规则，支持自定义。</li>
+<li>指令是用来描述匹配后的处理方式。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/05/02/SDN/10.png"></p>
+<h3 id="转发方式对比"><a href="#转发方式对比" class="headerlink" title="转发方式对比"></a>转发方式对比</h3><h4 id="经典路由协议基于路由表转发"><a href="#经典路由协议基于路由表转发" class="headerlink" title="经典路由协议基于路由表转发"></a>经典路由协议基于路由表转发</h4><ul>
+<li>经典的网络转发方式是网络设备通过查询路由表指导流量转发。</li>
+<li>路由表的条目由网络设备之间运行路由协议而计算生成。</li>
+<li>路由表是定长的。路由表通过最长匹配原则执行报文转发。一台网络设备只有一张路由表。</li>
+</ul>
+<h4 id="OpenFlow基于流表转发"><a href="#OpenFlow基于流表转发" class="headerlink" title="OpenFlow基于流表转发"></a>OpenFlow基于流表转发</h4><p><img src="/2021/05/02/SDN/12.png"></p>
+<ul>
+<li>OpenFlow是一个网络协议。运行OpenFlow的交换机通过查询流表指导流量转发。</li>
+<li>流表一般是由OF控制器统一计算，然后下发到交换机。流表是</li>
+<li>变长的，拥有丰富的匹配规则和转发规则。一台网络设备有多张流表。</li>
+</ul>
+<h3 id="SDN的本质诉求"><a href="#SDN的本质诉求" class="headerlink" title="SDN的本质诉求"></a>SDN的本质诉求</h3><ul>
+<li>SDN的本质诉求是让网络更加开放、灵活和简单。它的实现方式是为网络构建一个集中的大脑，通过全局视图集中控制，实现或业务快速部署、或流量调优、或网络业务开放等目标</li>
+</ul>
+<p>SDN的价值是:</p>
+<ul>
+<li><p>集中管理，简化网络管理与运维;</p>
+</li>
+<li><p>屏蔽技术细节，降低网络复杂度，降低运维成本;。自动化调优，提高网络利用率;</p>
+</li>
+<li><p>快速业务部署，缩短业务上线时间;</p>
+</li>
+<li><p>网络开放，支撑开放可编程的第三方应用。</p>
+</li>
+</ul>
+<blockquote>
+<p>SDN带来了网络架构的变革。</p>
+</blockquote>
+<h3 id="SDN网络架构"><a href="#SDN网络架构" class="headerlink" title="SDN网络架构"></a>SDN网络架构</h3><p>SDN网络架构分为协同应用层、控制器层和设备层。不同层次之间通过开放接口连接。以控制器层为主要视角，区分面向设备层的南向接口和面向协同应用层的北向接口。OpenFlow属于南向接口协议的一种。</p>
+<p><img src="/2021/05/02/SDN/13.png"></p>
+<h3 id="华为SDN网络架构"><a href="#华为SDN网络架构" class="headerlink" title="华为SDN网络架构"></a>华为SDN网络架构</h3><p>华为SDN网络架构支持丰富的南北向接口，包括OpenFlow、OVSDB、NETCONF、PCEP、RESTful .SNMP、BGP、JsonRPC、RESTCONF等。</p>
+<p><img src="/2021/05/02/SDN/14.png"></p>
+<h3 id="华为SDN解决方案-管、控、析构建智简网络"><a href="#华为SDN解决方案-管、控、析构建智简网络" class="headerlink" title="华为SDN解决方案-管、控、析构建智简网络"></a>华为SDN解决方案-管、控、析构建智简网络</h3><p><img src="/2021/05/02/SDN/15.png"></p>
+<h2 id="iMaster-NCE解决方案"><a href="#iMaster-NCE解决方案" class="headerlink" title="iMaster NCE解决方案"></a>iMaster NCE解决方案</h2><h3 id="什么是iMaster-NCE"><a href="#什么是iMaster-NCE" class="headerlink" title="什么是iMaster NCE ?"></a>什么是iMaster NCE ?</h3><p>iMaster NCE，自动驾驶网络管理与控制系统，是华为集管理、控制、分析和Al智能功能于一体的网络自动化与智能化平台。</p>
+<p><img src="/2021/05/02/SDN/16.png"></p>
+<h3 id="iMaster-NCE种类"><a href="#iMaster-NCE种类" class="headerlink" title="iMaster NCE种类"></a>iMaster NCE种类</h3><p><img src="/2021/05/02/SDN/17.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2140,1096 +3211,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/29/NAT/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/29/NAT/" itemprop="url">NAT</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-29T09:10:52+08:00">
-                2021-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="NAT概述"><a href="#NAT概述" class="headerlink" title="NAT概述"></a>NAT概述</h2><h3 id="NAT产生背景"><a href="#NAT产生背景" class="headerlink" title="NAT产生背景"></a>NAT产生背景</h3><ul>
-<li>随着互联网用户的增多，lPv4的公有地址资源显得越发短缺。</li>
-<li>同时IPv4公有地址资源存在地址分配不均的问题，这导致部分地区的IPv4可用公有地址严重不足。</li>
-</ul>
-<p><img src="/2021/04/29/NAT/NAT%E4%BA%A7%E7%94%9F%E8%83%8C%E6%99%AF.png" alt="NAT产生背景"></p>
-<h3 id="NAT优势"><a href="#NAT优势" class="headerlink" title="NAT优势"></a>NAT优势</h3><ul>
-<li>网络地址转换NAT ( Network Address Translation)是将IP数据报文头中的IP地址转换为另一个IP地址的过程。作为减缓lP地址枯竭的一种过渡方案，NAT通过地址重用的方法来满足IP地址的需要，可以在一定程度上缓解IP地址空间枯竭的压力。</li>
-</ul>
-<p>NAT除了解决IP地址短缺的问题，还带来了两个好处:</p>
-<ul>
-<li>有效避免来自外网的攻击，可以很大程度上提高网络安全性。</li>
-<li>控制内网主机访问外网，同时也可以控制外网主机访问内网，解决了内网和外网不能互通的问题。</li>
-</ul>
-<h3 id="私网IP地址"><a href="#私网IP地址" class="headerlink" title="私网IP地址"></a>私网IP地址</h3><ul>
-<li><p>公有地址︰由专门的机构管理、分配，可以在Internet上直接通信的IP地址。</p>
-</li>
-<li><p>私有地址:组织和个人可以任意使用，无法在Internet上直接通信，只能在内网使用的IP地址。</p>
-</li>
-<li><p>A、B、C类地址中各预留了一些地址专门作为私有IP地址:</p>
-<p>A类:10.0.0.0 ~ 10.255.255.255</p>
-<p>B类:172.16.0.0 ~172.31.255.255                                </p>
-<p>C类:192.168.0.0~192.168.255.255</p>
-</li>
-</ul>
-<p><img src="/2021/04/29/NAT/%E7%A7%81%E7%BD%91%E5%9C%B0%E5%9D%80.png" alt="私网地址"></p>
-<h3 id="NAT技术原理"><a href="#NAT技术原理" class="headerlink" title="NAT技术原理"></a>NAT技术原理</h3><p>NAT:对IP数据报文中的IP地址进行转换，一般部署在<strong>网络出口设备</strong>，例如路由器或防火墙上。</p>
-<p>NAT的典型应用场景</p>
-<ul>
-<li>对于从内到外的流量，网络设备通过NAT将数据包的<strong>源地址</strong>进行转换。</li>
-<li>对于从外到内的流量，则对数据包的<strong>目的地址</strong>进行转换。</li>
-</ul>
-<p><img src="/2021/04/29/NAT/NAT%E5%8E%9F%E7%90%86.png" alt="NAT原理"></p>
-<h2 id="静态NAT"><a href="#静态NAT" class="headerlink" title="静态NAT"></a>静态NAT</h2><h3 id="静态NAT原理"><a href="#静态NAT原理" class="headerlink" title="静态NAT原理"></a>静态NAT原理</h3><ul>
-<li>静态NAT:每个私有地址都有一个与之对应并且固定的公有地址</li>
-<li>静态NAT用在从内到外和从外到内的流量均可，静态NAT提供了一对一映射，支持双向互访。</li>
-</ul>
-<p><img src="/2021/04/29/NAT/%E9%9D%99%E6%80%81NAT.png" alt="静态NAT"></p>
-<h3 id="静态NAT转换示例"><a href="#静态NAT转换示例" class="headerlink" title="静态NAT转换示例"></a>静态NAT转换示例</h3><p><img src="/2021/04/29/NAT/%E9%9D%99%E6%80%81NAT%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B.png" alt="静态NAT转换示例"></p>
-<h3 id="静态NAT配置介绍"><a href="#静态NAT配置介绍" class="headerlink" title="静态NAT配置介绍"></a>静态NAT配置介绍</h3><p>1.方式一:接口视图下配置静态NAT</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] nat static global &#123; global-address&#125; inside &#123;host-address&#125; </span><br></pre></td></tr></table></figure>
-<p>global参数用于配置外部公有地址，inside参数用于配置内部私有地址。<br>2.方式二:系统视图下配置静态NAT</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] nat static global &#123; global-address] inside &#123;host-address &#125;</span><br></pre></td></tr></table></figure>
-<p>配置命令相同，视图为系统视图，之后在具体的接口下开启静态NAT。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] nat static enable</span><br></pre></td></tr></table></figure>
-<p>在接口下使能nat static功能。</p>
-<h3 id="静态NAT配置示例"><a href="#静态NAT配置示例" class="headerlink" title="静态NAT配置示例"></a>静态NAT配置示例</h3><p><img src="/2021/04/29/NAT/%E9%9D%99%E6%80%81NAT%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B.png" alt="静态NAT配置示例"></p>
-<p><img src="/2021/04/29/NAT/R1%E9%85%8D%E7%BD%AE.png" alt="R1配置"></p>
-<h2 id="动态NAT"><a href="#动态NAT" class="headerlink" title="动态NAT"></a>动态NAT</h2><h3 id="动态NAT原理"><a href="#动态NAT原理" class="headerlink" title="动态NAT原理"></a>动态NAT原理</h3><ul>
-<li>动态NAT:当<strong>内部主机访问外部网络时</strong>临时分配一个地址池中未使用的地址，并将该地址标记为“In Use”。当该主机不再访问外部网络时回收分配的地址，重新标记为“Not Use”。</li>
-<li>动态NAT适用于由内到外的流量，为私网主机访问公网提供源地址转换。</li>
-</ul>
-<p><img src="/2021/04/29/NAT/%E5%8A%A8%E6%80%81NAT%E5%8E%9F%E7%90%86.png" alt="动态NAT原理"></p>
-<h3 id="动态NAT转换示例"><a href="#动态NAT转换示例" class="headerlink" title="动态NAT转换示例"></a>动态NAT转换示例</h3><p><img src="/2021/04/29/NAT/%E5%8A%A8%E6%80%81NAT%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B1.png" alt="动态NAT转换示例"></p>
-<p><img src="/2021/04/29/NAT/%E5%8A%A8%E6%80%81NAT%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B2.png" alt="动态NAT转换示例"></p>
-<h3 id="动态NAT配置介绍"><a href="#动态NAT配置介绍" class="headerlink" title="动态NAT配置介绍"></a>动态NAT配置介绍</h3><p>1.创建地址池</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] nat address-group group-index start-address end-address</span><br></pre></td></tr></table></figure>
-<p>配置公有地址范围，其中group-index为地址池编号，start-address、end-address分别为地址池起始地址、结束地址。<br>2.配置地址转换的ACL规则</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] acl number</span><br><span class="line">[Huawei-acl-basic-number ] rule permit source source-address source-wildcard</span><br></pre></td></tr></table></figure>
-<p>配置基础ACL，匹配需要进行动态转换的源地址范围。<br>3.接口视图下配置带地址池的NAT Outbound</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernet0&#x2F;0&#x2F;0] nat outbound acl-number address-group group-index [ no-pat]</span><br></pre></td></tr></table></figure>
-<p>接口下关联ACL与地址池进行动态地址转换，no-pat参数指定不进行端口转换。</p>
-<h3 id="动态NAT配置示例"><a href="#动态NAT配置示例" class="headerlink" title="动态NAT配置示例"></a>动态NAT配置示例</h3><p><img src="/2021/04/29/NAT/%E5%8A%A8%E6%80%81NAT%E7%A4%BA%E4%BE%8B.png" alt="动态NAT配置"></p>
-<p><img src="/2021/04/29/NAT/%E5%8A%A8%E6%80%81NAT%E7%A4%BA%E4%BE%8B3.png" alt="动态NAT配置"></p>
-<h2 id="NAPT-、-Easy-IP"><a href="#NAPT-、-Easy-IP" class="headerlink" title="NAPT 、 Easy IP"></a>NAPT 、 Easy IP</h2><h3 id="NAPT原理"><a href="#NAPT原理" class="headerlink" title="NAPT原理"></a>NAPT原理</h3><ul>
-<li><p>NAPT ( Network Address and Port Translation，网络地址端口转换）︰从地址池中选择地址进行地址转换时不仅转换IP地址，同时也会对端口号进行转换，从而实现公有地址与私有地址的1:n映射，可以有效提高公有地址利用率。</p>
-</li>
-<li><p>NAPT适用于由内到外的流量，NAPT为私网主机访问公网提供源地址转换。</p>
-</li>
-</ul>
-<p><img src="/2021/04/29/NAT/NAPT%E5%8E%9F%E7%90%86.png" alt="NAPT"></p>
-<h3 id="NAPT转换示例"><a href="#NAPT转换示例" class="headerlink" title="NAPT转换示例"></a>NAPT转换示例</h3><p><img src="/2021/04/29/NAT/NAPT%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B1.png" alt="NAPT"></p>
-<p><img src="/2021/04/29/NAT/NAPT%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B2.png" alt="NAPT"></p>
-<h3 id="NAPT配置示例"><a href="#NAPT配置示例" class="headerlink" title="NAPT配置示例"></a>NAPT配置示例</h3><p><img src="/2021/04/29/NAT/NAPT%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png" alt="NAPT"></p>
-<p><img src="/2021/04/29/NAT/NAPT%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B2.png" alt="NAPT"></p>
-<h3 id="Easy-IP"><a href="#Easy-IP" class="headerlink" title="Easy IP"></a>Easy IP</h3><ul>
-<li><p>Easy IP:实现原理和NAPT相同，同时转换IP地址、传输层端口，区别在于Easy IP没有地址池的概念，使用接<br>口地址作为NAT转换的公有地址。</p>
-</li>
-<li><p>Easy IP适用于不具备固定公网IP地址的场景:如通过DHCP、PPPoE拨号获取地址的私有网络出口，可以直接<br>使用获取到的动态地址进行转换。</p>
-</li>
-<li><p>Easy IP适用于由内到外的流量，Easy IP为私网主机访问公网提供源地址转换。</p>
-</li>
-</ul>
-<p><img src="/2021/04/29/NAT/Easy%E5%8E%9F%E7%90%86.png" alt="Easy"></p>
-<h3 id="Easy-IP配置示例"><a href="#Easy-IP配置示例" class="headerlink" title="Easy IP配置示例"></a>Easy IP配置示例</h3><p><img src="/2021/04/29/NAT/Easy%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B.png" alt="Easy配置示例"></p>
-<p><img src="/2021/04/29/NAT/Easy%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png" alt="Easy配置示例"></p>
-<h2 id="NAT-Server"><a href="#NAT-Server" class="headerlink" title="NAT Server"></a>NAT Server</h2><h3 id="NAT-Server使用场景"><a href="#NAT-Server使用场景" class="headerlink" title="NAT Server使用场景"></a>NAT Server使用场景</h3><ul>
-<li>NAT Server:指定[公有地址:端口]与[私有地址:端口]的一对一映射关系，将内网服务器映射到公网，当私有网络中的服务器需要对公网提供服务时使用。</li>
-<li>nat server命令用来定义一个内部服务器的映射表，外部用户可以通过地址和端口转换来访问内部服务器的某项服务。配置内部服务器可以使外部网络主动访问私网中的服务器。当外部网络向内部服务器的外部地址( global-address)发起连接请求时，NAT将该请求的目的地址替换为私网地址( inside-address)后，转发给私网内的服务器。 </li>
-<li>NAT Server适用于由外到内的流量，NAT Server实现了内网主机对公网提供服务。</li>
-</ul>
-<p><img src="/2021/04/29/NAT/Server%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF.png" alt="Sever"></p>
-<h3 id="NAT-Server转换示例"><a href="#NAT-Server转换示例" class="headerlink" title="NAT Server转换示例"></a>NAT Server转换示例</h3><p><img src="/2021/04/29/NAT/Server%E8%BD%AC%E6%8D%A2%E7%A4%BA%E4%BE%8B.png" alt="Sever"></p>
-<h3 id="NAT-Server配置示例"><a href="#NAT-Server配置示例" class="headerlink" title="NAT Server配置示例"></a>NAT Server配置示例</h3><p><img src="/2021/04/29/NAT/Server%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png" alt="Sever"></p>
-<p><img src="/2021/04/29/NAT/Server%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B2.png" alt="Sever"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/" itemprop="url">网络服务和应用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-28T18:52:35+08:00">
-                2021-04-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h2><h3 id="文件传输协议"><a href="#文件传输协议" class="headerlink" title="文件传输协议"></a>文件传输协议</h3><p>主机之间传输文件是IP网络的一个重要功能，如今人们可以方便地使用网页、邮箱进行文件传输。<br>然而在互联网早期，Web (World Wide Web，万维网）还未出现，操作系统使用命令行的时代，用户使用命令行工具进行文件传输。其中最通用的方式就是使用FTP(File Transfer Protocol，文件传输协议)以及TFTP ( Trivial File Transfer Protocol，简单文件传输协议)。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE.png"></p>
-<h3 id="FTP基本概念"><a href="#FTP基本概念" class="headerlink" title="FTP基本概念"></a>FTP基本概念</h3><p>FTP采用典型的C/S架构（即服务器端与客户端模型），客户端与服务器端建立TCP连接之后即可实现文件的上传、下载。<br>针对传输的文件类型不同，FTP可以采用不同的传输模式:</p>
-<ul>
-<li>ASCII模式</li>
-<li>Binary (二进制）模式</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/FTP%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.png"></p>
-<h3 id="FTP传输过程"><a href="#FTP传输过程" class="headerlink" title="FTP传输过程"></a>FTP传输过程</h3><h4 id="主动模式（PORT）"><a href="#主动模式（PORT）" class="headerlink" title="主动模式（PORT）"></a>主动模式（PORT）</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F.png"></p>
-<h4 id="被动模式（PASV）"><a href="#被动模式（PASV）" class="headerlink" title="被动模式（PASV）"></a>被动模式（PASV）</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F.png"></p>
-<h3 id="配置命令介绍"><a href="#配置命令介绍" class="headerlink" title="配置命令介绍"></a>配置命令介绍</h3><h4 id="设备作为服务器端"><a href="#设备作为服务器端" class="headerlink" title="设备作为服务器端"></a>设备作为服务器端</h4><p>用户通过FTP访问设备</p>
-<p>1．开启FTP服务器端功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]ftp [ ipv6 ] server enable</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，设备的FTP服务器端功能是关闭的。<br>2.配置FTP本地用户</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]aaa</span><br><span class="line">[Huawei]local-user user-name password irreversible-cipher password[Huawei]local-user user-name privilege level level</span><br><span class="line">[Huawei]local-user user-name service-type ftp</span><br><span class="line">[Huawei]local-user user-name ftp-directory directory</span><br></pre></td></tr></table></figure>
-<p>必须将用户级别配置在3级或者3级以上，否则FTP连接将无法成功。</p>
-<h4 id="设备作为客户端"><a href="#设备作为客户端" class="headerlink" title="设备作为客户端"></a>设备作为客户端</h4><ol>
-<li>VRP作为FTP客户端访问FTP服务器端<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;FTP Client&gt;ftp 10.1.1.1</span><br><span class="line">Trying 10.1.1.1 ...</span><br><span class="line">Press CTRL+K to abortConnected to 10.1.1.1.220 FTP service ready.User(10.1.1.1:(none)):ftp</span><br><span class="line">331 Password required for ftp.Enter password: 输入的密码</span><br><span class="line">230 User logged in.</span><br></pre></td></tr></table></figure></li>
-<li>VRP作为FTP客户端的常用命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ascii   Set the file transfer type to ASCIl, and it is the default type</span><br><span class="line">binary   Set the file transfer type to support the binary image</span><br><span class="line">ls      List the contents of the current or remote directory</span><br><span class="line">passive    Set the toggle passive mode, the default is on</span><br><span class="line">get    Download the remote file to the local host</span><br><span class="line">put     Upload a local file to the remote host</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B2.png"></p>
-<h3 id="TFTP基础"><a href="#TFTP基础" class="headerlink" title="TFTP基础"></a>TFTP基础</h3><p>相较于FTP，TFTP的设计就是以传输小文件为目标，协议实现就简单很多:</p>
-<ul>
-<li>使用UDP进行传输（端口号69 )</li>
-<li>无需认证</li>
-<li>只能直接向服务器端请求某个文件或者上传某个文件，无法查看服务器端的文件目录。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/TFPT.png"></p>
-<h3 id="TFTP传输示例"><a href="#TFTP传输示例" class="headerlink" title="TFTP传输示例"></a>TFTP传输示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/TFTP%E4%BC%A0%E8%BE%93%E7%A4%BA%E4%BE%8B.png"></p>
-<h3 id="TFPT配置命令"><a href="#TFPT配置命令" class="headerlink" title="TFPT配置命令"></a>TFPT配置命令</h3><p>1.VRP作为TFTP客户端下载文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; tftp TFTP_Server-lP-address get filenameTFTP</span><br></pre></td></tr></table></figure>
-<p>无需登录，直接输入服务器端IP地址以及操作命令即可。</p>
-<p>2.VRP作为TFTP客户端上传文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; tftp TFTP_Server-lP-address put filename</span><br></pre></td></tr></table></figure>
-<p>TFTP无需登录，直接输入服务器端lP地址以及操作命令即可。<br>目前VRP设备只支持作为TFTP客户端。</p>
-<h2 id="Telnet"><a href="#Telnet" class="headerlink" title="Telnet"></a>Telnet</h2><h3 id="Telnet应用场景"><a href="#Telnet应用场景" class="headerlink" title="Telnet应用场景"></a>Telnet应用场景</h3><p>为方便通过命令行管理设备，可以使用Telnet协议对设备进行管理。</p>
-<p>Telnet协议与使用Console接口管理设备不同，无需专用线缆直连设备的Console接口，只要IP地址可达、能够和设备的TCP 23端口通信即可。</p>
-<p>支持通过Telnet协议进行管理的设备被称为Telnet服务器端，而对应的终端则被称为Telnet客户端。很多网络设备同时支持作为Telnet服务器端、Telnet客户端。<br><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.png"></p>
-<h3 id="虚拟用户界面"><a href="#虚拟用户界面" class="headerlink" title="虚拟用户界面"></a>虚拟用户界面</h3><p>当用户使用Console接口、Telnet等方式登录设备的时候，系统会分配一个用户界面( user-interface )来管理、监控设备与用户间的当前会话，每个用户界面视图可以配置一系列参数用于指定用户的认证方式、登录后的权限级别，当用户登录设备后将会受这些参数限制。</p>
-<p>Telnet所对应的用户界面类型为VTY ( Virtual Type Terminal，虚拟类型终端）。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2.png"></p>
-<h3 id="配置命令"><a href="#配置命令" class="headerlink" title="配置命令"></a>配置命令</h3><p>1.开启Telnet服务器端功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] telnet server enable</span><br></pre></td></tr></table></figure>
-<p>使能设备的Telnet服务器端功能。缺省情况下，设备的Telnet服务器端功能处于去使能状态，undo telnet server enable即可重新关闭Telnet服务器端功能。<br>2.进入用户视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] user-interface vty first-ui-number [ last-ui-number ]</span><br></pre></td></tr></table></figure>
-<p>进入VTY用户界面视图。不同设备型号的VTY接口可能并不一致。<br>3.配置VTY用户界面支持的协议</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ui-vty0-4]] protocol inbound &#123; all &#x2F; telnet &#125;</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，VTY用户界面支持的协议是SSH ( Secure Shell Protocol，安全外壳协议）和Telnet。<br>4．配置认证方式以及密码认证方式下的认证密码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ui-vty0-4] authentication-mode &#123;aaa &#x2F; none | password&#125;[Huawei-ui-vtyO-4] set authentication password cipher</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，无默认认证方式，需要进行手动配置。<br>不同VRP版本执行set authentication password cipher命令有差异:某些版本需要回车后输入密码，某些版本可直接在命令后输入密码。</p>
-<h3 id="配置示例-1"><a href="#配置示例-1" class="headerlink" title="配置示例"></a>配置示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B2.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B3.png"></p>
-<h2 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h2><h3 id="手动配置网络参数的问题"><a href="#手动配置网络参数的问题" class="headerlink" title="手动配置网络参数的问题"></a>手动配置网络参数的问题</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%89%8B%E5%B7%A5%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%981.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%89%8B%E5%B7%A5%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%982.png"></p>
-<h3 id="DHCP基本概念"><a href="#DHCP基本概念" class="headerlink" title="DHCP基本概念"></a>DHCP基本概念</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>DHCP ： Dynamic Host Configuration Protocol，动态主机配置协议，是一个用于局域网的网络协议，位于OSI模型的应用层，使用UDP协议工作，主要有两个用途：</p>
-<ul>
-<li>用于内部网或网络服务供应商自动分配IP地址给用户</li>
-<li>用于内部网管理员对所有电脑作中央管理</li>
-</ul>
-<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><p>动态分配IP地址，过程自动化，终端无需一一手工配置，配置信息统一管理（DNS,网关），IP地址有限、需要大量配置IP地址、经常移动终端。</p>
-<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p>DHCP采用C/S构架，主机无需配置，从服务器端获取地址，可实现接入网络后即插即用。</p>
-<h4 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h4><p>DHCP用一台或一组DHCP服务器来管理网络参数的分配，这种方案具有容错性。甚至对于那些很少改变地址的服务器来说，DHCP仍然被建议用来设置它们的地址。如果服务器需要被重新分配地址（RFC 2071）的时候，就尽可能不去做更改。对于一些设备，如路由器和防火墙，则不应使用DHCP。把TFTP或SSH服务器放在同一台运行DHCP的机器上也是有用的，目的是为了集中管理。</p>
-<p>DHCP也可用于直接为服务器和桌面计算机分配地址，并且透过一个PPP代理，也可为拨接及宽带的主机，以及住宅NAT网关和路由器分配地址。DHCP一般不适用于使用在无边际路由器和DNS服务器上。</p>
-<h4 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h4><p>DHCP于1993年10月成为标准协议，其前身是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/BOOTP">BOOTP</a>协议。当前的DHCP定义可以在RFC 2131中找到，而基于IPv6的建议标（DHCPv6）可以在RFC 3315中找到。</p>
-<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>动态主机设置协议（DHCP）是一种使网络管理员能够集中管理和自动分配IP网络地址的通信协议。在IP网络中，每个连接Internet的设备都需要分配唯一的IP地址。DHCP使网络管理员能从中心结点监控和分配IP地址。当某台计算机移到网络中的其它位置时，能自动收到新的IP地址。</p>
-<p>DHCP使用了租约的概念，或称为计算机IP地址的有效期。租用时间是不定的，主要取决于用户在某地连接Internet需要多久，这对于教育行业和其它用户频繁改变的环境是很实用的。透过较短的租期，DHCP能够在一个计算机比可用IP地址多的环境中动态地重新配置网络。DHCP支持为计算机分配静态地址，如需要永久性IP地址的Web服务器。</p>
-<p>DHCP和另一个网络IP管理协议BOOTP类似。当前两种配置管理协议都得到了普遍使用，其中DHCP更为先进。某些操作系统，如Windows NT/2000，都带有DHCP服务器。DHCP或BOOTP客户端是装在计算机中的一个程序，这样就可以对其进行配置操作。</p>
-<h4 id="分配IP地址方式"><a href="#分配IP地址方式" class="headerlink" title="分配IP地址方式"></a>分配IP地址方式</h4><p>（1）手工配置方式：通过网络管理员手工配置某台客户端特定的IP地址，当客户端请求分配时，DHCP服务器就将手动配置的IP地址分配给客户端。。</p>
-<p>（2）自动配置方式：当DHCP客户端第一次想服务端租用到第一个IP地址后，就将这个IP地址永久分配给客户端使用。</p>
-<p>（3）动态配置方式：服务器暂时分配一个IP地址给客户端，根据租约到期或者续约租期的方式来管理分配的IP地址。</p>
-<h3 id="DHCP优点"><a href="#DHCP优点" class="headerlink" title="DHCP优点"></a>DHCP优点</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DHCP%E4%BC%98%E7%82%B9.png"></p>
-<h3 id="DHCP工作原理"><a href="#DHCP工作原理" class="headerlink" title="DHCP工作原理"></a>DHCP工作原理</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DHCP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png"></p>
-<h3 id="DHCP租期更新"><a href="#DHCP租期更新" class="headerlink" title="DHCP租期更新"></a>DHCP租期更新</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DHCP%E7%A7%9F%E6%9C%9F%E6%9B%B4%E6%96%B0.png"></p>
-<p>如果在50%租期时客户端未得到原服务器端的回应，则客户端在87.5%租期时会广播发送DHCP Request，任意一台DHCP服务器端都可回应，该过程称为重绑定。</p>
-<h3 id="DHCP配置命令"><a href="#DHCP配置命令" class="headerlink" title="DHCP配置命令"></a>DHCP配置命令</h3><p>1.开启DHCP功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] dhcp enable</span><br></pre></td></tr></table></figure>
-<p>2.开启接口采用接口地址池的DHCP服务器端功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp select interface</span><br></pre></td></tr></table></figure>
-<p>3.指定接口地址池下的DNS服务器地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp server dns-list ip-address</span><br></pre></td></tr></table></figure>
-<p>4.配置接口地址池中不参与自动分配的IP地址范围</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp server excluded-ip-address start-ip-address [ end-ip-address ]</span><br></pre></td></tr></table></figure>
-<p>5.配置DHCP服务器接口地址池中IP地址的租用有效期限功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp server lease &#123; day day [ hour hour [ minute minute] ] | unlimited &#125;</span><br></pre></td></tr></table></figure>
-<p>缺省情况下，IP地址的租期为1天。<br>6.创建全局地址池</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]ip pool ip-pool-name</span><br></pre></td></tr></table></figure>
-<p>7.配置全局地址池可动态分配的IP地址范围</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]network ip-address [ mask &#123; mask | mask-length &#125; ]</span><br></pre></td></tr></table></figure>
-<p>8.配置DHCP客户端的网关地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]gateway-list ip-address</span><br></pre></td></tr></table></figure>
-<p>9.配置DHCP客户端使用的DNS服务器的IP地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]dns-list ip-address</span><br></pre></td></tr></table></figure>
-<p>10.配置IP地址租期</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2] lease &#123; day day [ hour hour [ minute minute ] ] | unlimited &#125;</span><br></pre></td></tr></table></figure>
-<p>11.使能接口的DHCP服务器功能</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp select global</span><br></pre></td></tr></table></figure>
-
-<p>12.被分配的IP地址与请求端的MAC地址绑定</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]static-bind ip-address 200.1.1.100 mac-address 0000-0000-0000</span><br></pre></td></tr></table></figure>
-
-<h3 id="DHCP配置示例"><a href="#DHCP配置示例" class="headerlink" title="DHCP配置示例"></a>DHCP配置示例</h3><h4 id="接口地址池配置"><a href="#接口地址池配置" class="headerlink" title="接口地址池配置"></a>接口地址池配置</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%8E%A5%E5%8F%A3%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%8E%A5%E5%8F%A3%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE1.png"></p>
-<h4 id="全局地址池配置"><a href="#全局地址池配置" class="headerlink" title="全局地址池配置"></a>全局地址池配置</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%85%A8%E5%B1%80%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE1.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%85%A8%E5%B1%80%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE2.png"></p>
-<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><h3 id="使用浏览器访问网页"><a href="#使用浏览器访问网页" class="headerlink" title="使用浏览器访问网页"></a>使用浏览器访问网页</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/HTTP.png"></p>
-<p>当我们在浏览器中输入URL ( Uniform Resource Locator，统一资源定位符）时，浏览器就可以从某处获取内容，并将页面内容显示在浏览器中。</p>
-<p>HTTP ( Hypertext Transfer Protocol，超文本传输协议)∶客户端浏览器或其他程序与Web服务器之间的应用层通信协议。HTTP是典型的C/S构架应用，作为应用层协议使用TCP进行传输。</p>
-<h3 id="诞生背景"><a href="#诞生背景" class="headerlink" title="诞生背景"></a>诞生背景</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/HTTP%E8%AF%9E%E7%94%9F%E8%83%8C%E6%99%AF.png"></p>
-<p>在互联网早期，为了进行文档之间的共享，人们提出了WWW ( World Wide Web，万维网）。</p>
-<p>WWW由三部分组成∶在浏览器中显示文档内容的页面标记语言HTML ( Hypertext Markup Language，超文本标记语言）、在网络上传输文档的协议HTTP、在网络上表明文档位置的URL。</p>
-<p>WWW早期其实是浏览HTML的客户端应用程序的名称，现在则代表三项技术的合集也可以简称为Web。</p>
-<h3 id="传输示例"><a href="#传输示例" class="headerlink" title="传输示例"></a>传输示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E4%BC%A0%E8%BE%93%E7%A4%BA%E4%BE%8B1.png"></p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E4%BC%A0%E8%BE%93%E7%A4%BA%E4%BE%8B2.png"></p>
-<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><h3 id="DNS的诞生"><a href="#DNS的诞生" class="headerlink" title="DNS的诞生"></a>DNS的诞生</h3><p>当我们在浏览器中输入一个域名访问某个网站时，这个域名最终会被解析为一个IP地址，我们的浏览器实际是在和这个IP地址进行通信。</p>
-<p>负责将域名解析到IP地址的协议为DNS ( Domain Name System，域名解析系统）。</p>
-<p>网络中每个节点都有自己唯一的IP地址，通过IP地址可以实现节点之间的相互访问，但是如果和所有的节点进行通信都使用IP地址的方式，人们很难记住这么多IP地址，为此提出了DNS，将难以记忆的IP地址映射为字符类型的地址。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DNS%E7%9A%84%E8%AF%9E%E7%94%9F.png"></p>
-<h3 id="域名系统组成"><a href="#域名系统组成" class="headerlink" title="域名系统组成"></a>域名系统组成</h3><p>域名∶主机的字符标识方式。大部分情况下，我们访问网站时在浏览器内输入的URL就是该网站的域名。</p>
-<p>域名解析服务器（DNS Server )︰负责维护域名与IP地址对应关系的数据库，并对解析者的请求进行响应。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%84%E6%88%90.png"></p>
-<h3 id="域名的表示方法"><a href="#域名的表示方法" class="headerlink" title="域名的表示方法"></a>域名的表示方法</h3><p>域名的表示方法为:主机名.次顶级域名.顶级域名.根域，根域为 “.” ，一般最后的根域不表示。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%9F%9F%E5%90%8D%E7%9A%84%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95.png"></p>
-<h3 id="DNS查询方式"><a href="#DNS查询方式" class="headerlink" title="DNS查询方式"></a>DNS查询方式</h3><p>DNS是一个分布式系统，绝大多数的DNS服务器端的数据库不会拥有所有的域名记录，当客户端向一个DNS服务器端查询域名但该DNS服务器端上却没有该域名的记录时，此时会有两种继续查询的方式:</p>
-<ul>
-<li>递归查询:由DNS服务器向其他DNS服务器进行查询，将最终查询结果返回给DNS客户端</li>
-<li>迭代查询:DNS服务器告知DNS客户端其他DNS服务器地址，客户端自行向其他DNS服务器进行查询。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DNS%E6%9F%A5%E8%AF%A2%E6%96%B9%E5%BC%8F.png"></p>
-<h2 id="NTP"><a href="#NTP" class="headerlink" title="NTP"></a>NTP</h2><h3 id="时间同步需求"><a href="#时间同步需求" class="headerlink" title="时间同步需求"></a>时间同步需求</h3><p>当今企业园区网络中很多场景都需要所有设备保持时钟一致:</p>
-<ul>
-<li>网络管理:对从不同路由器采集来的日志信息、调试信息进行分析时，需要以时间作为参照依据。</li>
-<li>计费系统:要求所有设备的时钟保持一致。</li>
-<li>多个系统协同处理同一个复杂事件:为保证正确的执行顺序，多个系统必须参考同一时钟。</li>
-<li>备份服务器和客户机之间进行增量备份:要求备份服务器和所有客户机之间的时钟同步。</li>
-<li>系统时间:某些应用程序需要知道用户登录系统的时间以及文件修改的时间。</li>
-</ul>
-<h3 id="NTP简介"><a href="#NTP简介" class="headerlink" title="NTP简介"></a>NTP简介</h3><p>如果采用管理员手工输入命令修改系统时间来进行时间同步，不但工作量巨大，而且也不能保证适中的精确性.为此可以使用NTP(Network Time Protocol)技术来同步设备的时钟。</p>
-<p>网络时间协议NTP( Network Time Protocol)是TCP/IP协议族里面的一个应用层协议。NTP用于在一系列分布式时间服务器与客户端之间同步时钟。NTP的实现基于IP和UDP。NTP报文通过UDP传输，端口号是123。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/NPT%E7%AE%80%E4%BB%8B.png"></p>
-<h3 id="NTP网络结构"><a href="#NTP网络结构" class="headerlink" title="NTP网络结构"></a>NTP网络结构</h3><p>主时间服务器:通过线缆或无线电直接同步到标准参考时钟，标准参考时钟通常是Radio Clock或卫星定位系统等。</p>
-<p>二级时间服务器:通过网络中的主时间服务器或者其他二级服务器取得同步。二级时间服务器通过NTP将时间信息传送到局域网内部的其它主机。</p>
-<p>层数（stratum )︰层数是对时钟同步情况的一个分级标准，代表了一个时钟的精确度，取值范围1~15，数值越小，精确度越高。1表示时钟精确度最高，15表示未同步。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/NTP%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/" itemprop="url">网络参考模型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-28T08:47:04+08:00">
-                2021-04-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="应用和数据"><a href="#应用和数据" class="headerlink" title="应用和数据"></a>应用和数据</h2><h3 id="故事的起源-应用"><a href="#故事的起源-应用" class="headerlink" title="故事的起源 - 应用"></a>故事的起源 - 应用</h3><p>应用的存在，是为了满足人们的各种需求，比如访问网页，在线游戏，在线视频等。伴随着应用会有信息的产生。比如文本，图片，视频等都是信息的不同呈现方式。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%BA%94%E7%94%A8.png" alt="应用"></p>
-<h3 id="应用的实现-数据"><a href="#应用的实现-数据" class="headerlink" title="应用的实现 - 数据"></a>应用的实现 - 数据</h3><p><strong>数据的产生</strong>：在计算机领域，数据是各种信息的载体。</p>
-<p><strong>数据传输</strong>：大部分应用程序所产生的数据需要在不同的设备之间传递。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%95%B0%E6%8D%AE.png" alt="数据"></p>
-<h2 id="网络参考模型与标准协议"><a href="#网络参考模型与标准协议" class="headerlink" title="网络参考模型与标准协议"></a>网络参考模型与标准协议</h2><h3 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h3><table>
-<thead>
-<tr>
-<th>层级</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>7.应用层</td>
-<td>对应用程序提供接口。</td>
-</tr>
-<tr>
-<td>6.表示层</td>
-<td>进行数据格式的转换，以确保一个系统生成的应用层数据能够被另外一个系统的应用层所识别和理解。</td>
-</tr>
-<tr>
-<td>5.会话层</td>
-<td>在通信双方之间建立、管理和终止会话。</td>
-</tr>
-<tr>
-<td>4.传输层</td>
-<td>建立、维护和取消一次端到端的数据传输过程。控制传输节奏的快慢，调整数据的排序等等。</td>
-</tr>
-<tr>
-<td>3.网络层</td>
-<td>定义逻辑地址;实现数据从源到目的地的转发。</td>
-</tr>
-<tr>
-<td>2.数据链路层</td>
-<td>将分组数据封装成帧;在数据链路上实现数据的点到点、或点到多点方式的直接通信;差错检测。</td>
-</tr>
-<tr>
-<td>1.物理层</td>
-<td>在媒介上传输比特流;提供机械的和电气的规约。</td>
-</tr>
-</tbody></table>
-<h3 id="TCP-IP参考模型"><a href="#TCP-IP参考模型" class="headerlink" title="TCP/IP参考模型"></a>TCP/IP参考模型</h3><p>因为OSI协议栈比较复杂，且TCP和IP两大协议在业界被广泛使用，所以TCP/IP参考模型成为了互联网的主流参考模型。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCPIP.png" alt="TCP IP"></p>
-<h3 id="TCP-IP常见协议"><a href="#TCP-IP常见协议" class="headerlink" title="TCP/IP常见协议"></a>TCP/IP常见协议</h3><p>TCP/IP协议栈定义了一系列的标准协议。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCPIP%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE.png" alt="TCP IP常见协议"></p>
-<h3 id="常见协议标准化组织"><a href="#常见协议标准化组织" class="headerlink" title="常见协议标准化组织"></a>常见协议标准化组织</h3><h4 id="IETF"><a href="#IETF" class="headerlink" title="IETF"></a>IETF</h4><p>Internet Engineering Task Force，负责开发和推广互联网协议（特别是构成TCP/IP协议族的协议）的志愿组织，通过RFC发布新的或者取代老的协议标准。</p>
-<h4 id="IEEE"><a href="#IEEE" class="headerlink" title="IEEE"></a>IEEE</h4><p>Institute of Electrical and Electronics Engineers，IEEE制定了全世界电子、电气和计算机科学领域30%左右的标准，比较知名的有IEEE802.3(Ethernet)、IEEE802.11 (WIFI)等。</p>
-<h4 id="ISO"><a href="#ISO" class="headerlink" title="ISO"></a>ISO</h4><p>International Organization for Standardization，在制定计算机网络标准方面，ISO是起着重大作用的国际组织，如OSI模型，定义于ISO/IEC 7498-1。</p>
-<h2 id="TCP-IP对等模型5层"><a href="#TCP-IP对等模型5层" class="headerlink" title="TCP/IP对等模型5层"></a>TCP/IP对等模型5层</h2><h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>应用层为应用软件提供接口，使应用程序能够使用网络服务。应用层协议会指定使用相应的传输层协议，以及传输层所使用的端口等。</p>
-<p>应用层的PDU被称为Data（数据）。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%BA%94%E7%94%A8%E5%B1%82.png" alt="应用层"></p>
-<h4 id="常见的应用层协议-FTP"><a href="#常见的应用层协议-FTP" class="headerlink" title="常见的应用层协议 - FTP"></a>常见的应用层协议 - FTP</h4><p>FTP File Transfer Protocol<br>一个用于从一台主机传送文件到另一台主机的协议，用于文件的“下载”和“上传”，它采用C/S( Client/Server)结构。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/FTP.png" alt="应用层"></p>
-<h4 id="常见的应用层协议-Telnet"><a href="#常见的应用层协议-Telnet" class="headerlink" title="常见的应用层协议 - Telnet"></a>常见的应用层协议 - Telnet</h4><p>Telnet数据网络中提供远程登录服务的标准协议。<br>Telnet为用户提供了在本地计算机上完成远程设备工作的能力</p>
-<p>用户通过Telnet客户端程序连接到Telnet服务器。用户在Telnet客户端中输入命令这些命令会在服务器端运行，就像直接在服务端的控制台上输入一样。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/Telnet.png" alt="应用层"></p>
-<h4 id="常见的应用层协议-HTTP"><a href="#常见的应用层协议-HTTP" class="headerlink" title="常见的应用层协议 - HTTP"></a>常见的应用层协议 - HTTP</h4><p>HTTP HyperText Transfer Protocol<br>互联网上应用最为广泛的一种网络协议。设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/HTTP.png" alt="应用层"></p>
-<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><p>传输层协议接收来自应用层协议的数据，封装上相应的传输层头部，帮助其建立“端到端”( Port to Port)的连接。</p>
-<p>传输层的PDU被称为Segment（段）。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BC%A0%E8%BE%93%E5%B1%82.png" alt="传输层"></p>
-<h4 id="TCP和UDP报文格式"><a href="#TCP和UDP报文格式" class="headerlink" title="TCP和UDP报文格式"></a>TCP和UDP报文格式</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCP%E5%92%8CUDP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png" alt="TCP和UDP报文格式"></p>
-<h4 id="TCP和UDP-端口号"><a href="#TCP和UDP-端口号" class="headerlink" title="TCP和UDP - 端口号"></a>TCP和UDP - 端口号</h4><p>客户端使用的源端口一般随机分配，目标端口则由服务器的应用指定;源端口号一般为系统中未使用的，且大于1023;<br>目的端口号为服务端开启的应用（服务）所侦听的端口，如HTTP缺省使用80。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%AB%AF%E5%8F%A3%E5%8F%B7.png" alt="端口号"></p>
-<h4 id="TCP的建立-三次握手"><a href="#TCP的建立-三次握手" class="headerlink" title="TCP的建立-三次握手"></a>TCP的建立-三次握手</h4><p>任何基于TCP的应用，在发送数据之前，都需要由TCP进行“三次握手”建立连接。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="三次握手"></p>
-<h4 id="TCP的序列号与确认序列号"><a href="#TCP的序列号与确认序列号" class="headerlink" title="TCP的序列号与确认序列号"></a>TCP的序列号与确认序列号</h4><p>TCP使用序列号和确认序列号字段实现数据的可靠和有序传输。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B.png" alt="传输过程"></p>
-<h4 id="TCP的窗口滑动机制"><a href="#TCP的窗口滑动机制" class="headerlink" title="TCP的窗口滑动机制"></a>TCP的窗口滑动机制</h4><p>TCP通过滑动窗口机制来控制数据的传输速率。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png" alt="滑动窗口"></p>
-<h4 id="TCP的关闭-四次挥手"><a href="#TCP的关闭-四次挥手" class="headerlink" title="TCP的关闭-四次挥手"></a>TCP的关闭-四次挥手</h4><p>当数据传输完成，TCP需要通过“四次挥手”机制断开TCP连接，释放系统资源。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
-<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><p>传输层负责建立主机之间进程与进程之间的连接，而网络层则负责数据从一台主机到另外一台主机之间的传递。</p>
-<p>网络层的PDU被称为Packet(包)。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%B1%82.png" alt="网络层"></p>
-<h4 id="数据包的封装过程"><a href="#数据包的封装过程" class="headerlink" title="数据包的封装过程"></a>数据包的封装过程</h4><p>将上层提交的数据加上网络层头部。</p>
-<h3 id><a href="#" class="headerlink" title></a></h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%8C%85%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B.png" alt="网络包封装过程"></p>
-<h4 id="基于网络层地址的报文转发过程"><a href="#基于网络层地址的报文转发过程" class="headerlink" title="基于网络层地址的报文转发过程"></a>基于网络层地址的报文转发过程</h4><ul>
-<li>源设备发出的报文会在其网络层头部携带该报文的源及目的设备的网络层地址;</li>
-<li>具备路由功能的网络设备（例如路由器等）会维护路由表（相当于它的地图) ;</li>
-<li>当这些网络设备收到报文时，会读取其网络层携带的目的地址，并在其路由表中查询该地址，找到匹配项后，按照该表项的指示转发数据。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%B1%82%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.png" alt="网络层转发过程"></p>
-<blockquote>
-<p>Router1路由表中指导报文从G0/0/1转发出去，没有出接口为G0/0/0的路由</p>
-</blockquote>
-<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><p>数据链路层位于网络层和物理层之间，负责<strong>段内通信</strong>，可以向网络层的IP、IPv6等协议提供服务。</p>
-<p>数据链路层的PDU被称为Frame (帧)。<br>以太网(Ethernet)是最常见的数据链路层协议。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82.png" alt="数据链路层"></p>
-<h4 id="以太网与MAC地址"><a href="#以太网与MAC地址" class="headerlink" title="以太网与MAC地址"></a>以太网与MAC地址</h4><h5 id="以太网定义"><a href="#以太网定义" class="headerlink" title="以太网定义"></a>以太网定义</h5><ul>
-<li>以太网是一种广播式数据链路层协议，支持多点接入。</li>
-<li>个人电脑的网络接口遵循的就是以太网标准。</li>
-<li>一般情况下，一个广播域对应着一个IP网段。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BB%A5%E5%A4%AA%E7%BD%91.png" alt="以太网"></p>
-<h5 id="以太网MAC地址"><a href="#以太网MAC地址" class="headerlink" title="以太网MAC地址"></a>以太网MAC地址</h5><ul>
-<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡，每个网卡都需要且会有唯一的一个MAC地址。</li>
-<li><strong>MAC用于在一个IP网段内，寻址找到具体的物理设备</strong>。</li>
-<li>工作在<strong>数据链路层的设备</strong>。例如以太网交换机，会维护一张MAC地址表，用于指导数据帧转发。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/MAC%E5%9C%B0%E5%9D%80.png" alt="MAC地址"></p>
-<h4 id="地址解析协议（ARP）"><a href="#地址解析协议（ARP）" class="headerlink" title="地址解析协议（ARP）"></a>地址解析协议（ARP）</h4><p>ARP （Address Resolution Protocol）地址解析协议</p>
-<p>根据已知的IP地址解析获得其对应的MAC地址。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP.png" alt="ARP"></p>
-<h5 id="ARP工作原理"><a href="#ARP工作原理" class="headerlink" title="ARP工作原理"></a>ARP工作原理</h5><p>工作过程分为5步，如下示例展示工作原理。</p>
-<h6 id="发送方查看自己ARP缓存表"><a href="#发送方查看自己ARP缓存表" class="headerlink" title="发送方查看自己ARP缓存表"></a>发送方查看自己ARP缓存表</h6><ul>
-<li>在发送数据前，设备会先查找ARP缓存表。</li>
-<li>如果缓存表中存在对方设备的MAC地址，则直接采用该MAC地址来封装帧，然后将帧发送出去。如果缓存表中不存在相应信息，则通过ARP来获取。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP1.png" alt="ARP"></p>
-<h6 id="发送方发送ARP请求"><a href="#发送方发送ARP请求" class="headerlink" title="发送方发送ARP请求"></a>发送方发送ARP请求</h6><ul>
-<li><p>主机1通过发送ARP Request报文来获取主机2的MAC地址。</p>
-</li>
-<li><p>由于不知道目的MAC地址，因此ARP Request报文内的目的端MAC地址为0。</p>
-</li>
-<li><p>ARP Request是广播数据帧，因此交换机收到后，会对该帧执行泛洪操作。</p>
-</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP2.png" alt="ARP"></p>
-<h6 id="接受方更新ARP缓存表"><a href="#接受方更新ARP缓存表" class="headerlink" title="接受方更新ARP缓存表"></a>接受方更新ARP缓存表</h6><ul>
-<li>所有的主机接收到该ARP Request报文后，都会检查它的目的端IP地址字段与自身的IP地址是否匹配</li>
-<li>主机2发现IP地址匹配，则会将ARP报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中。</li>
-<li>收到ARP Request报文的主机都会更新自己ARP缓存表，将发送来的IP地址和其对应MAC地址加入ARP缓存表中。</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP3.png" alt="ARP"></p>
-<h6 id="接收方接受ARP请求并且发送ARP响应"><a href="#接收方接受ARP请求并且发送ARP响应" class="headerlink" title="接收方接受ARP请求并且发送ARP响应"></a>接收方接受ARP请求并且发送ARP响应</h6><ul>
-<li><p>主机2通过发送ARP Reply报文来响应主机1的请求。</p>
-</li>
-<li><p>此时主机2已知主机1的MAC地址，因此ARP Reply是单播数据帧。</p>
-</li>
-<li><p>交换机收到该单播数据帧后，会对该帧执行转发操作。</p>
-</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP4.png" alt="ARP"></p>
-<h6 id="接收方接受ARP响应并更新ARP缓存表"><a href="#接收方接受ARP响应并更新ARP缓存表" class="headerlink" title="接收方接受ARP响应并更新ARP缓存表"></a>接收方接受ARP响应并更新ARP缓存表</h6><ul>
-<li>主机1收到ARP Reply以后，会检查ARP报文中目的端lP地址字段是否与自己的IP地址匹配。</li>
-<li>如果匹配，会将ARP报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中</li>
-</ul>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP5.png" alt="ARP"></p>
-<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><p>数据到达物理层之后，物理层会根据物理介质的不同，将数字信号转换成光信号、电信号或者是电磁波信号。</p>
-<p>物理层的PDU被称为比特流(Bitstream ) 。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%89%A9%E7%90%86%E5%B1%82.png" alt="物理层"></p>
-<h4 id="常见的传输介质"><a href="#常见的传输介质" class="headerlink" title="常见的传输介质"></a>常见的传输介质</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8.png" alt="常见的传输介质"></p>
-<h2 id="数据的封装过程"><a href="#数据的封装过程" class="headerlink" title="数据的封装过程"></a>数据的封装过程</h2><h3 id="发送方数据封装"><a href="#发送方数据封装" class="headerlink" title="发送方数据封装"></a>发送方数据封装</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%851.png" alt="封装"></p>
-<h3 id="中间网络数据传输"><a href="#中间网络数据传输" class="headerlink" title="中间网络数据传输"></a>中间网络数据传输</h3><p>封装好的完整数据，将会在网络中被传递。</p>
-<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%852.png" alt="封装"></p>
-<h3 id="接收方数据解封装"><a href="#接收方数据解封装" class="headerlink" title="接收方数据解封装"></a>接收方数据解封装</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%853.png" alt="封装"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/27/VRP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/04/27/VRP/" itemprop="url">华为VRP系统</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-27T17:14:57+08:00">
-                2021-04-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="VRP"><a href="#VRP" class="headerlink" title="VRP"></a>VRP</h2><h3 id="什么是VRP？"><a href="#什么是VRP？" class="headerlink" title="什么是VRP？"></a>什么是VRP？</h3><p>VRP是华为公司具有完全自主知识产权的网络操作系统，可以运行在多种硬件平台之上。</p>
-<p>VRP拥有一致的网络界面、用户界面和管理界面，熟悉VRP命令行并且熟练掌握VRP配置是高效管理华为网络设备的必备基础。</p>
-<h3 id="VRP的功能"><a href="#VRP的功能" class="headerlink" title="VRP的功能"></a>VRP的功能</h3><ul>
-<li>实现统一的用户界面和管理界面</li>
-<li>实现控制平面功能，并定义转发平面接口规范。</li>
-<li>实现各产品转发平面与VRP控制平面之间的交互</li>
-<li>屏蔽各产品链路层对于网络层的差异</li>
-</ul>
-<h3 id="VRP发展史"><a href="#VRP发展史" class="headerlink" title="VRP发展史"></a>VRP发展史</h3><p><img src="/2021/04/27/VRP/VRP%E5%8F%91%E5%B1%95%E5%8F%B2.png" alt="VRP发展史"></p>
-<h3 id="VRP文件系统"><a href="#VRP文件系统" class="headerlink" title="VRP文件系统"></a>VRP文件系统</h3><p>文件系统是指对存储器中文件、目录的管理。</p>
-<ul>
-<li>系统软件是设备启动、运行的必备软件。常见文件后缀名为: ( .cc )。</li>
-<li>配置文件是用户将配置命令保存的文件。常见文件后缀名为:(.cfg, .zip , .dat)。</li>
-<li>补丁是一种与设备系统软件兼容的软件。常见文件后缀名为:(.pat).</li>
-<li>PAF文件是根据用户对产品需要提供了一个简单有效的方式来裁剪产品的资源占用和功能特性。常见文件后缀名为:(.bin)。</li>
-</ul>
-<p><img src="/2021/04/27/VRP/VRP%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.png" alt="VRP文件系统"></p>
-<h3 id="VRP存储设备"><a href="#VRP存储设备" class="headerlink" title="VRP存储设备"></a>VRP存储设备</h3><ul>
-<li><p>Flash：属于非易失存储器。</p>
-</li>
-<li><p>SDRAM：同步动态随机存储器。</p>
-</li>
-<li><p>NVRAM：非易失随机读写存储器。</p>
-</li>
-<li><p>SD Card：断电后，不会丢失数据。存储容量较大，—般出现在主控板上。</p>
-</li>
-<li><p>USB：接口，用于外接大容量存储设备。</p>
-</li>
-</ul>
-<h3 id="设备初始化过程"><a href="#设备初始化过程" class="headerlink" title="设备初始化过程"></a>设备初始化过程</h3><p>设备上电后，首先运行BootROM软件，初始化硬件并显示设备的硬件参数，然后运行系统软件，最后从默认存储路径中读取配置文件进行设备的初始化操作。</p>
-<p><img src="/2021/04/27/VRP/%E8%AE%BE%E5%A4%87%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B.png" alt="设备初始化过程"></p>
-<h3 id="设备管理方式"><a href="#设备管理方式" class="headerlink" title="设备管理方式"></a>设备管理方式</h3><p>命令行和Web网管是常见管理方式。</p>
-<h4 id="命名行"><a href="#命名行" class="headerlink" title="命名行"></a>命名行</h4><p>命令行方式需要用户使用设备提供的命令行对设备进行管理与维护，此方式可实现对设备的精细化管理，但是要求用户熟悉命令行。命令行方式可以通过Console口、Telnet或SSH方式登录设备。</p>
-<p>登录成功后即进入命令行界面CLl ( Command Line Interface ) 。命令行界面是工程师与网络设备进行交互的常用工具。</p>
-<p><img src="/2021/04/27/VRP/CLI.png" alt="CLI"></p>
-<p>设备登录的两种方式分为两种:本地登录(Console)和远程登录(Telnet或SSH)。</p>
-<h5 id="本地登录"><a href="#本地登录" class="headerlink" title="本地登录"></a>本地登录</h5><ul>
-<li>当用户需为第一次上电的设备进行配置时,可通过Console口本地登录设备。</li>
-<li>控制口( Console Port )是一种通信串行端口，由设备的主控板提供。</li>
-<li>用户终端的串行端口可以与设备Console口直接连接，然后通过PuTTY工具本地登录实现对设备的本地配置。</li>
-</ul>
-<p><img src="/2021/04/27/VRP/%E6%9C%AC%E5%9C%B0%E7%99%BB%E5%BD%95.png" alt="本地登录"></p>
-<ul>
-<li>PuTTY工具是一个Telnet、sSH、串行接口等的连接软件。<br>本地登录时，终端设备采用串口与华为设备Console口连接，所以采用“Serial”连接类型，COM端口根据终端设备实际端口选取，速率固定为9600。</li>
-</ul>
-<p><img src="/2021/04/27/VRP/PuTTY.png" alt="PuTTY"></p>
-<h5 id="远程登录"><a href="#远程登录" class="headerlink" title="远程登录"></a>远程登录</h5><p>远程登录指终端远程登录到网络设备上，并且可以集中管理维护网络设备。<br>远程登录包括SSH和Telnet两种方式。</p>
-<p><img src="/2021/04/27/VRP/%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95.png" alt="远程登录"></p>
-<h4 id="Web网管"><a href="#Web网管" class="headerlink" title="Web网管"></a>Web网管</h4><p>Web网管方式通过图形化的操作界面，实现对设备直观方便地管理与维护，但是此方式仅可实现对设备部分功能的管理与维护。Web网管方式可以通过HTTP和HTTPS方式登录设备。</p>
-<ul>
-<li>以华为AR系列路由器为例，PC终端打开浏览昌软件，在地址栏中输入“<a target="_blank" rel="noopener" href="https://192.168.1.1”按下回车键,显示ar/">https://192.168.1.1”按下回车键，显示AR</a> Web管理平台登录界面。</li>
-</ul>
-<p><img src="/2021/04/27/VRP/WEB.png" alt="WEB"></p>
-<h3 id="VRP用户界面"><a href="#VRP用户界面" class="headerlink" title="VRP用户界面"></a>VRP用户界面</h3><p>系统通过用户界面用来管理、监控设备和用户间的当前会话。</p>
-<h4 id="Console用户界面"><a href="#Console用户界面" class="headerlink" title="Console用户界面"></a>Console用户界面</h4><p>Console用户界面用来管理和监控通过Console口登录的用户。<br>用户终端的串行口可以与设备Console口直接连接，实现对设备的本地访问。</p>
-<h4 id="VTY-用户界面"><a href="#VTY-用户界面" class="headerlink" title="VTY 用户界面"></a>VTY 用户界面</h4><p>VTY用户界面用来管理和监控通过VTY方式登录的用户。<br>用户通过终端与设备建立Telnet或STelnet连接后，即建立了一条VTY通道，通过VTY通道实现对设备的远程访问。</p>
-<h3 id="VRP用户级别"><a href="#VRP用户级别" class="headerlink" title="VRP用户级别"></a>VRP用户级别</h3><p>VRP可以实现不同级别的用户能够执行不同级别的命令，限制不同用户对设备的操作。</p>
-<table>
-<thead>
-<tr>
-<th>用户等级</th>
-<th>命令等级</th>
-<th>名称</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0</td>
-<td>0</td>
-<td>参观级</td>
-<td>可使用网络诊断工具命令( ping、tracert ) 、从本设备出发访问外部设备的命令( Telnet客户端命令)、部分display命令等。</td>
-</tr>
-<tr>
-<td>1</td>
-<td>0 and 1</td>
-<td>监控级</td>
-<td>用于系统维护，可使用display等命令。</td>
-</tr>
-<tr>
-<td>2</td>
-<td>0,1 and 2</td>
-<td>配置级</td>
-<td>可使用业务配置命令，包括路由、各个网络层次的命令，向用户提供直接网络服务。</td>
-</tr>
-<tr>
-<td>3-15</td>
-<td>0,1,2 and 3</td>
-<td>管理级</td>
-<td>可使用用于系统基本运行的命令，对业务提供支撑作用，包括文件系统、FTP、TFTP下载、命令级别设置命令以及用于业务故障诊断的debugging命令等。</td>
-</tr>
-</tbody></table>
-<h2 id="命令行基础"><a href="#命令行基础" class="headerlink" title="命令行基础"></a>命令行基础</h2><h3 id="基础命名结构"><a href="#基础命名结构" class="headerlink" title="基础命名结构"></a>基础命名结构</h3><p><img src="/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E7%BB%93%E6%9E%84.png" alt="命令结构"></p>
-<h3 id="命令行视图"><a href="#命令行视图" class="headerlink" title="命令行视图"></a>命令行视图</h3><p>设备提供了多样的配置和查询命令，为便于用户使用这些命令，VRP系统按功能分类将命令分别注册在不同的命令行视图下。</p>
-<p><img src="/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE.png" alt="命令行视图"></p>
-<p><img src="/2021/04/27/VRP/%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%A7%86%E5%9B%BE2.png" alt="命令行视图"></p>
-<h3 id="编辑命名行"><a href="#编辑命名行" class="headerlink" title="编辑命名行"></a>编辑命名行</h3><p>设备的命令行界面提供基本的命令行编辑功能，以下为常用的编辑功能:</p>
-<ol>
-<li>功能键</li>
-</ol>
-<ul>
-<li>退格键Backspace</li>
-<li>左光标键←或&lt;Ctrl+B&gt;</li>
-<li>右光标键→或&lt;Ctrl+F&gt;</li>
-</ul>
-<ol start="2">
-<li>不完整关键字输入</li>
-</ol>
-<p><img src="/2021/04/27/VRP/%E4%B8%8D%E5%AE%8C%E6%95%B4%E5%85%B3%E9%94%AE%E5%AD%97%E8%BE%93%E5%85%A5.png" alt="不完整关键字输入"></p>
-<ol start="3">
-<li>Tab键的使用:</li>
-</ol>
-<ul>
-<li>如果与之匹配的关键字唯一，按下<Tab>键，系统自动补全关键字，补全后，反复按<Tab>关键字不变。</Tab></Tab></li>
-</ul>
-<p><img src="/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A81.png" alt="Tab键的使用"></p>
-<ul>
-<li>如果与之匹配的关键字不唯一，反复按<Tab>键可循环显示所有以输入字符串开头的关键字。</Tab></li>
-</ul>
-<p><img src="/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A82.png" alt="Tab键的使用"></p>
-<ul>
-<li>如果没有与之匹配的关键字，按Tab键后，关键字不变。</li>
-</ul>
-<p><img src="/2021/04/27/VRP/Tab%E9%94%AE%E7%9A%84%E4%BD%BF%E7%94%A83.png" alt="Tab键的使用"></p>
-<h3 id="使用命令行在线帮助"><a href="#使用命令行在线帮助" class="headerlink" title="使用命令行在线帮助"></a>使用命令行在线帮助</h3><h4 id="完全帮助"><a href="#完全帮助" class="headerlink" title="完全帮助"></a>完全帮助</h4><p>当用户输入命令时，可以使用命令行的完全帮助获取全部关键字和参数的提示。</p>
-<p><img src="/2021/04/27/VRP/%E5%B8%AE%E5%8A%A91.png" alt="帮助"></p>
-<h4 id="部分帮助"><a href="#部分帮助" class="headerlink" title="部分帮助"></a>部分帮助</h4><p>当用户输入命令时，如果只记得此命令关键字的开头一个或几个字符，可以使用命令行的部分帮助获取以该字符串开头的所有关键字的提示。</p>
-<p><img src="/2021/04/27/VRP/%E5%B8%AE%E5%8A%A92.png" alt="帮助"></p>
-<h4 id="解读命令行的错误信息"><a href="#解读命令行的错误信息" class="headerlink" title="解读命令行的错误信息"></a>解读命令行的错误信息</h4><p>用户键入的命令，如果通过语法检查，则正确执行，否则系统将会向用户报告错误信息。</p>
-<p><img src="/2021/04/27/VRP/%E9%94%99%E8%AF%AF.png" alt="错误"></p>
-<h3 id="使用undo命令行"><a href="#使用undo命令行" class="headerlink" title="使用undo命令行"></a>使用undo命令行</h3><p>在命令前加undo关键字，即为undo命令行。undo命令行一般用来恢复缺省情况、禁用某个功能或者删除某项配置。以下为参考案例:</p>
-<ul>
-<li>使用undo命令行恢复缺省情况</li>
-</ul>
-<p><img src="/2021/04/27/VRP/UNDO1.png" alt="UNDO"></p>
-<ul>
-<li>使用undo命令禁用某个功能</li>
-</ul>
-<p><img src="/2021/04/27/VRP/UNDO2.png" alt="UNDO"></p>
-<ul>
-<li>使用undo命令删除某项设置</li>
-</ul>
-<p><img src="/2021/04/27/VRP/UNDO3.png" alt="UNDO"></p>
-<h3 id="使用命令行的快捷键"><a href="#使用命令行的快捷键" class="headerlink" title="使用命令行的快捷键"></a>使用命令行的快捷键</h3><p>用户可以使用设备中的快捷键，完成对命令的快速输入，从而简化操作。</p>
-<p>系统中的快捷键分类：自定义快捷键和系统快捷键。</p>
-<h4 id="自定义快捷键"><a href="#自定义快捷键" class="headerlink" title="自定义快捷键"></a>自定义快捷键</h4><ul>
-<li>自定义快捷键∶共有4个，&lt;Ctrl+G&gt;、&lt;Ctrl+L&gt;、&lt;Ctrl+O&gt;和&lt;Ctrl+U&gt;。</li>
-<li>用户可以根据自己的需要将这4个快捷键与任意命令进行关联，当使用快捷键时，系统自动执行它所对应的命令。</li>
-</ul>
-<p><img src="/2021/04/27/VRP/%E8%87%AA%E5%AE%9A%E4%B9%89.png" alt="自定义"></p>
-<h4 id="系统快捷键"><a href="#系统快捷键" class="headerlink" title="系统快捷键"></a>系统快捷键</h4><ul>
-<li>CTRL_A:将光标移动到当前行的开头</li>
-<li>CTRL_B:将光标向左移动一个字符</li>
-<li>CTRL_C:停止当前命令的运行</li>
-<li>CTRL_E:将光标移动到当前行的末尾</li>
-<li>CTRL_X:删除光标左侧所有的字符</li>
-<li>CTRL_Y:删除光标所在位置及其右侧所有的字符</li>
-<li>CTRL_Z:返回到用户视图</li>
-<li>CTRL+]∶终止当前连接或切换连接</li>
-</ul>
-<h2 id="常见文件系统配置命令"><a href="#常见文件系统配置命令" class="headerlink" title="常见文件系统配置命令"></a>常见文件系统配置命令</h2><p>1.查看当前目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;pwd</span><br></pre></td></tr></table></figure>
-
-<p>2.显示当前目录下的文件信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;dir</span><br></pre></td></tr></table></figure>
-
-<p>3.查看文本文件的具体内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;more</span><br></pre></td></tr></table></figure>
-<p>4.修改用户当前界面的工作目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;cd</span><br></pre></td></tr></table></figure>
-<p>5.创建新的目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;mkdir</span><br></pre></td></tr></table></figure>
-<p>6.删除目录</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;rmdir</span><br></pre></td></tr></table></figure>
-<p>7.复制文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;copy</span><br></pre></td></tr></table></figure>
-<p>8.移动文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;move</span><br></pre></td></tr></table></figure>
-<p>9.重命名文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;rename</span><br></pre></td></tr></table></figure>
-<p>10.删除文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;delete</span><br></pre></td></tr></table></figure>
-<p>11.恢复删除的文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;undelete</span><br></pre></td></tr></table></figure>
-<p>12.彻底删除回收站中的文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;reset recycle-bin</span><br></pre></td></tr></table></figure>
-<h2 id="基本配置命令"><a href="#基本配置命令" class="headerlink" title="基本配置命令"></a>基本配置命令</h2><p>1 .配置设备名称</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] sysname name</span><br></pre></td></tr></table></figure>
-
-<p>⒉设置系统时钟</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; clock timezone time-zone-name &#123; add | minus &#125; offset</span><br></pre></td></tr></table></figure>
-<p>用来对本地时区信息进行设置。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; clock datetime [ utc ] HH.:MM:Ss YYYY-MM-DD</span><br></pre></td></tr></table></figure>
-<p>用来设置设备当前或UTC日期和时间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; clock daylight-saving-time</span><br></pre></td></tr></table></figure>
-<p>用来设置设备的夏令时。</p>
-<p>3.配置命令等级</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] command-privilege level level view view-name command-key</span><br></pre></td></tr></table></figure>
-<p>用来设置指定视图内的命令的级别。命令级别分为参观、监控、配置、管理4个级别，分别对应标识0、1、2、3。</p>
-<p>4.配置用户通过Password方式登录设备</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]user-interface vty 0 4</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ui-vty0-4]set authentication password cipher information</span><br></pre></td></tr></table></figure>
-<p>用来进入指定的用户视图并配置用户认证方式为password。系统支持的用户界面包括Console用户界面和VTY用户界面，Console界面用于本地登录，VTY界面用于远程登录。默认情况下，设备一般最多支持15个用户同时通过VTY方式访问。</p>
-<p>5.配置用户界面参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] idle-timeout minutes [ seconds ]</span><br></pre></td></tr></table></figure>
-<p>用来设置用户界面断开连接的超时时间。如果用户在一段时间内没有输入命令，系统将断开连接。缺省情况下，超时时间是10分钟。</p>
-<p>6.配置接口IP地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]interface interface-number</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-interface-number]ip address ip address</span><br></pre></td></tr></table></figure>
-<p>用来给设备上的物理或逻辑接口配置IP地址。</p>
-<p>7.查看当前运行的配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;display current-configuration</span><br></pre></td></tr></table></figure>
-<p>8.配置文件保存</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;save</span><br></pre></td></tr></table></figure>
-<p>9.查看保存的配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;display saved-configuration</span><br></pre></td></tr></table></figure>
-<p>10.清除已保存的配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;reset saved-configuration</span><br></pre></td></tr></table></figure>
-<p>11.查看系统启动配置参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; display startup</span><br></pre></td></tr></table></figure>
-<p>用来查看设备本次及下次启动相关的系统软件、备份系统软件、配置文件、License文件、补丁文件以及语音文件。</p>
-<p>12.配置系统下次启动时使用的配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;startup saved-configuration configuration-file</span><br></pre></td></tr></table></figure>
-<p>设备升级时，可以通过此命令让设备下次启动时加载指定的配置文件</p>
-<p>13.配置设备重启</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;reboot</span><br></pre></td></tr></table></figure>
-
-<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p><img src="/2021/04/27/VRP/VRP8.png" alt="VRP8"></p>
-<p>VRP5操作系统只有运行配置库和启动配置库，配置命令后直接生效无需提交，而VRP8操作系统配置命令后需要提交才能生效。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3284,7 +3265,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3297,7 +3278,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">61</span>
+                  <span class="site-state-item-count">65</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

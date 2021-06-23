@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IPadv-7-MPLS LDP原理与配置," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•MPLS是一种根根据标签报文中携带的短而定长的标签来转发数据的技术。 •MPLS的一个基本概念就是两台LSR必须对在它们之间转发的数据的标签使用上“达成共识”。LSR之间可以运行标签分发协议（Label Distribution Protocol，LDP）来告知其他LSR本设备上的标签绑定信息，从而实现标签报文的正确转发。 •本课程将介绍LDP基本工作原理与特性，以及LDP的基本配置。  •">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPadv-MPLSLDP原理与配置">
+<meta property="og:url" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•MPLS是一种根根据标签报文中携带的短而定长的标签来转发数据的技术。 •MPLS的一个基本概念就是两台LSR必须对在它们之间转发的数据的标签使用上“达成共识”。LSR之间可以运行标签分发协议（Label Distribution Protocol，LDP）来告知其他LSR本设备上的标签绑定信息，从而实现标签报文的正确转发。 •本课程将介绍LDP基本工作原理与特性，以及LDP的基本配置。  •">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png">
+<meta property="og:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png">
+<meta property="article:published_time" content="2021-06-23T05:37:44.000Z">
+<meta property="article:modified_time" content="2021-06-23T06:29:02.130Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IPadv-7-MPLS LDP原理与配置">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/06/23/IPadv-MPLSLDP原理与配置/"/>
+
+
+
+
+
+  <title>IPadv-MPLSLDP原理与配置 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IPadv-MPLSLDP原理与配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T13:37:44+08:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•MPLS是一种根根据标签报文中携带的短而定长的标签来转发数据的技术。</p>
+<p>•MPLS的一个基本概念就是两台LSR必须对在它们之间转发的数据的标签使用上“达成共识”。LSR之间可以运行标签分发协议（Label Distribution Protocol，LDP）来告知其他LSR本设备上的标签绑定信息，从而实现标签报文的正确转发。</p>
+<p>•本课程将介绍LDP基本工作原理与特性，以及LDP的基本配置。</p>
+<blockquote>
+<p>•本课程的标签分发协议特指由RFC3036首次定义的标签分发协议，当前该标准已被RFC5036废弃。</p>
+<p>•除了LDP外，标签分发协议也可以指MP-BGP、RSVP等可执行标签分发的一类协议。</p>
+</blockquote>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述LDP的基本概念及工作机制</p>
+<p>▫描述MPLS标签分发控制模式、通告模式及保留模式</p>
+<p>▫实现LDP的基础配置</p>
+<h1 id="1-LDP基本概念"><a href="#1-LDP基本概念" class="headerlink" title="1.LDP基本概念"></a>1.LDP基本概念</h1><h2 id="LDP协议概述"><a href="#LDP协议概述" class="headerlink" title="LDP协议概述"></a>LDP协议概述</h2><p>•LDP是MPLS的一种控制协议，相当于传统网络中的信令协议，负责FEC的分类、标签的分配以及LSP的建立和维护等操作。LDP规定了标签分发过程中的各种消息以及相关处理过程。</p>
+<p>•LDP的工作过程主要分为两部分：</p>
+<p>​    1.LSR之间建立LDP会话。</p>
+<p>​    2.LSR之间基于LDP会话动态交换标签与FEC的映射信息，并根据标签信息建立LSP。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="LDP会话、LDP邻接体、LDP对等体"><a href="#LDP会话、LDP邻接体、LDP对等体" class="headerlink" title="LDP会话、LDP邻接体、LDP对等体"></a>LDP会话、LDP邻接体、LDP对等体</h2><p>•LSR之间交互标签绑定消息之前必须建立LDP会话。LDP会话可以分为：</p>
+<p>​    ▫本地LDP会话（Local LDP Session）：建立会话的两个LSR之间是直连的；</p>
+<p>​    ▫远程LDP会话（Remote LDP Session）：建立会话的两个LSR之间可以是直连的，也可以是非直连的。</p>
+<p>•两台LSR之间交互Hello消息之后，即建立起邻接体（Adjacency）关系；</p>
+<p>•在建立邻接体关系的基础上，两台LSR之间交互LDP会话消息，建立起LDP会话，两台设备之间形成LDP对等体关系；</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<h2 id="LSR-ID与LDP-ID"><a href="#LSR-ID与LDP-ID" class="headerlink" title="LSR ID与LDP ID"></a>LSR ID与LDP ID</h2><p>•每一台运行了LDP的LSR除了必须配置LSR ID，还必须拥有LDP ID。</p>
+<ul>
+<li><p>LDP ID的长度为48bit，由32bit的LSR ID与16bit的标签空间标识符（Label Space ID）构成。</p>
+</li>
+<li><p>LDP ID以“LSR ID : 标签空间标识”的形式呈现。例如2.2.2.2:0。</p>
+</li>
+</ul>
+<p>•标签空间标识一般存在两种形态：</p>
+<ul>
+<li><p>值为0：表示基于设备（或基于平台）的标签空间；</p>
+</li>
+<li><p>值非0：表示基于接口的标签空间。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<blockquote>
+<p>•在本课程中，均使用基于设备（或基于平台）的标签空间。</p>
+</blockquote>
+<h2 id="LDP消息"><a href="#LDP消息" class="headerlink" title="LDP消息"></a>LDP消息</h2><p>运行LDP协议的LSR之间通过交换LDP消息来实现邻居发现、会话建立与维护以及标签管理等功能。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•按照消息的功能，LDP消息一共可以分为四大类型：发现消息（Discovery Message），会话消息（Session Message），通告消息（Advertisement Message）和通知消息（Notification Message）。</p>
+<p>▫发现消息：用来宣告和维护网络中一个LSR的存在；用于通告和维护网络中LSR的存在，如Hello报文。</p>
+<p>▫会话消息：用于建立、维护和终止LDP对等体之间的会话，如Initialization报文、KeepAlive报文。</p>
+<p>▫通告消息：用来生成、改变和删除FEC的标签映射；</p>
+<p>▫通知消息：用来宣告告警和错误信息。</p>
+<p>•LDP消息承载在UDP或TCP之上，端口号均为646 。其中发现消息用来发现邻居，承载在UDP报文上。其他消息的传递要求可靠而有序，所以LDP使用TCP建立会话，会话、通告和通知消息都基于TCP传递。</p>
+</blockquote>
+<h2 id="LDP报文封装"><a href="#LDP报文封装" class="headerlink" title="LDP报文封装"></a>LDP报文封装</h2><p>•LDP协议报文包括了LDP头部和LDP消息两部分。</p>
+<p>​    ▫LDP头部中携带了LDP版本、报文长度等信息；</p>
+<p>​    ▫LDP消息中携带了消息类型、消息长度等信息。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<blockquote>
+<p>•LDP头部长度为10Byte，包括Version，PDU Length和LDP Identifier三部分。</p>
+<ul>
+<li>Version占用2Byte，表示LDP版本号，当前版本号为1。</li>
+<li>PDU Length占用2Byte，以字节为单位表示除了Version和PDU Length以外的其他部分的总长度。</li>
+<li>LDP Identifier，即LDP ID，长度6Byte，其中前4Byte用来唯一标识一个LSR，后2Byte用来表示LSR的标签空间。</li>
+</ul>
+<p>•LDP消息包含五个部分。</p>
+<ul>
+<li>U占用1个bit，为Unknown Message bit。当LSR收到一个无法识别的消息时，该消息的U=0时，LSR会返回给该消息的生成者一个通告，当U=1时，忽略该无法识别的消息，不发送通告给生成者。</li>
+<li>Message Length占用2个bytes，以字节为单位表示Message ID、Mandatory Parameters和Optional Parameters的总长度。</li>
+<li>Message ID占用32个bit，用来标识一个消息。</li>
+<li>Mandatory Parameters和Optional Parameters分别为可变长的该消息的必须的参数和可选的参数。</li>
+<li>Message Type表示具体的消息类型，目前LDP定义的常用的消息有Notification，Hello，Initialization，KeepAlive，Address，Address Withdraw，Label Mapping，Label Request，Label Abort Request，Label Withdraw，Label Release。</li>
+</ul>
+</blockquote>
+<h1 id="2-LDP工作原理"><a href="#2-LDP工作原理" class="headerlink" title="2.LDP工作原理"></a>2.LDP工作原理</h1><h2 id="LDP会话建立"><a href="#LDP会话建立" class="headerlink" title="LDP会话建立"></a>LDP会话建立</h2><h3 id="LDP会话状态机"><a href="#LDP会话状态机" class="headerlink" title="LDP会话状态机"></a>LDP会话状态机</h3><p>LDP使用5种状态描述LDP会话状态机。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>•LDP Session协商过程可以通过状态机来描述。如图所示，有5种状态。分别是Non-Existent，Initialized，OpenRec，OpenSent，Operational。</p>
+<p>▫Non-Existent状态：该状态为LDP Session最初的状态，在此状态双方发送HELLO消息，选举主动方，在收到TCP连接建立成功事件的触发后变为Initialized状态。</p>
+<p>▫Initialized状态：该状态下分为主动方和被动方两种情况，主动方将主动发送Initialization消息，转向OpenSent 状态，等待回应的Initialization消息；被动方在此状态等待主动方发给自己的Initialization消息，如果收到的Initialization消息的参数可以接受，则发送Initialization和KeepAlive转向OpenRec状态。主动方和被动方在此状态下收到任何非Initialization消息或等待超时时，都会转向Non-Existent状态。</p>
+<p>▫OpenSent 状态：此状态为主动方发送Initialization消息后的状态，在此状态等待被动方回答Initialization消息和KeepAlive消息，如果收到的Initialization消息中的参数可以接受则转向OpenRec状态，如果参数不能接受或Initialization消息超时则断开TCP连接转向Non-Existent状态。</p>
+<p>▫OpenRec状态：在此状态不管主动方还是被动方都是发出KeepAlive后的状态，在等待对方回应KeepAlive，只要收到KeepAlive消息就转向Operational状态；如果收到其它消息或KeepAlive超时则转向Non-Existent状态。</p>
+<p>▫Operational状态：该状态是LDP Session成功建立的标志。在此状态下可以发送和接收所有其它的LDP消息。在此状态如果KeepAlive超时或收到致命错误的Notification消息（Shutdown消息）或者自己主动发送Shutdown消息主动结束会话，都会转向Non-Existent状态。</p>
+<p>•LDP状态切换信息可以通过指令<strong>debug</strong> <strong>mpls</strong> <strong>ldp</strong> <strong>session</strong>看到。</p>
+</blockquote>
+<h3 id="LDP会话建立-发现阶段与TCP连接建立"><a href="#LDP会话建立-发现阶段与TCP连接建立" class="headerlink" title="LDP会话建立 - 发现阶段与TCP连接建立"></a>LDP会话建立 - 发现阶段与TCP连接建立</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<blockquote>
+<p>•除了基本发现机制外，可以通过拓展发现机制发现非直连的远端邻接体，该内容不属于课程的重点，详细内容可以查阅RFC5036相关内容。</p>
+<p>•LDP的传输地址用于与邻居建立TCP连接。</p>
+<ul>
+<li>两台LSR之间在建立LDP会话之前，需要先建立TCP连接，以便进行LDP协议报文的交换。</li>
+<li>设备的传输地址被包含在LDP Hello报文中，LSR通过Hello报文知晓邻居的传输地址。</li>
+<li>在使用Hello报文发现邻居并且知道了对方的传输地址后，邻居之间就会开始尝试TCP三次握手（基于传输地址），并且交互LDP的初始化报文、标签映射报文等，这些报文都使用双方的传输地址作为源、目的IP地址。</li>
+<li>LSR必须拥有到达邻居的传输地址的路由。</li>
+<li>缺省情况下，公网的LDP传输地址等于设备的LSR ID，私网的传输地址等于接口的主IP地址。 </li>
+<li>在接口视图下，使用<strong>mpls</strong> <strong>ldp</strong> <strong>transport-address</strong>命令，可以修改传输地址。</li>
+</ul>
+</blockquote>
+<h3 id="LDP会话建立-会话建立与保持"><a href="#LDP会话建立-会话建立与保持" class="headerlink" title="LDP会话建立 - 会话建立与保持"></a>LDP会话建立 - 会话建立与保持</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h3 id="LDP邻居状态"><a href="#LDP邻居状态" class="headerlink" title="LDP邻居状态"></a>LDP邻居状态</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<h3 id="LDP会话状态"><a href="#LDP会话状态" class="headerlink" title="LDP会话状态"></a>LDP会话状态</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<blockquote>
+<p>•LDP会话的状态：</p>
+<p>▫NonExistent：表示LDP会话的最初状态。在此状态双方互相发送Hello消息，在收到TCP连接建立成功事件的触发后变为Initialized状态。 </p>
+<p>▫Initialized：表示LDP会话处于初始化状态。</p>
+<p>▫Open Sent：表示LDP会话进入初始化状态后，主动方给被动方发送了Initialized消息，并等待对方的回应。</p>
+<p>▫Open Recv：表示LDP会话进入初始化状态后，当双方都收到了对方发送的KeepAlive消息后，LDP会话进入Operational状态。 </p>
+<p>▫Operational：表示LDP会话建立成功。</p>
+</blockquote>
+<h2 id="LDP标签分发"><a href="#LDP标签分发" class="headerlink" title="LDP标签分发"></a>LDP标签分发</h2><h3 id="标签的发布和管理"><a href="#标签的发布和管理" class="headerlink" title="标签的发布和管理"></a>标签的发布和管理</h3><p>•在MPLS网络中，下游LSR决定标签和FEC的绑定关系，并将这种绑定关系发布给上游LSR。</p>
+<p>•LDP通过发送标签请求和标签映射消息，在LDP对等体之间通告FEC和标签的绑定关系来建立LSP</p>
+<p>•标签的发布和管理由标签发布方式、标签分配控制方式和标签保持方式来决定。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<h3 id="上游与下游"><a href="#上游与下游" class="headerlink" title="上游与下游"></a>上游与下游</h3><p>•MPLS根据数据的转发方向确定上、下游关系。标签报文从上游LSR发出，被下游LSR接收并处理。</p>
+<p>•如图所示，对于到达192.168.3.0/24的LSP而言，R3是R2的下游LSR，R1是R2的上游LSR。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<h3 id="标签发布方式-DU模式"><a href="#标签发布方式-DU模式" class="headerlink" title="标签发布方式 - DU模式"></a>标签发布方式 - DU模式</h3><p>•DU模式</p>
+<ul>
+<li><p>对于一个特定的FEC，LSR无需从上游获得标签请求消息即进行标签分配与分发。</p>
+</li>
+<li><p>LSR会主动将自己为FEC捆绑的标签通告给上游邻居，无需邻居先发起请求再通告。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<blockquote>
+<p>•标签分配：LSR从本地标签空间中取出一个标签与FEC绑定。</p>
+<p>•标签分发：LSR将标签与FEC的绑定关系通知给上游LSR。</p>
+<p>•标签发布方式为DU时，系统默认支持LDP为所有对等体分标签，即每个节点都可以向所有的对等体发布标签映射关系，不再区分上下游关系。因为在只给上游对等体分标签情况下，发送标签映射消息的时候，要根据路由信息对会话的上下游关系进行确认。</p>
+</blockquote>
+<h3 id="标签发布方式-DoD模式"><a href="#标签发布方式-DoD模式" class="headerlink" title="标签发布方式 - DoD模式"></a>标签发布方式 - DoD模式</h3><p>•DoD模式</p>
+<p>​    ▫对于一个特定的FEC，LSR获得标签请求消息之后才进行标签分配与分发。</p>
+<p>​    ▫一般情况下，对特定FEC的访问需求会触发标签请求消息。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•只有上游邻居向自己请求标签映射时，LSR才会通告标签映射给该邻居</p>
+</blockquote>
+<h3 id="标签分配控制方式-独立模式"><a href="#标签分配控制方式-独立模式" class="headerlink" title="标签分配控制方式 - 独立模式"></a>标签分配控制方式 - 独立模式</h3><p>独立（Independent）模式</p>
+<p>▫本地LSR可以自主地分配一个标签绑定到某个FEC，并通告给上游LSR，而无需等待下游的标签。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•标签分配控制方式需要与标签发布方式结合使用：</p>
+<ul>
+<li><p>在使用DU作为标签分发方式的情况下，如图所示，R2和R3对192.168.4.0/24这条FEC，可以在上游LSR无请求，且自身没有收到下游LSR的标签绑定信息的情况下，主动向上游LSR通告标签绑定信息。</p>
+</li>
+<li><p>采用DoD作为标签发布方式时，如图所示，R2和R3对192.168.4.0/24这条FEC，只要收到上游LSR的标签请求消息，可以在自身没有收到下游LSR的标签绑定信息的情况下，向上游LSR通告标签绑定信息。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="标签分配控制方式-有序模式"><a href="#标签分配控制方式-有序模式" class="headerlink" title="标签分配控制方式 - 有序模式"></a>标签分配控制方式 - 有序模式</h3><p>•有序（Ordered）模式</p>
+<p>▫对于LSR上某个FEC的标签映射，只有当该LSR已经具有此FEC下一跳的标签映射消息、或者该LSR就是此FEC的出节点时，该LSR才可以向上游发送此FEC的标签映射。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<blockquote>
+<p>•当标签控制方式为Ordered，只有当LSR收到特定FEC下一跳发送的特定FEC标签映射消息或者LSR是LSP的出口节点时，LSR才可以向上游发送标签映射消息。</p>
+<ul>
+<li><p>当标签分发方式为DU时，如图所示，对于192.168.4.0/24这条FEC，不论上游LSR是否有请求，必须收到下游LSR对此FEC的标签绑定信息才向上游LSR发布标签绑定信息，所以必须由Egress LSR，也就是R4作为LSP建立的“起点”。</p>
+</li>
+<li><p>当标签发布方式采用DoD时，如图所示，对于192.168.4.0/24这条FEC，只有收到上游LSR请求的请求，且自身已经收到下游LSR的标签绑定信息的情况下，才向上游LSR通告标签绑定信息。因此，必须由Ingress LSR（R1）发起请求，逐跳请求到Egress LSR（R4），最终由R4开始，向上游建立LSP。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="标签保留-自由模式"><a href="#标签保留-自由模式" class="headerlink" title="标签保留 - 自由模式"></a>标签保留 - 自由模式</h3><p>自由（Liberal）模式</p>
+<p>▫LSR收到的标签映射可能来自下一跳，也可能来自非下一跳。</p>
+<p>▫对于从邻居LSR收到的标签映射，无论邻居LSR是不是自己的下一跳都保留。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<blockquote>
+<p>•当基于IP网络部署MPLS时，LSR根据IP路由表判断接收到的标签映射是否来自下一跳。</p>
+<p>•Liberal方式的最大优点在于路由发生变化时能够快速建立新的LSP进行数据转发，因为Liberal方式保留了所有的标签。缺点是需要分发和维护不必要的标签映射。</p>
+<ul>
+<li><p>DU标签分发方式下，如果采用Liberal保持方式，则R3保留所有LDP邻居 R2和R5发来的关于192.168.1.0/24这个FEC的标签，无论该R2和R5是否是IP路由表中到达192.168.1.0/24的下一跳。</p>
+</li>
+<li><p>DoD标签分发方式下，如果采用Liberal保持方式， LSR会向所有LDP邻居请求标签。但通常来说，DoD分发方式都会和Conservative保持方式搭配使用。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="标签保留-保守模式"><a href="#标签保留-保守模式" class="headerlink" title="标签保留 - 保守模式"></a>标签保留 - 保守模式</h3><p>•保守（Conservative）模式</p>
+<p>▫对于从邻居LSR收到的标签映射，只有当邻居LSR是自己的下一跳时才保留。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<blockquote>
+<p>•Conservative方式的优点在于只需保留和维护用于转发数据的标签，以达到节约标签的目的。</p>
+<ul>
+<li>当使用DU标签分发方式时，LSR可能从多个LDP邻居收到到同一网段的标签映射消息，如图中R3会分别从R2和R5收到网段192.168.1.0/24的标签映射消息。如果采用Conservative保持方式，则R3只保留下一跳R2发来的标签，丢弃非下一跳R5发来的标签。</li>
+<li>当使用DoD标签分发方式时， LSR根据路由信息只向它的下一跳请求标签。</li>
+</ul>
+<p>•当网络拓扑变化引起下一跳邻居改变时：</p>
+<ul>
+<li>使用自由标签保持方式，LSR可以直接利用原来非下一跳邻居发来的标签，迅速重建LSP，但需要更多的内存和标签空间。</li>
+<li>使用保守标签保持方式，LSR只保留来自下一跳邻居的标签，节省了内存和标签空间，但LSP的重建会比较慢。</li>
+<li>保守标签保持方式通常与DoD方式一起，用于标签空间有限的LSR。</li>
+</ul>
+</blockquote>
+<h3 id="PHP特性"><a href="#PHP特性" class="headerlink" title="PHP特性"></a>PHP特性</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<p>•PHP（Penultimate Hop Popping，次末跳弹出），如果激活了PHP特性，那么egress节点在为本地路由分配标签的时候，会分配一个特殊标签—<strong>3</strong>，该标签被称为隐式空标签（Implicit NULL Label）。当LSR转发一个标签报文时，如果发现对应的出标签值为3，则LSR会将栈顶标签弹出，并将里面所封装的数据转发给下游LSR。</p>
+<blockquote>
+<p>•在标签发布时，R3为作为192.168.3.0/24这条FEC的Egress LSR。分配标签时，R3为该FEC分配了标签3，并将该标签绑定信息通告给R2。</p>
+<p>•在数据转发时，R2作为到达192.168.3.0的次末跳（倒数第二跳），发现出标签值为3，于是将标签头部弹出，将IP报文转发给R3，而R3则仅需执行一次查询操作（查询FIB表）即可获得相应的转发信息，转发效率得到了提升。</p>
+</blockquote>
+<h3 id="隐式空标签与显式空标签-1"><a href="#隐式空标签与显式空标签-1" class="headerlink" title="隐式空标签与显式空标签 (1)"></a>隐式空标签与显式空标签 (1)</h3><p>•缺省情况下，Egress节点向倒数第二跳分配隐式空标签（implicit-null），即特殊标签3。</p>
+<p>•但在部署QoS的场景下，标签被弹出后，其中的优先级也会一并丢失。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<h3 id="隐式空标签与显式空标签-2"><a href="#隐式空标签与显式空标签-2" class="headerlink" title="隐式空标签与显式空标签 (2)"></a>隐式空标签与显式空标签 (2)</h3><p>•显式空标签机制，Egress节点向倒数第二跳分配特殊标签0。</p>
+<p>•R3在转发标签报文时，若出标签封装为0，则不会将标签头部弹出，标签头部中的QoS信息得以保存。R4在收到带0标签的报文的时候，直接弹出标签，不用去查找ILM表项。</p>
+<p>•缺省情况下，Egress分配的是隐式空标签，通过label advertise explicit-null使能Egress节点向倒数第二跳分配显式空标签。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<blockquote>
+<p>•在MPLS视图下，执行命令<strong>label advertise</strong> { <strong>explicit-null</strong> | <strong>implicit-null</strong> | <strong>non-null</strong> }，配置向倒数第二跳分配的标签。</p>
+<p>•根据参数的不同，可以配置Egress向倒数第二跳分配不同的标签。</p>
+<p>▫缺省情况下，使用的是<strong>implicit-null</strong>，Egress向倒数第二跳节点分配隐式空标签，值为3。</p>
+<p>▫如果配置的是<strong>explicit-null</strong>，Egress节点向倒数第二跳分配显式空标签，值为0。当需要支持MPLS QoS属性时，可以选用<strong>explicit-null</strong>。</p>
+<p>▫如果配置的是<strong>non-null</strong>，Egress向倒数第二跳正常分配标签，即分配的标签值不小于16。</p>
+</blockquote>
+<h2 id="LDP工作过程详解"><a href="#LDP工作过程详解" class="headerlink" title="LDP工作过程详解"></a>LDP工作过程详解</h2><h3 id="组网介绍"><a href="#组网介绍" class="headerlink" title="组网介绍"></a>组网介绍</h3><p>•网络中已经部署OSPF路由协议且各设备之间能够正常学习到对方的路由信息。</p>
+<p>•已在各设备及相应接口上激活MPLS及LDP，且在相邻的设备之间已正常建立本地LDP会话。</p>
+<p>•所有LSR均采用DU + Independent +Liberal方式。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<blockquote>
+<p>•华为设备目前缺省模式为下游自主方式（DU）＋ 有序标签分配控制方式（Ordered）＋ 自由标签保持方式（Liberal）。</p>
+<p>•对于从R1进入，到达192.168.4.0/24的数据，R1为Ingress LSR，R4为Egress LSR。</p>
+</blockquote>
+<h3 id="标签分发-Egress-LSR"><a href="#标签分发-Egress-LSR" class="headerlink" title="标签分发 - Egress LSR"></a>标签分发 - Egress LSR</h3><p>•R4直连网段192.168.4.0/24，R4将主动为到达该网段的路由分配标签，如1041，并主动通过LDP协议报文将标签映射通告给LDP对等体R2和R3。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<blockquote>
+<p>•注：缺省情况下，根据32位的主机IP路由触发LDP建立LSP。可以通过手工配置触发非32位路由的LSP建立。</p>
+</blockquote>
+<h3 id="标签分发-Transit-LSR"><a href="#标签分发-Transit-LSR" class="headerlink" title="标签分发 - Transit LSR"></a>标签分发 - Transit LSR</h3><p>•以R2为例，在其路由表中，192.168.4.0/24路由的下一跳为R4，当它从R4收到关于192.168.4.0/24的标签映射通告时，由于该通告来自下游LDP邻居，因此这将触发它自己为该路由分配标签1021，并将标签映射通告给LDP邻居（如R1）。R3同理。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<h3 id="标签分发-Ingress-LSR"><a href="#标签分发-Ingress-LSR" class="headerlink" title="标签分发 - Ingress LSR"></a>标签分发 - Ingress LSR</h3><p>•R1收到LDP邻居R2及R3通告过来的关于192.168.4.0/24路由的标签映射后，将这两个标签都<strong>存储</strong>起来，但是由于在自己的路由表中，到达192.168.4.0/24的下一跳是R2，因此当前它只会<strong>使用</strong>R2所通告的标签1021。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<blockquote>
+<p>•注：当R2发生故障时，OSPF路由将会重新收敛，此时R1的路由表中192.168.4.0/24路由的下一跳将会切换至R3，此时R1将启用R3所通告的、关于192.168.4.0/24的标签。</p>
+</blockquote>
+<h3 id="标签转发-Ingress-LSR"><a href="#标签转发-Ingress-LSR" class="headerlink" title="标签转发 - Ingress LSR"></a>标签转发 - Ingress LSR</h3><p>R1作为Ingress LSR，需要对接收的IP报文执行Push操作压入标签，并进行标签转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<blockquote>
+<p>•当R1收到发往192.168.4.1的IP报文时，首先在其FIB表中查询该目的IP地址，它发现所匹配的表项的Tunnel ID为非0，因此继续在NHLFE中查询该Tunnel ID，然后意识到需要将对该IP报文压入标签并进行标签转发，出接口为GE0/0/0、下一跳为R2、出站标签为1021，于是为报文插入标签头部并转发出去。</p>
+</blockquote>
+<h3 id="标签转发-Transit-LSR"><a href="#标签转发-Transit-LSR" class="headerlink" title="标签转发 - Transit LSR"></a>标签转发 - Transit LSR</h3><p>•R2作为Transit LSR，需要对接收的IP报文执行Swap操作交换标签，并进行标签转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<blockquote>
+<p>•当R2收到携带1021标签的标签报文时，查询ILM，根据ILM对应到NHLFE中的表项。于是，R2对该标签报文通过swap操作将标签更换为1041，并从相应的接口转发出去。</p>
+</blockquote>
+<h3 id="标签转发-Egress-LSR"><a href="#标签转发-Egress-LSR" class="headerlink" title="标签转发 - Egress LSR"></a>标签转发 - Egress LSR</h3><p>R4作为Egress LSR，需要对接收的IP报文执行Pop操作交换标签，并进行IP转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<blockquote>
+<p>•当R4收到携带1041标签的标签报文时，查询ILM，根据ILM查询到操作为Pop。于是，R4对该标签报文通过Pop操作将最外层标签剥离，此时该报文已经变成了标准IP报文，R4将对该IP报文执行标准的IP转发流程。</p>
+<p>•R4在转发该报文时分别查询了LFIB和FIB表，作为最后Egress LSR，其存在转发效率提升的可能性，怎么做？</p>
+</blockquote>
+<h3 id="在MPLS中，运行LDP协议的LSR的操作小结"><a href="#在MPLS中，运行LDP协议的LSR的操作小结" class="headerlink" title="在MPLS中，运行LDP协议的LSR的操作小结"></a>在MPLS中，运行LDP协议的LSR的操作小结</h3><p>•LSR首先通过运行IGP协议（例如OSPF、IS-IS等）来构建路由表、FIB表；</p>
+<p>•LDP根据相应的模式，为路由表中的路由前缀（FEC）分配标签；</p>
+<p>•LDP根据相应的模式，将自己为路由前缀分配的标签，通过LDP标签映射报文通告给LDP邻居；</p>
+<p>•LSR将自己为路由前缀分配的标签，以及LDP邻居为该路由前缀通告的标签存储起来，并与出接口、下一跳地址等信息形成关联（标签转发表项）；</p>
+<p>•当LSR转发到达目的网络的标签报文时，所使用的出站标签总是下游LDP邻居所通告的标签，此处所指的下游邻居，是设备的路由表中到达该目的网络的下一跳设备。</p>
+<h1 id="3-LDP基础配置"><a href="#3-LDP基础配置" class="headerlink" title="3.LDP基础配置"></a>3.LDP基础配置</h1><h2 id="LDP基本配置命令-1"><a href="#LDP基本配置命令-1" class="headerlink" title="LDP基本配置命令 (1)"></a>LDP基本配置命令 (1)</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
+<h2 id="LDP基本配置命令-2"><a href="#LDP基本配置命令-2" class="headerlink" title="LDP基本配置命令 (2)"></a><strong>LDP基本配置命令 (2)</strong></h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
+<blockquote>
+<p>•BGP路由也可以触发LDP LSP的建立，但此部分内容不在本课程的讨论范围内。</p>
+</blockquote>
+<h2 id="LDP基本配置命令-3"><a href="#LDP基本配置命令-3" class="headerlink" title="LDP基本配置命令 (3)"></a>LDP基本配置命令 (3)</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
+<h2 id="配置案例"><a href="#配置案例" class="headerlink" title="配置案例"></a>配置案例</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
+<h2 id="检查配置-查看LSP"><a href="#检查配置-查看LSP" class="headerlink" title="检查配置 - 查看LSP"></a>检查配置 - 查看LSP</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选）以下哪条命令用于查看已经为特定FEC分配的标签？（    ）</p>
+<p>A、display mpls ldp</p>
+<p>B、display mpls ldp interface</p>
+<p><strong>C、display mpls lsp</strong></p>
+<p>D、display mpls ldp session</p>
+<p>2.（单选）华为设备默认的标签发布方式、标签分配控制方式和标签保持方式的组合是（   ）</p>
+<p>A、DU + Independent + Conservative</p>
+<p><strong>B、DU + Ordered+ Liberal</strong></p>
+<p>C、DoD + Independent+ Liberal</p>
+<p>D、DoD + Ordered + Conservative</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS体系有多种标签分配协议，LDP标签分配协议是这些协议中使用较广的一种。</p>
+<p>•LDP是LSR之间协商标签含义的过程。LDP协议使用发现、会话、通告、通知四类报文进行会话的建立和标签的分发。</p>
+<p>•LDP通过标签发布方式、标签分配控制方式和标签保持方式来决定标签的发布和管理。华为数通产品默认的方式为：下游自主标签发布方式+有序标签分配控制方式+自由标签保持方式。</p>
+<p>•利用LDP可以实现将网络层的路由信息直接映射到标签信息，进而建立起标签交换路径（LSP）。LSR之间将依据本地转发表中对应于一个特定FEC的入标签、下一跳节点、出标签等信息连接在一起，从而形成跨越整个MPLS域的标签交换路径。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IPadv-7-MPLS-LDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="tag"># IPadv-7-MPLS LDP原理与配置</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="next" title="IPadv-MPLS原理与配置">
+                <i class="fa fa-chevron-left"></i> IPadv-MPLS原理与配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="IPadv-MPLSVPN原理与配置">
+                IPadv-MPLSVPN原理与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">60</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-LDP%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.</span> <span class="nav-text">1.LDP基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">LDP协议概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E4%BC%9A%E8%AF%9D%E3%80%81LDP%E9%82%BB%E6%8E%A5%E4%BD%93%E3%80%81LDP%E5%AF%B9%E7%AD%89%E4%BD%93"><span class="nav-number">3.2.</span> <span class="nav-text">LDP会话、LDP邻接体、LDP对等体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSR-ID%E4%B8%8ELDP-ID"><span class="nav-number">3.3.</span> <span class="nav-text">LSR ID与LDP ID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E6%B6%88%E6%81%AF"><span class="nav-number">3.4.</span> <span class="nav-text">LDP消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E6%8A%A5%E6%96%87%E5%B0%81%E8%A3%85"><span class="nav-number">3.5.</span> <span class="nav-text">LDP报文封装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-LDP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">2.LDP工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B"><span class="nav-number">4.1.</span> <span class="nav-text">LDP会话建立</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LDP%E4%BC%9A%E8%AF%9D%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">4.1.1.</span> <span class="nav-text">LDP会话状态机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDP%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B-%E5%8F%91%E7%8E%B0%E9%98%B6%E6%AE%B5%E4%B8%8ETCP%E8%BF%9E%E6%8E%A5%E5%BB%BA%E7%AB%8B"><span class="nav-number">4.1.2.</span> <span class="nav-text">LDP会话建立 - 发现阶段与TCP连接建立</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDP%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B-%E4%BC%9A%E8%AF%9D%E5%BB%BA%E7%AB%8B%E4%B8%8E%E4%BF%9D%E6%8C%81"><span class="nav-number">4.1.3.</span> <span class="nav-text">LDP会话建立 - 会话建立与保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDP%E9%82%BB%E5%B1%85%E7%8A%B6%E6%80%81"><span class="nav-number">4.1.4.</span> <span class="nav-text">LDP邻居状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LDP%E4%BC%9A%E8%AF%9D%E7%8A%B6%E6%80%81"><span class="nav-number">4.1.5.</span> <span class="nav-text">LDP会话状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E6%A0%87%E7%AD%BE%E5%88%86%E5%8F%91"><span class="nav-number">4.2.</span> <span class="nav-text">LDP标签分发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E7%9A%84%E5%8F%91%E5%B8%83%E5%92%8C%E7%AE%A1%E7%90%86"><span class="nav-number">4.2.1.</span> <span class="nav-text">标签的发布和管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E6%B8%B8%E4%B8%8E%E4%B8%8B%E6%B8%B8"><span class="nav-number">4.2.2.</span> <span class="nav-text">上游与下游</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%8F%91%E5%B8%83%E6%96%B9%E5%BC%8F-DU%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.3.</span> <span class="nav-text">标签发布方式 - DU模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%8F%91%E5%B8%83%E6%96%B9%E5%BC%8F-DoD%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.4.</span> <span class="nav-text">标签发布方式 - DoD模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%88%86%E9%85%8D%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F-%E7%8B%AC%E7%AB%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.5.</span> <span class="nav-text">标签分配控制方式 - 独立模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%88%86%E9%85%8D%E6%8E%A7%E5%88%B6%E6%96%B9%E5%BC%8F-%E6%9C%89%E5%BA%8F%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.6.</span> <span class="nav-text">标签分配控制方式 - 有序模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E4%BF%9D%E7%95%99-%E8%87%AA%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.7.</span> <span class="nav-text">标签保留 - 自由模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E4%BF%9D%E7%95%99-%E4%BF%9D%E5%AE%88%E6%A8%A1%E5%BC%8F"><span class="nav-number">4.2.8.</span> <span class="nav-text">标签保留 - 保守模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP%E7%89%B9%E6%80%A7"><span class="nav-number">4.2.9.</span> <span class="nav-text">PHP特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E7%A9%BA%E6%A0%87%E7%AD%BE%E4%B8%8E%E6%98%BE%E5%BC%8F%E7%A9%BA%E6%A0%87%E7%AD%BE-1"><span class="nav-number">4.2.10.</span> <span class="nav-text">隐式空标签与显式空标签 (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E5%BC%8F%E7%A9%BA%E6%A0%87%E7%AD%BE%E4%B8%8E%E6%98%BE%E5%BC%8F%E7%A9%BA%E6%A0%87%E7%AD%BE-2"><span class="nav-number">4.2.11.</span> <span class="nav-text">隐式空标签与显式空标签 (2)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.3.</span> <span class="nav-text">LDP工作过程详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E7%BD%91%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.3.1.</span> <span class="nav-text">组网介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%88%86%E5%8F%91-Egress-LSR"><span class="nav-number">4.3.2.</span> <span class="nav-text">标签分发 - Egress LSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%88%86%E5%8F%91-Transit-LSR"><span class="nav-number">4.3.3.</span> <span class="nav-text">标签分发 - Transit LSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E5%88%86%E5%8F%91-Ingress-LSR"><span class="nav-number">4.3.4.</span> <span class="nav-text">标签分发 - Ingress LSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E8%BD%AC%E5%8F%91-Ingress-LSR"><span class="nav-number">4.3.5.</span> <span class="nav-text">标签转发 - Ingress LSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E8%BD%AC%E5%8F%91-Transit-LSR"><span class="nav-number">4.3.6.</span> <span class="nav-text">标签转发 - Transit LSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE%E8%BD%AC%E5%8F%91-Egress-LSR"><span class="nav-number">4.3.7.</span> <span class="nav-text">标签转发 - Egress LSR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8MPLS%E4%B8%AD%EF%BC%8C%E8%BF%90%E8%A1%8CLDP%E5%8D%8F%E8%AE%AE%E7%9A%84LSR%E7%9A%84%E6%93%8D%E4%BD%9C%E5%B0%8F%E7%BB%93"><span class="nav-number">4.3.8.</span> <span class="nav-text">在MPLS中，运行LDP协议的LSR的操作小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-LDP%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">3.LDP基础配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="nav-number">5.1.</span> <span class="nav-text">LDP基本配置命令 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-2"><span class="nav-number">5.2.</span> <span class="nav-text">LDP基本配置命令 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDP%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-3"><span class="nav-number">5.3.</span> <span class="nav-text">LDP基本配置命令 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%A1%88%E4%BE%8B"><span class="nav-number">5.4.</span> <span class="nav-text">配置案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE-%E6%9F%A5%E7%9C%8BLSP"><span class="nav-number">5.5.</span> <span class="nav-text">检查配置 - 查看LSP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
