@@ -1461,6 +1461,17 @@
 <p>▫中转LSR（Transit LSR）：通常是将MPLS报文进行例如标签置换操作，并将报文继续在MPLS域中转发的LSR。</p>
 <p>▫出站LSR（Egress LSR）：通常是将MPLS报文中MPLS头部移除，还原为IP报文的LSR。</p>
 <p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<h3 id="MPLS术语介绍-FEC"><a href="#MPLS术语介绍-FEC" class="headerlink" title="MPLS术语介绍 - FEC"></a>MPLS术语介绍 - FEC</h3><p>•FEC（Forwarding Equivalence Class，转发等价类）是一组具有某些共性的数据流的集合，这些数据流在转发过程中被网络节点以相同方式处理。</p>
+<ul>
+<li>在MPLS网络中，FEC可以通过多种方式划分，例如基于目的IP地址及网络掩码、DSCP等特征来划分。</li>
+<li>数据属于哪一个LSP，由数据进入MPLS域时的Ingress LSR决定。</li>
+<li>MPLS标签通常是与FEC相对应的，必须有某种机制使得网络中的LSR获得关于某FEC的标签信息。</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<blockquote>
+<p>•在传统的采用最长匹配算法的IP转发中，匹配到同一条路由的所有报文就是一个转发等价类。</p>
+<p>•在MPLS中，关于FEC最常见的例子是：目的IP地址匹配同一条IP路由的报文被认为属于同一个FEC。</p>
+</blockquote>
 <h3 id="MPLS术语介绍-LSP"><a href="#MPLS术语介绍-LSP" class="headerlink" title="MPLS术语介绍 - LSP"></a>MPLS术语介绍 - LSP</h3><p>•LSP（Label Switched Path，标签交换路径）是标签报文穿越MPLS网络到达目的地所走的路径。</p>
 <p>•同一个FEC的报文通常采用相同的LSP穿越MPLS域，所以对同一个FEC，LSR总是用相同的标签转发。</p>
 <p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
