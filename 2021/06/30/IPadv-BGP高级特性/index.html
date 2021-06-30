@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IPadv-2-BGP高级特性," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•在大型网络中通常会部署BGP，相比于IGP，BGP拥有更加灵活的路由控制能力。每一条BGP路由都可以携带多个路径属性，针对其属性也有特有的路由匹配工具，包括：AS_Path Filter和Community Filter。根据实际组网需求，可以实施路由策略，控制路由的接收和发布。 •同时，为了提升网络性能，BGP提供了各种高级特性以及多种组网部署方案。 •本课程将介绍BGP路由控制的原理与配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPadv-BGP高级特性">
+<meta property="og:url" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•在大型网络中通常会部署BGP，相比于IGP，BGP拥有更加灵活的路由控制能力。每一条BGP路由都可以携带多个路径属性，针对其属性也有特有的路由匹配工具，包括：AS_Path Filter和Community Filter。根据实际组网需求，可以实施路由策略，控制路由的接收和发布。 •同时，为了提升网络性能，BGP提供了各种高级特性以及多种组网部署方案。 •本课程将介绍BGP路由控制的原理与配">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/1.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/2.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/3.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/4.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/5.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/6.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/7.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/8.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/9.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/10.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/11.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/12.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/13.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/14.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/15.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/16.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/17.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/18.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/19.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/20.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/21.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/22.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/23.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/24.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/25.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/26.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/27.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/28.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/29.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/30.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/31.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/32.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/33.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/34.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/35.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/36.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/37.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/38.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/39.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/40.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/41.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/42.png">
+<meta property="article:published_time" content="2021-06-30T04:22:57.000Z">
+<meta property="article:modified_time" content="2021-06-30T04:55:52.088Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IPadv-2-BGP高级特性">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/06/30/IPadv-BGP高级特性/"/>
+
+
+
+
+
+  <title>IPadv-BGP高级特性 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IPadv-BGP高级特性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T12:22:57+08:00">
+                2021-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在大型网络中通常会部署BGP，相比于IGP，BGP拥有更加灵活的路由控制能力。每一条BGP路由都可以携带多个路径属性，针对其属性也有特有的路由匹配工具，包括：AS_Path Filter和Community Filter。根据实际组网需求，可以实施路由策略，控制路由的接收和发布。</p>
+<p>•同时，为了提升网络性能，BGP提供了各种高级特性以及多种组网部署方案。</p>
+<p>•本课程将介绍BGP路由控制的原理与配置，介绍常用的BGP高级特性，包括：ORF、对等体组、安全特性，还会介绍BGP路由反射器的组网部署方式。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫在配置AS_Path Filter和Community Filter过程中使用正则表达式</p>
+<p>▫使用AS_Path Filter和Community Filter实现BGP路由控制</p>
+<p>▫应用BGP的ORF功能、对等体组功能</p>
+<p>▫实现BGP安全的基本配置</p>
+<p>▫描述BGP路由反射器的组网方式</p>
+<h1 id="1-BGP路由控制"><a href="#1-BGP路由控制" class="headerlink" title="1.BGP路由控制"></a>1.BGP路由控制</h1><h2 id="BGP路由控制概述"><a href="#BGP路由控制概述" class="headerlink" title="BGP路由控制概述"></a>BGP路由控制概述</h2><p>BGP路由控制包括控制路由的发布和接收。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/1.png"></p>
+<blockquote>
+<p>•如图所示：</p>
+<ul>
+<li>R1和R2在AS101中，建立IBGP邻居关系；R3和R4在AS102中，分别与R2建立EBGP邻居关系。</li>
+<li>R1有三个直连网段Net1、Net2和Net3，并将三个网段通告进BGP路由中。</li>
+<li>在R2可以通过BGP路由控制，过滤Net2的路由，则R2的BGP路由表中就没有Net2的路由条目。</li>
+<li>在R3和R4可以通过BGP路由控制，分别修改Net1和Net3的路由属性，控制路由优选，使AS102中设备访问Net1优选R3作为出口设备，访问Net3优选R4作为出口设备。</li>
+</ul>
+<p>•说明：ACL、IP Prefix List、Filter-Policy、Route-Policy和BGP路径属性等内容本课程不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>•正则表达式是按照一定的模板来匹配字符串的公式，由普通字符（例如字符a到z）和特殊字符组成。</p>
+<p>•普通字符：匹配的对象是普通字符本身。</p>
+<ul>
+<li><p>包括所有的大写和小写字母、数字、标点符号以及一些特殊符号。</p>
+</li>
+<li><p>例如：a匹配abc中的a，10匹配10.113.25.155中的10，@匹配<a href="mailto:&#120;&#x78;&#120;&#x40;&#120;&#120;&#120;&#x2e;&#99;&#x6f;&#109;">&#120;&#x78;&#120;&#x40;&#120;&#120;&#120;&#x2e;&#99;&#x6f;&#109;</a>中的@。</p>
+</li>
+</ul>
+<p>•特殊字符：配合普通字符匹配复杂或特殊的字符串组合。</p>
+<ul>
+<li>位于普通字符之前或之后用来限制或扩充普通字符的独立控制字符或占位符。</li>
+<li>用来描述它前面的字符的重复使用方式。</li>
+<li>限定一个完整的范围。</li>
+</ul>
+<blockquote>
+<p>•正则表达式一般具有以下功能：</p>
+<p>▫检查字符串中符合某个规则的子字符串，并可以获取该子字符串。</p>
+<p>▫根据匹配规则对字符串进行替换操作。</p>
+</blockquote>
+<h2 id="特殊字符举例-1"><a href="#特殊字符举例-1" class="headerlink" title="特殊字符举例 (1)"></a>特殊字符举例 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/2.png"></p>
+<blockquote>
+<p>•说明：圆括号()可以用来定义操作符的范围和优先度。例如，gr(a|e)y等价于gray|grey。</p>
+</blockquote>
+<h2 id="特殊字符举例-2"><a href="#特殊字符举例-2" class="headerlink" title="特殊字符举例 (2)"></a>特殊字符举例 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/3.png"></p>
+<blockquote>
+<p>•思考题：</p>
+<p>•类型1：</p>
+<p>▫**^a.$**：匹配一个以字符a开始，以任意单一字符结束的字符串，如a0，a!，ax等。</p>
+<p>▫**^100_**：匹配以100为起始的字符串，如：100、100 200、100 300 400等。</p>
+<p>▫**^100$**：只匹配100。</p>
+<p>▫**100$|400$**：匹配以100或400结束的字符串，如：100、1400、300 400等。</p>
+<p>▫**^(65000)$**：只匹配(65000)。</p>
+<p>•类型2：</p>
+<p>▫<strong>abc*d</strong>：匹配c字符0次或多次，如：abd、abcd、abccd、abcccd、abccccdef等。</p>
+<p>▫<strong>abc+d</strong>：匹配c字符1次或多次，如：abcd、abccd、abcccd、abccccdef等。</p>
+<p>▫<strong>abc?d</strong>：匹配c字符0次或1次，如：abd、abcd、abcdef等。</p>
+<p>▫<strong>a(bc)?d</strong>：匹配bc字符串0次或1次，如：ad、abcd、aaabcdef等。</p>
+<p>•类型3：</p>
+<p>▫**[abcd]**：匹配abcd中任意一个字符，即只要出现了a、b、c、d中的任意字符即可，如：ax、b！、abc、d0等。</p>
+<p>▫**[a-c 1-2]$**：匹配以字符a、b、c、1、2结束的字符串，如：a、a1、62、xb、7ac等。</p>
+<p>▫**[^act]$**：匹配不以字符a、c、t结束的字符串，如：ax、b！、d等。</p>
+<p>▫**[123].[7-9]**：匹配如：1 7、2x9、348等。</p>
+</blockquote>
+<h2 id="路由匹配工具：AS-Path-Filter"><a href="#路由匹配工具：AS-Path-Filter" class="headerlink" title="路由匹配工具：AS_Path Filter"></a>路由匹配工具：AS_Path Filter</h2><p>•AS_Path Filter是将BGP中的AS_Path属性作为匹配条件的过滤器，利用BGP路由携带的AS_Path列表对路由进行过滤。</p>
+<p>•在不希望接收某些AS的路由时，可以利用AS_Path Filter对携带这些AS号的路由进行过滤，从而实现拒绝某些路由。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/4.png"></p>
+<blockquote>
+<p>•AS_Path属性是BGP的公认必遵属性，所有的BGP路由都必须携带该属性。这个属性记录了BGP路由在传递过程中所经过的所有AS的号码。</p>
+<p>•AS_Path属性值可以是0个、1个或多个AS号码的集合。</p>
+</blockquote>
+<h2 id="使用正则表达式匹配AS-Path"><a href="#使用正则表达式匹配AS-Path" class="headerlink" title="使用正则表达式匹配AS_Path"></a>使用正则表达式匹配AS_Path</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/5.png"></p>
+<h2 id="AS-Path-Filter的基础配置命令"><a href="#AS-Path-Filter的基础配置命令" class="headerlink" title="AS_Path Filter的基础配置命令"></a>AS_Path Filter的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/6.png"></p>
+<blockquote>
+<p>•在同一个过滤器编号下，可以定义多条过滤规则（permit或deny模式）。在匹配过程中，这些规则之间是“或”的关系，即只要路由信息通过其中一项规则，就认为通过由该过滤器编号标识的这组AS_Path Filter。</p>
+<p>•命令：[Huawei] <strong>ip as-path-filter</strong> { <em>as-path-filter-number</em> | <em>as-path-filter-name</em> } { <strong>deny</strong> | <strong>permit</strong> } <em>regular-expression</em></p>
+<ul>
+<li><em>as-path-filter-number</em>：指定的AS路径过滤器号。整数形式，取值范围1~256。</li>
+<li><em>as-path-filter-name</em>：指定的AS路径过滤器名称。字符串形式，区分大小写，不支持空格，长度范围是1~51，且不能都是数字。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>deny</strong>：指定AS路径过滤器的匹配模式为拒绝。</li>
+<li><strong>permit</strong>：指定AS路径过滤器的匹配模式为允许。</li>
+<li><em>regular-expression</em>：指定AS路径正则表达式。字符串形式，支持空格，取值范围是1~255个字符。</li>
+</ul>
+<p>•AS路径过滤器的默认行为是deny，即路由如果没有在某一次过滤中被permit则最终不能通过该过滤器的过滤。如果一个过滤器中的所有过滤规则都是deny，则没有路由能通过该过滤器的过滤，这种情况下需要在多次（或一次）deny之后设置一次permit，允许其余所有路由通过过滤器的过滤。</p>
+</blockquote>
+<h2 id="AS-Path-Filter的配置举例-1"><a href="#AS-Path-Filter的配置举例-1" class="headerlink" title="AS_Path Filter的配置举例 (1)"></a>AS_Path Filter的配置举例 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/7.png"></p>
+<h2 id="AS-Path-Filter的配置举例-2"><a href="#AS-Path-Filter的配置举例-2" class="headerlink" title="AS_Path Filter的配置举例 (2)"></a>AS_Path Filter的配置举例 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/8.png"></p>
+<h2 id="查看AS-Path-Filter相关信息"><a href="#查看AS-Path-Filter相关信息" class="headerlink" title="查看AS_Path Filter相关信息"></a>查看AS_Path Filter相关信息</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/9.png"></p>
+<h2 id="路由匹配工具：Community-Filter"><a href="#路由匹配工具：Community-Filter" class="headerlink" title="路由匹配工具：Community Filter"></a>路由匹配工具：Community Filter</h2><p>•Community Filter与Community属性配合使用，可以在不便使用IP Prefix List和AS_Path Filter时，降低路由管理难度。</p>
+<p>•团体属性过滤器有两种类型：</p>
+<p>​    ▫基本Community Filter。匹配团体号或公认Community属性。</p>
+<p>​    ▫高级Community Filter。使用正则表达式匹配团体号。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/10.png"></p>
+<blockquote>
+<p>•Community属性为可选过渡属性，可以标识具有相同特征的路由，而不用考虑零散路由前缀和繁多的AS号。即可以将某些路由分配特定的Community属性值，之后就可以基于Community值而不是网络号/掩码来匹配路由并执行相应的路由策略。</p>
+</blockquote>
+<h2 id="Community属性"><a href="#Community属性" class="headerlink" title="Community属性"></a>Community属性</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/11.png"></p>
+<h2 id="设置Community的基础配置命令"><a href="#设置Community的基础配置命令" class="headerlink" title="设置Community的基础配置命令"></a>设置Community的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/12.png"></p>
+<blockquote>
+<p>•命令：[Huawei-route-policy] <strong>apply community</strong> { <em>community-number</em> | <em>aa:nn</em> | <strong>internet</strong> | <strong>no-advertise</strong> | <strong>no-export</strong> | <strong>no-export-subconfed</strong> } [ <strong>additive</strong> ]</p>
+<p>▫<em>community-number</em> | <em>aa:nn</em>：指定团体属性中的团体号。一条命令中最多可以配置32个团体号。整数形式，community-number的取值范围是0<del>4294967295，aa和nn的取值范围都是0</del>65535。</p>
+<p>▫<strong>internet</strong>：表示可以向任何对等体发送匹配的路由。缺省情况下，所有的路由都属于Internet团体。</p>
+<p>▫<strong>no-advertise</strong>：表示不向任何对等体发送匹配的路由。即收到具有此属性的路由后，不能发布给任何其他的BGP对等体。</p>
+<p>▫<strong>no-export</strong>：表示不向AS外发送匹配的路由，但发布给其它子自治系统。即收到具有此属性的路由后，不能发布到本地AS之外。</p>
+<p>▫<strong>no-export-subconfed</strong>：表示不向AS外发送匹配的路由，也不发布给其它子自治系统，即收到具有此属性的路由后，不能发布给任何其他的子自治系统。</p>
+<p>▫<strong>additive</strong>：表示追加路由的团体属性。</p>
+</blockquote>
+<h2 id="Community-Filter的基础配置命令-1"><a href="#Community-Filter的基础配置命令-1" class="headerlink" title="Community Filter的基础配置命令 (1)"></a>Community Filter的基础配置命令 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/13.png"></p>
+<blockquote>
+<p>•命令：[Huawei] <strong>ip community-filter</strong> { <strong>basic</strong> <em>comm-filter-name</em> | <em>basic-<strong>comm</strong>-filter-num</em> } { <strong>permit</strong> | <strong>deny</strong> } [ <em>community-number</em> | <em>aa:nn</em> | <strong>internet</strong> | <strong>no-export-subconfed</strong> | <strong>no-advertise</strong> | <strong>no-export</strong> ]</p>
+<p>▫<strong>basic</strong> <em>comm-filter-name</em>：指定基本团体属性过滤器名称。字符串形式，区分大小写，取值范围是1~51个字符，且不能都是数字。</p>
+<p>▫<em>basic-<strong>comm</strong>-filter-num</em>：指定基本团体属性过滤器号。整数形式，取值范围1~99。</p>
+<p>▫<strong>deny</strong>：指定团体属性过滤器的匹配模式为拒绝。</p>
+<p>▫<strong>permit</strong>：指定团体属性过滤器的匹配模式为允许。</p>
+<p>▫<em>community-number</em>：指定团体号。整数形式，取值范围0~4294967295。</p>
+<p>▫<em>aa:nn</em>：指定团体号。一条命令最多可以指定20个团体属性号。aa和nn都是整数形式，取值范围都是0~65535。</p>
+<p>▫<strong>internet</strong>：表示可以向任何对等体发送匹配的路由。</p>
+<p>▫<strong>no-export-subconfed</strong>：指定不向自治系统外部通告路由。如果使用了联盟，则不会向联盟中的其他子自治系统通告路由。</p>
+<p>▫<strong>no-advertise</strong>：指定不通告给其他对等体。</p>
+<p>▫<strong>no-export</strong>：指定不向自治系统外部通告路由。如果使用了联盟，则不向联盟外部通告路由，但会通告给联盟中的其他子自治系统。</p>
+<p>•命令：[Huawei] <strong>ip community-filter</strong> { <strong>advanced</strong> <em>comm*</em>-filter-name* | <em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em> } { <strong>permit</strong> | <strong>deny</strong> } <em>regular-expression</em></p>
+<p>▫<strong>advanced</strong> <em>comm*</em>-filter-name*：指定高级团体属性过滤器名称。字符串形式，区分大小写，取值范围是1~51个字符，且不能都是数字。</p>
+<p>▫<em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em>：指定高级团体属性过滤器号。整数形式，取值范围100~199。</p>
+<p>▫<em>regular-expression</em>：指定团体属性正则表达式。字符串形式，支持空格，区分大小写，取值范围是1~255。</p>
+</blockquote>
+<h2 id="Community-Filter的基础配置命令-2"><a href="#Community-Filter的基础配置命令-2" class="headerlink" title="Community Filter的基础配置命令 (2)"></a>Community Filter的基础配置命令 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/14.png"></p>
+<blockquote>
+<p>•命令：[Huawei-route-policy] <strong>if-match community-filter</strong> { <em>basic-<strong>comm</strong>-filter-num</em> [ <strong>whole-match</strong> ] | <em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em> }</p>
+<p>•命令：[Huawei-route-policy] <strong>if-match community-filter</strong> <em>comm-filter-name</em> [ <strong>whole-match</strong> ]</p>
+<ul>
+<li><em>basic-<strong>comm</strong>-filter-num</em>：指定基本团体属性过滤器号。整数形式，取值范围是1~99。</li>
+<li><em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em>：指定高级团体属性过滤器号。整数形式，取值范围是100~199。</li>
+<li><em>comm-filter-name</em>：指定团体属性过滤器名称。字符串形式，区分大小写，不支持空格，长度范围是1~51，且不能都是数字。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>whole-match</strong>：表示完全匹配，即所有的团体都必须出现。仅对基本团体属性过滤器生效。</li>
+</ul>
+</blockquote>
+<h2 id="Community-Filter的配置举例"><a href="#Community-Filter的配置举例" class="headerlink" title="Community Filter的配置举例"></a>Community Filter的配置举例</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/15.png"></p>
+<h2 id="配置Community属性-1"><a href="#配置Community属性-1" class="headerlink" title="配置Community属性 (1)"></a>配置Community属性 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/16.png"></p>
+<blockquote>
+<p>•命令：[R1] <strong>route-policy</strong> Community <strong>permit node</strong> 20</p>
+<p>•通过配置该命令允许10.1.2.2/32路由被正常通告。</p>
+</blockquote>
+<h2 id="配置Community属性-2"><a href="#配置Community属性-2" class="headerlink" title="配置Community属性 (2)"></a>配置Community属性 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/17.png"></p>
+<h2 id="配置Community属性-3"><a href="#配置Community属性-3" class="headerlink" title="配置Community属性 (3)"></a>配置Community属性 (3)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/18.png"></p>
+<h2 id="配置Community-Filter-1"><a href="#配置Community-Filter-1" class="headerlink" title="配置Community Filter (1)"></a>配置Community Filter (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/19.png"></p>
+<h2 id="配置Community-Filter-2"><a href="#配置Community-Filter-2" class="headerlink" title="配置Community Filter (2)"></a>配置Community Filter (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/20.png"></p>
+<h2 id="配置Community-Filter-3"><a href="#配置Community-Filter-3" class="headerlink" title="配置Community Filter (3)"></a>配置Community Filter (3)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/21.png"></p>
+<h1 id="2-BGP特性介绍"><a href="#2-BGP特性介绍" class="headerlink" title="2.BGP特性介绍"></a>2.BGP特性介绍</h1><h2 id="邻居按需发布路由"><a href="#邻居按需发布路由" class="headerlink" title="邻居按需发布路由"></a>邻居按需发布路由</h2><p>•如果设备希望只接收自己需要的路由，但对端设备又无法针对每个与它连接的设备维护不同的出口策略。此时，可以通过配置BGP基于前缀的ORF（Outbound Route Filters，出口路由过滤器）来满足两端设备的需求。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/22.png"></p>
+<h2 id="ORF的基础配置命令"><a href="#ORF的基础配置命令" class="headerlink" title="ORF的基础配置命令"></a>ORF的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/23.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp-af-ipv4] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> } <strong>ip-prefix</strong> <em>ip-prefix-name</em> { <strong>import</strong> | <strong>export</strong> }</p>
+<p>​    ▫<strong>import</strong>：对由指定对等体（组）接收的路由应用过滤策略。</p>
+<p>​    ▫<strong>export</strong>：对向指定对等体（组）发送的路由应用过滤策略。</p>
+<p>•命令：[Huawei-bgp] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> } <strong>capability-advertise</strong> <strong>orf</strong> [ <strong>non-standard-compatible</strong> ] <strong>ip-prefix</strong> { <strong>both</strong> | <strong>receive</strong> | <strong>send</strong> } [ <strong>standard-match</strong> ]</p>
+<p>​    ▫<strong>non-standard-compatible</strong>：指定与非标准设备兼容。</p>
+<p>​    ▫<strong>both</strong>：表示允许发送和接收ORF报文。</p>
+<p>​    ▫<strong>receive</strong>：表示只允许接收ORF报文。</p>
+<p>​    ▫<strong>send</strong>：表示只允许发送ORF报文。</p>
+<p>​    ▫<strong>standard-match</strong>：指定按照RFC标准规定的前缀匹配规则来匹配路由。</p>
+</blockquote>
+<h2 id="ORF配置举例"><a href="#ORF配置举例" class="headerlink" title="ORF配置举例"></a>ORF配置举例</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/24.png"></p>
+<h2 id="查看ORF配置"><a href="#查看ORF配置" class="headerlink" title="查看ORF配置"></a>查看ORF配置</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/25.png"></p>
+<h2 id="BGP对等体组"><a href="#BGP对等体组" class="headerlink" title="BGP对等体组"></a>BGP对等体组</h2><p>•对等体组（Peer Group）是一些具有某些相同策略的对等体的集合。当一个对等体加入对等体组中时，该对等体将获得与所在对等体组相同的配置。当对等体组的配置改变时，组内成员的配置也相应改变。</p>
+<p>•在大型BGP网络中，对等体的数量会很多，其中很多对等体具有相同的策略，在配置时会重复使用一些命令，利用对等体组可以简化配置。</p>
+<blockquote>
+<p>•对等体组中的单个对等体也可以配置自己的发布路由与接收路由的策略。</p>
+</blockquote>
+<h2 id="BGP对等体组的基础配置命令"><a href="#BGP对等体组的基础配置命令" class="headerlink" title="BGP对等体组的基础配置命令"></a>BGP对等体组的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/26.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp] <strong>group</strong> <em>group-name</em> [ <strong>external</strong> | <strong>internal</strong> ]</p>
+<p>​    ▫<em>group-name</em>：指定对等体组的名称。字符串形式，区分大小写，不支持空格，长度范围是1~47。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+<p>​    ▫<strong>external</strong>：表示创建EBGP对等体组。</p>
+<p>​    ▫<strong>internal</strong>：表示创建IBGP对等体组。</p>
+</blockquote>
+<h2 id="BGP对等体组配置举例"><a href="#BGP对等体组配置举例" class="headerlink" title="BGP对等体组配置举例"></a>BGP对等体组配置举例</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/27.png"></p>
+<blockquote>
+<p>•如图所示：假设AS102内，通过静态路由或OSPF实现AS102内部网络可达，配置省略。</p>
+</blockquote>
+<h2 id="查看BGP对等体组配置"><a href="#查看BGP对等体组配置" class="headerlink" title="查看BGP对等体组配置"></a>查看BGP对等体组配置</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/28.png"></p>
+<h2 id="BGP安全性"><a href="#BGP安全性" class="headerlink" title="BGP安全性"></a>BGP安全性</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/29.png"></p>
+<h2 id="BGP认证"><a href="#BGP认证" class="headerlink" title="BGP认证"></a>BGP认证</h2><p>BGP认证分为MD5认证和Keychain认证，对BGP对等体关系进行认证可以预防非法BGP邻居建立。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/30.png"></p>
+<blockquote>
+<p>•BGP使用TCP作为传输协议，只要TCP数据包的源地址、目的地址、源端口、目的端口和TCP序号是正确的，BGP就会认为这个数据包有效，但数据包的大部分参数对于攻击者来说是不难获得的。为了保证BGP免受攻击，可以在BGP邻居之间使用MD5认证或者Keychain认证来降低被攻击的可能性。</p>
+<ul>
+<li><p>MD5算法配置简单，配置后生成单一密码，需要人为干预才可以更换密码。</p>
+</li>
+<li><p>Keychain具有一组密码，可以根据配置自动切换，但是配置过程较为复杂，适用于对安全性能要求比较高的网络。</p>
+</li>
+</ul>
+<p>•注意：BGP的MD5认证与BGP的Keychain认证互斥。</p>
+</blockquote>
+<h2 id="BGP的GTSM"><a href="#BGP的GTSM" class="headerlink" title="BGP的GTSM"></a>BGP的GTSM</h2><p>BGP的GTSM功能检测IP报文头中的TTL（Time-to-Live）值是否在一个预先设置好的特定范围内，并对不符合TTL值范围的报文进行丢弃，这样就避免了网络攻击者模拟“合法”BGP报文攻击设备。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/31.png"></p>
+<blockquote>
+<p>•如图所示：如果没有使能BGP的GTSM功能，设备收到大量非法BGP报文后，发现是发送给本机的报文，会直接上送控制层面处理。这时将会因为控制层面处理大量攻击报文，导致设备CPU占用率高，系统异常繁忙。</p>
+</blockquote>
+<h2 id="BGP认证的基础配置命令"><a href="#BGP认证的基础配置命令" class="headerlink" title="BGP认证的基础配置命令"></a>BGP认证的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/32.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> | <em>ipv6-address</em> } <strong>keychain</strong> <em>keychain-name</em></p>
+<p>▫<em>keychain-name</em>：指定Keychain名称。字符串形式，长度范围是1~47，不区分大小写。字符不包括问号和空格，但是当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+</blockquote>
+<h2 id="GTSM功能的基础配置命令"><a href="#GTSM功能的基础配置命令" class="headerlink" title="GTSM功能的基础配置命令"></a>GTSM功能的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/33.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> | <em>ipv6-address</em> } <strong>valid-ttl-hops</strong> [ <em>hops</em> ]</p>
+<ul>
+<li><em>hops</em>：指定需要检测的TTL跳数值。整数形式，取值范围是1~255，缺省值是255。如果配置为hops，则被检测的报文的TTL值有效范围为[255–hops+1, 255]</li>
+</ul>
+<p>•命令：[Huawei] <strong>gtsm</strong> <strong>default-action</strong> { <strong>drop</strong> | <strong>pass</strong> }</p>
+<ul>
+<li><p><strong>drop</strong>：未匹配GTSM策略的报文不能通过过滤，报文被丢弃。</p>
+</li>
+<li><p><strong>pass</strong>：未匹配GTSM策略的报文可以通过过滤。</p>
+</li>
+</ul>
+<p>•命令：[Huawei] <strong>gtsm</strong> <strong>log drop-packet</strong> <strong>all</strong></p>
+<ul>
+<li><strong>all</strong>：所有单板。</li>
+</ul>
+</blockquote>
+<h2 id="GTSM配置举例-1"><a href="#GTSM配置举例-1" class="headerlink" title="GTSM配置举例 (1)"></a>GTSM配置举例 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/34.png"></p>
+<blockquote>
+<p>•如图所示：</p>
+<p>▫假设AS101内，通过静态路由或OSPF实现AS101内部网络可达，配置省略。</p>
+<p>▫R1通告Loopback0接口地址到BGP中。</p>
+</blockquote>
+<h2 id="GTSM配置举例-2"><a href="#GTSM配置举例-2" class="headerlink" title="GTSM配置举例 (2)"></a>GTSM配置举例 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/35.png"></p>
+<h2 id="查看GTSM配置"><a href="#查看GTSM配置" class="headerlink" title="查看GTSM配置"></a>查看GTSM配置</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/36.png"></p>
+<h1 id="3-BGP路由反射器组网方式"><a href="#3-BGP路由反射器组网方式" class="headerlink" title="3.BGP路由反射器组网方式"></a>3.BGP路由反射器组网方式</h1><h2 id="路由反射器"><a href="#路由反射器" class="headerlink" title="路由反射器"></a>路由反射器</h2><p>引入路由反射器，可以简化IBGP全互联的需求，也可以减轻网络和CPU的负担。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/37.png"></p>
+<blockquote>
+<p>•路由反射器相关角色：</p>
+<p>▫RR：允许把从IBGP对等体学到的路由反射到其他IBGP对等体的BGP设备，类似OSPF网络中的DR。</p>
+<p>▫Client：与RR形成反射邻居关系的IBGP设备。在AS内部客户机只需要与RR直连。</p>
+<p>▫Non-Client：既不是RR也不是客户机的IBGP设备。在AS内部非客户机与RR之间，以及所有的非客户机之间仍然必须建立全互联关系。</p>
+<p>▫Originator（始发者）：在AS内部始发路由的设备。Originator_ID属性用于防止集群内产生路由环路。</p>
+<p>▫Cluster（集群）：路由反射器及其客户机的集合。Cluster_List属性用于防止集群间产生路由环路。</p>
+<p>•将一台BGP路由器指定为RR的同时，还需要指定其Client。至于Client本身，无需做任何配置，它并不知晓网络中存在RR。</p>
+<p>•RR发布路由规则：</p>
+<ul>
+<li>从非客户机IBGP对等体学到的路由，发布给此RR的所有客户机。</li>
+<li>从客户机学到的路由，发布给此RR的所有非客户机和客户机。</li>
+<li>从EBGP对等体学到的路由，发布给所有的非客户机和客户机。</li>
+</ul>
+</blockquote>
+<h2 id="常见组网：备份RR组网"><a href="#常见组网：备份RR组网" class="headerlink" title="常见组网：备份RR组网"></a>常见组网：备份RR组网</h2><p>•为增加网络的可靠性，防止单点故障对网络造成影响，有时需要在一个集群中配置一个以上的RR。</p>
+<p>•转发路径上的路由器与所有RR均建立IBGP关系，任意一个RR均有完整的BGP路由。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/38.png"></p>
+<h2 id="常见组网：多集群RR组网-1"><a href="#常见组网：多集群RR组网-1" class="headerlink" title="常见组网：多集群RR组网 (1)"></a>常见组网：多集群RR组网 (1)</h2><p>•一个AS中可以存在多个集群，各个集群的RR之间建立IBGP对等体。</p>
+<p>•当RR所处的网络层相同时，可以将不同集群的RR全互联，形成同级RR。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/39.png"></p>
+<h2 id="常见组网：多集群RR组网-2"><a href="#常见组网：多集群RR组网-2" class="headerlink" title="常见组网：多集群RR组网 (2)"></a>常见组网：多集群RR组网 (2)</h2><p>•一个AS中可以存在多个集群，各个集群的RR之间建立IBGP对等体。</p>
+<p>•当RR所处的网络层不同时，可以将较低网络层次的RR配成客户机，形成分级RR。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/40.png"></p>
+<blockquote>
+<p>•分级RR与单级RR的路由发布规则相同。</p>
+<p>•分级RR设计需要考虑两个因素：</p>
+<ul>
+<li>顶层全互联的拓扑大小：如果IBGP全互联数量已经多到难以管理了，则可考虑引入RR分级部署。</li>
+<li>可替代路径的数量：该因素影响负载分担和资源消耗。越多的层次越会减少负载分担链路的数量，但需要的路由器资源更少。</li>
+</ul>
+</blockquote>
+<h2 id="单集群问题"><a href="#单集群问题" class="headerlink" title="单集群问题"></a>单集群问题</h2><p>为了在基于RR的架构中提供所期望的冗余，正确的集群划分是非常重要的。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/41.png"></p>
+<h2 id="多集群设计"><a href="#多集群设计" class="headerlink" title="多集群设计"></a>多集群设计</h2><p>多集群设计不仅提供了针对链路失效的物理冗余，同时提供了针对客户机与RR之间的IBGP会话失效的逻辑冗余。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/42.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）命令“**ip as-path-filter 1 permit ^(100|200)$**”中匹配到的AS_Path是什么？(   )</p>
+<p>A.AS_Path 100</p>
+<p>B.AS_Path 200</p>
+<p>C.AS_Path 100 200</p>
+<p><strong>D.AS_Path 100 或 AS_Path 200</strong></p>
+<p>2.（判断题）BGP的GTSM功能，可以预防非法BGP邻居建立。(   )</p>
+<p>A.正确</p>
+<p><strong>B.错误</strong></p>
+<p>3.（判断题）BGP的备份RR组网中，主备RR收到对方反射的路由会丢弃，避免路由环路。(   )</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•AS_Path Filter和Community Filter都是BGP专有的路由匹配工具，可以使用这两种工具匹配AS_Path属性或Community属性来匹配BGP路由，再与路由策略相结合，从而实现BGP的路由控制。</p>
+<p>•BGP还支持各种高级特性，包括：通过ORF功能实现邻居按需发布路由，通过对等体组简化配置，通过BGP安全特性预防非法邻居建立以及非法BGP报文攻击。</p>
+<p>•BGP通过RR打破了IBGP水平分割规则，简化了IBGP全互联的需求，也减轻了网络和CPU的负担。常见的RR组网方式包括：备份RR组网和多集群RR组网。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IPadv-2-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" rel="tag"># IPadv-2-BGP高级特性</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/" rel="next" title="IPadv-MPLSVPN部署与应用">
+                <i class="fa fa-chevron-left"></i> IPadv-MPLSVPN部署与应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/" rel="prev" title="IPadv-IPv6路由">
+                IPadv-IPv6路由 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-BGP%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">1.BGP路由控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">BGP路由控制概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E4%B8%BE%E4%BE%8B-1"><span class="nav-number">3.3.</span> <span class="nav-text">特殊字符举例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6%E4%B8%BE%E4%BE%8B-2"><span class="nav-number">3.4.</span> <span class="nav-text">特殊字符举例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8C%B9%E9%85%8D%E5%B7%A5%E5%85%B7%EF%BC%9AAS-Path-Filter"><span class="nav-number">3.5.</span> <span class="nav-text">路由匹配工具：AS_Path Filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8DAS-Path"><span class="nav-number">3.6.</span> <span class="nav-text">使用正则表达式匹配AS_Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AS-Path-Filter%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">3.7.</span> <span class="nav-text">AS_Path Filter的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AS-Path-Filter%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-1"><span class="nav-number">3.8.</span> <span class="nav-text">AS_Path Filter的配置举例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AS-Path-Filter%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-2"><span class="nav-number">3.9.</span> <span class="nav-text">AS_Path Filter的配置举例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BAS-Path-Filter%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF"><span class="nav-number">3.10.</span> <span class="nav-text">查看AS_Path Filter相关信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8C%B9%E9%85%8D%E5%B7%A5%E5%85%B7%EF%BC%9ACommunity-Filter"><span class="nav-number">3.11.</span> <span class="nav-text">路由匹配工具：Community Filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Community%E5%B1%9E%E6%80%A7"><span class="nav-number">3.12.</span> <span class="nav-text">Community属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AECommunity%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">3.13.</span> <span class="nav-text">设置Community的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Community-Filter%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="nav-number">3.14.</span> <span class="nav-text">Community Filter的基础配置命令 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Community-Filter%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-2"><span class="nav-number">3.15.</span> <span class="nav-text">Community Filter的基础配置命令 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Community-Filter%E7%9A%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">3.16.</span> <span class="nav-text">Community Filter的配置举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AECommunity%E5%B1%9E%E6%80%A7-1"><span class="nav-number">3.17.</span> <span class="nav-text">配置Community属性 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AECommunity%E5%B1%9E%E6%80%A7-2"><span class="nav-number">3.18.</span> <span class="nav-text">配置Community属性 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AECommunity%E5%B1%9E%E6%80%A7-3"><span class="nav-number">3.19.</span> <span class="nav-text">配置Community属性 (3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AECommunity-Filter-1"><span class="nav-number">3.20.</span> <span class="nav-text">配置Community Filter (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AECommunity-Filter-2"><span class="nav-number">3.21.</span> <span class="nav-text">配置Community Filter (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AECommunity-Filter-3"><span class="nav-number">3.22.</span> <span class="nav-text">配置Community Filter (3)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-BGP%E7%89%B9%E6%80%A7%E4%BB%8B%E7%BB%8D"><span class="nav-number">4.</span> <span class="nav-text">2.BGP特性介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%BB%E5%B1%85%E6%8C%89%E9%9C%80%E5%8F%91%E5%B8%83%E8%B7%AF%E7%94%B1"><span class="nav-number">4.1.</span> <span class="nav-text">邻居按需发布路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORF%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.2.</span> <span class="nav-text">ORF的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORF%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.3.</span> <span class="nav-text">ORF配置举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BORF%E9%85%8D%E7%BD%AE"><span class="nav-number">4.4.</span> <span class="nav-text">查看ORF配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%AF%B9%E7%AD%89%E4%BD%93%E7%BB%84"><span class="nav-number">4.5.</span> <span class="nav-text">BGP对等体组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%AF%B9%E7%AD%89%E4%BD%93%E7%BB%84%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.6.</span> <span class="nav-text">BGP对等体组的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%AF%B9%E7%AD%89%E4%BD%93%E7%BB%84%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.7.</span> <span class="nav-text">BGP对等体组配置举例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BBGP%E5%AF%B9%E7%AD%89%E4%BD%93%E7%BB%84%E9%85%8D%E7%BD%AE"><span class="nav-number">4.8.</span> <span class="nav-text">查看BGP对等体组配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">4.9.</span> <span class="nav-text">BGP安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E8%AE%A4%E8%AF%81"><span class="nav-number">4.10.</span> <span class="nav-text">BGP认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E7%9A%84GTSM"><span class="nav-number">4.11.</span> <span class="nav-text">BGP的GTSM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E8%AE%A4%E8%AF%81%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.12.</span> <span class="nav-text">BGP认证的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GTSM%E5%8A%9F%E8%83%BD%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">4.13.</span> <span class="nav-text">GTSM功能的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GTSM%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-1"><span class="nav-number">4.14.</span> <span class="nav-text">GTSM配置举例 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GTSM%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B-2"><span class="nav-number">4.15.</span> <span class="nav-text">GTSM配置举例 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BGTSM%E9%85%8D%E7%BD%AE"><span class="nav-number">4.16.</span> <span class="nav-text">查看GTSM配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-BGP%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8%E7%BB%84%E7%BD%91%E6%96%B9%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">3.BGP路由反射器组网方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text">路由反射器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%BB%84%E7%BD%91%EF%BC%9A%E5%A4%87%E4%BB%BDRR%E7%BB%84%E7%BD%91"><span class="nav-number">5.2.</span> <span class="nav-text">常见组网：备份RR组网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%BB%84%E7%BD%91%EF%BC%9A%E5%A4%9A%E9%9B%86%E7%BE%A4RR%E7%BB%84%E7%BD%91-1"><span class="nav-number">5.3.</span> <span class="nav-text">常见组网：多集群RR组网 (1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%BB%84%E7%BD%91%EF%BC%9A%E5%A4%9A%E9%9B%86%E7%BE%A4RR%E7%BB%84%E7%BD%91-2"><span class="nav-number">5.4.</span> <span class="nav-text">常见组网：多集群RR组网 (2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E9%9B%86%E7%BE%A4%E9%97%AE%E9%A2%98"><span class="nav-number">5.5.</span> <span class="nav-text">单集群问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E9%9B%86%E7%BE%A4%E8%AE%BE%E8%AE%A1"><span class="nav-number">5.6.</span> <span class="nav-text">多集群设计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

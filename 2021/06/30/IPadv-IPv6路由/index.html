@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="IPadv-3-IPv6路由," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言•随着万物互联时代的到来，IPv4地址空间不足，IPv6取代IPv4势在必行。那么如何实现IPv6网络中各个节点之间的可达性呢？与IPv4网络相同，IPv6网络同样支持静态路由和动态路由协议。 •IPv6静态路由与IPv4静态路由在配置方式上颇为相似。为了实现对IPv6网络的支持，IETF制定了OSPFv3，同时对IS-IS、BGP做了扩展。 •本课程将介绍IPv6静态路由的概念及配置，还会介">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPadv-IPv6路由">
+<meta property="og:url" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="前言•随着万物互联时代的到来，IPv4地址空间不足，IPv6取代IPv4势在必行。那么如何实现IPv6网络中各个节点之间的可达性呢？与IPv4网络相同，IPv6网络同样支持静态路由和动态路由协议。 •IPv6静态路由与IPv4静态路由在配置方式上颇为相似。为了实现对IPv6网络的支持，IETF制定了OSPFv3，同时对IS-IS、BGP做了扩展。 •本课程将介绍IPv6静态路由的概念及配置，还会介">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/1.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/2.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/3.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/4.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/5.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/6.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/7.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/8.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/9.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/10.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/11.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/12.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/13.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/14.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/15.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/16.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/17.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/18.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/19.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/20.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/21.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/22.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/23.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/24.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/25.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/26.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/27.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/28.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/29.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/30.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/31.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/32.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/33.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/34.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/35.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/36.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/37.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/38.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/39.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/40.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/41.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/42.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/43.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/44.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/45.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/46.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/47.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/48.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/49.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/50.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/51.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/52.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/53.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/54.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/55.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/56.png">
+<meta property="og:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/57.png">
+<meta property="article:published_time" content="2021-06-30T04:56:13.000Z">
+<meta property="article:modified_time" content="2021-06-30T05:43:47.200Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="IPadv-3-IPv6路由">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/06/30/IPadv-IPv6路由/"/>
+
+
+
+
+
+  <title>IPadv-IPv6路由 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IPadv-IPv6路由</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T12:56:13+08:00">
+                2021-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着万物互联时代的到来，IPv4地址空间不足，IPv6取代IPv4势在必行。那么如何实现IPv6网络中各个节点之间的可达性呢？与IPv4网络相同，IPv6网络同样支持静态路由和动态路由协议。</p>
+<p>•IPv6静态路由与IPv4静态路由在配置方式上颇为相似。为了实现对IPv6网络的支持，IETF制定了OSPFv3，同时对IS-IS、BGP做了扩展。</p>
+<p>•本课程将介绍IPv6静态路由的概念及配置，还会介绍常见的IPv6动态路由协议，包括：OSPFv3，IS-IS（IPv6），以及BGP4+。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫实现IPv6静态路由的配置</p>
+<p>▫分析OSPFv3与OSPFv2的不同点</p>
+<p>▫实现OSPFv3的基本配置</p>
+<p>▫描述IS-IS对IPv6的扩展</p>
+<p>▫实现IS-IS（IPv6）的基本配置</p>
+<p>▫描述BGP对IPv6的扩展</p>
+<p>▫实现BGP4+的基本配置</p>
+<h1 id="1-IPv6静态路由"><a href="#1-IPv6静态路由" class="headerlink" title="1.IPv6静态路由"></a>1.IPv6静态路由</h1><h2 id="IPv6静态路由"><a href="#IPv6静态路由" class="headerlink" title="IPv6静态路由"></a>IPv6静态路由</h2><p>•IPv6静态路由与IPv4静态路由类似，也需要管理员手工配置，适合于一些结构比较简单的IPv6网络。</p>
+<p>•在创建IPv6静态路由时，可以同时指定出接口和下一跳，或者只指定出接口或只指定下一跳。</p>
+<p>​    ▫对于点到点接口：指定出接口。</p>
+<p>​    ▫对于广播类型接口：指定下一跳。</p>
+<p>•IPv6静态路由负载分担和备份：</p>
+<p>​    ▫在创建相同目的地址的多条IPv6静态路由时，如果指定相同优先级，则可实现负载分担，如果指定不同优先级，则可实现路由备份。</p>
+<blockquote>
+<p>•IPv6静态路由与IPv4静态路由之间的主要区别是目的地址和下一跳地址有所不同，IPv6静态路由使用的是IPv6地址，而IPv4静态路由使用IPv4地址。</p>
+</blockquote>
+<h2 id="IPv6静态路由的基础配置命令"><a href="#IPv6静态路由的基础配置命令" class="headerlink" title="IPv6静态路由的基础配置命令"></a>IPv6静态路由的基础配置命令</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/1.png"></p>
+<blockquote>
+<p>•[Huawei] <strong>ipv6</strong> <strong>route-static</strong> <em>dest-ipv6-address</em> <em>prefix-length</em> { <em>interface-type</em> <em>interface-number</em> [ <em>nexthop-ipv6-address</em> ] | <em>nexthop-ipv6-address</em> | <strong>vpn-instance</strong> <em>vpn-destination-name</em> <em>nexthop-ipv6-address</em> } [ <strong>preference</strong> <em>preference</em>]  [ <strong>permanent</strong> | <strong>inherit-cost</strong> ] [ <strong>description</strong> <em>text</em> ]</p>
+<ul>
+<li><strong>preference</strong> <em>preference</em>：指定路由优先级。整数形式，取值范围为1～255。缺省值是60。</li>
+<li><strong>permanent</strong>：指定IPv6静态路由永久发布。</li>
+<li><strong>inherit-cost</strong>：指定IPv6静态路由继承迭代路由的开销值。</li>
+<li><strong>description</strong> <em>text</em>：指定静态路由的描述信息。字符串形式，支持空格，长度范围是1～80。</li>
+</ul>
+<p>•[Huawei] <strong>ipv6</strong> <strong>route-static</strong> <strong>vpn-instance</strong> <em>vpn-instance-name</em> <em>dest-ipv6-address</em> <em>prefix-length</em> { [ <em>interface-type</em> <em>interface-number</em> [ <em>nexthop-ipv6-address</em> ] ] | <em>nexthop-ipv6-address</em> [ <strong>public</strong> ] | <strong>vpn**</strong>-instance** <em>vpn*</em>-destination-name* <em>nexthop-ipv6-address</em> } [ <strong>preference</strong> <em>preference</em> ] [ <strong>permanent</strong> | <strong>inherit-cost</strong> ] [ <strong>description</strong> <em>text</em> ]</p>
+<ul>
+<li><strong>public</strong>：指定<em>nexthop-ipv6-address</em>是公网地址，而不是源VPN中的地址。</li>
+</ul>
+</blockquote>
+<h2 id="IPv6静态路由配置举例"><a href="#IPv6静态路由配置举例" class="headerlink" title="IPv6静态路由配置举例"></a>IPv6静态路由配置举例</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/2.png"></p>
+<h1 id="2-OSPFv3原理与配置"><a href="#2-OSPFv3原理与配置" class="headerlink" title="2.OSPFv3原理与配置"></a>2.OSPFv3原理与配置</h1><h2 id="OSPFv3的基本工作原理"><a href="#OSPFv3的基本工作原理" class="headerlink" title="OSPFv3的基本工作原理"></a>OSPFv3的基本工作原理</h2><h3 id="OSPFv3概述"><a href="#OSPFv3概述" class="headerlink" title="OSPFv3概述"></a>OSPFv3概述</h3><p>•OSPF是IETF定义的一种基于链路状态的内部网关路由协议。目前针对IPv4协议使用的是OSPF Version 2（OSPFv2），针对IPv6协议使用OSPF Version 3（OSPFv3）。</p>
+<p>•OSPFv3的主要目的是开发一种独立于任何具体网络层的路由协议。为实现这一目的，OSPFv3的内部路由器信息被重新进行了设计。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/3.png"></p>
+<h3 id="OSPFv3与OSPFv2的相同点"><a href="#OSPFv3与OSPFv2的相同点" class="headerlink" title="OSPFv3与OSPFv2的相同点"></a>OSPFv3与OSPFv2的相同点</h3><p>OSPF的基本运行机制没有改变，包括：</p>
+<p>▫基本概念：</p>
+<p>​    ▪区域划分及路由器类型</p>
+<p>​    ▪路由计算影响参数：优先级、度量值</p>
+<p>​    ▪支持的网络类型：Broadcast（广播类型）、NBMA、P2P（点到点类型）、P2MP（点到多点类型）</p>
+<p>​    ▪报文类型：Hello报文、DD报文、LSR报文、LSU报文和LSAck报文</p>
+<p>▫工作原理：</p>
+<p>​    ▪邻居关系的建立及邻居状态的转换</p>
+<p>​    ▪DR与BDR的选举</p>
+<p>​    ▪LSA泛洪机制</p>
+<p>​    ▪路由计算过程</p>
+<blockquote>
+<p>•相同点还包括：对特殊区域、虚连接、多进程的支持等。</p>
+<p>•本课程对以上内容不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h3 id="OSPFv3拓扑和路由器类型"><a href="#OSPFv3拓扑和路由器类型" class="headerlink" title="OSPFv3拓扑和路由器类型"></a>OSPFv3拓扑和路由器类型</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/4.png"></p>
+<h3 id="OSPFv3的基本工作原理与OSPFv2相似"><a href="#OSPFv3的基本工作原理与OSPFv2相似" class="headerlink" title="OSPFv3的基本工作原理与OSPFv2相似"></a>OSPFv3的基本工作原理与OSPFv2相似</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/5.png"></p>
+<h3 id="OSPFv3与OSPFv2的不同点"><a href="#OSPFv3与OSPFv2的不同点" class="headerlink" title="OSPFv3与OSPFv2的不同点"></a>OSPFv3与OSPFv2的不同点</h3><p>•OSPFv3基于链路运行以及拓扑计算，而不再是网段。</p>
+<p>•OSPFv3支持一个链路上多个实例。</p>
+<p>•OSPFv3报文和LSA中去掉了IP地址的意义，且重构了报文格式和LSA格式。</p>
+<p>​    ▫OSPFv3报文和Router LSA/Network LSA中不包含IP地址。</p>
+<p>​    ▫OSPFv3的LSA中定义了LSA的泛洪范围。</p>
+<p>​    ▫OSPFv3中创建了新的LSA承载IPv6地址和前缀。</p>
+<p>​    ▫OSPFv3邻居不再由IP地址标识，只由Router ID标识。</p>
+<h3 id="唯一邻居标识：Router-ID"><a href="#唯一邻居标识：Router-ID" class="headerlink" title="唯一邻居标识：Router ID"></a>唯一邻居标识：Router ID</h3><p>OSPFv3通过Router ID来标识网络设备。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/6.png"></p>
+<blockquote>
+<p>•OSPFv2在Broadcast、NBMA、P2P和P2MP网络中是通过IPv4接口地址来标识邻居，而在虚连接网络中是通过Router ID来标识邻居。</p>
+</blockquote>
+<h3 id="OSPFv3基于链路运行"><a href="#OSPFv3基于链路运行" class="headerlink" title="OSPFv3基于链路运行"></a>OSPFv3基于链路运行</h3><p>OSPFv3是基于链路运行的，设备只要在同一链路，就可以建立邻居关系。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/7.png"></p>
+<blockquote>
+<p>•IPv6中重点强调了链路的概念，在IPv6中，一个链路上可以分配多个IP子网，也就是IPv6前缀。和IPv4不同的是，同一个链路上的两个节点即使不具有相同的IPv6前缀，也可以直接通过这个链路通信。这一点极大地改变了OSPF的行为。</p>
+<p>•在OSPFv3中我们更多的是使用“链路”和“前缀”这两个术语。但这两个概念是分离的，没有必然的对应关系，所以在讨论路由协议时，OSPFv2的术语“网络”和“子网”在这里应该用“链路”替换掉。</p>
+</blockquote>
+<h3 id="链路支持多实例"><a href="#链路支持多实例" class="headerlink" title="链路支持多实例"></a>链路支持多实例</h3><p>•一个OSPFv3物理接口可以和多个实例绑定，并用不同的实例标识（Instance ID）区分，即OSPFv3的单个链路支持运行多个OSPFv3实例。</p>
+<p>•这些运行在同一条物理链路上的多个OSPFv3实例，分别与链路对端设备建立邻居及发送报文，且互不干扰，这样可以充分共享同一链路资源。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/8.png"></p>
+<blockquote>
+<p>•多实例通过在OSPFv3报文头部增加一个Instance ID区别不同的实例来实现。一个分配了给定Instance ID的实例，将会丢弃那些与该Instance ID不匹配的OSPFv3报文。</p>
+</blockquote>
+<h3 id="OSPFv3对链路本地地址的使用"><a href="#OSPFv3对链路本地地址的使用" class="headerlink" title="OSPFv3对链路本地地址的使用"></a>OSPFv3对链路本地地址的使用</h3><p>•OSPFv3使用链路本地（FE80::/10）地址作为发送报文的源地址和路由的下一跳地址。</p>
+<ul>
+<li>使用链路本地地址来维持邻居关系，同步LSA数据库。</li>
+<li>在虚连接上，必须使用全球单播地址或者站点本地地址作为OSPFv3协议报文的源地址。</li>
+</ul>
+<p>•优势：</p>
+<ul>
+<li>不需要配置IPv6全球单播地址，就可以得到OSPFv3拓扑，实现拓扑与地址分离。</li>
+<li>OSPFv3报文不会被转发到始发链路范围之外，减少了报文不必要的泛洪，节省了带宽。</li>
+</ul>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/9.png"></p>
+<blockquote>
+<p>•IPv6使用链路本地（Link-Local）地址在同一链路上发现邻居及自动配置。运行IPv6的路由器不转发目的地址为链路本地地址的IPv6报文，此类报文只在同一链路有效。</p>
+<p>•OSPFv3是运行在IPv6上的路由协议，使用链路本地地址来发送OSPFv3报文。</p>
+<ul>
+<li><p>OSPFv3假定每个路由器在每个连接的链路上都已被分配链路本地地址，在除虚连接外的所有OSPFv3接口上使用接口关联的链路本地地址作为源地址发送OSPFv3报文。</p>
+</li>
+<li><p>路由器学习所有其他连接到该链路上的路由器的链路本地地址，并且使用这些地址作为下一跳进行报文转发。</p>
+</li>
+<li><p>注意：关于链路本地地址的描述仅出现在Link-LSA（链路LSA，OSPFv3新增LSA）中。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="OSPFv3报文"><a href="#OSPFv3报文" class="headerlink" title="OSPFv3报文"></a>OSPFv3报文</h3><p>•OSPFv3与OSPFv2有相同类型的报文：</p>
+<p>​    ▫Hello报文、DD报文、LSR报文、LSU报文和LSAck报文。</p>
+<p>•OSPFv3与OSPFv2使用相同的协议号89。</p>
+<p>​    ▫OSPFv2：IPv4报文头部中的协议号（Protocol）为89。</p>
+<p>​    ▫OSPFv3：IPv6报文头部中的下一报头号（Next Header）为89。</p>
+<p>•OSPFv3与OSPFv2类似，使用组播地址作为OSPF报文目的地址。</p>
+<p>​    ▫OSPFv2使用IPv4组播地址： </p>
+<p>​        ▪OSPF IGP Routers：224.0.0.5；OSPF IGP DR ：224.0.0.6。</p>
+<p>​    ▫OSPFv3使用IPv6组播地址：</p>
+<p>​        ▪OSPF IGP Routers：FF02::5；OSPF IGP DR：FF02::6。</p>
+<blockquote>
+<p>•OSPFv3报文作用：</p>
+<p>▫Hello报文：周期性发送，用来发现、建立和维持OSPFv3邻居关系。</p>
+<p>▫DD报文：描述了本地LSDB的摘要信息，用于两台设备进行数据库同步。</p>
+<p>▫LSR报文：用于向对方请求所需的LSA。设备只有在OSPFv3邻居双方成功交换DD报文后，才会向对方发出LSR报文。</p>
+<p>▫LSU报文：向对方发送其所需的LSA。</p>
+<p>▫LSAck报文：用来对收到的LSA进行确认。</p>
+</blockquote>
+<h3 id="OSPFv3报文头部"><a href="#OSPFv3报文头部" class="headerlink" title="OSPFv3报文头部"></a>OSPFv3报文头部</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/10.png"></p>
+<blockquote>
+<p>•Version：1Byte，版本，OSPF的版本号。对于OSPFv3来说，其值为3。 </p>
+<p>•Type：1Byte，类型，OSPFv3报文的类型，有下面几种类型：</p>
+<p>​    ▫1：Hello报文；</p>
+<p>​    ▫2：DD报文；</p>
+<p>​    ▫3：LSR报文；</p>
+<p>​    ▫4：LSU报文；</p>
+<p>​    ▫5：LSAck报文。</p>
+<p>•Packet length：2Byte，OSPFv3报文的总长度，包括报文头在内，单位为字节。</p>
+<p>•Router ID：4Byte，始发此报文的路由器的Router ID。</p>
+<p>•Area ID：4Byte，发送该报文的所属区域。</p>
+<p>•Checksum：2Byte，使用IPv6标准16位校验和。</p>
+<p>•0：1Byte，保留字段，必须填0。 </p>
+</blockquote>
+<h3 id="Hello报文"><a href="#Hello报文" class="headerlink" title="Hello报文"></a>Hello报文</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/11.png"></p>
+<blockquote>
+<p>•Rtr Pri：1Byte，Router Priority，DR优先级。默认为1。如果设置为0，则路由器不能参与DR或BDR的选举。 </p>
+<p>•Options：3Byte，可选项。</p>
+<ul>
+<li>AT：1bit，表示是否支持OSPFv3认证。若AT=1，则在OSPFv3报文后增加认证尾部字段，包含认证信息。</li>
+<li>DC：1bit，表示是否具有支持按需电路的能力。</li>
+<li>R：1bit，指明始发路由器是否是一台有效的路由器。</li>
+<li>NP：1bit，表示是否为NSSA区域。</li>
+<li>MC：1bit，表示是否支持转发组播数据报文。</li>
+<li>E：1bit，表示是否支持外部路由。</li>
+<li>V6：1bit，表示是否参与IPv6路由计算。如果该位为0，表示该路由器或链路不参与IPv6路由计算。</li>
+</ul>
+<p>•HelloInterval：2Byte，发送Hello报文的时间间隔。</p>
+<p>•RouterDeadInterval ：2Byte，失效时间。如果在此时间内未收到邻居发来的Hello报文，则认为邻居失效。</p>
+<p>•Designated Router ID：4Byte，DR的Router ID。</p>
+<p>•Backup Designated Router ID ：4Byte，BDR的Router ID。</p>
+<p>•Neighbor ID：4Byte，邻居，以Router ID标识。</p>
+<p>•说明：DD报文、LSR报文、LSU报文和LSAck报文格式与OSPFv2相比变化不大，本课程不再赘述。</p>
+</blockquote>
+<h3 id="OSPFv3的LSA头部"><a href="#OSPFv3的LSA头部" class="headerlink" title="OSPFv3的LSA头部"></a>OSPFv3的LSA头部</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/12.png"></p>
+<blockquote>
+<p>•LS Age：2Byte，LSA产生后所经过的时间，以秒为单位。无论LSA是在链路上传送，还是保存在LSDB中，其值都会在不停的增长。</p>
+<p>•LS Type：2Byte，LSA的类型。该字段的高3位标识LSA的通用属性，剩下的比特位标识LSA的特定功能。</p>
+<ul>
+<li><p>U位标识了对未知LSA的处理方法，即标识了不识别LSA功能代码的路由器应如何处理LSA。</p>
+<ul>
+<li>0：把此LSA当作具有链路本地泛洪范围来对待，从而只能泛洪到本地链路上。</li>
+<li>1：把此LSA当作类型已知的LSA来处理，也就是存储下来并泛洪出去。</li>
+</ul>
+</li>
+<li><p>S2/S1位标识了LSA的泛洪范围。</p>
+<ul>
+<li>S2 S1=0 0：链路本地范围内，即只在始发链路上泛洪。</li>
+<li>S2 S1=0 1：区域范围内，即泛洪到始发区域内的所有路由器。</li>
+<li>S2 S1=1 0：AS范围内，即泛洪到本AS的所有路由器。</li>
+<li>S2 S1=1 1：预留。</li>
+</ul>
+</li>
+</ul>
+<p>•Link State ID：4Byte，本地32位标识符，与IPv6地址无关，与LSA中的LS Type和Advertising Router一起在路由域中描述一个LSA。OSPFv3与OSPFv2相比，Link State ID不再包含地址信息。</p>
+<p>•Advertising Router：4Byte，产生此LSA的路由器的Router ID。</p>
+<p>•LS Sequence Number：4Byte，LSA的序列号。其他路由器根据这个值可以判断哪个LSA是最新的。</p>
+<p>•LS Checksum：2Byte，除了LS Age外其它各域的校验和。</p>
+<p>•Length：2Byte，LSA的总长度，包括LSA Header，以字节为单位。</p>
+</blockquote>
+<h3 id="OSPFv3的LSA类型"><a href="#OSPFv3的LSA类型" class="headerlink" title="OSPFv3的LSA类型"></a>OSPFv3的LSA类型</h3><p>•OSPFv3与OSPFv2相比，具有类似的LSA名称，但是功能略有区别。</p>
+<p>•OSPFv3新增了两类LSA，包括：链路LSA和区域内前缀LSA。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/13.png"></p>
+<blockquote>
+<p>•如表中所示，OSPFv3的LS Type字段，U位缺省为0；除Type5和Type8的LSA外，其余的LSA泛洪范围都是区域范围内（S2 S1=0 1）。</p>
+<ul>
+<li>链路本地范围。LSA仅在本地链路上泛洪，包括：Link-LSA。</li>
+<li>区域范围。LSA在单个OSPF区域内泛洪，包括：Router-LSA、Network-LSA、Inter-Area-Prefix-LSA、Inter-Area-Router-LSA、NSSA LSA和Intra-Area-Prefix-LSA。</li>
+<li>AS范围。LSA在整个路由域（自治系统）中扩散，包括：AS-External-LSA。</li>
+</ul>
+</blockquote>
+<h3 id="Type1：Router-LSA"><a href="#Type1：Router-LSA" class="headerlink" title="Type1：Router-LSA"></a>Type1：Router-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/14.png"></p>
+<blockquote>
+<p>•OSPFv3的Router-LSA字段解释：</p>
+<p>▫W：Wild-Card Receiver，值为1时，表示该路由器支持组播路由。</p>
+<p>▫V：Virtual Link，值为1时，表示产生此LSA的路由器是虚连接的一端。</p>
+<p>▫E：External，值为1时，表示产生此LSA的路由器是ASBR。</p>
+<p>▫B：Border，值为1时，表示产生此LSA的路由器是ABR。</p>
+<p>▫Options：3Byte，可选项。</p>
+<p>​    ▪DC：1bit，表示是否具有支持按需电路的能力。</p>
+<p>​    ▪R：1bit，指明始发路由器是否是一台有效的路由器。</p>
+<p>​    ▪NP：1bit，表示是否为NSSA区域。</p>
+<p>​    ▪MC：1bit，表示是否支持转发组播数据报文。</p>
+<p>​    ▪E：1bit，表示是否支持外部路由。</p>
+<p>​    ▪V6：1bit，表示是否参与IPv6路由计算。如果该位为0，表示该路由器或链路不参与IPv6路由计算。</p>
+<p>▫Link Type：1Byte，链路类型。</p>
+<p>​    ▪1：点到点连接到另一台路由器。</p>
+<p>​    ▪2：连接到一个传送网络（Transit Network）。</p>
+<p>​    ▪3：保留。</p>
+<p>​    ▪4：虚链路。</p>
+<p>▫Metric：2Byte，流量出接口的开销值。</p>
+</blockquote>
+<h3 id="Type2：Network-LSA"><a href="#Type2：Network-LSA" class="headerlink" title="Type2：Network-LSA"></a>Type2：Network-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/15.png"></p>
+<blockquote>
+<p>•OSPFv3的Network-LSA字段解释：</p>
+<p>​    ▫Options：与Router-LSA中的Options字段相同。</p>
+</blockquote>
+<h3 id="Type3：Inter-Area-Prefix-LSA"><a href="#Type3：Inter-Area-Prefix-LSA" class="headerlink" title="Type3：Inter-Area-Prefix-LSA"></a>Type3：Inter-Area-Prefix-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/16.png"></p>
+<blockquote>
+<p>•OSPFv3的Inter-Area-Prefix-LSA字段解释：</p>
+<ul>
+<li><p>Metric：3Byte，到目的地址的开销值。</p>
+</li>
+<li><p>PrefixOptions：由LSA公告的每个前缀都拥有一个自己的PrefixOptions字段。</p>
+<ul>
+<li>P位: 传播位。如果一个NSSA区域的前缀需要被ABR传播出去，就需要设置这一位。</li>
+<li>MC位: 组播位。如果设置为1，则这个前缀应该纳入组播计算中，否则不纳入组播计算。</li>
+<li>LA位: 本地地址位。如果设置为1，则这个前缀是路由器的一个接口地址。</li>
+<li>NU位: 非单播位。如果设置为1，则这个前缀不会纳入IPv6单播路由计算中。</li>
+</ul>
+</li>
+</ul>
+<p>•注意：缺省路由的前缀长度为0。ABR也能够始发一个区域间Type3的LSA向一个末梢区域通告一条缺省路由。</p>
+</blockquote>
+<h3 id="Type4：Inter-Area-Router-LSA"><a href="#Type4：Inter-Area-Router-LSA" class="headerlink" title="Type4：Inter-Area-Router-LSA"></a>Type4：Inter-Area-Router-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/17.png"></p>
+<blockquote>
+<p>•OSPFv3的Inter-Area-Router-LSA字段解释：</p>
+<p>​    ▫Options：Options字段描述的不是源路由器的能力，而是目的路由器所支持的能力，所以此字段值应该等于目的路由器的Router-LSA的Options字段值。</p>
+<p>​    ▫Metric：3Byte，到目的地址的开销值。</p>
+</blockquote>
+<h3 id="Type5：AS-External-LSA"><a href="#Type5：AS-External-LSA" class="headerlink" title="Type5：AS-External-LSA"></a>Type5：AS-External-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/18.png"></p>
+<blockquote>
+<p>•OSPFv3的AS-External-LSA字段解释：</p>
+<p>▫E：1bit，外部路由的Metric类型。</p>
+<ul>
+<li><p>如果设置为1，表示此为2类外部路由，其Metric不随着路由的传递而增长。</p>
+</li>
+<li><p>如果设置为0，表示此为1类外部路由，其Metric随着路由的传递而增长。</p>
+</li>
+</ul>
+<p>▫F：1bit，如果设置为1，则表示后面的Forwarding Address可选字段存在。</p>
+<p>▫T：1bit，如果设置为1，则表示后面的External Route Tag可选字段存在。</p>
+<p>▫Metric：3Byte，到目的地址的开销值。</p>
+<p>▫PrefixLength、PrefixOptions和Address Prefix为描述前缀的三元组，与Inter-Area-Prefix-LSA中该字段含义相同。</p>
+<p>▫Forwarding Address：4Byte，可选的128位IPv6地址，当前面的F位为1时存在。表示到达目的的数据应该转发到这个地址。</p>
+<p>▫External Route Tag：4Byte，可选的标记位。可以用于ASBR之间的通信。一个比较常见的例子是，在OSPF自治系统的两个边界路由器上进行路由引入时，通过对引入的路由进行标记，可以很方便地进行路由过滤。</p>
+<p>▫Referenced Link State ID：4Byte，若Referenced LS Type不为0，则该字段存在，表示引用链路状态ID。</p>
+</blockquote>
+<h3 id="新增Type8：Link-LSA"><a href="#新增Type8：Link-LSA" class="headerlink" title="新增Type8：Link-LSA"></a>新增Type8：Link-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/19.png"></p>
+<blockquote>
+<p>•OSPFv3的Link-LSA字段解释：</p>
+<ul>
+<li>Rtr Pri：1Byte，该路由器在该链路上的优先级(Router Priority)。</li>
+<li>Options：3Byte，提供给Network-LSA的Options。</li>
+<li>Number of Prefixes：4Byte，该LSA中携带的IPv6地址前缀个数。</li>
+<li>PrefixLength、PrefixOptions和Address Prefix为描述前缀的三元组，与Inter-Area-Prefix-LSA中该字段含义相同。</li>
+</ul>
+</blockquote>
+<h3 id="新增Type9：Intra-Area-Prefix-LSA"><a href="#新增Type9：Intra-Area-Prefix-LSA" class="headerlink" title="新增Type9：Intra-Area-Prefix-LSA"></a>新增Type9：Intra-Area-Prefix-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/20.png"></p>
+<blockquote>
+<p>OSPFv3的Intra-Area-Prefix-LSA字段解释：</p>
+<p>▫Number of Prefixes：4Byte，该LSA中携带的IPv6地址前缀个数。必要的话，可以通过多个Intra-Area-Prefix-LSA来携带前缀，这样可以控制LSA的长度。 </p>
+<p>▫Referenced LS type：4Byte，表明这个LSA是参考一个Router-LSA，还是一个Network-LSA。</p>
+<ul>
+<li><p>1：表示参考一个Router-LSA</p>
+</li>
+<li><p>2：表示参考一个Network-LSA。 </p>
+</li>
+</ul>
+<p>▫Referenced Link State ID：4Byte。</p>
+<ul>
+<li><p>设为0：当这个LSA是参考一个Router-LSA时。</p>
+</li>
+<li><p>设为该链路的DR的Interface ID：当这个LSA是参考一个Network-LSA时。 </p>
+</li>
+</ul>
+<p>▫Referenced Advertising Router：4Byte。</p>
+<ul>
+<li><p>设为这个路由器的Router ID：当这个LSA是参考一个Router-LSA时。</p>
+</li>
+<li><p>设为该链路的DR的Router ID：当这个LSA是参考一个Network-LSA时。 </p>
+</li>
+</ul>
+<p>▫PrefixLength、PrefixOptions和Address Prefix为描述前缀的三元组，与Inter-Area-Prefix-LSA中该字段含义相同。</p>
+<p>▫Metric：2Byte，前缀开销值。与Router-LSA的接口开销值相同单位。</p>
+<p>在OSPFv3中，当一条链路或它的前缀发生变化时，相连的路由器会发送一个Intra-Area-Prefix-LSA。但是，这条LSA不会触发SPF计算。</p>
+</blockquote>
+<h3 id="OSPFv3的LSA举例"><a href="#OSPFv3的LSA举例" class="headerlink" title="OSPFv3的LSA举例"></a>OSPFv3的LSA举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/21.png"></p>
+<blockquote>
+<p>•如图所示：R1、R2、R3和R4运行OSPFv3路由协议，且均部署在骨干区域。</p>
+<p>•网络稳定后，查看R2的LSDB，可以查看到该路由器的Router-LSA（Type1）、Network-LSA（Type2）、Link-LSA（Type8）和Intra-Area-Prefix-LSA（Type9）。</p>
+</blockquote>
+<h3 id="Link-LSA举例"><a href="#Link-LSA举例" class="headerlink" title="Link-LSA举例"></a>Link-LSA举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/22.png"></p>
+<blockquote>
+<p>•输出信息解释：</p>
+<p>▫LS age：LSA的老化时间。</p>
+<p>▫LS Type：LSA的类型。有如下类型：</p>
+<ul>
+<li>Router-LSA、Network-LSA、Inter-Area-Prefix-LSA、Inter-Area-Router-LSA、AS-external-LSA、NSSA-LSA、Link-LSA、Intra-Area-Prefix-LSA</li>
+</ul>
+<p>▫Link State ID：LSA报文头中的链路状态ID。</p>
+<p>▫Originating Router：产生LSA的路由器。</p>
+<p>▫LS Seq Number：LSA序列号（来自LSA报头）。</p>
+<p>▫Checksum：LSA的校验和。</p>
+<p>▫Length：LSA的长度。</p>
+<p>▫Priority：该Link对应接口的优先级。</p>
+<p>▫Options：该Link的Option值。</p>
+<p>▫Link-Local Address：链路本地地址。</p>
+<p>▫Number of Prefixes：该LSA中包含的IPv6前缀数目。</p>
+<p>▫Prefix：IPv6前缀。</p>
+<p>▫Prefix Options：前缀Option值。</p>
+</blockquote>
+<h3 id="Intra-Area-Prefix-LSA举例"><a href="#Intra-Area-Prefix-LSA举例" class="headerlink" title="Intra-Area-Prefix-LSA举例"></a>Intra-Area-Prefix-LSA举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/23.png"></p>
+<h2 id="OSPFv3的基本配置"><a href="#OSPFv3的基本配置" class="headerlink" title="OSPFv3的基本配置"></a>OSPFv3的基本配置</h2><h3 id="OSPFv3的基础配置命令-1"><a href="#OSPFv3的基础配置命令-1" class="headerlink" title="OSPFv3的基础配置命令 (1)"></a>OSPFv3的基础配置命令 (1)</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/24.png"></p>
+<blockquote>
+<p>•OSPFv3的配置命令与配置方式与OSPFv2类似，其他配置命令不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h3 id="OSPFv3的基础配置命令-2"><a href="#OSPFv3的基础配置命令-2" class="headerlink" title="OSPFv3的基础配置命令 (2)"></a>OSPFv3的基础配置命令 (2)</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/25.png"></p>
+<h3 id="检查OSPFv3基本功能的配置结果"><a href="#检查OSPFv3基本功能的配置结果" class="headerlink" title="检查OSPFv3基本功能的配置结果"></a>检查OSPFv3基本功能的配置结果</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/26.png"></p>
+<blockquote>
+<p>•[Huawei] <strong>display</strong> <strong>ospfv3</strong> [ <em>process-id</em> ] <strong>lsdb</strong> [ <strong>area</strong> <em>area-id</em> ] [ <strong>originate-router</strong> <em>advertising-router-id</em> | <strong>self-originate</strong> ] [ { <strong>router</strong> | <strong>network</strong> | <strong>inter-router</strong> [ <strong>asbr-router</strong> <em>asbr-router-id</em> ] | { <strong>inter-prefix</strong> | <strong>nssa</strong> } [ <em>ipv6-address</em> <em>prefix-length</em> ] | <strong>link</strong> | <strong>intra-prefix</strong> | <strong>grace</strong> } [ <em>link-state-id</em> ] ]</p>
+<ul>
+<li><p><em>process-id</em>：OSPFv3进程号。整数形式，取值范围是1～65535。</p>
+</li>
+<li><p><strong>area</strong> <em>area-id</em>：区域的标识。可以是十进制整数或IPv4地址格式。如果是十进制整数，取值范围是0～4294967295。如果是IPv4地址格式，取值是点分十进制。</p>
+</li>
+<li><p><strong>external</strong>：显示数据库中AS-external LSA的信息。</p>
+</li>
+<li><p><strong>inter-prefix</strong>：显示数据库中Inter-Area-Prefix LSA的信息。</p>
+</li>
+<li><p><strong>inter-router</strong>：显示数据库中Inter-Area-Router LSA的信息。</p>
+</li>
+<li><p><strong>intra-prefix</strong>：显示数据库中Intra-Area-Prefix LSA的信息。</p>
+</li>
+<li><p><strong>nssa</strong>：显示数据库中NSSA LSA的信息。</p>
+</li>
+<li><p><strong>link</strong>：显示数据库中Link-LSA的信息。</p>
+</li>
+<li><p><strong>network</strong>：显示数据库中Network-LSA的信息。</p>
+</li>
+<li><p><strong>router</strong>：显示数据库中Router-LSA的信息。</p>
+</li>
+<li><p><em>link-state-id</em>：链路状态ID。点分十进制格式。</p>
+</li>
+<li><p><strong>originate-router</strong> <em>advertising-router-id</em>：指定发布LSA的路由器的Router ID。点分十进制格式。</p>
+</li>
+<li><p><strong>asbr-router</strong> <em>asbr-router-id</em>：指定ASBR路由器的Router ID。点分十进制格式。</p>
+</li>
+<li><p><strong>self-originate</strong>：显示数据库中由本路由器发布的LSA信息。</p>
+</li>
+<li><p><em>ipv6-address prefix-length</em>：指定IPv6目的地址及前缀长度。</p>
+<ul>
+<li><em>ipv6-address</em>是32位16进制数，格式为X:X:X:X:X:X:X:X。</li>
+<li><em>prefix-length</em>是整数形式，取值范围是0～128。</li>
+</ul>
+</li>
+</ul>
+<p>•[Huawei] <strong>display</strong> <strong>ospfv3</strong> [ <em>process-id</em> ] <strong>routing</strong> [ <em>ipv6-address</em> <em>prefix-length</em> | <strong>abr-routes</strong> | <strong>asbr-routes</strong> | <strong>intra-routes</strong> | <strong>inter-routes</strong> | <strong>ase-routes</strong> | <strong>nssa-routes</strong> | [ <strong>statistics</strong> ] ]</p>
+<ul>
+<li><em>process-id</em>：OSPFv3进程号。整数形式，取值范围是1～65535。</li>
+<li><em>ipv6-address</em>：指定IPv6地址。32位16进制数，格式为X:X:X:X:X:X:X:X。</li>
+<li><em>prefix-length</em>：指定前缀长度。整数形式，取值范围是0～128。</li>
+<li><strong>abr-routes</strong>：显示OSPFv3中所有ABR的路由信息。</li>
+<li><strong>asbr-routes</strong>：显示OSPFv3中所有ASBR的路由信息。</li>
+<li><strong>intra-routes</strong>：显示OSPFv3中区域内路由的统计信息。</li>
+<li><strong>inter-routes</strong>：显示OSPFv3中区域间路由的统计信息。</li>
+<li><strong>ase-routes</strong>：显示OSPFv3中AS外部路由的统计信息。**</li>
+<li>nssa-routes<strong>：显示OSPFv3中NSSA区域路由的统计信息。</strong></li>
+<li>statistics：显示OSPFv3中所有路由表的统计信息。</li>
+</ul>
+</blockquote>
+<h3 id="OSPF双栈配置举例"><a href="#OSPF双栈配置举例" class="headerlink" title="OSPF双栈配置举例"></a>OSPF双栈配置举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/27.png"></p>
+<h3 id="部署IPv4网络"><a href="#部署IPv4网络" class="headerlink" title="部署IPv4网络"></a>部署IPv4网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/28.png"></p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/29.png"></p>
+<h3 id="部署IPv6网络"><a href="#部署IPv6网络" class="headerlink" title="部署IPv6网络"></a>部署IPv6网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/30.png"></p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/31.png"></p>
+<h3 id="查看OSPFv3网络的邻居信息"><a href="#查看OSPFv3网络的邻居信息" class="headerlink" title="查看OSPFv3网络的邻居信息"></a>查看OSPFv3网络的邻居信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/32.png"></p>
+<blockquote>
+<p>•可以通过<strong>display</strong> <strong>ospf peer</strong>查看OSPFv2的邻居信息。</p>
+<p>•对比OSPFv2和OSPFv3的邻居信息，发现选出的DR和BDR是一致的，说明DR选举方式相同。</p>
+</blockquote>
+<h3 id="查看OSPFv3网络的路由信息"><a href="#查看OSPFv3网络的路由信息" class="headerlink" title="查看OSPFv3网络的路由信息"></a>查看OSPFv3网络的路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/33.png"></p>
+<blockquote>
+<p>•可以通过<strong>display ospf routing</strong>查看OSPFv2的路由信息。</p>
+<p>•对比OSPFv2和OSPFv3的路由信息，发现到“同一”网段的路径一致，说明路由计算方式相同。</p>
+</blockquote>
+<h3 id="查看OSPFv3网络LSDB信息"><a href="#查看OSPFv3网络LSDB信息" class="headerlink" title="查看OSPFv3网络LSDB信息"></a>查看OSPFv3网络LSDB信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/34.png"></p>
+<blockquote>
+<p>•可以通过<strong>display ospf</strong> <strong>lsdb</strong>查看OSPFv2的LSDB信息，可以看到有Type1、Type2和Type3三种LSA。</p>
+</blockquote>
+<h1 id="3-IS-IS-IPv6-原理与配置"><a href="#3-IS-IS-IPv6-原理与配置" class="headerlink" title="3.IS-IS (IPv6)原理与配置"></a>3.IS-IS (IPv6)原理与配置</h1><h2 id="IS-IS-IPv6-概述"><a href="#IS-IS-IPv6-概述" class="headerlink" title="IS-IS (IPv6)概述"></a>IS-IS (IPv6)概述</h2><p>•IS-IS最初是为OSI网络设计的一种基于链路状态协议的动态路由协议。之后为了提供对IPv4的路由支持，扩展应用到IPv4网络，称为集成IS-IS。</p>
+<p>•IS-IS报文有以下几种类型：Hello PDU（Protocol Data Unit）、LSP和SNP。</p>
+<ul>
+<li>报文格式为：</li>
+</ul>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/35.png"></p>
+<ul>
+<li>IS-IS报文中的变长字段部分是多个TLV（Type-Length-Value）三元组，使用TLV结构构建报文使IS-IS更具灵活性和扩展性，增加新特性只需要增加新TLV即可。</li>
+</ul>
+<p>•为了支持IPv6路由的处理和计算，IS-IS新增了两个TLV（Type-Length-Value）和一个NLPID（Network Layer Protocol Identifier，网络层协议标识符）。</p>
+<h2 id="新增TLV"><a href="#新增TLV" class="headerlink" title="新增TLV"></a>新增TLV</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/36.png"></p>
+<blockquote>
+<p>•232号TLV（IPv6 Interface Address）字段解释：</p>
+<p>▫Type：8bit，TLV类型，此时值为232（0xE8）。</p>
+<p>▫Length：8bit，TLV的Value部分长度。</p>
+<p>▫Interface Address：128bit，IPv6地址。</p>
+<p>•236号TLV（IPv6 Reachability）字段解释：</p>
+<p>▫Type：8bit，TLV类型，此时值为236（0xEC）。</p>
+<p>▫Length：8bit，TLV的Value部分长度。</p>
+<p>▫Metric：32bit，度量值。</p>
+<p>▫U：1bit，Up/Down位，标识这个前缀是否是从高Level通告下来的。</p>
+<p>▫X：1bit，External Original位，标识这个前缀是否是从其他路由协议中引入的。</p>
+<p>▫S：1bit，Sub-TLV Present位，子TLV标识位（可选）。</p>
+<p>▫R：5bit，Reserve位，保留位。</p>
+<p>▫Prefix Length：8bit，前缀长度。</p>
+<p>▫Prefix：IPv6地址前缀。</p>
+<p>▫Sub-TLV Length：8bit，子TLV长度。若S位置1，则存在。</p>
+<p>▫Sub-TLV：子TLV。若S位置1，则存在。</p>
+</blockquote>
+<h2 id="129号TLV中新增NLPID"><a href="#129号TLV中新增NLPID" class="headerlink" title="129号TLV中新增NLPID"></a>129号TLV中新增NLPID</h2><p>•为了支持IPv6路由的处理和计算，IS-IS在129号TLV中新增了一个NLPID。</p>
+<p>•129号TLV（Protocol Supported）</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/37.png"></p>
+<p>如果IS-IS支持IPv6，那么向外发布IPv6路由时必须携带NLPID值。</p>
+<h2 id="IS-IS多拓扑技术背景"><a href="#IS-IS多拓扑技术背景" class="headerlink" title="IS-IS多拓扑技术背景"></a>IS-IS多拓扑技术背景</h2><p>缺省情况下，在运行IS-IS的网络环境中，IPv4和IPv6的混合拓扑被看成是一个集成的拓扑，IS-IS针对IPv4和IPv6经计算形成相同的最短路径树。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/38.png"></p>
+<blockquote>
+<p>•IS-IS单拓扑的不足之处：</p>
+<p>​    ▫网络部署不适合拓扑分离。</p>
+<p>​    ▫为维护相同的拓扑，所有接口都必须同时运行IS-IS（IPv4）和IS-IS（IPv6），部署不够灵活。</p>
+<p>​    ▫不能使用IPv4区域来连接不同的IPv6区域，即无法通过IPv4网络解决IPv6孤岛问题。</p>
+</blockquote>
+<h2 id="IS-IS多拓扑概述"><a href="#IS-IS多拓扑概述" class="headerlink" title="IS-IS多拓扑概述"></a>IS-IS多拓扑概述</h2><p>•IS-IS多拓扑（Multi-Topology，MT）特性是指在一个IS-IS自治域内运行多个独立的IP拓扑。例如IPv4拓扑和IPv6拓扑，而不是将它们视为一个集成的单一拓扑。这有利于IS-IS在路由计算中根据实际组网情况来单独考虑IPv4和IPv6网络。根据链路所支持的IP协议类型，不同拓扑运行各自的SPF计算，实现网络的相互屏蔽。</p>
+<p>•IS-IS多拓扑的实现过程</p>
+<p>​    ▫建立拓扑：通过报文交互建立邻居，从而建立多拓扑。</p>
+<p>​    ▫SPF计算：在不同的拓扑上分别进行SPF计算。</p>
+<h2 id="IS-IS多拓扑原理"><a href="#IS-IS多拓扑原理" class="headerlink" title="IS-IS多拓扑原理"></a>IS-IS多拓扑原理</h2><p>•IS-IS定义了新的TLV，该TLV中包含接口所属拓扑信息（MT信息）。MT信息的传播，使得网络按不同的拓扑分别进行SPF计算，最终实现拓扑分离。</p>
+<p>•229号多拓扑TLV：</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/39.png"></p>
+<blockquote>
+<p>•IS-IS为了支持多拓扑特性，定义了多种TLV，包括：多拓扑TLV、多拓扑中间系统TLV、多拓扑可达的IPv4前缀TLV和多拓扑可达的IPv6前缀TLV。其中本课程将对多拓扑TLV进行讲解，其他内容不详细展开。</p>
+<p>•多拓扑TLV：</p>
+<ul>
+<li><p>多拓扑TLV仅包含在IIH报文和LSP的0分片报文中。</p>
+</li>
+<li><p>预留的MT ID字段：</p>
+<ul>
+<li>MT ID=0，用于标准IPv4拓扑。</li>
+<li>MT ID=2，预留给IPv6拓扑。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="IS-IS-IPv6-的基础配置命令"><a href="#IS-IS-IPv6-的基础配置命令" class="headerlink" title="IS-IS (IPv6)的基础配置命令"></a>IS-IS (IPv6)的基础配置命令</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/40.png"></p>
+<blockquote>
+<p>•IS-IS（IPv6）的基础配置命令与配置方式与IS-IS（IPv4）一致，其他配置命令不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+<p>•[Huawei-isis-1] <strong>ipv6</strong> <strong>enable</strong> [ <strong>topology</strong> { <strong>ipv6</strong> | <strong>standard</strong> } ]</p>
+<ul>
+<li><strong>topology</strong>：用于指定网络的拓扑类型。</li>
+<li><strong>ipv6</strong>：指定拓扑类型为IPv6拓扑，即在IPv6拓扑上使能IS-IS进程的IPv6。网络中的链路可以配置成IPv4或IPv6，但SPF计算在各自的拓扑中单独进行。</li>
+<li><strong>standard</strong>：指定拓扑类型为标准模式，即在集成拓扑上使能IS-IS进程的IPv6。网络管理员必须保证网络中所有的链路支持一致的拓扑模式。缺省情况下，使能IPv6选择standard参数。</li>
+</ul>
+<p>•[ Huawei-GigabitEthernet0/0/1] <strong>isis</strong> <strong>ipv6</strong> <strong>cost</strong> { <em>cost</em> | <strong>maximum</strong> } [ <strong>level-1</strong> | <strong>level-2</strong> ]</p>
+<ul>
+<li><p><em>cost</em>：指定IPv6接口的链路开销值。整数形式，取值范围根据开销类型而定。</p>
+<ul>
+<li>当开销类型为narrow、narrow-compatible或compatible时，取值范围是1～63。</li>
+<li>当开销类型为wide或wide-compatible时，取值范围是1～16777214。</li>
+<li>缺省值为10。</li>
+</ul>
+</li>
+<li><p><strong>maximum</strong>：指定接口的链路开销值为16777215。</p>
+</li>
+<li><p><strong>level-1</strong>：指定配置level-1链路的开销值。如果不指定配置链路开销的接口级别，则同时为Level-1和Level-2级别的接口设置链路开销。</p>
+</li>
+<li><p><strong>level-2</strong>：指定配置level-2链路的开销值。如果不指定配置链路开销的接口级别，则同时为Level-1和Level-2级别的接口设置链路开销。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="检查IS-IS-IPv6-基本功能的配置结果"><a href="#检查IS-IS-IPv6-基本功能的配置结果" class="headerlink" title="检查IS-IS (IPv6)基本功能的配置结果"></a>检查IS-IS (IPv6)基本功能的配置结果</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/41.png"></p>
+<h2 id="IS-IS双栈配置举例"><a href="#IS-IS双栈配置举例" class="headerlink" title="IS-IS双栈配置举例"></a>IS-IS双栈配置举例</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/42.png"></p>
+<h3 id="部署IPv4网络-1"><a href="#部署IPv4网络-1" class="headerlink" title="部署IPv4网络"></a>部署IPv4网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/43.png"></p>
+<h3 id="部署IPv6网络-1"><a href="#部署IPv6网络-1" class="headerlink" title="部署IPv6网络"></a>部署IPv6网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/44.png"></p>
+<h3 id="查看IS-IS-IPv4-网络路由信息"><a href="#查看IS-IS-IPv4-网络路由信息" class="headerlink" title="查看IS-IS (IPv4)网络路由信息"></a>查看IS-IS (IPv4)网络路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/45.png"></p>
+<h3 id="查看IS-IS-IPv6-网络路由信息"><a href="#查看IS-IS-IPv6-网络路由信息" class="headerlink" title="查看IS-IS (IPv6)网络路由信息"></a>查看IS-IS (IPv6)网络路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/46.png"></p>
+<h1 id="4-BGP4-原理与配置"><a href="#4-BGP4-原理与配置" class="headerlink" title="4.BGP4+原理与配置"></a>4.BGP4+原理与配置</h1><h2 id="BGP4-概述"><a href="#BGP4-概述" class="headerlink" title="BGP4+概述"></a>BGP4+概述</h2><p>•传统的BGP-4只能管理IPv4单播路由信息，BGP多协议扩展（MultiProtocol BGP，MP-BGP）提供了对多种网络层协议的支持。目前的MP-BGP，使用扩展属性和地址族来实现对IPv6、组播和VPN相关内容的支持，BGP协议原有的报文机制和路由机制并没有改变。</p>
+<p>•其中，MP-BGP对IPv6单播网络的支持特性称为BGP4+。BGP4+为IPv6单播网络建立独立的拓扑结构，并将路由信息储存在独立的路由表中，保持单播IPv4网络和单播IPv6网络之间路由信息相互隔离。</p>
+<blockquote>
+<p>•为了实现对IPv6协议的支持，BGP需要将IPv6协议的信息反映到NLRI属性中。</p>
+</blockquote>
+<h2 id="MP-BGP支持的地址族"><a href="#MP-BGP支持的地址族" class="headerlink" title="MP-BGP支持的地址族"></a>MP-BGP支持的地址族</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/47.png"></p>
+<h2 id="BGP路径属性"><a href="#BGP路径属性" class="headerlink" title="BGP路径属性"></a>BGP路径属性</h2><p>•BGP的Update报文在对等体之间传递路由信息，可以用于发布和撤销路由。</p>
+<p>•Update报文格式：</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/48.png"></p>
+<p>•BGP4+中引入了两个NLRI属性，分别是：</p>
+<ul>
+<li><p>MP_REACH_NLRI：Multiprotocol Reachable NLRI，多协议可达NLRI。用于发布可达路由及下一跳信息。</p>
+</li>
+<li><p>MP_UNREACH_NLRI：Multiprotocol Unreachable NLRI，多协议不可达NLRI。用于撤销不可达路由。</p>
+</li>
+</ul>
+<blockquote>
+<p>•Update报文：</p>
+<ul>
+<li>一个Update报文可以通告具有相同路径属性的多条路由，这些路由保存在NLRI（Network Layer Reachable Information，网络层可达信息）中。同时Update还可以携带多条不可达路由，用于告知对方撤销路由，这些保存在Withdrawn Routes字段中。</li>
+</ul>
+</blockquote>
+<h2 id="NLRI属性"><a href="#NLRI属性" class="headerlink" title="NLRI属性"></a>NLRI属性</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/49.png"></p>
+<blockquote>
+<p>•MP_REACH_NLRI字段解释：</p>
+<ul>
+<li>地址族信息（Address Family Information）：由2Byte的地址族标识（Address Family Identifier，AFI）和1Byte的子地址族标识（Subsequent Address Family Identifier，SAFI）组成。</li>
+<li>下一跳长度（Length of Next Hop Network Address）：1Byte，表示下一跳地址的长度，通常情况下为16。</li>
+<li>下一跳地址（Network Address of Next Hop）：长度由上一个字段决定，一般情况下为全球单播地址。</li>
+<li>保留字段（Reserved）：1Byte，必须为0 。</li>
+<li>网络层可达信息（Network Layer Reachability Information）：表示含有匹配相同属性的路由信息。当此字段为0时，表示为缺省路由。</li>
+</ul>
+<p>•MP_UNREACH_NLRI字段解释：</p>
+<ul>
+<li>撤销路由（Withdrawn Routes）：表示撤销的路由条目。格式为&lt;掩码长度，路由前缀&gt; ，当此掩码长度为0时，表示为缺省路由。</li>
+</ul>
+</blockquote>
+<h2 id="BGP4-的基础配置命令"><a href="#BGP4-的基础配置命令" class="headerlink" title="BGP4+的基础配置命令"></a>BGP4+的基础配置命令</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/50.png"></p>
+<blockquote>
+<p>•BGP4+的基础配置命令与配置方式与BGP一致，其他配置命令不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+<p>•[Huawei-bgp] <strong>ipv6-family</strong> [ <strong>unicast</strong> | <strong>vpnv6</strong> | <strong>vpn-instance</strong> <em>vpn*</em>-instance-name* ]</p>
+<ul>
+<li><strong>unicast</strong>：进入IPv6单播地址族视图。</li>
+<li><strong>vpnv6</strong>：进入BGP-VPNv6地址族视图。</li>
+<li><strong>vpn-instance</strong> <em>vpn-instance-name</em>：将指定的VPN实例与IPv6地址族进行关联，进入BGP-VPN实例IPv6地址族视图。字符串形式，区分大小写，不支持空格，长度范围是1～31。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+</ul>
+<p>•[Huawei-bgp-af-ipv6] <strong>network</strong> <em>ipv6-address</em> <em>prefix-length</em> [ <strong>route-policy</strong> <em>route-policy-name</em> ]</p>
+<ul>
+<li><p><em>ipv6-address</em>：指定BGP发布的IPv6网络地址。32位16进制数，格式为X:X:X:X:X:X:X:X。</p>
+</li>
+<li><p><em>prefix-length</em>：指定BGP发布的IPv6网络地址的前缀长度。整数形式，取值范围是0～128。</p>
+</li>
+<li><p><strong>route-policy</strong> <em>route-policy-name</em>：指定发布路由应用的Route-Policy。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="检查BGP4-基本功能的配置结果"><a href="#检查BGP4-基本功能的配置结果" class="headerlink" title="检查BGP4+基本功能的配置结果"></a>检查BGP4+基本功能的配置结果</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/51.png"></p>
+<h2 id="BGP双栈配置举例"><a href="#BGP双栈配置举例" class="headerlink" title="BGP双栈配置举例"></a>BGP双栈配置举例</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/52.png"></p>
+<h3 id="部署IPv4网络-2"><a href="#部署IPv4网络-2" class="headerlink" title="部署IPv4网络"></a>部署IPv4网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/53.png"></p>
+<h3 id="部署IPv6网络-2"><a href="#部署IPv6网络-2" class="headerlink" title="部署IPv6网络"></a>部署IPv6网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/54.png"></p>
+<h3 id="查看BGP对等体信息"><a href="#查看BGP对等体信息" class="headerlink" title="查看BGP对等体信息"></a>查看BGP对等体信息</h3><p>•通过<strong>display</strong> <strong>bgp</strong> <strong>[ipv6] peer</strong>，分别查看IPv4和IPv6网络中的BGP对等体信息。</p>
+<p>•发现除建立对等体的地址不同，其他信息基本一致。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/55.png"></p>
+<h3 id="查看BGP4-路由信息"><a href="#查看BGP4-路由信息" class="headerlink" title="查看BGP4+路由信息"></a>查看BGP4+路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/56.png"></p>
+<h3 id="查看BGP4-中的NLRI属性"><a href="#查看BGP4-中的NLRI属性" class="headerlink" title="查看BGP4+中的NLRI属性"></a>查看BGP4+中的NLRI属性</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/57.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下LSA，属于OSPFv3的有哪些？(   )</p>
+<p><strong>A.Router-LSA</strong></p>
+<p><strong>B.Network-LSA</strong></p>
+<p>C.Network-Summary-LSA</p>
+<p><strong>D.Link-LSA</strong></p>
+<p>2.（判断题）IS-IS支持IPv4网络和IPv6网络分别计算自己的最短路径树。(   )</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•通过IPv6静态路由能够满足网络互通要求，但随着网络的增大，就需要借助动态路由协议。因此要求动态路由协议能够支持IPv6，并能够携带IPv6地址进行路由通告。</p>
+<p>•IETF为了支持IPv6网络，对OSPFv2进行了增强与改进，创建了一个新的协议：OSPFv3。</p>
+<p>•IS-IS则是利用自己扩展性强的特点，通过新增TLV，实现对IPv6的支持。</p>
+<p>•同样的，BGP利用自己的扩展路径属性以及多协议地址族实现对IPv6的支持。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/IPadv-3-IPv6%E8%B7%AF%E7%94%B1/" rel="tag"># IPadv-3-IPv6路由</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" rel="next" title="IPadv-BGP高级特性">
+                <i class="fa fa-chevron-left"></i> IPadv-BGP高级特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-IPv6%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-number">3.</span> <span class="nav-text">1.IPv6静态路由</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-number">3.1.</span> <span class="nav-text">IPv6静态路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">3.2.</span> <span class="nav-text">IPv6静态路由的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">3.3.</span> <span class="nav-text">IPv6静态路由配置举例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-OSPFv3%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">2.OSPFv3原理与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPFv3%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">OSPFv3的基本工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.1.</span> <span class="nav-text">OSPFv3概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E4%B8%8EOSPFv2%E7%9A%84%E7%9B%B8%E5%90%8C%E7%82%B9"><span class="nav-number">4.1.2.</span> <span class="nav-text">OSPFv3与OSPFv2的相同点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E6%8B%93%E6%89%91%E5%92%8C%E8%B7%AF%E7%94%B1%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.1.3.</span> <span class="nav-text">OSPFv3拓扑和路由器类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8EOSPFv2%E7%9B%B8%E4%BC%BC"><span class="nav-number">4.1.4.</span> <span class="nav-text">OSPFv3的基本工作原理与OSPFv2相似</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E4%B8%8EOSPFv2%E7%9A%84%E4%B8%8D%E5%90%8C%E7%82%B9"><span class="nav-number">4.1.5.</span> <span class="nav-text">OSPFv3与OSPFv2的不同点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%94%AF%E4%B8%80%E9%82%BB%E5%B1%85%E6%A0%87%E8%AF%86%EF%BC%9ARouter-ID"><span class="nav-number">4.1.6.</span> <span class="nav-text">唯一邻居标识：Router ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E5%9F%BA%E4%BA%8E%E9%93%BE%E8%B7%AF%E8%BF%90%E8%A1%8C"><span class="nav-number">4.1.7.</span> <span class="nav-text">OSPFv3基于链路运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E6%94%AF%E6%8C%81%E5%A4%9A%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.1.8.</span> <span class="nav-text">链路支持多实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E5%AF%B9%E9%93%BE%E8%B7%AF%E6%9C%AC%E5%9C%B0%E5%9C%B0%E5%9D%80%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">4.1.9.</span> <span class="nav-text">OSPFv3对链路本地地址的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E6%8A%A5%E6%96%87"><span class="nav-number">4.1.10.</span> <span class="nav-text">OSPFv3报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E6%8A%A5%E6%96%87%E5%A4%B4%E9%83%A8"><span class="nav-number">4.1.11.</span> <span class="nav-text">OSPFv3报文头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hello%E6%8A%A5%E6%96%87"><span class="nav-number">4.1.12.</span> <span class="nav-text">Hello报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E7%9A%84LSA%E5%A4%B4%E9%83%A8"><span class="nav-number">4.1.13.</span> <span class="nav-text">OSPFv3的LSA头部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E7%9A%84LSA%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.1.14.</span> <span class="nav-text">OSPFv3的LSA类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type1%EF%BC%9ARouter-LSA"><span class="nav-number">4.1.15.</span> <span class="nav-text">Type1：Router-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type2%EF%BC%9ANetwork-LSA"><span class="nav-number">4.1.16.</span> <span class="nav-text">Type2：Network-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type3%EF%BC%9AInter-Area-Prefix-LSA"><span class="nav-number">4.1.17.</span> <span class="nav-text">Type3：Inter-Area-Prefix-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type4%EF%BC%9AInter-Area-Router-LSA"><span class="nav-number">4.1.18.</span> <span class="nav-text">Type4：Inter-Area-Router-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Type5%EF%BC%9AAS-External-LSA"><span class="nav-number">4.1.19.</span> <span class="nav-text">Type5：AS-External-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9EType8%EF%BC%9ALink-LSA"><span class="nav-number">4.1.20.</span> <span class="nav-text">新增Type8：Link-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%A2%9EType9%EF%BC%9AIntra-Area-Prefix-LSA"><span class="nav-number">4.1.21.</span> <span class="nav-text">新增Type9：Intra-Area-Prefix-LSA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E7%9A%84LSA%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.1.22.</span> <span class="nav-text">OSPFv3的LSA举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Link-LSA%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.1.23.</span> <span class="nav-text">Link-LSA举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Intra-Area-Prefix-LSA%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.1.24.</span> <span class="nav-text">Intra-Area-Prefix-LSA举例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSPFv3%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">4.2.</span> <span class="nav-text">OSPFv3的基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">OSPFv3的基础配置命令 (1)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPFv3%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4-2"><span class="nav-number">4.2.2.</span> <span class="nav-text">OSPFv3的基础配置命令 (2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5OSPFv3%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD%E7%9A%84%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%9C"><span class="nav-number">4.2.3.</span> <span class="nav-text">检查OSPFv3基本功能的配置结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSPF%E5%8F%8C%E6%A0%88%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.2.4.</span> <span class="nav-text">OSPF双栈配置举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2IPv4%E7%BD%91%E7%BB%9C"><span class="nav-number">4.2.5.</span> <span class="nav-text">部署IPv4网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2IPv6%E7%BD%91%E7%BB%9C"><span class="nav-number">4.2.6.</span> <span class="nav-text">部署IPv6网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BOSPFv3%E7%BD%91%E7%BB%9C%E7%9A%84%E9%82%BB%E5%B1%85%E4%BF%A1%E6%81%AF"><span class="nav-number">4.2.7.</span> <span class="nav-text">查看OSPFv3网络的邻居信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BOSPFv3%E7%BD%91%E7%BB%9C%E7%9A%84%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF"><span class="nav-number">4.2.8.</span> <span class="nav-text">查看OSPFv3网络的路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BOSPFv3%E7%BD%91%E7%BB%9CLSDB%E4%BF%A1%E6%81%AF"><span class="nav-number">4.2.9.</span> <span class="nav-text">查看OSPFv3网络LSDB信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-IS-IS-IPv6-%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">3.IS-IS (IPv6)原理与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS-IPv6-%E6%A6%82%E8%BF%B0"><span class="nav-number">5.1.</span> <span class="nav-text">IS-IS (IPv6)概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%A2%9ETLV"><span class="nav-number">5.2.</span> <span class="nav-text">新增TLV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#129%E5%8F%B7TLV%E4%B8%AD%E6%96%B0%E5%A2%9ENLPID"><span class="nav-number">5.3.</span> <span class="nav-text">129号TLV中新增NLPID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%A4%9A%E6%8B%93%E6%89%91%E6%8A%80%E6%9C%AF%E8%83%8C%E6%99%AF"><span class="nav-number">5.4.</span> <span class="nav-text">IS-IS多拓扑技术背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%A4%9A%E6%8B%93%E6%89%91%E6%A6%82%E8%BF%B0"><span class="nav-number">5.5.</span> <span class="nav-text">IS-IS多拓扑概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%A4%9A%E6%8B%93%E6%89%91%E5%8E%9F%E7%90%86"><span class="nav-number">5.6.</span> <span class="nav-text">IS-IS多拓扑原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS-IPv6-%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">5.7.</span> <span class="nav-text">IS-IS (IPv6)的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5IS-IS-IPv6-%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD%E7%9A%84%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%9C"><span class="nav-number">5.8.</span> <span class="nav-text">检查IS-IS (IPv6)基本功能的配置结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IS-IS%E5%8F%8C%E6%A0%88%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">5.9.</span> <span class="nav-text">IS-IS双栈配置举例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2IPv4%E7%BD%91%E7%BB%9C-1"><span class="nav-number">5.9.1.</span> <span class="nav-text">部署IPv4网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2IPv6%E7%BD%91%E7%BB%9C-1"><span class="nav-number">5.9.2.</span> <span class="nav-text">部署IPv6网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BIS-IS-IPv4-%E7%BD%91%E7%BB%9C%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF"><span class="nav-number">5.9.3.</span> <span class="nav-text">查看IS-IS (IPv4)网络路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BIS-IS-IPv6-%E7%BD%91%E7%BB%9C%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF"><span class="nav-number">5.9.4.</span> <span class="nav-text">查看IS-IS (IPv6)网络路由信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-BGP4-%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">4.BGP4+原理与配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP4-%E6%A6%82%E8%BF%B0"><span class="nav-number">6.1.</span> <span class="nav-text">BGP4+概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MP-BGP%E6%94%AF%E6%8C%81%E7%9A%84%E5%9C%B0%E5%9D%80%E6%97%8F"><span class="nav-number">6.2.</span> <span class="nav-text">MP-BGP支持的地址族</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E8%B7%AF%E5%BE%84%E5%B1%9E%E6%80%A7"><span class="nav-number">6.3.</span> <span class="nav-text">BGP路径属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NLRI%E5%B1%9E%E6%80%A7"><span class="nav-number">6.4.</span> <span class="nav-text">NLRI属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP4-%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%91%BD%E4%BB%A4"><span class="nav-number">6.5.</span> <span class="nav-text">BGP4+的基础配置命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5BGP4-%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD%E7%9A%84%E9%85%8D%E7%BD%AE%E7%BB%93%E6%9E%9C"><span class="nav-number">6.6.</span> <span class="nav-text">检查BGP4+基本功能的配置结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BGP%E5%8F%8C%E6%A0%88%E9%85%8D%E7%BD%AE%E4%B8%BE%E4%BE%8B"><span class="nav-number">6.7.</span> <span class="nav-text">BGP双栈配置举例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2IPv4%E7%BD%91%E7%BB%9C-2"><span class="nav-number">6.7.1.</span> <span class="nav-text">部署IPv4网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2IPv6%E7%BD%91%E7%BB%9C-2"><span class="nav-number">6.7.2.</span> <span class="nav-text">部署IPv6网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BBGP%E5%AF%B9%E7%AD%89%E4%BD%93%E4%BF%A1%E6%81%AF"><span class="nav-number">6.7.3.</span> <span class="nav-text">查看BGP对等体信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BBGP4-%E8%B7%AF%E7%94%B1%E4%BF%A1%E6%81%AF"><span class="nav-number">6.7.4.</span> <span class="nav-text">查看BGP4+路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BBGP4-%E4%B8%AD%E7%9A%84NLRI%E5%B1%9E%E6%80%A7"><span class="nav-number">6.7.5.</span> <span class="nav-text">查看BGP4+中的NLRI属性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">思考题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
