@@ -241,6 +241,1320 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/RSTP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/06/RSTP/" itemprop="url">RSTP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:10:54+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•以太网交换网络中为了进行链路备份，提高网络可靠性，通常会使用冗余链路，但是这也带来了网络环路的问题。网络环路会引发广播风暴和MAC地址表震荡等问题，导致用户通信质量差，甚至通信中断。为了解决交换网络中的环路问题，IEEE提出了基于802.1D标准的STP（Spanning Tree Protocol，生成树协议）。</p>
+<p>•随着局域网规模的不断增长，STP拓扑收敛速度慢的问题逐渐凸显，因此，IEEE在2001年发布了802.1W标准，定义了RSTP（Rapid Spanning Tree Protocol，快速生成树协议），RSTP在STP的基础上进行了改进，可实现网络拓扑的快速收敛。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><ul>
+<li><p>描述STP技术的缺陷</p>
+</li>
+<li><p>描述RSTP对STP技术的改进</p>
+</li>
+<li><p>描述RSTP的基本工作原理</p>
+</li>
+<li><p>完成RSTP的基本配置</p>
+</li>
+</ul>
+<h1 id="STP回顾与STP不足"><a href="#STP回顾与STP不足" class="headerlink" title="STP回顾与STP不足"></a><strong>STP回顾与STP不足</strong></h1><h2 id="回顾：STP的工作原理"><a href="#回顾：STP的工作原理" class="headerlink" title="回顾：STP的工作原理"></a><strong>回顾：STP的工作原理</strong></h2><p>•STP通过在交换机之间传递配置BPDU来选举根交换机 (或根桥)，以及确定每个交换机端口的角色和状态。</p>
+<p>​    ▫在初始化过程中，每个交换机都主动发送配置BPDU。</p>
+<p>​    ▫在网络拓扑稳定以后，只有根桥周期性发送配置BPDU，其他交    换机在收到上游传来的配置BPDU后，才会发送自己的配BPDU。</p>
+<p>•配置BPDU包含了桥ID、路径开销和端口ID等参数。</p>
+<p><img src="/2021/05/06/RSTP/1.png"></p>
+<blockquote>
+<p>•配置BPDU泛洪：</p>
+<ul>
+<li><p>在初始形成STP树的过程中，所有STP交换机会周期性地（Hello Time，缺省为2s）主动产生并发送配置BPDU，大家都认为自己是根桥。</p>
+</li>
+<li><p>随着BPDU的泛洪和收集，各交换机根据BPDU包含的信息进行比较，并选举出根桥。</p>
+</li>
+<li><p>在此之后（即STP树形成后的稳定期），只有根桥会周期性地（缺省为2s）主动产生并发送配置BPDU。相应的，非根桥交换机会从自己的根端口周期性地接收到配置BPDU，并立即触发产生自己的配置BPDU，然后从自己的指定端口发出。——这一过程看起来就像是，根桥发出的配置BPDU逐跳地“经过”了其他的交换机。也可以理解为：从根桥倒一盆水下来，水顺着这棵无环的树从上往下不断地往下流。因此如图所示，可以理解为SW1与SW2间的链路是SW2的上游链路，SW2与SW3间的链路是SW2的下游链路。</p>
+</li>
+</ul>
+<p>•报文格式：</p>
+<ul>
+<li><p>配置BPDU携带的参数可以分为3类：</p>
+</li>
+<li><p>第一类，BPDU对自身的标识，包括：协议标识、协议版本号、BPDU类型和标志。</p>
+<ul>
+<li>协议标识（Protocol ID，PID），2 Byte，总是0x000。</li>
+<li>协议版本号（Protocol Version ID，PVI），1 Byte，总是0x00。</li>
+<li>BPDU类型（BPDU Type），1 Byte，配置BPDU的类型值为0x00。</li>
+<li>标志（Flag），1 Byte，网络拓扑变化标志，仅使用了最低位和最高位。</li>
+</ul>
+</li>
+<li><p>第二类，用于进行STP计算的参数，包括：当前根桥的BID、根路径开销、发送该BPDU的交换机的BID和发送该BPDU的端口的PID。</p>
+<ul>
+<li>根桥ID（Root ID），8 Byte，当前根桥的BID。</li>
+<li>根路径开销（Root Path Cost，RPC），4 Byte，发送该BPDU的端口累计到根桥的开销。</li>
+<li>网桥ID（Bridge ID，BID），8 Byte，发送该BPDU的交换机的BID。</li>
+<li>接口ID（Port ID，PDID），2 Byte，发送该BPDU的端口ID。</li>
+</ul>
+</li>
+<li><p>第三类，时间参数，包括：消息寿命、最大寿命、Hello时间和转发延迟。</p>
+<ul>
+<li>消息寿命（Message Age），2 Byte，该BPDU消息的年龄。从根桥发出的配置BPDU，Message Age为0。在实际的实现中，配置BPDU每“经过”一个桥，Message Age增加1。</li>
+<li>最大寿命（Max Age），2 Byte，BPDU的最大生命周期，缺省为20s。</li>
+<li>Hello时间（Hello Time），2 Byte，根桥发送配置BPDU的周期，缺省为2s。</li>
+<li>转发延迟（Forward Delay），2 Byte，端口在侦听和学习状态（后续会讲）所停留的时间间隔，缺省为15s。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="回顾：STP树的生成过程"><a href="#回顾：STP树的生成过程" class="headerlink" title="回顾：STP树的生成过程"></a><strong>回顾：STP树的生成过程</strong></h2><p><img src="/2021/05/06/RSTP/2.png"></p>
+<blockquote>
+<p>•STP基本原理：</p>
+<ul>
+<li>在一个具有物理环路的交换网络中，交换机通过运行STP，自动生成一个没有环路的工作拓扑，也被称为STP树。树节点为某些特定的交换机，树枝为某些特定的链路。</li>
+</ul>
+<p>•STP采用四个步骤来解决二层环路问题（生成一棵STP树）：</p>
+<ul>
+<li>在一个交换网络中选举一个根桥；在每个非根桥上选举一个根端口；为每个网段选举一个指定端口；阻塞交换机上所有剩余的非根、非指定端口（备用端口）。</li>
+</ul>
+<p>•如何生成STP树？</p>
+<ul>
+<li>主要通过比较4个参数：根桥ID、根路径开销、网桥ID和端口ID，值越小，越优先。而这些参数，都是报文BPDU中的字段。<ul>
+<li>根桥选举：比较根桥ID，最小胜出。</li>
+<li>根端口选举：依次比较RPC、对端BID、对端PID和本端PID，最小胜出。</li>
+<li>指定端口选举：依次比较RPC、本端BID和本端PID，最小胜出。</li>
+<li>在确定了根端口和指定端口之后，交换机上所有剩余的非根端口和非指定端口被阻塞。</li>
+</ul>
+</li>
+</ul>
+<p>•在华为产品的实现中，被阻塞的非指定端口表现为Alternate Port。</p>
+</blockquote>
+<h2 id="回顾：STP的端口状态迁移"><a href="#回顾：STP的端口状态迁移" class="headerlink" title="回顾：STP的端口状态迁移"></a><strong>回顾：STP的端口状态迁移</strong></h2><p><img src="/2021/05/06/RSTP/3.png"></p>
+<blockquote>
+<p>•根据端口是否接收和发送STP协议帧，以及端口是否能转发用户数据帧，STP定义了五种端口状态：Disabled、Blocking、Listening、Learning和Forwarding。</p>
+<ul>
+<li>Disabled状态：端口无法接收和发出任何帧（即：端口不仅不处理BPDU报文，也不转发用户流量），端口处于关闭（down）状态。</li>
+<li>Blocking状态：端口只能接收并处理BPDU，不能发送BPDU，也不能转发用户数据帧（用户流量），是阻塞端口的最终状态。</li>
+<li>Listening状态：端口可以接收并发送BPDU，但不进行MAC地址学习，也不能转发用户数据帧。这是过渡状态，用于确定端口角色，将选举出根桥、根端口和指定端口，同时用于防止临时环路。</li>
+<li>Learning状态：端口可以接收并发送BPDU，也可以进行MAC地址学习，根据收到的用户流量构建MAC地址表，但不能转发用户数据帧（用户流量）。这也是过渡状态，用于防止MAC地址表未建立，网络中出现大量数据帧泛洪。</li>
+<li>Forwarding状态：端口可以接收并发送BPDU，也可以进行MAC地址学习，同时能够转发用户数据帧（用户流量）。只有根端口或指定端口才能进入Forwarding状态。</li>
+</ul>
+<p>•端口状态迁移：</p>
+<ol>
+<li><p>STP交换机的端口在初始启动时，会从Disabled状态进入到Blocking状态。在Blocking状态，端口只接收和分析BPDU，但不发送。</p>
+</li>
+<li><p>在整个过程中，端口一但被关闭或发生了链路故障，就会进入Disabled状态。</p>
+</li>
+<li><p>如果端口被选为根端口或指定端口，则会进入Listening状态，此时端口接收并发送BPDU，这种状态会持续一个Forward Delay的时间长度，缺省为15s，是为了防止临时环路：因为此时网络中可能还存在因STP树的计算过程不同步而产生的临时环路。</p>
+</li>
+<li><p>在端口状态迁移过程中，如果端口的角色被判定为非根端口或非指定端口，则其端口状态就会立即退回到Blocking状态。</p>
+</li>
+<li><p>如果没有因“意外情况”回到Disabled状态，那么端口会进入Learning状态，此时端口不但可以接收并发送BPDU，还会开始构建MAC地址表，为用户流量的转发做好准备。这个状态也会持续一个Forward Delay的时间长度，缺省为15s，是为了防止此时交换机的MAC地址表还未建立，导致大量的数据帧被泛洪<strong>。</strong></p>
+</li>
+<li><p>最后，端口进入Forwarding状态，开始转发用户流量。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="STP的不足"><a href="#STP的不足" class="headerlink" title="STP的不足"></a>STP的不足</h2><p>STP虽然能够解决环路问题，但是由于网络拓扑收敛慢，影响了用户通信质量。如果网络中的拓扑结构频繁变化，网络也会随之频繁失去连通性，从而导致用户通信频繁中断，这是用户无法忍受的。</p>
+<p>STP的不足：</p>
+<ul>
+<li><p>STP没有细致区分端口状态和端口角色，不利于初学者学习及部署。</p>
+<ul>
+<li>从用户角度来讲，Listening、Learning和Blocking状态并没有区别，都同样不转发用户流量。</li>
+<li>从使用和配置角度来讲，端口之间最本质的区别并不在于端口状态，而是在于端口扮演的角色。</li>
+</ul>
+</li>
+<li><p>STP算法是被动的算法，依赖定时器等待的方式判断拓扑变化，收敛速度慢。</p>
+</li>
+<li><p>STP算法要求在稳定的拓扑中，根桥主动发出配置BPDU报文，而其他设备再进行处理，最终传遍整个STP网络。</p>
+</li>
+</ul>
+<h2 id="STP对计时器的依赖"><a href="#STP对计时器的依赖" class="headerlink" title="STP对计时器的依赖"></a><strong>STP对计时器的依赖</strong></h2><p><img src="/2021/05/06/RSTP/4.png"></p>
+<p><img src="/2021/05/06/RSTP/5.png"></p>
+<h2 id="STP重收敛过程慢"><a href="#STP重收敛过程慢" class="headerlink" title="STP重收敛过程慢"></a><strong>STP重收敛过程慢</strong></h2><p><img src="/2021/05/06/RSTP/6.png"></p>
+<p><img src="/2021/05/06/RSTP/7.png"></p>
+<blockquote>
+<p>•直连故障：</p>
+<ul>
+<li><p>两台交换机间有两条链路，其中一条是主用链路，另一条为备用链路。</p>
+</li>
+<li><p>当网络稳定时，交换机SW2检测到根端口的链路发生故障，则被阻塞的端口会开始端口状态迁移，最终进入用户流量转发状态。</p>
+</li>
+</ul>
+<p>•非直连故障：</p>
+<ul>
+<li><p>当网络正常时，SW3的被阻塞端口会定期收到来自根桥的BPDU。</p>
+</li>
+<li><p>当SW1与SW2之间的链路发生故障时，SW2能够第一时间检测到故障发生，此时它认为自己成为新的根桥，于是向SW3发送自己的配置BPDU（根桥ID为自己的桥ID）。</p>
+</li>
+<li><p>SW3的被阻塞端口将收到上述配置BPDU，但该BPDU并不比当前端口所缓存的配置BPDU更优，因此SW3忽略该配置BPDU。</p>
+</li>
+<li><p>当Max Age计时器超时后，SW3端口上缓存的配置BPDU老化，SW3开始向SW2发送配置BPDU，该配置BPDU由根桥SW1发送的配置BPDU触发，其中的根桥ID字段值为SW1的桥ID。</p>
+</li>
+<li><p>SW2收到上述配置BPDU后，解析该报文并认定SW1为根桥，于是将其连接SW3的端口切换为根端口。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="STP拓扑变更机制"><a href="#STP拓扑变更机制" class="headerlink" title="STP拓扑变更机制"></a><strong>STP拓扑变更机制</strong></h2><p>STP的拓扑变更机制，需要先将拓扑变化信息传递给根桥，再由根桥向下游泛洪拓扑变化信息。</p>
+<p><img src="/2021/05/06/RSTP/8.png"></p>
+<blockquote>
+<p>•拓扑变更，STP处理过程：</p>
+<p>当交换机检测到拓扑更改时，会通知生成树的根桥，然后根桥将该拓扑更改信息泛洪到整个网络。</p>
+<p>拓扑变化过程，如图：</p>
+<ul>
+<li>如果网络中新增一台交换机，导致工作拓扑发生了变化，则位于变化点的交换机可以通过端口状态直接感知到这种变化，但是其他的交换机是无法直接感知到的。</li>
+<li>位于变化点的交换机会以Hello Time（缺省2s）为周期通过其根端口不断向上游发送TCN BPDU，直到接收到从上游交换机发来的、TCA位置1的配置BPDU。TCA位置1是为了通知下游设备停止发送TCN BPDU报文。</li>
+<li>上游交换机收到TCN BPDU后，一方面会通过其指定端口回复TCA位置1的配置BPDU，另一方面会以Hello Time为周期通过其根端口不断向它的上游发送TCN BPDU。</li>
+<li>这个过程一直重复，直到根桥收到TCN BPDU。</li>
+<li>根桥收到TCN BPDU后，会发送TC位置1的配置BPDU，通告所有交换机网络拓扑发生了变化，通知下游设备直接删除桥MAC地址表项。</li>
+</ul>
+</blockquote>
+<h1 id="RSTP概述"><a href="#RSTP概述" class="headerlink" title="RSTP概述"></a><strong>RSTP概述</strong></h1><h2 id="RSTP概述-1"><a href="#RSTP概述-1" class="headerlink" title="RSTP概述"></a><strong>RSTP概述</strong></h2><p>•IEEE 802.1W中定义的RSTP可以视为STP的改进版本，RSTP在许多方面对STP进行了优化，它的收敛速度更快，而且能够兼容STP。</p>
+<p>•RSTP对STP的改进：</p>
+<ul>
+<li>通过端口角色的增补，简化了生成树协议的理解及部署；</li>
+<li>端口状态的重新划分；</li>
+<li>配置BPDU格式的改变，充分利用了STP协议报文中的Flag字段，明确了端口角色；</li>
+<li>配置BPDU的处理发生变化；</li>
+<li>快速收敛；</li>
+<li>增加保护功能。</li>
+</ul>
+<blockquote>
+<p>•RSTP可以兼容STP：RSTP可以和STP互操作，但是此时会丧失快速收敛等RSTP优势。</p>
+<ul>
+<li><p>当一个网段里既有运行STP的交换设备又有运行RSTP的交换设备，STP交换设备会忽略RSTP的BPDU。运行RSTP的交换设备在某端口上接收到运行STP的交换设备发出的配置BPDU，在两个Hello Time时间之后，便把自己的端口转换到STP工作模式，发送配置BPDU，从而实现了互操作。</p>
+</li>
+<li><p>在华为技术有限公司的数据通信设备上可以配置运行STP的交换设备被撤离网络后，运行RSTP的交换设备可迁移回到RSTP工作模式。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="RSTP在园区网络中的应用位置"><a href="#RSTP在园区网络中的应用位置" class="headerlink" title="RSTP在园区网络中的应用位置"></a><strong>RSTP在园区网络中的应用位置</strong></h2><p><img src="/2021/05/06/RSTP/9.png"></p>
+<h1 id="RSTP对STP的改进"><a href="#RSTP对STP的改进" class="headerlink" title="RSTP对STP的改进"></a><strong>RSTP对STP的改进</strong></h1><h2 id="改进点1：端口角色"><a href="#改进点1：端口角色" class="headerlink" title="改进点1：端口角色"></a><strong>改进点1：端口角色</strong></h2><p>通过端口角色的增补，简化了生成树协议的理解与部署。</p>
+<p><img src="/2021/05/06/RSTP/10.png"></p>
+<p><img src="/2021/05/06/RSTP/11.png"></p>
+<blockquote>
+<p>•RSTP的端口角色共有4种：根端口、指定端口、Alternate端口和Backup端口。</p>
+<p>•根端口和指定端口的作用同STP中定义，Alternate端口和Backup端口的描述如下：</p>
+<ul>
+<li><p>从配置BPDU报文发送角度来看：</p>
+<ul>
+<li>Alternate端口就是由于学习到其它网桥发送的配置BPDU报文而阻塞的端口。</li>
+<li>Backup端口就是由于学习到自己发送的配置BPDU报文而阻塞的端口。</li>
+</ul>
+</li>
+<li><p>从用户流量角度来看：</p>
+<ul>
+<li>Alternate端口提供了从指定桥到根的另一条可切换路径，作为根端口的备份端口。</li>
+<li>Backup端口作为指定端口的备份，提供了另一条从根桥到相应网段的备份通路。</li>
+</ul>
+</li>
+</ul>
+<p>•给一个RSTP域内所有端口分配角色的过程就是整个拓扑收敛的过程。</p>
+</blockquote>
+<h2 id="改进点2：端口状态"><a href="#改进点2：端口状态" class="headerlink" title="改进点2：端口状态"></a><strong>改进点2：端口状态</strong></h2><p>RSTP的状态规范缩减为3种，根据端口是否转发用户流量和学习MAC地址来划分:</p>
+<p>▫Discarding状态：不转发用户流量也不学习MAC地址；</p>
+<p>▫Learning状态：不转发用户流量但是学习MAC地址；</p>
+<p>▫Forwarding状：既转发用户流量又学习MAC地址。</p>
+<table>
+<thead>
+<tr>
+<th align="center">STP端口状态</th>
+<th align="center"><strong>RSTP端口状态</strong></th>
+<th align="center"><strong>端口在拓扑中的角色</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Forwarding</td>
+<td align="center">Forwarding</td>
+<td align="center">包括根端口、指定端口</td>
+</tr>
+<tr>
+<td align="center">Learning</td>
+<td align="center">Learning</td>
+<td align="center">包括根端口、指定端口</td>
+</tr>
+<tr>
+<td align="center">Listening</td>
+<td align="center">Discarding</td>
+<td align="center">包括根端口、指定端口</td>
+</tr>
+<tr>
+<td align="center">Blocking</td>
+<td align="center">Discarding</td>
+<td align="center">包括Alternate端口、Backup端口</td>
+</tr>
+<tr>
+<td align="center">Disabled</td>
+<td align="center">Discarding</td>
+<td align="center">包括Disable端口</td>
+</tr>
+</tbody></table>
+<h2 id="改进点3：配置BPDU-RST-BPDU"><a href="#改进点3：配置BPDU-RST-BPDU" class="headerlink" title="改进点3：配置BPDU - RST BPDU"></a><strong>改进点3：配置BPDU - RST BPDU</strong></h2><p>•RSTP的配置BPDU充分利用了STP报文中的Flag字段，明确了端口角色。</p>
+<p>•除了保证和STP格式基本一致之外，RSTP作了如下变化：</p>
+<ul>
+<li><p>Type字段：配置BPDU类型不再是0而是2，所以运行STP的设备收到RSTP的配置BPDU时会丢弃。</p>
+</li>
+<li><p>Flag字段：使用了原来保留的中间6位，这样改变的配置BPDU叫做RST BPDU。</p>
+</li>
+</ul>
+<p>•<strong>RST BPDU报文格式：</strong></p>
+<p><img src="/2021/05/06/RSTP/12.png"></p>
+<blockquote>
+<p>•RST BPDU与STP配置BPDU报文格式不同点，包括：BPDU类型和Flag字段。</p>
+<ul>
+<li><p>BPDU类型，1 Byte，RST BPDU的类型值为0x02。</p>
+</li>
+<li><p>标志，1 Byte，包括：</p>
+<p>▪bit 7：TCA，表示拓扑变化确认；</p>
+<p>▪bit 6：Agreement，表示同意，用于P/A机制；</p>
+<p>▪bit 5：Forwarding，表示转发状态；</p>
+<p>▪bit 4：Learning，表示学习状态；</p>
+<p>▪bit 3和bit 2：表示端口角色，00表示未知端口，01表示替代或备份端口，10表示根端口，11表示指定端口；</p>
+<p>▪bit 1：Proposal，表示提议，用于P/A机制；</p>
+<p>▪bit 0：TC，表示拓扑变化。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点4：配置BPDU的处理-1"><a href="#改进点4：配置BPDU的处理-1" class="headerlink" title="改进点4：配置BPDU的处理 (1)"></a><strong>改进点4：配置BPDU的处理</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/RSTP/13.png"></p>
+<h2 id="改进点4：配置BPDU的处理-2"><a href="#改进点4：配置BPDU的处理-2" class="headerlink" title="改进点4：配置BPDU的处理 (2)"></a><strong>改进点4：配置BPDU的处理</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/14.png"></p>
+<h2 id="改进点4：配置BPDU的处理-3"><a href="#改进点4：配置BPDU的处理-3" class="headerlink" title="改进点4：配置BPDU的处理 (3)"></a><strong>改进点4：配置BPDU的处理 (3)</strong></h2><p><img src="/2021/05/06/RSTP/15.png"></p>
+<blockquote>
+<p>•STP：</p>
+<ul>
+<li>STP只有指定端口会立即处理次优BPDU，其他端口会忽略次优BPDU，等到Max Age计时器超时后，缓存的次优BPDU才会老化，然后发送自身更优的BPDU，进行新一轮的拓扑收敛。</li>
+</ul>
+<p>•RSTP：</p>
+<ul>
+<li>RSTP处理次优BPDU报文不再依赖于任何定时器（即不再依赖于BPDU老化）解决拓扑收敛，同时RSTP的任何端口角色都会处理次优BPDU，从而加快了拓扑收敛。</li>
+</ul>
+</blockquote>
+<h2 id="改进点5：快速收敛机制-1"><a href="#改进点5：快速收敛机制-1" class="headerlink" title="改进点5：快速收敛机制 (1)"></a><strong>改进点5：快速收敛机制 (1)</strong></h2><p><img src="/2021/05/06/RSTP/16.png"></p>
+<p><img src="/2021/05/06/RSTP/17.png"></p>
+<h2 id="改进点5：快速收敛机制-2"><a href="#改进点5：快速收敛机制-2" class="headerlink" title="改进点5：快速收敛机制 (2)"></a><strong>改进点5：快速收敛机制</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/18.png"></p>
+<blockquote>
+<p>•边缘端口的UP和Down，不会引起网络拓扑的变动。</p>
+</blockquote>
+<h2 id="改进点5：快速收敛机制-3"><a href="#改进点5：快速收敛机制-3" class="headerlink" title="改进点5：快速收敛机制 (3)"></a>改进点5：快速收敛机制 (3)</h2><p><img src="/2021/05/06/RSTP/19.png"></p>
+<blockquote>
+<p>•事实上对于STP，指定端口的选择可以很快完成，主要的速度瓶颈在于：为了避免环路，必须等待足够长的时间，使全网的端口状态全部确定，也就是说必须要等待至少一个Forward Delay所有端口才能进行转发。</p>
+<p>•而RSTP的主要目的就是消除这个瓶颈，通过阻塞自己的非根端口来保证不会出现环路。而使用P/A机制加快了上游端口进入Forwarding状态的速度。</p>
+</blockquote>
+<h3 id="P-A机制详解-1"><a href="#P-A机制详解-1" class="headerlink" title="P/A机制详解(1)"></a><strong>P/A机制详解(1)</strong></h3><p><img src="/2021/05/06/RSTP/20.png"></p>
+<h3 id="P-A机制详解-2"><a href="#P-A机制详解-2" class="headerlink" title="P/A机制详解(2)"></a><strong>P/A机制详解(2)</strong></h3><p><img src="/2021/05/06/RSTP/21.png"></p>
+<blockquote>
+<p>•SW2的下游端口同步过程：替代端口，状态不变；边缘端口，不参与计算；阻塞非边缘指定端口。</p>
+</blockquote>
+<h3 id="P-A机制详解-3"><a href="#P-A机制详解-3" class="headerlink" title="P/A机制详解(3)"></a><strong>P/A机制详解(3)</strong></h3><p><img src="/2021/05/06/RSTP/22.png"></p>
+<h2 id="改进点6：拓扑变更机制"><a href="#改进点6：拓扑变更机制" class="headerlink" title="改进点6：拓扑变更机制"></a><strong>改进点6：拓扑变更机制</strong></h2><p>在RSTP中检测拓扑是否发生变化只有一个标准：一个非边缘端口迁移到Forwarding状态。</p>
+<p><img src="/2021/05/06/RSTP/23.png"></p>
+<blockquote>
+<p>•在STP中，如果拓扑发生了变化，需要先向根桥传递TCN BPDU，再由根桥来通知拓扑变更，泛洪TC置位的配置BPDU。</p>
+<p>•在RSTP中，通过新的拓扑变更机制，TC置位的RST BPDU会快速的在网络中泛洪。</p>
+<p>•如上图所示：</p>
+<ul>
+<li><p>SW3的根端口收不到从根桥发来的RST BPDU后，Alternate端口会快速切换为新的根端口，启动TC While Timer，并清空所有端口学习到的MAC地址。然后向外发出TC置位的RST BPDU。</p>
+</li>
+<li><p>SW2接收到RST BPDU后，会清空接收口以外所有端口学习到的MAC地址，同时开启计时器，并向外发送TC置位的RST BPDU。</p>
+</li>
+<li><p>最终，RST BPDU会在全网泛洪。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点7：保护功能-1"><a href="#改进点7：保护功能-1" class="headerlink" title="改进点7：保护功能 (1)"></a><strong>改进点7：保护功能</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/RSTP/24.png"></p>
+<blockquote>
+<p>•在交换设备上，通常将直接与用户终端（如PC机）或文件服务器等非交换设备相连的端口配置为边缘端口。</p>
+<p>•如上图所示：</p>
+<ul>
+<li><p>SW3与某主机互联，并设置该互联端口为边缘端口。</p>
+</li>
+<li><p>后来该主机被恶意用户侵占，并伪造RST BPDU攻击SW3，因此边缘端口会收到RST BPDU，失去边缘端口特性，并进行生成树计算。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点7：保护功能-2"><a href="#改进点7：保护功能-2" class="headerlink" title="改进点7：保护功能 (2)"></a><strong>改进点7：保护功能</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/RSTP/25.png"></p>
+<blockquote>
+<p>•由于维护人员的错误配置或网络中的恶意攻击，根桥有可能会收到优先级更高的RST BPDU，使得根桥失去根地位，从而引起网络拓扑结构的错误变动。这种拓扑变化，会导致原来应该通过高速链路的流量被牵引到低速链路上，造成网络拥塞。</p>
+<p>•如上图所示：</p>
+<ul>
+<li><p>网络稳定时，SW1为根桥，向下游设备发送最优RST BPDU。</p>
+</li>
+<li><p>如果SW2被恶意用户侵占，例如恶意修改SW2的桥优先级，使得SW2的桥优先级优于SW1，此时SW2会主动发送自己的RST BPDU。</p>
+</li>
+<li><p>当SW1的指定端口收到该RST BPDU后，会重新进行生成树计算，而SW1也会失去根桥的地位，引起拓扑变动。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="改进点7：保护功能-3"><a href="#改进点7：保护功能-3" class="headerlink" title="改进点7：保护功能 (3)"></a><strong>改进点7：保护功能</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/RSTP/26.png"></p>
+<blockquote>
+<p>•在运行RSTP的网络中，根端口状态是依靠不断接收来自上游交换设备的RST BPDU维持。当由于链路拥塞或者单向链路故障导致根端口收不到来自上游交换设备的RST BPDU时，此时交换设备会重新选择根端口。</p>
+<p>•如图所示，当SW1和SW3之间的链路发生单向链路故障时，SW3由于根端口在超时时间内收不到来自上游设备的BPDU报文，Alternate端口切换成根端口，根端口切换成指定端口，从而形成了环路。</p>
+</blockquote>
+<h2 id="改进点7：保护功能-4"><a href="#改进点7：保护功能-4" class="headerlink" title="改进点7：保护功能 (4)"></a><strong>改进点7：保护功能</strong> <strong>(4)</strong></h2><p><img src="/2021/05/06/RSTP/27.png"></p>
+<blockquote>
+<p>•交换设备在接收到TC置位的RST BPDU报文后，会执行MAC地址表项的删除操作。如果有人伪造TC置位的RST BPDU报文恶意攻击交换设备时，交换设备短时间内会收到很多RST BPDU报文，频繁的删除操作会给设备造成很大的负担，给网络的稳定带来很大隐患。</p>
+<p>•如上图所示：</p>
+<ul>
+<li>如果SW3被恶意用户侵占，伪造大量TC置位的RST BPDU并向外发送。SW2收到这些RST BPDU后，会频繁执行MAC地址表项的删除操作，形成巨大负担。</li>
+</ul>
+</blockquote>
+<h1 id="RSTP的工作过程"><a href="#RSTP的工作过程" class="headerlink" title="RSTP的工作过程"></a><strong>RSTP的工作过程</strong></h1><h2 id="RSTP拓扑收敛过程-1"><a href="#RSTP拓扑收敛过程-1" class="headerlink" title="RSTP拓扑收敛过程(1)"></a><strong>RSTP拓扑收敛过程(1)</strong></h2><p><img src="/2021/05/06/RSTP/28.png"></p>
+<blockquote>
+<p>•RSTP收敛与STP收敛过程类似。</p>
+<p>•网络初始化时，网络中所有的RSTP交换机都认为自己是“根桥”，并设置每个端口都为指定端口，发送RST BPDU。其中SW1的桥ID最优，最终会被选举为根桥。</p>
+</blockquote>
+<h2 id="RSTP拓扑收敛过程-2"><a href="#RSTP拓扑收敛过程-2" class="headerlink" title="RSTP拓扑收敛过程(2)"></a><strong>RSTP拓扑收敛过程(2)</strong></h2><p><img src="/2021/05/06/RSTP/29.png"></p>
+<blockquote>
+<p>•每个认为自己是“根桥”的交换机生成一个RST BPDU报文来协商指定网段的端口状态，此RST BPDU报文Flag字段里面的Proposal位需要置位。</p>
+<p>•当一个端口收到RST BPDU报文时，此端口会比较收到的RST BPDU报文和本地的RST BPDU报文。如果本地的RST BPDU报文优于接收的RST BPDU报文，则端口会丢弃接收的RST BPDU报文，并发送Proposal置位的本地RST BPDU报文来回复对端设备。</p>
+<p>•如图，RSTP上游链路的设备互联端口收敛过程，以SW1与SW2为例。</p>
+</blockquote>
+<h2 id="RSTP拓扑收敛过程-3"><a href="#RSTP拓扑收敛过程-3" class="headerlink" title="RSTP拓扑收敛过程(3)"></a><strong>RSTP拓扑收敛过程(3)</strong></h2><p><img src="/2021/05/06/RSTP/30.png"></p>
+<blockquote>
+<p>•如图，RSTP下游链路的设备互联端口会进入慢收敛过程，以SW2与SW3为例。</p>
+</blockquote>
+<h1 id="RSTP的基本配置"><a href="#RSTP的基本配置" class="headerlink" title="RSTP的基本配置"></a><strong>RSTP的基本配置</strong></h1><h2 id="RSTP的基础配置命令-1"><a href="#RSTP的基础配置命令-1" class="headerlink" title="RSTP的基础配置命令(1)"></a><strong>RSTP的基础配置命令(1)</strong></h2><p><img src="/2021/05/06/RSTP/31.png"></p>
+<h2 id="RSTP的基础配置命令-2"><a href="#RSTP的基础配置命令-2" class="headerlink" title="RSTP的基础配置命令(2)"></a><strong>RSTP的基础配置命令(2)</strong></h2><p><img src="/2021/05/06/RSTP/32.png"></p>
+<blockquote>
+<p>•配置接口路径开销：</p>
+<ul>
+<li><p>dot1d-1998：指定路径开销值的计算方法是IEEE 802.1d-1998标准方法。使用IEEE 802.1d-1998标准方法时取值范围是1～65535。</p>
+</li>
+<li><p>dot1t：指定路径开销值的计算方法是IEEE 802.1t标准方法。使用IEEE 802.1t标准方法时取值范围是1～200,000,000。</p>
+</li>
+<li><p>legacy：指定路径开销值的计算方法是华为计算方法。使用华为计算方法时取值范围是1～200,000。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="RSTP的基础配置命令-3"><a href="#RSTP的基础配置命令-3" class="headerlink" title="RSTP的基础配置命令(3)"></a><strong>RSTP的基础配置命令(3)</strong></h2><p><img src="/2021/05/06/RSTP/33.png"></p>
+<h2 id="RSTP的保护功能配置命令-1"><a href="#RSTP的保护功能配置命令-1" class="headerlink" title="RSTP的保护功能配置命令(1)"></a><strong>RSTP的保护功能配置命令(1)</strong></h2><p><img src="/2021/05/06/RSTP/34.png"></p>
+<h2 id="RSTP的保护功能配置命令-2"><a href="#RSTP的保护功能配置命令-2" class="headerlink" title="RSTP的保护功能配置命令(2)"></a><strong>RSTP的保护功能配置命令(2)</strong></h2><p><img src="/2021/05/06/RSTP/35.png"></p>
+<blockquote>
+<p>•配置后，在<strong>stp</strong> <strong>tc-protection interval</strong>指定的时间内，设备只会处理<strong>stp</strong> <strong>tc-protection threshold</strong>指定数量的拓扑变化报文，对于其他的报文会延迟处理，所以可能会影响生成树的收敛速度。例如，时间设定为10秒，阈值设定为5，则设备收到拓扑变化报文后，在10秒内只会处理最开始收到的5个拓扑变化报文，对于后面收到的报文则会等10秒超时后再统一处理。</p>
+</blockquote>
+<h2 id="案例：RSTP的基础配置"><a href="#案例：RSTP的基础配置" class="headerlink" title="案例：RSTP的基础配置"></a><strong>案例：RSTP的基础配置</strong></h2><p><img src="/2021/05/06/RSTP/36.png"></p>
+<p><img src="/2021/05/06/RSTP/37.png"></p>
+<p><img src="/2021/05/06/RSTP/38.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下哪些是RSTP的端口状态？(   )</p>
+<p>A.Idle</p>
+<p><strong>B.Discarding</strong></p>
+<p><strong>C.Forwarding</strong></p>
+<p><strong>D.Learning</strong></p>
+<p>2.（单选题）RSTP的根保护必须配置在设备的根端口上。(   )</p>
+<p>A.对</p>
+<p><strong>B.错</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•生成树是一个用于局域网中消除环路的协议。运行该协议的设备通过彼此交互信息而发现网络中的环路，并对某些接口进行阻塞以消除环路。由于局域网规模的不断增长，生成树协议已经成为重要的局域网协议之一。</p>
+<p>•RSTP是生成树协议中的其中一个版本，它在STP的基础上，做了很多的改进，大大加快了网络收敛的速度。</p>
+<p>•本章节，主要介绍了RSTP对STP的七个改进点，包括：端口角色、端口状态、配置BPDU格式、配置BPDU的处理方式、快速收敛机制、拓扑变更机制和4种保护特性。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/" itemprop="url">VLAN高级技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T12:20:26+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="VLAN聚合"><a href="#VLAN聚合" class="headerlink" title="VLAN聚合"></a><strong>VLAN聚合</strong></h1><h2 id="VLAN聚合产生的技术背景"><a href="#VLAN聚合产生的技术背景" class="headerlink" title="VLAN聚合产生的技术背景"></a><strong>VLAN聚合产生的技术背景</strong></h2><p>•在一般的三层交换机中，通常是采用一个VLAN对应一个VLANIF接口的方式实现广播域之间的互通，这在某些情况下导致了IP地址的浪费。</p>
+<p>•因为一个VLAN对应的子网中，子网号、子网广播地址、子网网关地址不能用作VLAN内的主机IP地址，且子网中实际接入的主机可能少于可用IP地址数量，空闲的IP地址也会因不能再被其他VLAN使用而被浪费掉。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/1.png"></p>
+<h2 id="VLAN聚合概述"><a href="#VLAN聚合概述" class="headerlink" title="VLAN聚合概述"></a><strong>VLAN聚合概述</strong></h2><p>•<strong>VLAN聚合</strong>（VLAN Aggregation，也称Super-VLAN）: 指在一个物理网络内，用多个VLAN（称为Sub-VLAN）隔离广播域，并将这些Sub-VLAN聚合成一个逻辑的VLAN（称为Super-VLAN），这些Sub-VLAN使用同一个IP子网和缺省网关，进而达到节约IP地址资源的目的。</p>
+<p>•<strong>Sub-VLAN</strong>：只包含物理接口，不能建立三层VLANIF接口，用于隔离广播域。每个Sub-VLAN内的主机与外部的三层通信是靠Super-VLAN的三层VLANIF接口来实现的。</p>
+<p>•<strong>Super-VLAN</strong>：只建立三层VLANIF接口，不包含物理接口，与子网网关对应。与普通VLAN不同，Super-VLAN的VLANIF接口状态取决于所包含Sub-VLAN的物理接口状态。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/2.png"></p>
+<h2 id="VLAN聚合的原理"><a href="#VLAN聚合的原理" class="headerlink" title="VLAN聚合的原理"></a><strong>VLAN聚合的原理</strong></h2><p>每个Sub-VLAN对应一个广播域，多个Sub-VLAN和一个Super-VLAN关联，只给Super-VLAN分配一个IP子网，所有Sub-VLAN都使用Super-VLAN的IP子网和缺省网关进行三层通信。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/3.png"></p>
+<blockquote>
+<p>•多个Sub-VLAN共享一个网关地址，节约了子网网络地址、子网定向广播地址、子网缺省网关地址，且各Sub-VLAN间的界线也不再是从前的子网界线了，可以根据每个Sub-VLAN内所需的IP地址数量进行灵活的地址规划，从而既保证了各个Sub-VLAN作为一个独立广播域实现广播隔离，又节省了IP地址资源，提高了编址的灵活性。</p>
+</blockquote>
+<h2 id="VLAN聚合的应用"><a href="#VLAN聚合的应用" class="headerlink" title="VLAN聚合的应用"></a><strong>VLAN聚合的应用</strong></h2><p>传统VLAN方式每一个VLAN需要划分不同的IP地址网段，在本例中需要耗费4个IP网段和产生4条路由条目；Super-VLAN方式只需要分配一个IP地址网段，下属二层VLAN共用同一个IP地址网段，共用同一个三层网关，同时VLAN之间保持二层隔离。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/4.png"></p>
+<h2 id="相同Sub-VLAN内部通信"><a href="#相同Sub-VLAN内部通信" class="headerlink" title="相同Sub-VLAN内部通信"></a><strong>相同Sub-VLAN内部通信</strong></h2><p>同一个Sub-VLAN之间属于同一个广播域，因此相同Sub-VLAN之间可以通过二层直接通信。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/5.png"></p>
+<h2 id="不同Sub-VLAN之间通信举例"><a href="#不同Sub-VLAN之间通信举例" class="headerlink" title="不同Sub-VLAN之间通信举例"></a><strong>不同Sub-VLAN之间通信举例</strong></h2><p>Super-VLAN VLANIF100开启ARP代理之后PC1和PC2之间通信过程如下：</p>
+<p>1.PC1发现PC2与自己在同一网段，且自己ARP表无PC2对应表项，则直接发送ARP广播请求PC2的MAC地址。</p>
+<p>2.作为网关的Super-VLAN对应的VLANIF 100收到PC1的ARP请求，由于网关上使能Sub-VLAN间的ARP代理功能，则向Super-VLAN 100的所有Sub-VLAN接口发送一个ARP广播，请求PC2的MAC地址。</p>
+<p>3.PC2收到网关发送的ARP广播后，对此请求进行ARP应答。</p>
+<p>4.网关收到PC2的应答后，就把自己的MAC地址回应给PC1，PC1之后要发给PC2的报文都先发送给网关，由网关做三层转发。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/6.png"></p>
+<blockquote>
+<p>•不同Sub-VLAN之间进行通信，IP地址属于相同网段，因此主机会发送ARP请求，但是实际不同Sub-VLAN之间属于不同的广播域，因而ARP报文无法传递到其他Sub-VLAN，ARP请求得不到响应，设备无法学习到对端MAC地址，从而无法完成Sub-VLAN之间通信。</p>
+<p>•要实现Sub-VLAN之间的通信，需要在Super-VLAN 的VLANIF中开启ARP代理功能。</p>
+</blockquote>
+<h2 id="Sub-VLAN与其他设备的二层通信"><a href="#Sub-VLAN与其他设备的二层通信" class="headerlink" title="Sub-VLAN与其他设备的二层通信"></a><strong>Sub-VLAN与其他设备的二层通信</strong></h2><p>•当Sub-VLAN与其他设备进行二层通信时，与普通的VLAN内二层通信无区别。</p>
+<p>•由于Super-VLAN不属于任何物理接口，即不会处理任何携带Super-VLAN标签的报文。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/7.png"></p>
+<blockquote>
+<p>•Sub-VLAN二层通信过程举例：</p>
+<p>▫从PC1进入SW1的报文会被打上VLAN10的Tag。在SW1中这个Tag不会因为VLAN10是VLAN100的Sub-VLAN而变为VLAN100的Tag。</p>
+<p>▫当报文从SW1的GE0/0/0出去时，依然携带VLAN10的Tag。也就是说，SW1本身不会发出VLAN100的报文。就算其他设备有VLAN100的报文发送到该设备上，这些报文也会因为SW1上没有VLAN100应的物理接口而被丢弃。</p>
+<p>▫对于其他设备而言，有效的VLAN只有Sub-VLAN10，20和30， 所有的报文都是在这些VLAN中交互的。因此，SW1上虽然配置了VLAN聚合，但与其他设备的二层通信，不会涉及到Super-VLAN，与正常的二层通信流程一样。</p>
+<p>•当Sub-VLAN内的PC需要与其他网络进行三层通信时，首先将数据发往默认网关，即Super-VLAN对应的VLANIF，再进行路由。</p>
+</blockquote>
+<h2 id="VLAN聚合关键配置命令"><a href="#VLAN聚合关键配置命令" class="headerlink" title="VLAN聚合关键配置命令"></a><strong>VLAN聚合关键配置命令</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/8.png"></p>
+<h2 id="VLAN聚合配置举例-1"><a href="#VLAN聚合配置举例-1" class="headerlink" title="VLAN聚合配置举例 (1)"></a><strong>VLAN聚合配置举例</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/9.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/10.png"></p>
+<h2 id="VLAN聚合配置举例-2"><a href="#VLAN聚合配置举例-2" class="headerlink" title="VLAN聚合配置举例(2)"></a><strong>VLAN聚合配置举例(2)</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/11.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/12.png"></p>
+<h1 id="MUX-VLAN"><a href="#MUX-VLAN" class="headerlink" title="MUX VLAN"></a><strong>MUX VLAN</strong></h1><h2 id="MUX-VLAN产生背景"><a href="#MUX-VLAN产生背景" class="headerlink" title="MUX VLAN产生背景"></a><strong>MUX VLAN产生背景</strong></h2><p>在企业网络中，各个部门之间网络需要相互独立，通常用VLAN技术可以实现这一要求。如果企业规模很大，且拥有大量的合作伙伴，要求各个合作伙伴能够访问公司服务器，但是不能相互访问，这时如果使用传统的VLAN技术，不但需要耗费大量的VLAN ID，还增加了网络管理者的工作量同时也增加了维护量。</p>
+<p>MUX VLAN（Multiplex VLAN）提供了一种通过VLAN进行网络资源控制的机制。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/13.png"></p>
+<h2 id="MUX-VLAN的基本概念"><a href="#MUX-VLAN的基本概念" class="headerlink" title="MUX VLAN的基本概念"></a><strong>MUX VLAN的基本概念</strong></h2><p>MUX VLAN分为Principal VLAN（主VLAN）和Subordinate VLAN（从VLAN），Subordinate VLAN又分为Separate VLAN（隔离型从VLAN）和Group VLAN（互通型从VLAN）。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/14.png"></p>
+<blockquote>
+<p>•在使用MUX VLAN的过程中，无论是Separate VLAN还是Group VLAN都必须与一个Principle VLAN绑定。</p>
+<p>•加入Principal VLAN（主VLAN）中的接口，可以与MUX VLAN内的所有接口进行通信。</p>
+</blockquote>
+<h2 id="MUX-VLAN的应用"><a href="#MUX-VLAN的应用" class="headerlink" title="MUX VLAN的应用"></a><strong>MUX VLAN的应用</strong></h2><p>在交换机上，通过把部门A和部门B所在的VLAN分别设置为互通型从VLAN，把访客区所属的VLAN设置为隔离型从VLAN，把服务器所连接口所属VLAN设置为Principal VLAN，即主VLAN。并且所有从VLAN都与主VLAN绑定。从而实现如下网络设计要求：</p>
+<p>▫部门A内的用户之间能够实现二层互通。</p>
+<p>▫部门B内的用户之间能够实现二层互通。</p>
+<p>▫部门A与部门B的用户之间二层隔离。</p>
+<p>▫部门A和部门B的员工都能够通过二层访问服务器。</p>
+<p>▫访客区内的任意PC除了能访问服务器之外，不能访问其他任意设备，包括其他访客。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/15.png"></p>
+<h2 id="MUX-VLAN配置命令"><a href="#MUX-VLAN配置命令" class="headerlink" title="MUX VLAN配置命令"></a><strong>MUX VLAN配置命令</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/16.png"></p>
+<blockquote>
+<p>•只有使能接口MUX VLAN功能后，才能实现Principal VLAN与Subordinate VLAN之间通信、Group VLAN内的接口可以相互通信及Separate VLAN接口间不能相互通信的目的。</p>
+</blockquote>
+<h2 id="MUX-VLAN配置举例"><a href="#MUX-VLAN配置举例" class="headerlink" title="MUX VLAN配置举例"></a><strong>MUX VLAN配置举例</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/17.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/18.png"></p>
+<h2 id="MUX-VLAN配置验证"><a href="#MUX-VLAN配置验证" class="headerlink" title="MUX VLAN配置验证"></a><strong>MUX VLAN配置验证</strong></h2><p>查看VLAN配置结果，通过ping命令检测PC5（192.168.1.5/24）与PC6（192.168.1.6/24）之间的网络连通性。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/19.png"></p>
+<h1 id="QinQ"><a href="#QinQ" class="headerlink" title="QinQ"></a><strong>QinQ</strong></h1><h2 id="QinQ概述"><a href="#QinQ概述" class="headerlink" title="QinQ概述"></a><strong>QinQ概述</strong></h2><p>•随着以太网技术在网络中的大量部署，利用VLAN对用户进行隔离和标识受到很大限制。因为IEEE802.1Q中定义的VLAN Tag域只有12个比特，仅能表示4096个VLAN，无法满足城域以太网中标识大量用户的需求，于是QinQ技术应运而生。</p>
+<p>•QinQ（802.1Q in 802.1Q）技术是一项扩展VLAN空间的技术，通过在802.1Q标签报文的基础上再增加一层802.1Q的Tag来达到扩展VLAN空间的功能。</p>
+<p>•如下图所示用户报文在公网上传递时携带了两层Tag，内层是私网Tag，外层是公网Tag。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/20.png"></p>
+<h2 id="QinQ封装结构"><a href="#QinQ封装结构" class="headerlink" title="QinQ封装结构"></a><strong>QinQ封装结构</strong></h2><p>QinQ封装报文是在无标签的以太网数据帧的源MAC地址字段后面加上两个VLAN标签构成。</p>
+<p>•TPID（Tag Protocol Identifier，标签协议标识）表示帧类型。取值为0x8100时表示802.1Q Tag帧。如果不支持802.1Q的设备收到这样的帧，会将其丢弃。</p>
+<p>•对于内层的802.1Q Tag，该值设置为0x8100；对于外层的802.1Q Tag，不同厂商所使用的值可能不相同：</p>
+<p>​    ▫0x8100：Huawei路由器使用</p>
+<p>​    ▫0x88A8：802.1ad规定外层802.1Q Tag中的TPID为0x88a8</p>
+<p>•在华为设备上，外层802.1Q Tag缺省情况下值为0x8100，可以通过命令行调整该值。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/21.png"></p>
+<h2 id="QinQ工作原理"><a href="#QinQ工作原理" class="headerlink" title="QinQ工作原理"></a><strong>QinQ工作原理</strong></h2><p>在公网的传输过程中，设备只根据外层VLAN Tag转发报文，并根据报文的外层VLAN Tag进行MAC地址学习，而用户的私网VLAN Tag将被当作报文的数据部分进行传输。即使私网VLAN Tag相同，也能通过公网VLAN Tag区分不同用户。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/22.png"></p>
+<blockquote>
+<p>•企业A和企业B的私网VLAN分别为VLAN 1～10和VLAN 1～20。公网为企业A和企业B分配的公网VLAN分别为VLAN 3和VLAN 4。当企业A和企业B中带VLAN Tag的报文进入公网时，报文外面就会被分别封装上VLAN 3和VLAN 4的VLAN标签。这样，来自不同企业网络的报文在公网中传输时被完全分开，即使这些企业网络各自的VLAN范围存在重叠，在公网中传输时也不会产生冲突。当报文穿过公网，到达公网另一侧PE设备后，报文会被剥离公网为其添加的公网VLAN标签，然后再传送给用户网络的CE设备。</p>
+</blockquote>
+<h2 id="QinQ实现方式-基本QinQ"><a href="#QinQ实现方式-基本QinQ" class="headerlink" title="QinQ实现方式 - 基本QinQ"></a>QinQ实现方式 - 基本QinQ</h2><p>基本QinQ的报文处理过程:</p>
+<p>1.SW1收到VLAN ID为10和20的报文，将该报文发给SW2。</p>
+<p>2.SW2收到该报文后，在该报文原有Tag的外侧再添加一层VLAN ID 为100的外层Tag。</p>
+<p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
+<p>4.SW3收到VLAN100的报文后，剥离报文的外层Tag（VLAN ID 为100）。将报文发送给SW4，此时报文只有一层Tag（VLAN ID 为10或20）。</p>
+<p>5.SW4收到该报文，根据VLAN ID和目的MAC地址进行相应的转发。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/23.png"></p>
+<blockquote>
+<p>•基本QinQ是基于端口方式实现的。开启端口的基本QinQ功能后，当该端口接收到报文，设备会为该报文打上本端口缺省VLAN 的VLAN Tag。如果接收到的是已经带有VLAN Tag的报文，该报文就成为双Tag的报文；如果接收到的是不带VLAN Tag的报文，该报文就成为带有端口缺省VLAN Tag的报文。</p>
+<p>•基于端口的QinQ的缺点是外层VLAN Tag封装方式固定，不能根据业务种类选择外层VLAN Tag封装的方式，从而很难有效支持多业务的灵活运营。</p>
+</blockquote>
+<h2 id="QinQ实现方式-灵活QinQ"><a href="#QinQ实现方式-灵活QinQ" class="headerlink" title="QinQ实现方式 - 灵活QinQ"></a>QinQ实现方式 - 灵活QinQ</h2><p>灵活QinQ的报文处理过程：</p>
+<p>1.SW1收到VLAN ID为10和20的报文，将该报文转发给SW2。</p>
+<p>2.SW2收到VLAN ID为10的报文后，添加一层VLAN ID 为100 的外层Tag；SW2收到VLAN ID为20的报文后，添加一层VLAN ID为200的外层Tag。</p>
+<p>3.带着两层Tag的用户数据报文在网络中按照正常的二层转发流程转发。</p>
+<p>4.SW3收到报文后，剥离报文的外层Tag（VLAN ID 为100或200）。将报文发送给SW4，此时报文只有一层Tag（VLAN ID 为10或20）。</p>
+<p>5.SW4收到报文，根据VLAN ID和目的MAC地址进行相应的转发。</p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/24.png"></p>
+<blockquote>
+<p>•灵活QinQ（Selective QinQ）可根据流分类的结果选择是否打外层VLAN Tag，打上何种外层VLAN Tag。灵活QinQ可根据用户的VLAN标签、优先级、MAC地址、IP协议、IP源地址、IP目的地址、或应用程序的端口号进行流分类。</p>
+<p>•基于VLAN ID的灵活QinQ：为具有不同内层VLAN ID的报文添加不同的外层VLAN Tag。</p>
+<p>•基于802.1p优先级的灵活QinQ：根据报文的原有内层VLAN的802.1p优先级添加不同的外层VLAN Tag。</p>
+<p>•基于流策略的灵活QinQ：根据QoS策略添加不同的外层VLAN Tag。基于流策略的灵活QinQ能够针对业务类型提供差别服务。</p>
+<p>•灵活QinQ功能是对基本QinQ功能的扩展，它比基本QinQ的功能更灵活。二者之间的主要区别是：</p>
+<p>​    ▫基本QinQ：对进入二层QinQ接口的所有帧都加上相同的外    层Tag。</p>
+<p>​    ▫灵活QinQ：对进入二层QinQ接口的帧，可以根据不同的内    层Tag而加上不同的外层Tag，对于用户VLAN的划分更加细    致</p>
+</blockquote>
+<h2 id="QinQ在园区网络中的应用"><a href="#QinQ在园区网络中的应用" class="headerlink" title="QinQ在园区网络中的应用"></a><strong>QinQ在园区网络中的应用</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/25.png"></p>
+<blockquote>
+<p>•BRAS：Broadband Remote Access Server，宽带远程接入服务器。BRAS提供宽带接入服务、实现多种业务的汇聚与转发，能满足不同用户对传输容量和带宽利用率的要求，因此RRAS是宽带用户接入的核心设备。</p>
+<p>•BUM：Broadcast、Unknown unicast、Multicast，广播，未知单播、组播。交换机以泛洪的方式处理以上类型的数据帧。</p>
+</blockquote>
+<h2 id="QinQ配置命令介绍"><a href="#QinQ配置命令介绍" class="headerlink" title="QinQ配置命令介绍"></a><strong>QinQ配置命令介绍</strong></h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/26.png"></p>
+<blockquote>
+<p>•配置灵活QinQ的当前接口类型建议为Hybrid，并且必须先通过命令qinq vlan-translation enable先使能VLAN转换功能。灵活QinQ功能只在当前接口的入方向生效。</p>
+<p>•接口配置VLAN Stacking功能后在发送帧时，若需要剥掉外层Tag，该接口要以Untagged方式加入叠加后的stack-vlan；若不需要剥掉外层Tag，该接口要以Tagged方式加入叠加后的stack-vlan。</p>
+</blockquote>
+<h2 id="QinQ配置举例-基本QinQ"><a href="#QinQ配置举例-基本QinQ" class="headerlink" title="QinQ配置举例 - 基本QinQ"></a>QinQ配置举例 - 基本QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/27.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/28.png"></p>
+<h2 id="QinQ配置举例-灵活QinQ"><a href="#QinQ配置举例-灵活QinQ" class="headerlink" title="QinQ配置举例 - 灵活QinQ"></a>QinQ配置举例 - 灵活QinQ</h2><p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/29.png"></p>
+<p><img src="/2021/05/06/VLAN%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/30.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）当Sub-VLAN与外部进行二层通信时，在出接口打上的VLAN标记为？</p>
+<p><strong>A.Sub-VLAN</strong></p>
+<p>B.Secondary VLAN</p>
+<p>C.Super-VLAN</p>
+<p>D.Isolate VLAN</p>
+<p>2.（单选题）下面关于QinQ描述错误的是？</p>
+<p>A.QinQ报文在公网中报文根据外层VLAN Tag转发。</p>
+<p><strong>B.QinQ报文在公网中报文根据内层VLAN Tag转发。</strong></p>
+<p>C.QinQ为用户提供了一种更为简单的二层VPN隧道。</p>
+<p>D.QinQ不需要信令协议的支持，可以通过纯静态配置实现。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VLAN聚合通过配置Super-VLAN和Sub-VLAN，不同Sub-VLAN之间进行通信，需要Super-VLAN开启ARP代理。VLAN聚合既避免了由于子网划分带来的网络地址规划复杂的问题，又能够实现通过VLAN隔离不同广播域的目的。</p>
+<p>•MUX VLAN包括Principal VLAN和Subordinate VLAN，同时Subordinate VLAN又分为Separate VLAN和Group VLAN。Separate port只能和Principal port进行通信，和其他类型的接口实现完全隔离。Group port可以和Principal port进行通信，在同一组内的接口也可互相通信，但不能和其他组接口或Separate port通信。</p>
+<p>•QinQ技术不仅扩展了标识VLAN的数量，而且可以实现用户报文携带私网VLAN标签在公网内的透传。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/" itemprop="url">以太网交换安全</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-05T20:01:37+08:00">
+                2021-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="端口隔离"><a href="#端口隔离" class="headerlink" title="端口隔离"></a><strong>端口隔离</strong></h1><h2 id="端口隔离技术背景"><a href="#端口隔离技术背景" class="headerlink" title="端口隔离技术背景"></a><strong>端口隔离技术背景</strong></h2><p>•以太交换网络中为了实现报文之间的二层隔离，用户通常将不同的端口加入不同的VLAN，实现二层广播域的隔离。</p>
+<p>•大型网络中，业务需求种类繁多，只通过VLAN实现报文二层隔离，会浪费有限的VLAN资源。</p>
+<p>•如下图所示，由于某种业务需求，PC1与PC2虽然属于同一个VLAN ，但是要求它们在二层不能互通（但允许三层互通），PC1与PC3在任何情况下都不能互通，但是VLAN 3里的主机可以访问VLAN 2里的主机。 那么该如何解决这个问题呢？</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/1.png"></p>
+<h2 id="端口隔离技术概述"><a href="#端口隔离技术概述" class="headerlink" title="端口隔离技术概述"></a><strong>端口隔离技术概述</strong></h2><p>采用端口隔离功能，可以实现同一VLAN内端口之间的隔离。用户只需要将端口加入到隔离组中，就可以实现隔离组内端口之间二层数据的隔离。端口隔离功能为用户提供了更安全、更灵活的组网方案。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/2.png"></p>
+<h2 id="端口隔离技术原理"><a href="#端口隔离技术原理" class="headerlink" title="端口隔离技术原理"></a><strong>端口隔离技术原理</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/3.png"></p>
+<blockquote>
+<p>•采用二层隔离三层互通的隔离模式时，在VLANIF接口上使能VLAN内Proxy ARP功能，配置arp-proxy inner-sub-vlan-proxy enable，可以实现同一VLAN内主机通信。</p>
+</blockquote>
+<h2 id="端口隔离配置命令"><a href="#端口隔离配置命令" class="headerlink" title="端口隔离配置命令"></a><strong>端口隔离配置命令</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/4.png"></p>
+<h2 id="端口隔离配置举例"><a href="#端口隔离配置举例" class="headerlink" title="端口隔离配置举例"></a><strong>端口隔离配置举例</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/5.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/6.png"></p>
+<blockquote>
+<p>•display port-isolate group { group-id | all }，查看端口隔离组的配置。</p>
+<p>•clear configuration port-isolate命令一键式清除设备上所有的端口隔离配置。</p>
+<p>•port-isolate exclude vlan命令配置端口隔离功能生效时排除的VLAN。</p>
+</blockquote>
+<h2 id="端口隔离配置验证"><a href="#端口隔离配置验证" class="headerlink" title="端口隔离配置验证"></a><strong>端口隔离配置验证</strong></h2><p>1.通过display port-isolate group <em>group-number</em>查看端口隔离组中的端口。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/7.png"></p>
+<p>2.验证同一端口隔离组下主机网络不能互通。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/8.png"></p>
+<h1 id="MAC地址表安全"><a href="#MAC地址表安全" class="headerlink" title="MAC地址表安全"></a>MAC地址表安全</h1><h2 id="MAC地址表项类型"><a href="#MAC地址表项类型" class="headerlink" title="MAC地址表项类型"></a>MAC地址表项类型</h2><p><strong>MAC地址表项类型包括:</strong></p>
+<ul>
+<li><strong>动态MAC地址表项</strong>:由接口通过报文中的源MAC地址学习获得，表项可老化。在系统复位、接口板热插拔或接口板复位后，动态表项会丢失。</li>
+<li><strong>静态MAC地址表项</strong>:由用户手工配置并下发到各接口板，表项不老化。在系统复位、接口板热插拔或接口板复位后，保存的表项不会丢失。接口和MAC地址静态绑定后，其他接口收到源MAC是该MAC地址的报文将会被丢弃。</li>
+<li><strong>黑洞MAC地址表项</strong>:由用户手工配置，并下发到各接口板，表项不可老化。配置黑洞MAC地址后，源MAC地址或目的MAC地址是该MAC的报文将会被丢弃。</li>
+</ul>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/12.png"></p>
+<blockquote>
+<p>•MAC地址表记录了交换机学习到的MAC地址与接口的对应关系，以及接口所属VLAN等信息。</p>
+<p>•设备在执行二层交换操作时，根据报文的目的MAC地址查询MAC地址表，如果MAC地址表中包含与报文目的MAC地址对应的表项，并且收到该报文的接口与对应的表项的接口不相同时，则直接通过该表项中的出接口转发该报文；如果相同，则丢弃该报文。</p>
+<p>•如果MAC地址表中没有包含报文目的MAC地址对应的表项时，设备将采取广播方式在所属VLAN内除接收接口外的所有接口转发该报文。</p>
+</blockquote>
+<h2 id="MAC地址表安全功能"><a href="#MAC地址表安全功能" class="headerlink" title="MAC地址表安全功能"></a><strong>MAC地址表安全功能</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/13.png"></p>
+<p>•为了防止一些关键设备（如各种服务器或上行设备）被非法用户恶意修改其MAC地址表项，可将这些设备的MAC地址配置为静态MAC地址表项，因为静态MAC地址表项优先于动态MAC地址表项，不易被非法修改。</p>
+<p>•为了防止无用MAC地址表项占用MAC地址表，同时为了防止黑客通过MAC地址攻击用户设备或网络，可将那些有着恶意历史的非信任MAC地址配置为黑洞MAC地址，使设备在收到目的MAC或源MAC地址为这些黑洞MAC地址的报文时，直接予以丢弃，不修改原有的MAC地址表项，也不增加新的MAC地址表项。</p>
+<p>•为了减轻手工配置静态MAC地址表项，华为S系列交换机缺省已使能了动态MAC地址表项学习功能。但为了避免MAC地址表项爆炸式增长，可合理配置动态MAC表项的老化时间，以便及时删除MAC地址表中的废弃MAC地址表项。</p>
+<p>•为了提高网络的安全性，防止设备学习到非法的MAC地址，错误地修改MAC地址表中的原MAC地址表项，可以选择关闭设备上指定接口或指定VLAN中所有接口的MAC地址学习功能，这样设备将不再从这些接口上学习新的MAC地址。</p>
+<p>•配置限制MAC地址学习数，当超过限制数时不再学习MAC地址，同时可以配置当MAC地址数达到限制后对报文采取的动作，从而防止MAC地址表资源耗尽，提高网络安全性。</p>
+<h2 id="MAC地址表项配置"><a href="#MAC地址表项配置" class="headerlink" title="MAC地址表项配置"></a><strong>MAC地址表项配置</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/14.png"></p>
+<h2 id="禁止MAC地址学习功能"><a href="#禁止MAC地址学习功能" class="headerlink" title="禁止MAC地址学习功能"></a><strong>禁止MAC地址学习功能</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/15.png"></p>
+<h2 id="限制MAC地址学习数量"><a href="#限制MAC地址学习数量" class="headerlink" title="限制MAC地址学习数量"></a><strong>限制MAC地址学习数量</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/16.png"></p>
+<h2 id="MAC地址表安全配置举例"><a href="#MAC地址表安全配置举例" class="headerlink" title="MAC地址表安全配置举例"></a>MAC地址表安全配置举例</h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/17.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/18.png"></p>
+<h2 id="配置验证"><a href="#配置验证" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>执行display mac-limit命令，查看MAC地址学习限制规则是否配置成功。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/19.png"></p>
+<h1 id="端口安全"><a href="#端口安全" class="headerlink" title="端口安全"></a><strong>端口安全</strong></h1><h2 id="端口安全技术背景"><a href="#端口安全技术背景" class="headerlink" title="端口安全技术背景"></a><strong>端口安全技术背景</strong></h2><p>•企业要求接入层交换机上每个连接终端设备的接口均只允许一台PC接入网络（限制MAC地址接入数量）。如果有员工试图在某个接口下级联一台小交换机或集线器从而扩展上网接口，那么这种行为应该被发现或被禁止，如左图所示。</p>
+<p>•另一些企业还可能会要求只有MAC地址为可信任的终端发送的数据帧才允许被交换机转发到上层网络，员工不能私自更换位置（变更交换机的接入端口），如右图所示。</p>
+<p>•通过交换机的端口安全（port security）特性可以解决这些问题。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/20.png"></p>
+<h2 id="端口安全概述"><a href="#端口安全概述" class="headerlink" title="端口安全概述"></a><strong>端口安全概述</strong></h2><p>•通过在交换机的特定接口上部署端口安全，可以限制接口的MAC地址学习数量，并且配置出现越限时的惩罚措施。</p>
+<p>•端口安全通过将接口学习到的动态MAC地址转换为安全MAC地址（包括安全动态MAC，安全静态MAC和Sticky MAC），阻止非法用户通过本接口和交换机通信，从而增强设备的安全性。</p>
+<h2 id="端口安全技术原理"><a href="#端口安全技术原理" class="headerlink" title="端口安全技术原理"></a><strong>端口安全技术原理</strong></h2><p>安全MAC地址分为以下类型：</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/21.png"></p>
+<p>安全MAC地址通常与安全保护动作结合使用，常见的安全保护动作有：</p>
+<ul>
+<li><p>Restrict：丢弃源MAC地址不存在的报文并上报告警。</p>
+</li>
+<li><p>Protect：只丢弃源MAC地址不存在的报文，不上报告警。</p>
+</li>
+<li><p>Shutdown：接口状态被置为error-down，并上报告警。</p>
+</li>
+</ul>
+<blockquote>
+<p>•安全动态MAC地址的老化类型分为：绝对时间老化和相对时间老化。</p>
+<ul>
+<li><p>如设置绝对老化时间为5分钟：系统每隔1分钟计算一次每个MAC的存在时间，若大于等于5分钟，则立即将该安全动态MAC地址老化。否则，等待下1分钟再检测计算。</p>
+</li>
+<li><p>如设置相对老化时间为5分钟：系统每隔1分钟检测一次是否有该MAC的流量。若没有流量，则经过5分钟后将该安全动态MAC地址老化。</p>
+</li>
+</ul>
+<p>•默认情况下，接口关闭（error-down）后不会自动恢复，只能由网络管理人员在接口视图下使用restart命令重启接口进行恢复。</p>
+<p>•如果用户希望被关闭的接口可以自动恢复，则可在接口error-down前通过在系统视图下执行error-down auto-recovery cause port-security interval interval-value命令使能接口状态自动恢复为Up的功能，并设置接口自动恢复为Up的延时时间，使被关闭的接口经过延时时间后能够自动恢复。</p>
+<p>•当端口安全功能或者Sticky MAC功能使能/去使能时，接口上的MAC地址变化如下：</p>
+<ul>
+<li><p>端口安全功能</p>
+<ul>
+<li><p>使能之后，接口上之前学习到的动态MAC地址表项将被删除，之后学习到的MAC地址将变为安全动态MAC地址。</p>
+</li>
+<li><p>去使能之后，接口上的安全动态MAC地址将被删除，重新学习动态MAC地址。</p>
+</li>
+</ul>
+</li>
+<li><p>Sticky MAC功能</p>
+<ul>
+<li><p>使能之后，接口上的安全动态MAC地址表项将转化为Sticky MAC地址，之后学习到的MAC地址也变为Sticky MAC地址。</p>
+</li>
+<li><p>去使能之后，接口上的Sticky MAC地址，会转换为安全动态MAC地址。</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="端口安全配置命令"><a href="#端口安全配置命令" class="headerlink" title="端口安全配置命令"></a><strong>端口安全配置命令</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/22.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/23.png"></p>
+<blockquote>
+<p>port-security protect-action命令用来配置端口安全功能中接口学习到的MAC地址数超过限制或出现静态MAC地址漂移时<br>的保护动作。</p>
+<ul>
+<li><p>protect</p>
+<ul>
+<li><p>当学习到的MAC地址数超过接口限制数时，接口将丢弃源地址在MAC表以外的报文。</p>
+</li>
+<li><p>当出现静态MAC地址漂移时，接口将丢弃带有该MAC地址的报文。</p>
+</li>
+</ul>
+</li>
+<li><p>restrict</p>
+<ul>
+<li><p>当学习到的MAC地址数超过接口限制数时，接口将丢弃源地址在MAC表以外的报文，同时发出告警。</p>
+</li>
+<li><p>当出现静态MAC地址漂移时，接口将丢弃带有该MAC地址的报文，同时发出告警。</p>
+</li>
+</ul>
+</li>
+<li><p>shutdown</p>
+<ul>
+<li><p>当学习到的MAC地址数超过接口限制数时，接口将执行error down操作，同时发出告警。</p>
+</li>
+<li><p>当出现静态MAC地址漂移时，接口将执行error down操作，同时发出告警。</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="端口安全配置举例-安全动态MAC"><a href="#端口安全配置举例-安全动态MAC" class="headerlink" title="端口安全配置举例 - 安全动态MAC"></a><strong>端口安全配置举例</strong> <strong>-</strong> <strong>安全动态MAC</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/24.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/25.png"></p>
+<h2 id="配置验证-1"><a href="#配置验证-1" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>执行命令display mac-address security ，查看动态安全MAC表项。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/26.png"></p>
+<blockquote>
+<p>查看安全MAC地址：</p>
+<ul>
+<li><p>执行命令display mac-address security [ vlan vlan-id | interface-type interface-number ] * [ verbose ]，查看安全动态MAC表项。</p>
+</li>
+<li><p>执行命令display mac-address sec-config [ vlan vlan-id | interface-type interface-number ] * [ verbose ]，查看配置的安全静态MAC表项。</p>
+</li>
+<li><p>执行命令display mac-address sticky [ vlan vlan-id | interface-type interface-number ] * [ verbose ]，查看Sticky MAC表项。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="端口安全配置举例-Sticky-MAC"><a href="#端口安全配置举例-Sticky-MAC" class="headerlink" title="端口安全配置举例 - Sticky MAC"></a><strong>端口安全配置举例</strong> <strong>-</strong> <strong>Sticky MAC</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/27.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/28.png"></p>
+<h2 id="配置验证-2"><a href="#配置验证-2" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>执行命令display mac-address sticky，查看Sticky MAC表项。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/29.png"></p>
+<h1 id="MAC地址漂移防止与检测"><a href="#MAC地址漂移防止与检测" class="headerlink" title="MAC地址漂移防止与检测"></a><strong>MAC地址漂移防止与检测</strong></h1><h2 id="MAC地址漂移概述"><a href="#MAC地址漂移概述" class="headerlink" title="MAC地址漂移概述"></a><strong>MAC地址漂移概述</strong></h2><p>•MAC地址漂移是指交换机上一个VLAN内有两个端口学习到同一个MAC地址，后学习到的MAC地址表项覆盖原MAC地址表项的现象。</p>
+<p>•当一个MAC地址在两个端口之间频繁发生迁移时，即会产生MAC地址漂移现象。</p>
+<p>•正常情况下，网络中不会在短时间内出现大量MAC地址漂移的情况。出现这种现象一般都意味着网络中存在环路，或者存在网络攻击行为。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/30.png"></p>
+<h2 id="防止MAC地址漂移"><a href="#防止MAC地址漂移" class="headerlink" title="防止MAC地址漂移"></a><strong>防止</strong>MAC地址漂移</h2><p>如果是环路引发MAC地址漂移，治本的方法是部署防环技术，例如STP，消除二层环路。如果由于网络攻击等其他原因引起，则可使用如下MAC地址防漂移特性：</p>
+<h3 id="配置接口MAC地址学习优先级"><a href="#配置接口MAC地址学习优先级" class="headerlink" title="配置接口MAC地址学习优先级"></a><strong>配置接口MAC地址学习优先级</strong></h3><p>当MAC地址在交换机的两个接口之间发生漂移时，可以将其中一个接口的MAC地址学习优先级提高。高优先级的接口学习到的MAC地址表项将覆盖低优先级接口学习到的MAC地址表项。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/31.png"></p>
+<h3 id="配置不允许相同优先级接口MAC地址漂移"><a href="#配置不允许相同优先级接口MAC地址漂移" class="headerlink" title="配置不允许相同优先级接口MAC地址漂移"></a><strong>配置不允许相同优先级接口MAC地址漂移</strong></h3><p>当伪造网络设备所连接口的MAC地址优先级与安全的网络设备相同时，后学习到的伪造网络设备MAC地址表项不会覆盖之前正确的表项。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/32.png"></p>
+<blockquote>
+<p>•缺省时接口MAC地址学习的优先级均为0，数值越大优先级越高。当同一个MAC地址被两个个接口学习到后，接口MAC地址学习优先级高的会被保留，MAC地址学习优先级低的被覆盖。</p>
+<p>•在配置不允许相同优先级接口MAC地址漂移时，如果安全网络设备下电，则交换机仍会学习到伪造网络设备的MAC地址，当网络设备再次上电时将无法学习到正确的MAC地址。因此该特性需谨慎使用，如果交换机的接口连接的网络设备是服务器，当服务器下电后，另外的接口学习到与服务器相同的MAC地址，当服务器再次上电后就不能学习到正确的MAC地址。</p>
+</blockquote>
+<h2 id="MAC地址漂移检测"><a href="#MAC地址漂移检测" class="headerlink" title="MAC地址漂移检测"></a><strong>MAC地址漂移检测</strong></h2><p>交换机支持MAC地址漂移检测机制，分为以下两种方式：</p>
+<p>基于VLAN的MAC地址漂移检测</p>
+<ul>
+<li><p>配置VLAN的MAC地址漂移检测功能可以检测指定VLAN下的所有的MAC地址是否发生漂移。</p>
+</li>
+<li><p>当MAC地址发生漂移后，可以配置指定的动作，例如告警、阻断接口或阻断MAC地址。</p>
+</li>
+</ul>
+<p>全局MAC地址漂移检测</p>
+<ul>
+<li><p>该功能可以检测设备上的所有的MAC地址是否发生了漂移。</p>
+</li>
+<li><p>若发生漂移，设备会上报告警到网管系统。</p>
+</li>
+<li><p>用户也可以指定发生漂移后的处理动作，例如将接口关闭或退出VLAN。</p>
+</li>
+</ul>
+<blockquote>
+<p>华为交换机是否全部支持MAC地址漂移检测机制以具体型号产品为准。</p>
+</blockquote>
+<h3 id="基于VLAN的MAC地址漂移检测"><a href="#基于VLAN的MAC地址漂移检测" class="headerlink" title="基于VLAN的MAC地址漂移检测"></a><strong>基于VLAN的MAC地址漂移检测</strong></h3><p>在配置基于VLAN的MAC地址漂移检测功能后，如果MAC地址发生漂移时，则可根据需求配置接口做出的动作有以下三种：</p>
+<p>1.发送告警，当检测到MAC地址发生漂移时只给网管发送告警。</p>
+<p>2.接口阻断，当检测到MAC地址发生漂移时，根据设置的阻塞时间对接口进行阻塞，并关闭接口收发报文的能力。</p>
+<p>3.MAC地址阻断，当检测到MAC地址发生漂移时，只阻塞当前MAC地址，而不对物理接口进行阻塞，当前接口下的其他MAC的通信不受影响。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/33.png"></p>
+<blockquote>
+<ul>
+<li><p>MAC地址发生漂移后的三种动作在上图中分别表示为：1.产生并上报告警；2.阻断SW1上的GE0/0/2接口的收发报文的能力；3.阻断SW1上的GE0/0/2接口上针对指定MAC地址报文的收发能力。</p>
+</li>
+<li><p>当配置接口阻塞时：</p>
+<ul>
+<li>检测到VLAN2内产生MAC地址漂移时，将产生漂移后的接口直接阻塞。</li>
+<li>接口将被阻塞10秒（该时长使用block-time关键字指定），接口被阻塞时是无法正常收发数据的。</li>
+<li>10秒之后接口会被放开并重新进行检测，此时该接口可以正常收发数据，如果20秒内没有再检测到MAC地址漂移，则接口的阻塞将被彻底解除；而如果20秒内再次检测到MAC地址漂移，则再次将该接口阻塞，如此重复2次（该次数使用retry-times关键字指定），如果交换机依然能检测到该接口发生MAC地址漂移，则永久阻塞该接口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="全局MAC地址漂移检测"><a href="#全局MAC地址漂移检测" class="headerlink" title="全局MAC地址漂移检测"></a><strong>全局MAC地址漂移检测</strong></h3><p>当交换机检测到MAC地址漂移，在缺省情况下，它只是简单地上报告警，并不会采取其他动作。在实际网络部署中，可以根据网络需求，对检测到MAC地址漂移之后定义以下动作：</p>
+<ul>
+<li><p>error-down</p>
+<p>当配置了MAC地址漂移检测的端口检测到有MAC地址漂移时，将对应接口状态置为error-down，不再转发数据。</p>
+</li>
+<li><p>quit-vlan</p>
+<p>当配置了MAC地址漂移检测的端口检测到有MAC地址漂移时，将退出当前接口所属的VLAN。</p>
+</li>
+</ul>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/34.png"></p>
+<blockquote>
+<ul>
+<li><p>华为交换机默认开启全局MAC地址漂移检测功能，因此缺省时交换机便会对设备上的所有VLAN进行MAC地址漂移检测。</p>
+</li>
+<li><p>在某些场景下，需要对某些VLAN不进行MAC地址漂移检测，可以通过配置MAC地址漂移检测的VLAN白名单来实现。</p>
+</li>
+<li><p>如果接口由于发生了MAC地址漂移从而被设置为Error-Down，默认情况下是不会自动恢复的。</p>
+</li>
+<li><p>如果希望Error-Down的接口能够自动恢复，在系统视图下配置如下命令：<br> error-down auto-recovery cause mac-address-flapping interval <em>time-value</em></p>
+</li>
+<li><p>如果接口由于发生了MAC地址漂移，被设置为离开VLAN，如要实现接口自动恢复，可以在系统视图下配置如下命令：</p>
+<p>mac-address flapping quit-vlan recover-time time-       value</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MAC地址漂移配置命令介绍"><a href="#MAC地址漂移配置命令介绍" class="headerlink" title="MAC地址漂移配置命令介绍"></a><strong>MAC</strong>地址漂移配置命令介绍</h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/35.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/36.png"></p>
+<blockquote>
+<p>一些安全性较差的网络容易受到黑客的MAC地址攻击，由于MAC地址表的容量是有限的，当黑客伪造大量源MAC地址不同的报文并发送给交换机后，交换机的MAC表项资源就可能被耗尽。当MAC表被填满后，即使它再收到正常的报文，也无法学习到报文中的源MAC地址。</p>
+<p>配置限制MAC地址学习数，当超过限制数时不再学习MAC地址，同时可以配置当MAC地址数达到限制后对报文采取的动作，从而防止MAC地址表资源耗尽，提高网络安全性。</p>
+</blockquote>
+<h2 id="MAC地址漂移配置举例"><a href="#MAC地址漂移配置举例" class="headerlink" title="MAC地址漂移配置举例"></a><strong>MAC地址漂移配置举例</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/37.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/38.png"></p>
+<blockquote>
+<ul>
+<li><p>当Switch3与Switch4之间误连接之后，Switch2的接口GE0/0/1的MAC地址漂移到接口GE0/0/2后，触发接口error-down，接口GE0/0/2关闭。</p>
+</li>
+<li><p>使用display mac-address flapping record可查看到漂移记录。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="配置验证-3"><a href="#配置验证-3" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>配置完成后，当Switch2的接口GE0/0/1的MAC地址漂移到接口GE0/0/2后，接口GE0/0/2关闭；使用display mac-address flapping record可查看到漂移记录。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/39.png"></p>
+<h1 id="MACsec"><a href="#MACsec" class="headerlink" title="MACsec"></a><strong>MACsec</strong></h1><h2 id="MACsec，提供二层数据安全传输"><a href="#MACsec，提供二层数据安全传输" class="headerlink" title="MACsec，提供二层数据安全传输"></a>MACsec，提供二层数据安全传输</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>绝大部分数据在局域网链路中都是以明文形式传输的，在某些安全性要求较高的场景下存在安全隐患。</p>
+<h3 id="MACsec概述"><a href="#MACsec概述" class="headerlink" title="MACsec概述"></a>MACsec概述</h3><p>MACsec定义了基于以太网的数据安全通信的方法，通过逐跳设备之间数据加密，保证数据传输安全性，对应的标准为802.1AE。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/41.png"></p>
+<h3 id="典型应用场景"><a href="#典型应用场景" class="headerlink" title="典型应用场景"></a>典型应用场景</h3><ul>
+<li><p>在交换机之间部署MACsec保护数据安全，例如在接入交换机与上联的汇聚或核心交换机之间部署 。</p>
+</li>
+<li><p>当交换机之间存在传输设备时可部署MACsec保护数据安全。</p>
+</li>
+</ul>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/42.png"></p>
+<h2 id="MACsec工作机制"><a href="#MACsec工作机制" class="headerlink" title="MACsec工作机制"></a><strong>MACsec工作机制</strong></h2><p>在设备运行点到点MACsec时，网络管理员在两台设备上通过命令行预配置相同的CAK，两台设备会通过MKA协议选举出一个Key Server，Key Server决定加密方案，Key Server会根据CAK等参数使用某种加密算法生成SAK数据密钥，由Key Server将SAK分发给对端设备，这样两台设备拥有相同的SAK数据密钥，可以进行后续MACsec数据报文加解密收发。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/40.png"></p>
+<h1 id="交换机流量控制"><a href="#交换机流量控制" class="headerlink" title="交换机流量控制"></a>交换机流量控制</h1><h2 id="流量抑制概述"><a href="#流量抑制概述" class="headerlink" title="流量抑制概述"></a><strong>流量抑制概述</strong></h2><p>•<strong>网络中存在的问题：</strong></p>
+<p>​    ▫正常情况下，当设备某个二层以太接口收到广播、未知组播或未知单播报文时，会向同一VLAN内的其他二层以太接口转发这些报文，从而导致流量泛洪，降低设备转发性能。</p>
+<p>​    ▫当设备某个以太接口收到已知组播或已知单播报文时，如果某种报文流量过大则可能会对设备造成冲击，影响其他业务的正常处理。</p>
+<p>•<strong>可用的解决方案：</strong></p>
+<p>​    ▫流量抑制可以通过配置阈值来限制广播、未知组播、未知单播、已知组播和已知单播报文的速率，防止广播、未知组播报文和未知单播报文产生流量泛洪，阻止已知组播报文和已知单播报文的大流量冲击。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/43.png"></p>
+<h2 id="流量抑制工作原理-1"><a href="#流量抑制工作原理-1" class="headerlink" title="流量抑制工作原理 (1)"></a><strong>流量抑制工作原理</strong> <strong>(1)</strong></h2><p>在接口入方向上，设备支持对广播、未知组播、未知单播、已知组播和已知单播报文按百分比、包速率和比特速率进行流量抑制。设备监控接口下的各类报文速率并和配置的阈值相比较，当入口流量超过配置的阈值时，设备会丢弃超额的流量。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/44.png"></p>
+<blockquote>
+<p>•在接口出方向上，设备支持对广播、未知组播和未知单播报文的阻塞（Block）。</p>
+</blockquote>
+<h2 id="流量抑制工作原理-2"><a href="#流量抑制工作原理-2" class="headerlink" title="流量抑制工作原理 (2)"></a><strong>流量抑制工作原理</strong> <strong>(2)</strong></h2><p>在VLAN视图下，设备支持对广播报文按比特速率进行流量抑制。设备监控同一VLAN内广播报文的速率并和配置的阈值相比较，当VLAN内流量超过配置的阈值时，设备会丢弃超额的流量。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/45.png"></p>
+<blockquote>
+<p>•流量抑制还可以通过配置阈值的方式对ICMP报文进行限速，防止大量ICMP报文上送CPU处理，导致其他业务功能异常。</p>
+</blockquote>
+<h2 id="流量抑制的应用"><a href="#流量抑制的应用" class="headerlink" title="流量抑制的应用"></a><strong>流量抑制的应用</strong></h2><p>流量抑制通过对不同类型的报文采取不同的限制措施，达到限制报文发送速率的目的。具体实施可分为以下三种情况：</p>
+<p>1.在交换机接口的入方向，例如下图中SW1的GE0/0/1入方向，通过流量抑制功能可以限制任意报文的发送速率。</p>
+<p>2.在交换机接口出方向，例如下图中SW1的GE0/0/1出方向，通过流量抑制功能可以阻塞广播，未知组播和未知单播报文。</p>
+<p>3.在交换机的VLAN视图下，通过配置VLAN 内流量抑制限制VLAN内广播报文。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/46.png"></p>
+<blockquote>
+<p>•流量抑制中，可以为接口入方向的报文流量配置阈值，当流量超过阈值时，系统将丢弃多余的流量，阈值范围内的报文可以正常通过，从而将流量限制在合理的范围内。</p>
+<p>•此外，流量抑制还支持对接口出方向的流量进行阻塞。</p>
+<p>•风暴控制中，只可以为接口入方向的报文流量配置阈值。当流量超过阈值时，系统会阻塞该接口收到的该类型报文流量或者直接将该接口关闭。</p>
+</blockquote>
+<h2 id="流量抑制配置命令介绍"><a href="#流量抑制配置命令介绍" class="headerlink" title="流量抑制配置命令介绍"></a><strong>流量抑制配置命令介绍</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/47.png"></p>
+<blockquote>
+<p>•display flow-suppression interface interface-type interface-number查看流量抑制配置信息。</p>
+<p>•当在接口视图下的入方向和VLAN视图下同时配置流量抑制功能时，接口视图的配置优先于VLAN视图下的配置。</p>
+</blockquote>
+<h2 id="流量抑制配置举例"><a href="#流量抑制配置举例" class="headerlink" title="流量抑制配置举例"></a><strong>流量抑制配置举例</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/48.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/49.png"></p>
+<h2 id="配置验证-4"><a href="#配置验证-4" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>使用命令display flow-suppression interface 查看流量抑制配置信息。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/50.png"></p>
+<h2 id="风暴控制概述"><a href="#风暴控制概述" class="headerlink" title="风暴控制概述"></a><strong>风暴控制概述</strong></h2><p>•<strong>网络中存在的问题：</strong></p>
+<p>​    ▫正常情况下，当设备某个二层以太接口收到广播、未知组播或未知单播报文时，会向同一VLAN内的其他二层以太接口转发这些报文，如果网络存在环路，则会导致广播风暴，严重降低设备转发性能。</p>
+<p>•<strong>可用的解决方案：</strong></p>
+<p>​    ▫风暴控制可以通过阻塞报文或关闭端口来阻断广播、未知组播和未知单播报文的流量。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/51.png"></p>
+<h2 id="风暴控制工作原理"><a href="#风暴控制工作原理" class="headerlink" title="风暴控制工作原理"></a><strong>风暴控制工作原理</strong></h2><p>风暴控制可以用来防止广播、未知组播以及未知单播报文产生广播风暴。在风暴控制检测时间间隔内，设备监控接口下接收的三类报文的包平均速率与配置的最大阈值相比较。当报文速率大于配置的最大阈值时，风暴控制将根据配置的动作来对接口进行阻塞报文或关闭接口的处理。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/52.png"></p>
+<blockquote>
+<p>•流量抑制与风暴控制的主要区别是：风暴控制功能可以对端口下发惩罚动作（block和shutdown)，而流量抑制功能只是对端口流量进行限制。</p>
+</blockquote>
+<h2 id="风暴控制的应用"><a href="#风暴控制的应用" class="headerlink" title="风暴控制的应用"></a><strong>风暴控制的应用</strong></h2><p>•风暴控制与流量抑制相比的优势是可以同时监控接口下的广播报文、未知组播报文和未知单播报文各自的包平均速率，并根据阈值对接口采取阻塞相关报文或者关闭物理接口的惩罚动作。</p>
+<p>•本例中，Switch作为二层网络到路由器的衔接点，当需要限制二层网络转发过来的用户广播、未知组播和未知单播报文时，可以通过在Switch的GE0/0/1上配置风暴控制功能来实现。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/53.png"></p>
+<blockquote>
+<p>•流量抑制中，可以为接口入方向的报文流量配置阈值。当流量超过阈值时，系统将丢弃多余的流量，阈值范围内的报文可以正常通过，从而将流量限制在合理的范围内。此外，流量抑制还支持对接口出方向的流量进行阻塞。</p>
+<p>•风暴控制中，只可以为接口入方向的报文流量配置阈值。当流量超过阈值时，系统会阻塞该接口收到的该类型报文流量或者直接将该接口关闭。</p>
+</blockquote>
+<h2 id="风暴控制配置命令介绍"><a href="#风暴控制配置命令介绍" class="headerlink" title="风暴控制配置命令介绍"></a><strong>风暴控制配置命令介绍</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/54.png"></p>
+<blockquote>
+<p>•display storm-control [ interface interface-type interface-number ]，查看接口的风暴控制信息。</p>
+<p>•<strong>min-rate</strong> <em>min-rate-value</em></p>
+<p>​    ▫指定包模式低阈值。如果指定了<em>min-rate-value</em>参数（单位pps），在风暴控制检测时间间隔内，当接口接收报文的平均速率小于该值时，则将该接口的报文恢复到正常转发状态。</p>
+<p>•<strong>min-rate</strong> <strong>cir</strong> <em>min-rate-value-cir</em></p>
+<p>​    ▫指定字节模式低阈值。如果指定了<em>min-rate-value-cir</em>参数（单位kbps），在风暴控制检测时间间隔内，当接口接收报文的平均速率小于该值时，则将该接口的报文恢复到正常转发状态。</p>
+<p>•<strong>min-rate</strong> <strong>percent</strong> <em>min-rate-value-percent</em></p>
+<p>​    ▫指定百分比模式低阈值。如果指定了<em>min-rate-value-percent</em>参数（百分比），在风暴控制检测时间间隔内，当接口接收报文的平均速率小于该值时，则将该接口的报文恢复到正常转发状态。</p>
+<p>•<strong>max-rate</strong> <em>max-rate-value</em></p>
+<p>​    ▫指定包模式高阈值。如果指定了<em>max-rate-value</em>参数（单位pps），在风暴控制检测时间间隔内，当接口接收报文的平均速率大于该值时，则对该接口进行风暴控制。</p>
+<p>•<strong>max-rate</strong> <strong>cir</strong> <em>max-rate-value-cir</em></p>
+<p>​    ▫指定字节模式高阈值。如果指定了<em>max-rate-value-cir</em>参数（单位kbps），在风暴控制检测时间间隔内，当接口接收报文的平均速率大于该值时，则对该接口进行风暴控制。</p>
+<p>•<strong>max-rate</strong> <strong>percent</strong> <em>max-rate-value-percent</em></p>
+<p>​    ▫指定百分比模式高阈值。如果指定了<em>max-rate-value-percent</em>参数，在风暴控制检测时间间隔内，当接口接收报文的平均速率大于该值时，则对该接口进行风暴控制。</p>
+</blockquote>
+<h2 id="风暴控制配置举例"><a href="#风暴控制配置举例" class="headerlink" title="风暴控制配置举例"></a><strong>风暴控制配置举例</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/55.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/56.png"></p>
+<h2 id="配置验证-5"><a href="#配置验证-5" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>执行命令display storm-control interface查看GE0/0/1接口下的风暴控制配置情况。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/57.png"></p>
+<h1 id="DHCP-Snooping"><a href="#DHCP-Snooping" class="headerlink" title="DHCP Snooping"></a><strong>DHCP Snooping</strong></h1><h2 id="DHCP工作原理概述"><a href="#DHCP工作原理概述" class="headerlink" title="DHCP工作原理概述"></a><strong>DHCP工作原理概述</strong></h2><p>•DHCP无中继工作原理：</p>
+<p>1.发现阶段，DHCP客户端发送DHCP DISCOVER报文（广播）来发现DHCP服务器。DHCP DISCOVER报文中携带了客户端的MAC地址（DHCP DISCOVER报文中的chaddr字段）、需要请求的参数列表选项（Option55）、广播标志位（DHCP DISCOVER报文中的flags字段，表示客户端请求服务器以单播或广播形式发送响应报文）等信息。</p>
+<p>2.提供阶段，服务器接收到DHCP DISCOVER报文后，选择跟接收DHCP DISCOVER报文接口的IP地址处于同一网段的地址池，并且从中选择一个可用的IP地址，然后通过DHCP OFFER报文发送给DHCP客户端。</p>
+<p>3.请求阶段，如果有多个DHCP服务器向DHCP客户端回应DHCP OFFER报文，则DHCP客户端一般只接收第一个收到的DHCP OFFER报文，然后以广播方式发送DHCP REQUEST报文，该报文中包含客户端想选择的DHCP服务器标识符（即Option54）和客户端IP地址（即Option50，填充了接收的DHCP OFFER报文中yiaddr字段的IP地址）。以广播方式发送DHCP REQUEST报文，是为了通知所有的DHCP服务器，它将选择某个DHCP服务器提供的IP地址，其他DHCP服务器可以重新将曾经分配给客户端的IP地址分配给其他客户端。</p>
+<p>4.确认阶段，DHCP客户端收到DHCP ACK报文，会广播发送免费ARP报文，探测本网段是否有其他终端使用服务器分配的IP地址。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/58.png"></p>
+<p>•DHCP有中继工作原理：</p>
+<p>​    ▫DHCP中继接收到DHCP客户端广播发送的DHCP DISCOVER报文后，主要动作含：检查DHCP报文中的giaddr字段。DHCP报文中的giaddr字段标识客户端网关的IP地址。如果服务器和客户端不在同一个网段且中间存在多个DHCP中继，当客户端发出DHCP请求时，第一个DHCP中继会把自己的IP地址填入此字段，后面的DHCP中继不修改此字段内容。DHCP服务器会根据此字段来判断出客户端所在的网段地址，从而为客户端分配该网段的IP地址。</p>
+<p>​    ▫将DHCP报文的目的IP地址改为DHCP服务器或下一跳中继的IP地址，源地址改为中继连接客户端的接口地址，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/59.png"></p>
+<h2 id="DHCP-Snooping概述"><a href="#DHCP-Snooping概述" class="headerlink" title="DHCP Snooping概述"></a><strong>DHCP Snooping概述</strong></h2><p>•为了保证网络通信业务的安全性，引入了DHCP Snooping技术，在DHCP Client和DHCP Server之间建立一道防火墙，以抵御网络中针对DHCP的各种攻击。</p>
+<p>•DHCP Snooping是DHCP的一种安全特性，用于保证DHCP客户端从合法的DHCP服务器获取IP地址。DHCP 服务器记录DHCP客户端IP地址与MAC地址等参数的对应关系，防止网络上针对DHCP攻击。</p>
+<p>•目前DHCP协议在应用的过程中遇到很多安全方面的问题，网络中存在一些针对DHCP的攻击，如DHCP Server仿冒者攻击、DHCP Server的拒绝服务攻击、仿冒DHCP报文攻击等。</p>
+<p>•DHCP Snooping主要是通过DHCP Snooping信任功能和DHCP Snooping绑定表实现DHCP网络安全。</p>
+<h2 id="DHCP-Snooping信任功能"><a href="#DHCP-Snooping信任功能" class="headerlink" title="DHCP Snooping信任功能"></a><strong>DHCP Snooping信任功能</strong></h2><p>•DHCP Snooping的信任功能，能够保证DHCP客户端从合法的DHCP服务器获取IP地址。</p>
+<p>•DHCP Snooping信任功能将接口分为信任接口和非信任接口：</p>
+<p>​    ▫信任接口正常接收DHCP服务器响应的DHCP ACK、DHCP NAK和DHCP Offer报文。</p>
+<p>​    ▫设备只将DHCP客户端的DHCP请求报文通过信任接口发送给合法的DHCP服务器，不会向非信任接口转发。</p>
+<p>​    ▫非信任接口收到的DHCP Server发送的DHCP OFFER、DHCP ACK、DHCP NAK报文会被直接丢弃。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/60.png"></p>
+<blockquote>
+<p>•配置dhcp snooping enable命令的接口，收到DHCP请求报文后，转发给所有的信任接口；收到DHCP响应报文后丢弃。</p>
+<p>•配置dhcp snooping trusted命令的接口，收到DHCP请求报文后，转发给所有的信任接口，如果没有其他信任接口，则丢弃该DHCP请求报文；收到DHCP响应报文后，只转发给连接对应客户端的并且配置命令dhcp snooping enable的接口，如果查不到上述接口，则丢弃该DHCP响应报文。</p>
+</blockquote>
+<h2 id="DHCP-Snooping绑定表"><a href="#DHCP-Snooping绑定表" class="headerlink" title="DHCP Snooping绑定表"></a><strong>DHCP Snooping绑定表</strong></h2><p>•二层接入设备使能了DHCP Snooping功能后，从收到DHCP ACK报文中提取关键信息（包括PC的MAC地址以及获取到的IP地址、地址租期），并获取与PC连接的使能了DHCP Snooping功能的接口信息（包括接口编号及该接口所属的VLAN），根据这些信息生成DHCP Snooping绑定表。</p>
+<p>•由于DHCP Snooping绑定表记录了DHCP客户端IP地址与MAC地址等参数的对应关系，故通过对报文与DHCP Snooping绑定表进行匹配检查，能够有效防范非法用户的攻击。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/61.png"></p>
+<blockquote>
+<p>•DHCP Snooping绑定表根据DHCP租期进行老化或根据用户释放IP地址时发出的DHCP Release报文自动删除对应表项。</p>
+</blockquote>
+<h2 id="DHCP饿死攻击"><a href="#DHCP饿死攻击" class="headerlink" title="DHCP饿死攻击"></a><strong>DHCP饿死攻击</strong></h2><p>•攻击原理：攻击者持续大量地向DHCP Server申请IP地址，直到耗尽DHCP Server地址池中的IP地址，导致DHCP Server不能给正常的用户进行分配。</p>
+<p>•漏洞分析：DHCP Server向申请者分配IP地址时，无法区分正常的申请者与恶意的申请者。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/62.png"></p>
+<h2 id="DHCP-Snooping防饿死攻击"><a href="#DHCP-Snooping防饿死攻击" class="headerlink" title="DHCP Snooping防饿死攻击"></a><strong>DHCP Snooping防饿死攻击</strong></h2><p>解决方法：对于饿死攻击，可以通过DHCP Snooping的MAC地址限制功能来防止。该功能通过限制交换机接口上允许学习到的最多MAC地址数目，防止通过变换MAC地址，大量发送DHCP请求。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/63.png"></p>
+<h2 id="改变CHADDR值的DoS攻击"><a href="#改变CHADDR值的DoS攻击" class="headerlink" title="改变CHADDR值的DoS攻击"></a>改变CHADDR值的DoS攻击</h2><p>•攻击原理：攻击者持续大量地向DHCP Server申请IP地址，直到耗尽DHCP Server地址池中的IP地址，导致DHCP Server不能给正常的用户进行分配。</p>
+<p>•漏洞分析：DHCP Server向申请者分配IP地址时，无法区分正常的申请者与恶意的申请者。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/64.png"></p>
+<h2 id="DHCP-Snooping防改变CHADDR值的DoS攻击"><a href="#DHCP-Snooping防改变CHADDR值的DoS攻击" class="headerlink" title="DHCP Snooping防改变CHADDR值的DoS攻击"></a><strong>DHCP Snooping防改变CHADDR值的DoS攻击</strong></h2><p>解决方法：为了避免受到攻击者改变CHADDR值的攻击，可以在设备上配置DHCP Snooping功能，检查DHCP Request报文中CHADDR字段。如果该字段跟数据帧头部的源MAC相匹配，转发报文；否则，丢弃报文。从而保证合法用户可以正常使用网络服务。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/65.png"></p>
+<blockquote>
+<p>•DHCP饿死攻击是攻击者通过持续大量地向DHCP Server申请IP地址来实现的，其目的是耗尽DHCP Server地址池中的IP地址，导致DHCP Server没有IP地址分配给正常的用户。DHCP消息中有一个名叫CHADDR（Client Hardware Address）的字段，该字段是由DHCP客户端填写的，表示的是客户端的硬件地址（也就是客户端的MAC地址）。DHCP Server是针对CHADDR来分配IP地址的，对于不同的CHADDR，DHCP Server会分配不同的IP地址；DHCP Server无法区分什么样的CHADDR是合法的，什么样的CHADDR是非法的。利用这个漏洞，攻击者每申请一个IP地址时，就在DHCP消息的CHADDR字段中填写一个不同的值，以此来冒充是不同的用户在申请IP地址。</p>
+<p>•为了弥补上述漏洞，从而阻止饿死攻击，DHCP Snooping技术支持在端口下对DHCP Request报文的源MAC地址与CHADDR进行一致性检查：如果二者相同，则转发报文；如果二者不相同，则丢弃。如果要在某端口下实施源MAC地址与CHADDR的一致性检查，可以在该端口下使用命令dhcp snooping check dhcp-chaddr enable。</p>
+<p>•还可能存在这样一种饿死攻击，就是攻击者不断同时变换MAC地址和CHADDR，并且每一次变换时，都让CHADDR与MAC地址相同，如此一来，便可以躲过上述源MAC地址与CHADDR的一致性检查！</p>
+</blockquote>
+<h2 id="DHCP中间人攻击"><a href="#DHCP中间人攻击" class="headerlink" title="DHCP中间人攻击"></a><strong>DHCP中间人攻击</strong></h2><p>•攻击原理：攻击者利用ARP机制，让Client学习到DHCP Server IP与Attacker MAC的映射关系，又让Server学习到Client IP与Attacker Mac的映射关系。如此一来，Client与Server之间交互的IP报文都会经过攻击者中转。</p>
+<p>•漏洞分析：从本质上讲，中间人攻击是一种Spoofing IP/MAC攻击，中间人利用了虚假的IP地址与MAC地址之间的映射关系来同时欺骗DHCP的客户端和服务器。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/66.png"></p>
+<blockquote>
+<p>•如图所示，攻击者利用ARP机制，让PC1学习到IP-S与MAC2的映射关系，又让Server学习到IP1与MAC2的映射关系。当PC1向DHCP Server发送IP报文时，目的IP地址为IP-S，源IP地址为IP1，而封装这个IP报文的帧的目的MAC地址为MAC2，源MAC地址为MAC1，所以这个帧会首先到达攻击者PC2。攻击者收到这个帧后，将这个帧的目的MAC地址更换为MAC-S，源MAC地址更换为MAC2，然后将这个帧发往Server。如此“偷梁换柱”，Server是看不出任何破绽的。另一方面，当DHCP Server向PC1发送IP报文时，目的IP地址为IP1，源IP地址为IP-S，而封装这个IP报文的帧的目的MAC地址为MAC2，源MAC地址为MAC-S，所以这个帧也会首先到达攻击者PC2。攻击者收到这个帧后，将这个帧的目的MAC地址更换为MAC1，源MAC地址更换为MAC2，然后将这个帧发往PC1。同样，PC1也是看不出任何破绽的。</p>
+<p>•由于往来于PC1与DHCP Server之间的IP报文都会经过攻击者（中间人）进行中转，攻击者便很容易窃取这些IP报文中的某些信息，并利用这些信息来进行其他的破坏行为。攻击者也可以很容易对往来于PC1与DHCP Server之间的DHCP消息（这些消息是封装在UDP报文中的，而UDP报文又是封装在IP报文中的）进行篡改，达到直接攻击DHCP的目的。</p>
+</blockquote>
+<h2 id="DHCP-Snooping防DHCP中间人攻击"><a href="#DHCP-Snooping防DHCP中间人攻击" class="headerlink" title="DHCP Snooping防DHCP中间人攻击"></a><strong>DHCP Snooping防DHCP中间人攻击</strong></h2><p>解决方法：为防御中间人攻击与IP/MAC Spoofing攻击，可使用DHCP Snooping的绑定表工作模式，当接口接收到ARP或者IP报文，使用ARP或者IP报文中的“源IP+源MAC”匹配DHCP Snooping绑定表。如果匹配就进行转发，如果不匹配就丢弃。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/67.png"></p>
+<blockquote>
+<p>•DHCP中间人攻击本质上是一种Spoofing IP/MAC攻击。要想防止DHCP中间人攻击，其实就是要防止Spoofing IP/MAC攻击。</p>
+<p>•运行了DHCP Snooping的交换机会“侦听（Snooping）”往来于用户与DHCP Server之间的DHCP消息，并从中收集用户的MAC地址（这里的MAC地址是指DHCP消息中CHADDR字段的值）、用户的IP地址（这里的IP地址是指DHCP Server分配给相应CHADDR的IP地址）等信息，这些信息会集中存放在一个数据库中，该数据库也被称为DHCP Snooping绑定表。运行了DHCP Snooping的交换机会建立并动态维护DHCP Snooping绑定表，绑定表中除了包含了用户的MAC地址、用户的IP地址外，还包括IP地址租用期、VLAN ID等等信息。</p>
+<p>•如图所示，假设DHCP Server给PC1分配了IP地址IP1，给PC2分配了IP地址IP2，那么IP1与MAC1就形成了绑定关系，IP2与MAC2也形成了绑定关系，这种绑定关系都存放于DHCP Snooping绑定表中。攻击者为了让Server学习到IP1与MAC2的映射关系，会发送ARP请求报文（将ARP报文中的源IP地址填为IP1，源MAC地址填为MAC2）。交换机接收到ARP请求报文后，会检查该ARP请求报文中的源IP地址和源MAC地址，发现该IP/MAC（IP1/MAC2）映射关系不能匹配DHCP Snooping绑定表中的条目，于是会丢弃该ARP请求报文，这样就有效地防止了Spoofing IP/MAC攻击。</p>
+<p>•如果需要使用上面所描述的防止Spoofing IP/MAC攻击（进而防止中间人）的方法，就必须在交换机的系统视图下执行配置命令arp dhcp-snooping-detect enable。</p>
+</blockquote>
+<h2 id="DHCP-Snooping配置命令介绍"><a href="#DHCP-Snooping配置命令介绍" class="headerlink" title="DHCP Snooping配置命令介绍"></a><strong>DHCP Snooping配置命令介绍</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/68.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/69.png"></p>
+<h2 id="DHCP-Snooping配置举例"><a href="#DHCP-Snooping配置举例" class="headerlink" title="DHCP Snooping配置举例"></a>DHCP Snooping配置举例</h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/70.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/71.png"></p>
+<h2 id="配置验证-6"><a href="#配置验证-6" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>执行命令display dhcp snooping interface，查看接口下的DHCP Snooping运行信息。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/72.png"></p>
+<h2 id="IP-Source-Guard"><a href="#IP-Source-Guard" class="headerlink" title="IP Source Guard"></a><strong>IP Source Guard</strong></h2><h2 id="IPSG技术概述"><a href="#IPSG技术概述" class="headerlink" title="IPSG技术概述"></a><strong>IPSG技术概述</strong></h2><p>•IP地址欺骗攻击中，攻击者通过伪造合法用户的IP地址获取网络访问权限，非法访问网络，甚至造成合法用户无法访问网络，或者信息泄露。IPSG针对IP地址欺骗攻击提供了一种防御机制，可以有效阻止此类网络攻击行为。</p>
+<p>•IP源防攻击（IPSG，IP Source Guard）是一种基于二层接口的源IP地址过滤技术。它能够防止恶意主机伪造合法主机的IP地址来仿冒合法主机，还能确保非授权主机不能通过自己指定IP地址的方式来访问网络或攻击网络。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/73.png"></p>
+<blockquote>
+<p>•非法主机伪造合法主机的IP地址获取上网权限时，通过在Switch的接入用户侧的接口或VLAN上部署IPSG功能，Switch可以对进入接口的IP报文进行检查，丢弃非法主机的报文，从而阻止此类攻击。</p>
+<p>•IPSG一般应用在与用户直连的接入设备上，可以基于接口或者基于VLAN应用。</p>
+</blockquote>
+<h2 id="IPSG工作原理"><a href="#IPSG工作原理" class="headerlink" title="IPSG工作原理"></a><strong>IPSG</strong>工作原理</h2><p>IPSG利用绑定表（源IP地址、源MAC地址、所属VLAN、入接口的绑定关系）去匹配检查二层接口上收到的IP报文，只有匹配绑定表的报文才允许通过，其他报文将被丢弃。常见的绑定表有静态绑定表和DHCP Snooping动态绑定表。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/74.png"></p>
+<blockquote>
+<p>•绑定表生成后，IPSG基于绑定表向指定的接口或者指定的VLAN下发ACL，由该ACL来匹配检查所有IP报文。主机发送的报文，只有匹配绑定表才会允许通过，不匹配绑定表的报文都将被丢弃。当绑定表信息变化时，设备会重新下发ACL。</p>
+<p>•缺省情况下，如果在没有绑定表的情况下使能了IPSG，设备将拒绝除DHCP请求报文外的所有IP报文。</p>
+<p>•静态绑定表项包含：MAC地址、IP地址、VLAN ID、入接口。静态绑定表项中指定的信息均用于IPSG过滤接口收到的报文。</p>
+<p>•动态绑定表项包含：MAC地址、IP地址、VLAN ID、入接口。IPSG依据该表项中的哪些信息过滤接口收到的报文，由用户设置的检查项决定，缺省是四项都进行匹配检查。常用的检查项有基于源IP地址过滤,基于源MAC地址过滤,基于源IP地址+源MAC地址过滤,基于源IP地址+源MAC地址+接口过滤,基于源IP地址+源MAC地址+接口+VLAN过滤等。</p>
+</blockquote>
+<h2 id="IPSG应用场景"><a href="#IPSG应用场景" class="headerlink" title="IPSG应用场景"></a><strong>IPSG应用场景</strong></h2><p>•通过IPSG防止PC私自更改IP地址。</p>
+<p>​    ▫PC只能使用DHCP Server分配的IP地址或者管理员配置的静态地址，随意更改IP地址后无法访问网络，防止PC非法取得上网权限。</p>
+<p>•小型网络IP地址是静态分配时，通过IPSG限制非法PC接入。</p>
+<p>​    ▫外来人员自带电脑不能随意接入内网，防止内网资源泄露。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/75.png"></p>
+<h2 id="IPSG配置命令介绍"><a href="#IPSG配置命令介绍" class="headerlink" title="IPSG配置命令介绍"></a><strong>IPSG配置命令介绍</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/76.png"></p>
+<h2 id="IPSG配置举例"><a href="#IPSG配置举例" class="headerlink" title="IPSG配置举例"></a><strong>IPSG配置举例</strong></h2><p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/77.png"></p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/78.png"></p>
+<h2 id="配置验证-7"><a href="#配置验证-7" class="headerlink" title="配置验证"></a><strong>配置验证</strong></h2><p>•在Switch上执行display dhcp static user-bind all命令，可以查看静态绑定表信息。</p>
+<p>•PC1和PC2使用管理员分配的固定IP地址可以正常访问网络，更改IP地址后无法访问网络。</p>
+<p><img src="/2021/05/05/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2%E5%AE%89%E5%85%A8/79.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）DHCP Snooping是一种DHCP安全特性，可以用于防御多种攻击，其中包括 (   ) </p>
+<p><strong>A.防御改变CHADDR值的饿死攻击</strong></p>
+<p><strong>B.防御DHCP仿冒者攻击</strong></p>
+<p>C.防御TCP flag攻击</p>
+<p><strong>D.防御中间人攻击和IP/MAC Spoofing攻击</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•端口隔离实现同一VLAN内端口之间的隔离。端口隔离模式分别为二层隔离三层互通、二层三层都隔离。</p>
+<p>•交换机MAC地址表可以分为静态MAC地址表、黑洞MAC地址表、动态MAC地址表。</p>
+<p>•端口安全通过将接口学习到的动态MAC地址转换为安全MAC地址，安全MAC地址通常与安全保护动作结合使用。</p>
+<p>•交换机开启MAC地址漂移检测有助于工程师快速处理交换机环路故障。</p>
+<p>•MACsec定义了基于以太网的数据安全通信的方法，通过逐跳设备之间数据加密，保证数据传输安全性。</p>
+<p>•流量抑制与风暴控制主要区别在于流量控制仅仅是对各种报文进行限速处理，超过阈值之后就丢弃，而风暴控制能够根据报文速率的大小采取不同的惩罚动作，包括关闭端口或者阻塞报文。</p>
+<p>•DHCP Snooping技术对于防御以太网中关于终端设备自动获取IP的网络攻击有很大的作用，通过配置DHCP Snooping信任端口功能和DHCP Snooping绑定表，可以很好的防范针对DHCP的网络攻击。</p>
+<p>•IPSG通过查看交换机绑定表，阻止IP地址欺骗攻击，杜绝非法用户盗用合法IP地址对网络发起攻击。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1874,785 +3188,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/IP%E8%B7%AF%E7%94%B1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/02/IP%E8%B7%AF%E7%94%B1/" itemprop="url">IP路由</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T08:53:42+08:00">
-                2021-05-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="路由概述"><a href="#路由概述" class="headerlink" title="路由概述"></a>路由概述</h2><h3 id="背景-网段间通信"><a href="#背景-网段间通信" class="headerlink" title="背景:网段间通信"></a>背景:网段间通信</h3><ul>
-<li>IP地址唯一标识了网络中的一个节点，每个IP地址都拥有自己的网段，各个网段可能分布在网络的不同区域。</li>
-<li>为实现IP寻址，分布在不同区域的网段之间要能够相互通信。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/3.png"></p>
-<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h3><ul>
-<li>路由是指导报文转发的路径信息，通过路由可以确认转发IP报文的路径。</li>
-<li>路由设备是依据路由转发报文到目的网段的网络设备，最常见的路由设备:路由器。</li>
-<li>路由设备维护着一张路由表，保存着路由信息。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/1.png"></p>
-<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><ul>
-<li>路由器通过各种方式发现路由</li>
-<li>路由器选择最优的路由条目放入路由表中</li>
-<li>路由表指导设备对IP报文的转发</li>
-<li>路由器通过对路由表的管理实现对路径信息的管理</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/2.png"></p>
-<h3 id="路由信息获取方式"><a href="#路由信息获取方式" class="headerlink" title="路由信息获取方式"></a>路由信息获取方式</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/4.png"></p>
-<h3 id="最优路由条目优选"><a href="#最优路由条目优选" class="headerlink" title="最优路由条目优选"></a>最优路由条目优选</h3><h4 id="查看路由表"><a href="#查看路由表" class="headerlink" title="查看路由表"></a>查看路由表</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/7.png"></p>
-<h4 id="路由表中各个内容的含义"><a href="#路由表中各个内容的含义" class="headerlink" title="路由表中各个内容的含义"></a>路由表中各个内容的含义</h4><ul>
-<li>Destination/Mask:︰表示此路由的目的网络地址与网络掩码。将目的地址和子网掩码“逻辑与”后可得到目的主机或路由器所在网段的地址。例如:目的地址为1.1.1.1，掩码为255.255.255.0的主机或路由器所在网段的地址为1.1.1.0</li>
-<li>Proto ( Protocol )∶该路由的协议类型，也即路由器是通过什么协议获知该路由的。</li>
-<li>Pre ( Preference)∶表示此路由的路由协议优先级。针对同一目的地，可能存在不同下一跳、出接口等多条路由，这些不同的路由可能是由不同的路由协议发现的，也可以是手工配置的静态路由。优先级最高（数值最小)者将成为当前的最优路由。</li>
-<li>Cost:路由开销。当到达同一目的地的多条路由具有相同的路由优先级时，路由开销最小的将成为当前的最优路由。</li>
-<li>NextHop:表示对于本路由器而言，到达该路由指向的目的网络的下一跳地址。该字段指明了数据转发的下一个设备。</li>
-<li>Interface:表示此路由的出接口。指明数据将从本路由器的哪个接口转发出去。</li>
-</ul>
-<h4 id="路由优先级"><a href="#路由优先级" class="headerlink" title="路由优先级"></a>路由优先级</h4><h5 id="优先级比较"><a href="#优先级比较" class="headerlink" title="优先级比较"></a>优先级比较</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/8.png"></p>
-<h5 id="比较示例"><a href="#比较示例" class="headerlink" title="比较示例"></a>比较示例</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/9.png"></p>
-<h5 id="优先级默认数值"><a href="#优先级默认数值" class="headerlink" title="优先级默认数值"></a>优先级默认数值</h5><p>常见路由类型的默认优先级如下:</p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/10.png"></p>
-<h4 id="度量值"><a href="#度量值" class="headerlink" title="度量值"></a>度量值</h4><h5 id="度量值比较"><a href="#度量值比较" class="headerlink" title="度量值比较"></a>度量值比较</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/11.png"></p>
-<h5 id="比较示例-1"><a href="#比较示例-1" class="headerlink" title="比较示例"></a>比较示例</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/12.png"></p>
-<h3 id="路由转发"><a href="#路由转发" class="headerlink" title="路由转发"></a>路由转发</h3><h4 id="最长掩码匹配原则"><a href="#最长掩码匹配原则" class="headerlink" title="最长掩码匹配原则"></a>最长掩码匹配原则</h4><ul>
-<li>当路由器收到一个IP数据包时，会将数据包的目的IP地址与自己本地路由表中的所有路由表项进行逐位（Bit-By-Bit)比对，直到找到掩码匹配度最长的条目，这就是最长前缀匹配机制。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/13.png"></p>
-<h4 id="最长匹配示例"><a href="#最长匹配示例" class="headerlink" title="最长匹配示例"></a>最长匹配示例</h4><h5 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/14.png"></p>
-<h5 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h5><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/15.png"></p>
-<h4 id="路由转发流程"><a href="#路由转发流程" class="headerlink" title="路由转发流程"></a>路由转发流程</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/16.png"></p>
-<h2 id="直连路由"><a href="#直连路由" class="headerlink" title="直连路由"></a>直连路由</h2><ul>
-<li>直连路由指向本地直连网络的路由，由设备自动生成。</li>
-<li>当路由器为路由转发的最后一跳路由器时，IP报文匹配直连路由，路由器转发IP报文到目的主机。</li>
-<li>使用直连路由进行路由转发时，报文的目的IP和路由器接口IP在一个网段之中。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/5.png"></p>
-<ul>
-<li>并不是所有接口生成的直连路由都会出现在路由表中，直连路由出现在路由表中的前提是该接口的物理状态、协议状态都为UP。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/6.png"></p>
-<h2 id="静态路由"><a href="#静态路由" class="headerlink" title="静态路由"></a>静态路由</h2><h3 id="静态路由定义"><a href="#静态路由定义" class="headerlink" title="静态路由定义"></a>静态路由定义</h3><p>通过手工配置一条路由，加入到设备路由表中，相当于人工加入一条寻址路径，帮助设备进行路由转发。</p>
-<h3 id="静态路由应用场景"><a href="#静态路由应用场景" class="headerlink" title="静态路由应用场景"></a>静态路由应用场景</h3><p>当设备中缺少路由条目时，无法进行报文的路由转发，此时就需要配置静态路由。</p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/17.png"></p>
-<h3 id="静态路由配置"><a href="#静态路由配置" class="headerlink" title="静态路由配置"></a>静态路由配置</h3><p>1.关联下一跳IP的方式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; nexthop-address</span><br></pre></td></tr></table></figure>
-<p>2.关联出接口的方式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; interface-type interface-number</span><br></pre></td></tr></table></figure>
-<p>3.关联出接口和下一跳IP方式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] ip route-static ip-address &#123; mask | mask-length &#125; interface-type interface-number [ nexthop-address ]</span><br></pre></td></tr></table></figure>
-<p>在创建静态路由时，可以同时指定出接口和下一跳。对于不同的出接口类型，也可以只指定出接口或只指定下一跳。</p>
-<p>对于点到点接口（如串口)，<strong>必须指定出接口</strong>。<br>对于广播接口（如以太网接口）和VT ( Virtual-template)接口，<strong>必须指定下一跳。</strong></p>
-<h3 id="静态路由配置举例"><a href="#静态路由配置举例" class="headerlink" title="静态路由配置举例"></a>静态路由配置举例</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/18.png"></p>
-<p>RTA的配置如下:<br>[RTA] ip route-static 20.1.1.0 255.255.255.0 10.0.0.2<br>RTC的配置如下:<br>[RTC] ip route-static 10.0.0.0 255.255.255.0 S1/0/0</p>
-<h3 id="缺省路由"><a href="#缺省路由" class="headerlink" title="缺省路由"></a>缺省路由</h3><ul>
-<li>缺省路由是一种特殊的路由，当报文没有在路由表中找到匹配的具体路由表项时才使用的路由。如果报文的目的地址不能与路由表的任何目的地址相匹配，那么该报文将选取缺省路由进行转发。</li>
-<li>缺省路由在路由表中的形式为0.0.0.0/0，缺省路由也被叫做<strong>默认路由</strong>。</li>
-<li>缺省路由通常用在出口路由器上，为了将报文路由到运营商路由器上，减少大量的静态路由的配置。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/19.png"></p>
-<h3 id="缺省路由应用场景"><a href="#缺省路由应用场景" class="headerlink" title="缺省路由应用场景"></a>缺省路由应用场景</h3><p>缺省路由一般用于企业网络出口，配置一条缺省路由让出口设备能够转发前往Internet上任意地址的IP报文。</p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/20.png"></p>
-<h2 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h2><h3 id="动态路由和静态路由区别"><a href="#动态路由和静态路由区别" class="headerlink" title="动态路由和静态路由区别"></a>动态路由和静态路由区别</h3><p><strong>动态路由</strong></p>
-<ul>
-<li>自动发现、学习路由</li>
-<li>感知拓扑变更</li>
-</ul>
-<p><strong>静态路由</strong></p>
-<ul>
-<li>所有设备手动配置</li>
-<li>无法感知到链路变化</li>
-</ul>
-<h3 id="动态路由分类"><a href="#动态路由分类" class="headerlink" title="动态路由分类"></a>动态路由分类</h3><p><strong>按工作区域分类</strong></p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/21.png"></p>
-<p><strong>按工作机制及算法分类</strong></p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/22.png"></p>
-<h2 id="路由高级特性"><a href="#路由高级特性" class="headerlink" title="路由高级特性"></a>路由高级特性</h2><h3 id="路由递归"><a href="#路由递归" class="headerlink" title="路由递归"></a>路由递归</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/23.png"></p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/24.png"></p>
-<h3 id="等价路由"><a href="#等价路由" class="headerlink" title="等价路由"></a>等价路由</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/25.png"></p>
-<p>路由表中存在等价路由之后，前往该目的网段的IP报文路由器会通过所有有效的接口、下一跳转发，这种转发行为被称为负载分担。</p>
-<h3 id="浮动路由"><a href="#浮动路由" class="headerlink" title="浮动路由"></a>浮动路由</h3><p>确保路由的可靠性，引入浮动路由，一条路由转发路径不可达，可通过浮动路由选择另一跳路径进行转发。</p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/26.png"></p>
-<h4 id="浮动路由切换使用示例"><a href="#浮动路由切换使用示例" class="headerlink" title="浮动路由切换使用示例"></a>浮动路由切换使用示例</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/27.png"></p>
-<h3 id="路由汇总"><a href="#路由汇总" class="headerlink" title="路由汇总"></a>路由汇总</h3><ul>
-<li>CIDR ( classless inter-domain routing，无类别域间路由）采用IP地址加掩码长度来标识网络和子网，而不是按照传统A、B、C等类型对网络地址进行划分。</li>
-<li>CIDR容许任意长度的掩码长度，将IP地址看成连续的地址空间，可以使用任意长度的前缀分配，多个连续的前缀可以聚合成一个网络，该特性可以有效减少路由表条目数。</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/28.png"></p>
-<h3 id="路由汇总的需求"><a href="#路由汇总的需求" class="headerlink" title="路由汇总的需求"></a>路由汇总的需求</h3><ul>
-<li><p>子网划分、VLSM解决了地址空间浪费的问题，但同时也带了新的问题:路由表中的路由条目数量增加。</p>
-</li>
-<li><p>为减少路由条目数量可以使用路由汇总。</p>
-</li>
-<li><p>路由汇总将一组具有相同前缀的路由汇聚成一条路由，从而达到减小路由表规模以及优化设备资源利用率的目的。</p>
-</li>
-<li><p>路由汇总采用了CIDR的思想:将相同前缀的地址聚合成一个。</p>
-</li>
-</ul>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/30.png"></p>
-<h3 id="汇总计算"><a href="#汇总计算" class="headerlink" title="汇总计算"></a>汇总计算</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/31.png"></p>
-<p>基于一系列连续的、有规律的IP网段，如果需计算相应的汇总路由，且确保得出的汇总路由刚好“囊括”上述IP网段，则需保证汇总路由的掩码长度尽可能长。</p>
-<h3 id="汇总引发的问题"><a href="#汇总引发的问题" class="headerlink" title="汇总引发的问题"></a>汇总引发的问题</h3><h4 id="路由汇总带来的环路问题"><a href="#路由汇总带来的环路问题" class="headerlink" title="路由汇总带来的环路问题"></a>路由汇总带来的环路问题</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/32.png"></p>
-<h4 id="路由汇总带来的环路问题-解决方案"><a href="#路由汇总带来的环路问题-解决方案" class="headerlink" title="路由汇总带来的环路问题-解决方案"></a>路由汇总带来的环路问题-解决方案</h4><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/33.png"></p>
-<h3 id="精确汇总"><a href="#精确汇总" class="headerlink" title="精确汇总"></a>精确汇总</h3><p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/34.png"></p>
-<ul>
-<li><p>为了让RTA能够到达RTB上的172.16.1.0/24-172.16.31.0/24网段，配置了一条静态的汇总路由，这条网段虽然优化了网络配置，但是汇总的范围太广，将RTC上的网段也包括在内，导致前往RTC上网段的流量到达RTA之后会被发往RTB,造成数据包的丢失，这种路由为不精确的路由。为此配置汇总路由时要尽量精确，刚好包括所有明细路由。</p>
-</li>
-<li><p>RTA-RTB的路由可汇总为172.16.0.0/19</p>
-</li>
-<li><p>RTA-RTC的路由可汇总为172.16.32.0/19</p>
-</li>
-</ul>
-<h2 id="黑洞路由和路由黑洞"><a href="#黑洞路由和路由黑洞" class="headerlink" title="黑洞路由和路由黑洞"></a>黑洞路由和路由黑洞</h2><h3 id="作用一：防止不存在的路由照成路由黑洞"><a href="#作用一：防止不存在的路由照成路由黑洞" class="headerlink" title="作用一：防止不存在的路由照成路由黑洞"></a>作用一：防止不存在的路由照成路由黑洞</h3><p>路由黑洞一般是在网络边界做汇总回程路由的时候产生的一种不太愿意出现的现象，就是汇总的时候有时会有一些网段并不在内网中存在，但是又包含在汇总后的网段中，如果在这个汇总的边界设备上同时还配置了缺省路由，就可能出现一些问题。这时，如果有数据包发向那些不在内网出现的网段（但是又包含在汇总网段）所在的路由器，根据最长匹配原则，并没有找到对应的路由，只能根据默认路由又回到原来的路由器，这就形成了环路，直到TTL值超时，丢弃。</p>
-<p>这是我们不愿意看到的现象，所以要有解决这个问题的方案，就是黑洞路由啦，其实就是一条特殊的静态路由，下一跳指向null 0口，一个不存在的口，结果就是将匹配这条路由的数据包丢弃…</p>
-<p>所以说，如果是精确汇总的话，就不会出现路由黑洞。举个例子</p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/%E4%BE%8B%E5%AD%901.jpg"></p>
-<p>R1上有172.16.0.0/24、172.16.1.0/24、172.16.2.0/24三个网段，现对其进行了汇总：172.16.0.0/22</p>
-<p>　　这就出现了问题：并没有172.16.3.0/24这个网段，但是汇总后就出现了，并通告了给了R2。</p>
-<p>　　并且在R1上配置了一条默认路由：当有未知目的地址的数据包时，转发到R2。</p>
-<p>　　现在，R2收到一个目的地址在172.16.3.0/24网段的数据包，根据路由表172.16.0.0/22—&gt;R1  ，将该数据包转发到了R1，因为R1上并没有这个172.16.3.0/24网段，根据默认路由又发回了R2，形成了环路，直到TTL为0，才会被丢弃，这同时也耗费了这两个路由器的系统资源。</p>
-<p>　　解决方法：就是在汇总路由的时候加一条指向null0的路由（黑洞路由）：172.16.0.0/22 –&gt;null0</p>
-<p>　　相当于直接将这个数据包丢弃。</p>
-<p>　　一。</p>
-<p>　　黑洞就是做路由汇总时候引入的一个概念</p>
-<p>　　比如你有好多个c类地址：</p>
-<p>　　192.168.1.0/24 – 192.168.200.0/24</p>
-<p>　　那么对外公告路由的时候你可以选择进行路由汇总。</p>
-<p>　　汇总为192.168.0.0/16的路由</p>
-<p>　　但是路由汇总会产生“路由黑洞”问题</p>
-<p>　　因为192.168.201.0/24 – 192.168.254.0/24这段路由存在但却没有对应的主机。</p>
-<p>　　因此可能造成目的地址为192.168.201.0/24 – 192.168.254.0/24往你的路由器上转发但地址却不可达的情况（理论上要发送回icmp unreachable的）</p>
-<p>　　一个可行的办法是在汇总路由时就写好一条黑洞路由丢弃这些垃圾流量</p>
-<p>　　ip route 192.168.0.0 255.255.0.0 null 0</p>
-<p>  二、</p>
-<p>　　一般是在路由汇总的时候，有可能把一些本来没有的路由条目汇总了进来</p>
-<p>　　路由器处理这些本来不存在的路由条目的数据包的时候会占用路由器本身的资源</p>
-<p>　　这个时候如果大量的数据包涌向路由器，有可能变成DOS攻击</p>
-<p>　　所以就自动写出一条通往NULL0接口的路由，然后把那些垃圾数据包直接丢往NULL0，不要进行其他处理。</p>
-<p>　　黑洞路由与路由黑洞这两个概念容易混淆，为了方便区别，在此做了一下比较。</p>
-<p>　　黑洞路由，便是将所有无关路由吸入其中，使它们有来无回的路由。黑洞路由最大的好处是充分利用了路由器的包转发能力，对系统负载影响非常小。如果同样的功能用ACL（地址访问控制列表）实现，则流量增大时CPU利用率会明显增加。所以，一直是解决固定DOS攻击的最好办法。相当于洪水来临时，在洪水途经的路上附近挖一个不见底的巨大深坑，然后将洪水引入其中。当然，这只是个比喻，真要是洪水来的时候，正确的方法是―――跑！</p>
-<p>　　在路由器中配置路由黑洞完全是出于安全因素，设有黑洞的路器会默默地抛弃掉数据包而不指明原因。</p>
-<p>　　一个黑洞路由器是指一个不支持PMTU且被配置为不发送“Destination Unreachable–目的不可达”回应消息的路由器。</p>
-<p>　　可以这样看：</p>
-<p>　　如果一个路由器不支持PMTU并且配置为不发送ICMP Destination  Unreachable消息数据包，那么源主机可能发送一个永远得不到路由的大数据包。因为路由器没有给源主机发回应消息，主机不能确定PMTU就是问题的所在。但如果源主机端启用了PMTU，则源主机在重试几次大的MTU之后，如果还收不到路由器的应答，那源主机自动将PMTU设置为576bytes.</p>
-<p>　　在Windows 2000下PMTU启用设置是—</p>
-<p>​        HKEY_LOCAL_MACHINESYSTEMCurrentControlSetServicesTcpipParameters</p>
-<p>　　EnablePMTUBHDetect REG_DWORD 0（默认禁用）或1（启用）</p>
-<p>　　在Windows XP下也可以试一下。</p>
-<p>　　（NOTE：PMTU–Path Maximum Transfer Unit是指当一个要发送的数据包的大小与当前路径中的最小的MTU值一样）</p>
-<p>　　区别于黑洞路由的是，这是路由器自动总结生成总结路由后产生的副效果。</p>
-<p>　　无类域间路由协议例如EIGRP，网络192.168.1.0/24 和192.168.2.0/24  被汇聚成192.168.0.0/16的了，但后来如果连接192.168.1.X的接口down掉后，192.168.1.0/24  路由就丢失了，但192.168.0.0/16的汇总路由还存在，那么去192.168.1.0/24的流量就会被丢到null0接口，相对于丢弃，就形成路由黑洞.</p>
-<p>　　所以一般汇总指向的下一跳为NULL 0</p>
-<h3 id="作用二：防止链路故障造成路由黑洞"><a href="#作用二：防止链路故障造成路由黑洞" class="headerlink" title="作用二：防止链路故障造成路由黑洞"></a>作用二：防止链路故障造成路由黑洞</h3><p>黑洞路由：主要是指指向null接口的路由，null接口是一个虚拟的接口无法被配置ip地址，转发到该接口上的数据包都会被丢掉，所以对于所有可能因为中断故障产生路由回路的路由都加上一条黑洞路由。</p>
-<p>例如在配置有默认路由的环境中如果该路由器中的某一个路由项因为故障中断，那么很可能在两个路由器中造成路由环路</p>
-<p><img src="/2021/05/02/IP%E8%B7%AF%E7%94%B1/%E4%BE%8B%E5%AD%902.png"></p>
-<p> 如图路由器1中分别有到192.168.1.0、192.168.2.0、10.106.1.0的直连路由，并且在路由器1中添加默认</p>
-<p> 路由下一跳为10.106.1.2</p>
-<p> 路由器2中除192.168.1.0的直连路由外添加默认路由下一跳为192.168.1.1</p>
-<p> 路由器3中除192.168.2.0的直连路由外添加默认路由下一跳为192.168.2.1</p>
-<p> 路由器4中除10.106.1.0的直连路由外添加汇聚路由：到192.168.0.0 255.255.0.0 的下一跳为10.106.1.1</p>
-<p> 以上的该网络如果在正常情况下回运行良好，但是如果当例如路由器3与路由器1的链接因为故障中断时</p>
-<p> 则该环境中就会出现路由环路，，如路由器2发送到路由器3 192.168.2.2的数据包会先到路由器1，但是路由器1</p>
-<p> 中由于到达192.168.2.0的路由已断所以会按照默认路由发送到路由器4，而路由器4又会按路由表发送到</p>
-<p> 路由器1，因此就会出现路由环路。</p>
-<p> 而解决这种路由环路的方法就是在路由器1上添加静态黑洞路由</p>
-<p> 如添加：ip route-static 192.168.0.0 255.255.0.0 null 0</p>
-<p> 则再即使当网络出现故障导致已有路由项丢失时也不会按照默认路由发出去导致出现循环，而是当查找不到有效路由后</p>
-<p> 数据包会被直接发送到null接口，等效于是直接丢掉数据包。</p>
-<p> 但是要注意：黑洞路由相当于是出现故障情况下的备用路由，所以可以把该条静态黑洞路由的优先级设置低一点（值大一点）</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/01/IP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/01/IP/" itemprop="url">网络层</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T18:26:57+08:00">
-                2021-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><h3 id="网络层协议"><a href="#网络层协议" class="headerlink" title="网络层协议"></a>网络层协议</h3><p>网络层经常被称为IP层。</p>
-<p><img src="/2021/05/01/IP/1.png"></p>
-<h3 id="IP协议"><a href="#IP协议" class="headerlink" title="IP协议"></a>IP协议</h3><p><strong>IP Internet Protocol</strong><br>Internet Protocol本身是一个协议文件的名称，主要是定义并阐述了IP报文的格式。<br>经常被提及的IP，一般不是特指Internet Protocol这个协议文件本身，而是泛指直接或间接与IP协议相关的任何内容。</p>
-<p><strong>作用</strong></p>
-<ul>
-<li>为网络层的设备提供逻辑地址</li>
-<li>负责数据包的寻址和转发</li>
-</ul>
-<p><strong>版本</strong></p>
-<ul>
-<li>lPv4 (IP Version 4)</li>
-<li>lPv6 (IP Version 6)</li>
-</ul>
-<h3 id="数据封装"><a href="#数据封装" class="headerlink" title="数据封装"></a>数据封装</h3><p><img src="/2021/05/01/IP/2.png"></p>
-<h3 id="IPv4报文格式"><a href="#IPv4报文格式" class="headerlink" title="IPv4报文格式"></a>IPv4报文格式</h3><p><img src="/2021/05/01/IP/3.png"></p>
-<h4 id="数据包分片"><a href="#数据包分片" class="headerlink" title="数据包分片"></a>数据包分片</h4><p>分片：将报文分割成多个片段的过程。</p>
-<p>网络中转发的IP报文的长度可以不同，但如果报文长度超过了数据链路所支持的最大长度，则报文就需要分割成若干个较小的片段才能够在链路上传输。</p>
-<p><img src="/2021/05/01/IP/4.png"></p>
-<h4 id="生存时间-Time-to-Live，TTL"><a href="#生存时间-Time-to-Live，TTL" class="headerlink" title="生存时间(Time to Live，TTL)"></a>生存时间(Time to Live，TTL)</h4><p>TTL字段设置了数据包可以经过的路由器数目。<br>一旦经过一个路由器，TTL值就会减1，当该字段值为0时，数据包将被丢弃。</p>
-<p><img src="/2021/05/01/IP/5.png"></p>
-<h4 id="协议号-Protocol"><a href="#协议号-Protocol" class="headerlink" title="协议号(Protocol)"></a>协议号(Protocol)</h4><p>IP报文头中的协议号字段标识了将会继续处理该报文的协议。<br>即指出此数据包携带的数据使用何种协议，以便目的主机的IP层将数据部分上报给哪个进程处理。</p>
-<ul>
-<li>TCP为6 UDP为17 ICMP为1</li>
-</ul>
-<p><img src="/2021/05/01/IP/6.png"></p>
-<h2 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h2><h3 id="IP地址表示"><a href="#IP地址表示" class="headerlink" title="IP地址表示"></a>IP地址表示</h3><p>一个IPv4地址有32 bit。<br>IPv4地址通常采用“点分十进制”表示。</p>
-<p><img src="/2021/05/01/IP/7.png"></p>
-<h3 id="lР地址构成"><a href="#lР地址构成" class="headerlink" title="lР地址构成"></a>lР地址构成</h3><p>网络部分：用来标识一个网络，代表IP地址所属网络。。<br>主机部分：用来区分一个网络内的不同主机，能唯一标识网段上的某台设备。<br>网络掩码区分一个IP地址中的网络部分及主机部分。</p>
-<p><img src="/2021/05/01/IP/8.png"></p>
-<h3 id="IP地址分类-有类编址"><a href="#IP地址分类-有类编址" class="headerlink" title="IP地址分类(有类编址)"></a>IP地址分类(有类编址)</h3><p>为了方便IP地址的管理及组网，IP地址分成五类:</p>
-<p><img src="/2021/05/01/IP/9.png"></p>
-<p>A/B/C类默认网络掩码</p>
-<ul>
-<li>A类:8 bit， 0.0.0.0~127.255.255.255/8。</li>
-<li>B类:16 bit，128.0.0.0~191.255.255.255/16。</li>
-<li>C类:24 bit，192.0.0.0~223.255.255.255/24</li>
-</ul>
-<h3 id="IP地址类型"><a href="#IP地址类型" class="headerlink" title="IP地址类型"></a>IP地址类型</h3><p>我们通常把一个网络号所定义的网络范围称为一个网段。</p>
-<p>网络地址:用于标识一个网络。</p>
-<p><img src="/2021/05/01/IP/10.png"></p>
-<p>广播地址:用于向该网络中的所有主机发送数据的特殊地址。</p>
-<p><img src="/2021/05/01/IP/11.png"></p>
-<p>可用地址:可分配给网络中的节点或网络设备接口的地址。</p>
-<p><img src="/2021/05/01/IP/12.png"></p>
-<p><strong>注意</strong></p>
-<ul>
-<li>网络地址和广播地址不能直接被节点或网络设备所使用。</li>
-<li>一个网段可用地址数量为:2的n次幂-2( n:主机部分的比特位数)</li>
-</ul>
-<h3 id="私网IP地址"><a href="#私网IP地址" class="headerlink" title="私网IP地址"></a>私网IP地址</h3><p>公网IP地址：IP地址是由IANA统一分配的，以保证任何一个IP地址在Internet上的唯一性。<br>公网IP地址：实际上一些网络不需要连接到Internet，比如一个大学的封闭实验室内的网络，只要同一网络中的网络设备的IP地址不冲突即可。在IP地址空间里，A、B、C三类地址中各预留了一些地址专门用于上述情况，称为私网IP地址。</p>
-<p><img src="/2021/05/01/IP/13.png"></p>
-<h3 id="特殊IP地址"><a href="#特殊IP地址" class="headerlink" title="特殊IP地址"></a>特殊IP地址</h3><p>IP地址空间中，有一些特殊的IP地址，这些IP地址有特殊的含义和作用，举例如下。</p>
-<p><img src="/2021/05/01/IP/14.png"></p>
-<h3 id="lPv4-vs-lPv6"><a href="#lPv4-vs-lPv6" class="headerlink" title="lPv4 vs lPv6"></a>lPv4 vs lPv6</h3><p>由全球IP地址分配机构，IANA (Internet Assigned Numbers Authority)管理的IPv4地址，于2011年完全用尽随着最后一个IPv4公网地址分配完毕，加上接入公网的用户及设备越来越多，IPv4地址枯竭的问题日益严重,这是当前IPv6替代IPv4的最大源动力。</p>
-<p><img src="/2021/05/01/IP/15.png"></p>
-<h2 id="子网划分"><a href="#子网划分" class="headerlink" title="子网划分"></a>子网划分</h2><h3 id="为什么要划分子网"><a href="#为什么要划分子网" class="headerlink" title="为什么要划分子网"></a>为什么要划分子网</h3><p><img src="/2021/05/01/IP/16.png"></p>
-<h3 id="如何进行子网划分-原网段分析"><a href="#如何进行子网划分-原网段分析" class="headerlink" title="如何进行子网划分-原网段分析"></a>如何进行子网划分-原网段分析</h3><p><img src="/2021/05/01/IP/17.png"></p>
-<h3 id="如何进行子网划分-向主机借位"><a href="#如何进行子网划分-向主机借位" class="headerlink" title="如何进行子网划分-向主机借位"></a>如何进行子网划分-向主机借位</h3><p><img src="/2021/05/01/IP/18.png"></p>
-<h3 id="如何进行子网划分-计算子网网络地址"><a href="#如何进行子网划分-计算子网网络地址" class="headerlink" title="如何进行子网划分-计算子网网络地址"></a>如何进行子网划分-计算子网网络地址</h3><p><img src="/2021/05/01/IP/19.png"></p>
-<h3 id="如何进行子网划分-计算子网广播地址"><a href="#如何进行子网划分-计算子网广播地址" class="headerlink" title="如何进行子网划分-计算子网广播地址"></a>如何进行子网划分-计算子网广播地址</h3><p><img src="/2021/05/01/IP/20.png"></p>
-<h2 id="ICMP协议"><a href="#ICMP协议" class="headerlink" title="ICMP协议"></a>ICMP协议</h2><p>lCMP：Internet Control Message Protocol<br>Internet控制消息协议是IP协议的辅助协议。用来在网络设备间传递各种差错和控制信息。</p>
-<p><img src="/2021/05/01/IP/21.png"></p>
-<h3 id="ICMP重定向"><a href="#ICMP重定向" class="headerlink" title="ICMP重定向"></a>ICMP重定向</h3><p>ICMP重定向报文是ICMP控制报文中的一种。</p>
-<p><img src="/2021/05/01/IP/ICMP%E9%87%8D%E5%AE%9A%E5%90%91.png"></p>
-<h3 id="ICMP差错检测"><a href="#ICMP差错检测" class="headerlink" title="ICMP差错检测"></a>ICMP差错检测</h3><p>ICMP Echo消息常用于诊断源和目的地之间的网络连通性，同时还可以提供其他信息，如报文往返时间等。</p>
-<p><img src="/2021/05/01/IP/22.png"></p>
-<h3 id="ICMP错误报告"><a href="#ICMP错误报告" class="headerlink" title="ICMP错误报告"></a>ICMP错误报告</h3><p>ICMP定义了各种错误消息，用于诊断网络连接性问题;根据这些错误消息，源设备可以判断出数据传输失败的原因。</p>
-<p><img src="/2021/05/01/IP/23.png"></p>
-<h2 id="IP地址基础配置命令"><a href="#IP地址基础配置命令" class="headerlink" title="IP地址基础配置命令"></a>IP地址基础配置命令</h2><p>1.进入接口视图</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] interface interface-type interface-number</span><br></pre></td></tr></table></figure>
-<p>通过此命令可以进入指定的接口视图，配置接口的相关属性。</p>
-<ul>
-<li>interface-type interface-number:指定接口类型和接口编号。接口类型和接口编号之间可以输入空格也可以不输入空格。</li>
-</ul>
-<p>2.配置接口的IP地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-GigabitEthernetO&#x2F;0&#x2F;1] ip address ip-address &#123; mask | mask-length &#125;</span><br></pre></td></tr></table></figure>
-<p>在接口视图下，通过此命令来给网络设备上的接口配置IP地址，实现网络的互连。</p>
-<ul>
-<li>ip-address:指定接口的IP地址，点分十进制形式。</li>
-<li>mask:指定子网掩码，点分十进制形式。</li>
-<li>mask-length:指定掩码长度，整数形式，取值范围是0~32。</li>
-</ul>
-<h2 id="网络IP地址规划"><a href="#网络IP地址规划" class="headerlink" title="网络IP地址规划"></a>网络IP地址规划</h2><p>IP地址规划要和网络结构、路由协议、流量规划、业务规则等结合起来考虑。IP地址的规划应尽可能和网络层次相对应，应该是自顶向下的一种规划。<br>IP地址规划的目标是∶易管理、易扩展、利用率高。</p>
-<p>参考规划原则:唯一性、连续性、扩展性、结构化、业务相关性</p>
-<p><img src="/2021/05/01/IP/24.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/" itemprop="url">以太网交换</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-01T09:34:21+08:00">
-                2021-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="以太网是什么？"><a href="#以太网是什么？" class="headerlink" title="以太网是什么？"></a>以太网是什么？</h2><p>以太网(Ethernet)最早是由Xerox(施乐)公司创建的局域网组网规范，1980年DEC、Intel和Xeox三家公司联合开发了初版Ethernet规范—DIX 1.0，1982年这三家公司又推出了修改版本DIX 2.0，并将其提交给EEE 802工作组，经IEEEE成员修改并通过后，成为IEEE的正式标准，并编号为IEEE 802.3。虽然Ethernet规范和IEEE 802.3规范并不完全相同，但一般认为Ethernet和正IEEE 802.3是兼容的。</p>
-<p>以太网是应用最广泛的局域网技术。根据传输速率的不同，以太网分为标准以太网(10Mbit/s)、快速以太网(100Mbis)千兆以太网(1000Mbs)和万兆以太网(10Gbit/s)，这些以太网都符合IEEE 802.3是兼容的。</p>
-<h3 id="1、标准以太网"><a href="#1、标准以太网" class="headerlink" title="1、标准以太网"></a>1、标准以太网</h3><p>标准以太网是最早期的以太网，其传输速率为10Mbts，也称为传统以太网。此种以太网的组网方式非常灵活，既可以使用粗、细缆组成总线网络，也可以使用双绞线组成星状网络，还可以同时使用同轴电缆和双绞线组成混合网络。这些网络都符合EE802.3标准，EEE802.3中规定的一些传统以太网物理层标准如下。</p>
-<p>①10 Base-2：使用细同轴电缆，最大网段长度为185m。</p>
-<p>②10 Base-5：使用粗同轴电缆，最大网段长度为500m。</p>
-<p>③10 Base-T：使用双纹线，最大网段长度为100m。</p>
-<p>④10 Boad-36：使用同轴电缆，最大网段长度为3600m。</p>
-<p>⑤10 Base-F：使用光纤，最大网段长度为2000m，传输速率为10Mb/s。</p>
-<p>以土标准中首部的数字代表传输速率，单位为Mbis；末尾的数字代表单段网线长度(基准单位为100m)；Base表示基带传输， Broad表示宽带传输。</p>
-<h3 id="2、快速以太网"><a href="#2、快速以太网" class="headerlink" title="2、快速以太网"></a>2、快速以太网</h3><p>随着网络的发展和各项网络技术的普及，标准以太网技术已难以满足人们对网络数据流量和速率的需求。1993年10月以前，人们只能选择价格昂贵、基于100Mbs光缆的FDD技术组建高标准网络，1993年10月， Grand Junction公司推出了世界上第一台快速以太网集线器FastSwitch10/100和百兆网络接口卡 Fast NIC 100，快速以太网技术正式得到应用。</p>
-<p>随后，Intel、3COM等公司也相继推出了自己的快速以太网设备，同时EEE802工作组对100Mbi/s以太网的各种标准进行了研究，并于1995年4月发布了IEEE 802.3u 100Base-T快速以太网标准，快速以太网时代到来。</p>
-<p>IEEE 802.3U标准基本保持了标准局域网的规定，包括帧格式、接口、介质访问控制方法</p>
-<p>( CSMA/CD)等，只是将数据传输速率从10Mbts提升到了100Mbit/s，又使用了一些新的物理层标准，具体如下所示。</p>
-<p>① 100 Base-1X：使用两对5类屏蔽或非屏蔽双绞线，一对用于发送数据，一对用于传输数据；使用RJ-45或DB9接口，节点与集线器的最大距离为100m，支持全双工。</p>
-<p>② 100 Base-T4：使用4对3类、4类或5类双绞线，3对用于发送数据，1对用于检测冲突信号；使用R-45连接器，最大网段长度为100m，不支持全双工。</p>
-<p>③ 100Base-FX：使用一对单模或多模光纤，一路用于发送数据，一路用于接收数据；最大网段长度为200m(使用单模光纤时可达2000m)，支持全双工。此种网络主要用于搭建主千网，以提升主干网络传输速率。</p>
-<h3 id="3、千兆以太网"><a href="#3、千兆以太网" class="headerlink" title="3、千兆以太网"></a>3、千兆以太网</h3><p>千兆以太网(GigabitEthernet)也称为吉比特以太网。1995年11月，IEEE 802.3工作组委任一个高速研究组，以研究将快速以太网速率增至1000Mbls的可行性和方法。1996年6月，IEEE标准委员会批准了千兆以太网方案授权申请，随后IEEE 802.3工作组成立了IEEE 802.3z工作委员会，该委员会建立了千兆以太网标准，该标准的主要规定如下：</p>
-<p>① 速率为1000Mbit/s的以太网在通信时的全双工/半双工操作。</p>
-<p>② 使用802.3以太网帧格式、CSMA/CD技术。</p>
-<p>③ 在一个冲突域中支持一个中继器。</p>
-<p>④ 向下兼容10Base-T和100Base-TIEEE 802.3。</p>
-<p>工作组为千兆以太网制定了一系列物理层标准，其中常用的标准如下。</p>
-<p>（1）1000 Base-SX：使用芯径为50m及625m、工作波长为850m的多模光纤，采用8B/10B编码方式，传输距离分别为260m和525m。此标准主要应用于建筑物中同一层的短距离主于网。</p>
-<p>（2）1000 Base-LX：使用芯径为50pm及625m、工作波长为850nm和芯径为5m、工作波长为1300nm的多模、单模光纤，传输距离分别为525m、550m和3000m。此标准主要应用于校园主干网。</p>
-<p>（3）1000 Base-CX：使用1500屏蔽双绞线，采用8B/10B编码方式，传输速率为1.25Gbis，传输距离为25m。此标准主要用于集群设备的连接，如一个交换机机房内的设备互联。</p>
-<p>（4）1000 Base-T：使用4对5类非屏蔽双绞线，采用PAM5编码方式，传输距离为100m。</p>
-<p>此标准主要用于同一层建筑的通信，从而可利用标准以太网或快速以太网已铺设的非屏蔽双绞线电缆。</p>
-<p>千兆以太网采用光纤作为上行链路，用于楼宇间的连接，原本被作为一种交换技术设计，之后被广泛应用于服务器的连接和主干网中。如今，千兆以太网已成为主流的网络技术，无论是大型企业还是中小型企业，在组建网络时都会把千兆以太网作为首选高速网络技术。</p>
-<h3 id="4、万兆以太网"><a href="#4、万兆以太网" class="headerlink" title="4、万兆以太网"></a>4、万兆以太网</h3><p>万兆以太网(10 Gigabit Ethernet，10GE)也称为10吉比特以太网，是继千兆以太网之后产生的高速以太网。在千兆以太网的IEEE 802.3Z规范通过后不久，IEEEE成立了高速研究组（High Speed Study Group，HssG)，该研究组主要致力于10GE的研究。</p>
-<p>10GE并非简单地将千兆以太网的速率提升了10倍，2002年6月，IEEE 802.3ae委员会制定了10GE的正式标准，该标准主要包括以下内容。</p>
-<p>① 兼容802.3标准中定义的最小和最大以太网帧长度。</p>
-<p>②仅支持全双工方式。</p>
-<p>③使用点对点链路和结构化布线组建星状局域网。</p>
-<p>④在 MAC/PLS服务接口上实现10Gbs的速度。</p>
-<p>⑤定义两种物理层规范，即局域网PHY和广域网PHY。</p>
-<p>⑥定义将 MAC/PLS的数据传输速率对应到广域网PHY数据传输速率的适配机制。</p>
-<p>⑦定义支持特定物理介质相关接口(PMD)的物理层规范，包括多模光纤和单模光纤以及相应传输距离;支持ISO/C11801第二版中定义的光纤介质类型等。</p>
-<p>⑧通过WAN界面子层，10Gbi/s也能被调整为较低的传输速率。</p>
-<p>此外，10Gbis不再使用铜线，只使用光纤作为传输媒介;不再使用 CSMA/CD协议。千兆以太网仍可使用已有的光纤通道技术，但10GE使用新开发的物理层。10GE常用的物理层规范如下。</p>
-<p>①10G Base-SR：SR表示” Short Reach”(短距离)，10GBase-SR仅用于短距离连接，该规范支持编码方式为64B/66B的短波(850mm)多模光纤，有效传输距离为2m~300m。</p>
-<p>② 10G Base-LR：LR表示“Long Reach”(长距离)，10 G Base-LR主要用于长距离连接，该规范支持编码方式为64B/66B的长波(1310mm)单模光纤，有效传输距离为2m~10km，最高可达25km。</p>
-<p>④ 10 G Base-ER：ER表示“ Extended Reach”(超长距离，10G Base-ER支持超长波（1550nm)单模光纤，有效传输距离为2m~40km。</p>
-<h2 id="IEEE802-3与以太网的关系"><a href="#IEEE802-3与以太网的关系" class="headerlink" title="IEEE802.3与以太网的关系"></a>IEEE802.3与以太网的关系</h2><p>以太网从历史的角度看有两个，第一个是由三家公司开发的DIX以太网标准。这个标准有两个版本，分别是1980年9月发布的1.0版本和1982年11月发布的2.0版本，这也是DIX的最后一个版本。在其后1985年IEEE在DIX以太网标准的基础上制定了IEEE 802.3标准。</p>
-<p>DIX与IEEE 802.3从工作机制上是一致的。但实际上，DIX以太网标准与IEEE 802.3有一些区别，DIX是把定义的OSI参考模型中的物理层和数据链路层所完成的功能，包括在一起了。它把LLC SUBLAYER(子层)和MAC SUBLAYER 媒介访问控制子层划分成了数据链路层的两个子层。目的是为了数据侦传输独立与所用的物理介质和介质访问控制方法。而IEEE 802.3规定了物理层和数据链路层中媒介访问控制子层的MAC部分，它只包括了第二层的一部分功能，而IEEE 802.2定义了逻辑链路控制子层LLC的功能。MAC与介质访问控制方法密切相关，而LLC子层与所有介质访问方法无关。LLC的隔离作用，使得网络层仅针对LLC这种接口工作，不必关心下面的介质类型及介质访问方法。而IEEE 802.3是针对以太网的标准，而IEEE 802.2并不属于以太网。所以说DIX与IEEE 802.3只是包括的范围不同，相应它们两中协议的帧格式也有一些差异。我们也可以这样的理解。</p>
-<p>通俗地说就是，以太网先出来，IEEE发现这个东西很有前途，就赶紧以它为原型制定了一个有线局域网标准叫做IEEE 802.3，这个标准与原始以太网基本一样，只有些许不同，所以我们常常不加区分地将二者等同。但鉴于本篇文章的目的就是为了搞清楚这些层次之间的关系，所以我们要严格地对二者进行区分，IEEE802.3和以太网是不一样的，前者只定义了物理层和链路层的MAC子层，后者包括链路和物理两层。</p>
-<p>链路层分为LLC和MAC，其中LLC叫做802.2，MAC+PHY叫做802.3，所以有如下公式：802.3+802.2=以太网</p>
-<p>以太网协议栈在OSI模型中的位置，如下图</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/OSI%E4%BD%8D%E7%BD%AE.png"></p>
-<p>IEEE 802中定义的服务和协议限定在OSI模型的最低两层（即物理层和数据链路层）。事实上，IEEE 802将OSI的数据链路层分为两个子层，分别是逻辑链路控制（LLC， Logical Link Control）和介质访问控制（MAC， Media Access Control），如下所示：</p>
-<ul>
-<li>数据链路层<ul>
-<li>逻辑链路控制子层</li>
-<li>介质访问控制子层</li>
-</ul>
-</li>
-<li>物理层</li>
-</ul>
-<p>从上面我们可以看出，以太网占了两层（物理层+完整链路层），而IEEE802.3占了一层（物理层+链路层中的MAC子层）。</p>
-<p>了解了以太网和IEEE802.3在OSI模型中的位置以后，下面来看看以太网的层次划分</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/1.png"></p>
-<p>其实在MAC（介质访问控制子层）上面还有一个LLC（逻辑链路控制子层），这两个部分共同构成了链路层。链路层通过MII（或者其它一些升级版的接口，如GMII等）将数据传送到物理层，物理层对这些数据进行处理并以差分信号的形式发送出去，下面解释了图中物理层的一些缩略词的含义：</p>
-<p>MII（media independent interface）：MII的实例应用，就是一种协议，用来将数据从数据链路层传输到物理层。<br>PCS（physical coding sublayer）：对要通过支撑体传送的信息进行编码。实际定义的子层有 4 个：100BASE-X、100BASE-T4、100BASE-T2 和 1000BASE-X。<br>PMA（physical media attachment）：用于给定的介质类型。其功能是：数据传送、冲突侦测、时钟同步等。<br>PMD（physical medium dependent）：就在 MDI 接口之前，用于为MDI和传送支撑体提供接口。<br>MDI（media dependent device）：用于将收发器连接到发送支撑的插头的总称。它可以是 10BASE2 网络中的 BNC 插头，或者双绞线网络的 RJ-45 插头，或者光纤连接器。<br>上面看了那么多是不是有点蒙，下面我们会以网卡为例将抽象与实际关联。</p>
-<h3 id="结合网卡硬件具体分析"><a href="#结合网卡硬件具体分析" class="headerlink" title="结合网卡硬件具体分析"></a>结合网卡硬件具体分析</h3><p>网卡的主要工作原理:发送数据时，计算机把要传输的数据并行写到网卡的缓存，网卡对要传输的数据进编码(10M以太网使用曼切斯特码，100M以太网使用差分曼切斯特码)，串行发到传输介质上.接收数据时，则相反。对于网卡而言，每块网卡都有一个唯一的网络节点地址，它是网卡生产厂家在生产时烧入ROM（只读存储芯片）中的，我们把它叫做MAC地址（物理地址），且保证绝对不会重复。MAC为48bit，前24比特由IEEE分配，是需要钱买的，后24bit由网卡生产厂家自行分配。</p>
-<p>网卡的功能主要有两个:</p>
-<p>将电脑的数据封装为帧，并通过网线(对无线网络来说就是电磁波)将数据发送到网络上去。<br>是接收网络上其它设备传过来的帧，并将帧重新组合成数据，发送到所在的电脑中。<br>网卡能接收所有在网络上传输的信号，但正常情况下只接受发送到该电脑的帧和广播帧，将其余的帧丢弃。然后，传送到系统CPU做进一步处理。当电脑发送数据时，网卡等待合适的时间将分组插入到数据流中。接收系统通知电脑消息是否完整地到达，如果出现问题，将要求对方重新发送。</p>
-<p>现在的网卡大多集成在主板上面了，不过为了说明结构组成，我们还是用上古时期的独立网卡来介绍其结构</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/2.png"></p>
-<p>以最常见的PCI接口的网卡为例，一块网卡主要由PCB线路板、主芯片、数据汞、金手指(总线插槽接口)、BOOTROM、EEPROM、晶振、RJ45接口、指示灯、固定片等等，以及一些二极管、电阻电容等组成。下面我们就来分别了解一下其中主要部件。</p>
-<p>主芯片</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/3.png"></p>
-<p>主芯片有两大类，一种是集成了MAC和PHY的，另一种是只有MAC的，前者对应着数据链路层和物理层，后者只对应数据链路层，需要单独的芯片来构成物理层。在二者分离的情况下，主芯片与PHY芯片之间就需要MII来进行通信</p>
-<p>网卡的主控制芯片是网卡的核心元件，一块网卡性能的好坏和功能的强弱多寡，主要就是看这块芯片的质量。</p>
-<p>bootroom</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/4.png"></p>
-<p>BOOTROM插座也就是常说的无盘启动ROM接口，其是用来通过远程启动服务构造无盘工作站的。远程启动服务(Remoteboot，通常也叫RPL)使通过使用服务器硬盘上的软件来代替工作站硬盘引导一台网络上的工作站成为可能。网卡上必须装有一个RPL(Remote Program Load远程初始程序加载)ROM芯片才能实现无盘启动，每一种RPL ROM芯片都是为一类特定的网络接口卡而制作的，它们之间不能互换。带有RPL的网络接口卡发出引导记录请求的广播(broadcasts)，服务器自动的建立一个连接来响应它，并加载MS-DOS启动文件到工作站的内存中。</p>
-<p>此外，在BOOTROM插槽中心一般还有一颗93C46、93LC46或93c56的EEPROM芯片(93C56是128<em>16bit的EEPROM，而93C46是64</em>16bit的EEPROM)，它相当于网卡的BIOS，里面记录了网卡芯片的供应商ID、子系统供应商ID、网卡的MAC地址、网卡的一些配置，如总线上PHY的地址，BOOTROM的容量，是否启用BOOTROM引导系统等内容。主板板载网卡的EEPROM信息一般集成在主板BIOS中。</p>
-<p>LED指示灯</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/5.png"></p>
-<p>一般来讲，每块网卡都具有1个以上的LED(Light Emitting Diode发光二极管)指示灯，用来表示网卡的不同工作状态，以方便我们查看网卡是否工作正常。典型的LED指示灯有Link/Act、Full、Power等。Link/Act表示连接活动状态，Full表示是否全双工(Full Duplex)，而Power是电源指示(主要用在USB或PCMCIA网卡上)等 。</p>
-<p>数据汞</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/6.png"></p>
-<p>数据汞是消费级PCI网卡上都具备的设备，数据汞也被叫做网络变压器或可称为网络隔离变压器。它在一块网卡上所起的作用主要有两个，一是传输数据，它把PHY送出来的差分信号用差模耦合的线圈耦合滤波以增强信号，并且通过电磁场的转换耦合到不同电平的连接网线的另外一端;一是隔离网线连接的不同网络设备间的不同电平，以防止不同电压通过网线传输损坏设备。除此而外，数据汞还能对设备起到一定的防雷保护作用。</p>
-<p>晶振</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/7.png"></p>
-<p>晶振是石英振荡器的简称，英文名为Crystal，它是时钟电路中最重要的部件，它的作用是向显卡、网卡、主板等配件的各分提供基准频率，它就像个标尺，工作频率不稳定会造成相关设备工作频率不稳定，自然容易出现问题。由于制造工艺不断提高，现在晶振的频率偏差、温度稳定性、老化率、密封性等重要技术指标都很好，已不容易出现故障，但在选用时仍可留意一下晶振的质量。</p>
-<p>网线接口</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/8.png"></p>
-<p>对应着MDI</p>
-<p>网卡上还剩一些组件，PMA，PCS和PMD没有提，自己去了解一下吧，而且并不是所有以太网解决方案都会包括完整的标准内容。</p>
-<h2 id="互联网和以太网的区别"><a href="#互联网和以太网的区别" class="headerlink" title="互联网和以太网的区别"></a>互联网和以太网的区别</h2><h3 id="互联网"><a href="#互联网" class="headerlink" title="互联网"></a>互联网</h3><p>互联网（Internet）是一个网络的网络，它是由从地方到全球范围内几百万个私人的，政府的，学术界的，企业的和政府的网络所构成，通过电子，无线和光纤网络技术等等一系列广泛的技术联系在一起。</p>
-<h3 id="以太网"><a href="#以太网" class="headerlink" title="以太网"></a>以太网</h3><p>以太网（Ethernet）是为了实现局域网通信而设计的一种数据链路层技术，它规定了包括物理层的连线、电子信号和介质访问层协议的内容。以太网是目前应用最普遍的局域网技术，取代了其他局域网标准如令牌环、FDDI和ARCNET。</p>
-<h3 id="二者区别"><a href="#二者区别" class="headerlink" title="二者区别"></a>二者区别</h3><p>1、简单地说，以太网是一直为了实现局域网通信而设计的一系列技术方案，包括物理层传输媒介和 CSMA/CD 协议等内容，而互联网是计算机网络。</p>
-<p>2、以太网很普及，电脑上的以太网接口，Wi-Fi 接口，以太网交换机、路由器上的千兆，万兆以太网口，还有网线，它们都是以太网的组成部分，以太网可以用在局域网、广域网、也可以用在互联网上，现在网络有以太网化的趋势，因为简单易用，造成很普及，然后就得到很好的研究，10兆带宽，100 兆，1000 兆，万兆…这就是它的速率升级图。</p>
-<p>而互联网则是由大大小小的运营商、公司、机构、用户连接起来网络的总称，里面包含以太网、ATM网、还有其它接口，如 E1/E3等等。</p>
-<h2 id="以太网协议"><a href="#以太网协议" class="headerlink" title="以太网协议"></a>以太网协议</h2><p>以太网是当今现有局域网(Local Area Network, LAN)采用的最通用的通信协议标准,定义了局域网中采用的电缆类型和信号处理方法。<br>以太网是建立在CSMA/CD (Carrier Sense Multiple Access/Collision Detection，载波监听多路访问/冲突检测)机制上的广播型网络。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E4%BB%A5%E5%A4%AA%E7%BD%91%E5%8D%8F%E8%AE%AE.png"></p>
-<h3 id="冲突域"><a href="#冲突域" class="headerlink" title="冲突域"></a>冲突域</h3><p>冲突域是指连接在同一共享介质上的所有节点的集合。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%86%B2%E7%AA%81%E5%9F%9F.png"></p>
-<h3 id="广播域"><a href="#广播域" class="headerlink" title="广播域"></a>广播域</h3><p>广播报文所能到达的整个访问范围称为二层广播域，简称广播域。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B9%BF%E6%92%AD%E5%9F%9F.png"></p>
-<h3 id="以太网卡"><a href="#以太网卡" class="headerlink" title="以太网卡"></a>以太网卡</h3><p>网络接口卡(Network Interface Card,NIC)也称为“网卡”</p>
-<p>网络接口</p>
-<ul>
-<li>简称“网口”或“接口”或“端口”</li>
-</ul>
-<p>网卡</p>
-<ul>
-<li>每个网口都有一块网卡与之对应。</li>
-<li>计算机或交换机通过网卡来转发数据。</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/19.png"></p>
-<h2 id="以太网帧"><a href="#以太网帧" class="headerlink" title="以太网帧"></a>以太网帧</h2><h3 id="以太网帧格式"><a href="#以太网帧格式" class="headerlink" title="以太网帧格式"></a>以太网帧格式</h3><ul>
-<li><p>以太网技术所使用的帧称为以太网帧(Ethernet Frame)，或简称以太帧。</p>
-</li>
-<li><p>以太帧的格式有两个标准:Ethernet_ll格式和IEEE 802.3格式。</p>
-</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/%E5%B8%A7%E6%A0%BC%E5%BC%8F.png"></p>
-<h3 id="什么是MAC地址"><a href="#什么是MAC地址" class="headerlink" title="什么是MAC地址"></a>什么是MAC地址</h3><ul>
-<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡。</li>
-<li>一块网卡的MAC地址是具有全球唯一性的。</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80.png"></p>
-<h3 id="IP地址-vs-MAC地址"><a href="#IP地址-vs-MAC地址" class="headerlink" title="IP地址 vs MAC地址"></a>IP地址 vs MAC地址</h3><p>IP地址的特点:</p>
-<ul>
-<li>IP地址是唯一的</li>
-<li>IP地址可变</li>
-<li>基于网络拓扑进行IP地址分配</li>
-</ul>
-<p>MAC地址的特点:</p>
-<ul>
-<li>MAC地址是唯一的</li>
-<li>MAC地址不可变</li>
-<li>基于制造商进行MAC地址分配</li>
-</ul>
-<h3 id="MAC地址表示"><a href="#MAC地址表示" class="headerlink" title="MAC地址表示"></a>MAC地址表示</h3><p>一个MAC地址有48 bit，6 Byte。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E8%A1%A8%E7%A4%BA.png"></p>
-<h3 id="MAC地址构成及分类"><a href="#MAC地址构成及分类" class="headerlink" title="MAC地址构成及分类"></a>MAC地址构成及分类</h3><ul>
-<li>OUI( Organizationally Unique ldentifier ) :厂商代码，由IEEE分配，3 Byte，24 bit</li>
-<li>制造商分配:3 Byte，24 bit</li>
-</ul>
-<p><strong>MAC地址分类</strong></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E5%88%86%E7%B1%BB.png"></p>
-<h2 id="以太网交换机"><a href="#以太网交换机" class="headerlink" title="以太网交换机"></a>以太网交换机</h2><h3 id="MAC地址表"><a href="#MAC地址表" class="headerlink" title="MAC地址表"></a>MAC地址表</h3><ul>
-<li>每台交换机中都有一个MAC地址表，存放了MAC地址与交换机端口编号之间的映射关系。</li>
-</ul>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/MAC%E5%9C%B0%E5%9D%80%E8%A1%A8.png"></p>
-<h3 id="MAC地址表学习过程"><a href="#MAC地址表学习过程" class="headerlink" title="MAC地址表学习过程"></a>MAC地址表学习过程</h3><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/9.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/10.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/11.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/12.png"></p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/13.png"></p>
-<h3 id="交换机转发过程"><a href="#交换机转发过程" class="headerlink" title="交换机转发过程"></a>交换机转发过程</h3><h4 id="交换机的3种数据帧处理行为"><a href="#交换机的3种数据帧处理行为" class="headerlink" title="交换机的3种数据帧处理行为"></a>交换机的3种数据帧处理行为</h4><p>交换机对于从传输介质进入某一端口的帧的处理行为一共有3种:泛洪、转发和丢弃。</p>
-<p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/14.png"></p>
-<h4 id="泛洪"><a href="#泛洪" class="headerlink" title="泛洪"></a>泛洪</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/15.png"></p>
-<h4 id="转发"><a href="#转发" class="headerlink" title="转发"></a>转发</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/16.png"></p>
-<h4 id="丢弃"><a href="#丢弃" class="headerlink" title="丢弃"></a>丢弃</h4><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/17.png"></p>
-<h2 id="数据封装过程"><a href="#数据封装过程" class="headerlink" title="数据封装过程"></a>数据封装过程</h2><p><img src="/2021/05/01/%E4%BB%A5%E5%A4%AA%E7%BD%91%E4%BA%A4%E6%8D%A2/18.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2707,7 +3242,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">62</span>
+                  <span class="site-state-item-count">65</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
