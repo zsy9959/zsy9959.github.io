@@ -241,6 +241,839 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/" itemprop="url">IP-IP路由基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:14:01+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫识别IP路由表和FIB表</p>
+<p>▫分析路由转发流程</p>
+<p>▫描述路由引入的原理</p>
+<p>▫描述路由引入的使用场景</p>
+<h1 id="IP路由基础"><a href="#IP路由基础" class="headerlink" title="IP路由基础"></a><strong>IP路由基础</strong></h1><h2 id="IP路由概述"><a href="#IP路由概述" class="headerlink" title="IP路由概述"></a><strong>IP路由概述</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/1.png"></p>
+<p>当路由器收到一个IP报文时，路由器根据该IP报文的目的地址匹配路由条目（或路由表项）。</p>
+<p>▫若有匹配的路由条目，则依据该条目中的出接口或下一跳等信息进行报文转发；</p>
+<p>▫若无匹配的路由条目，则路由器没有相关路由信息用于指导报文转发，此时会丢弃该报文。</p>
+<h2 id="RIB与FIB"><a href="#RIB与FIB" class="headerlink" title="RIB与FIB"></a><strong>RIB与FIB</strong></h2><p>具有路由功能的网络设备都维护两种重要的数据表：一是路由表RIB（Routing Information Base，路由信息库）；二是转发表FIB。</p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/2.png"></p>
+<blockquote>
+<p>•路由表：</p>
+<p>​    ▫可以将路由表视为位于路由器的控制平面，实际上路由表并不直接指导数据转发。路由器在执行路由查询时，并不是在路由表中进行报文目的地址的查询，真正指导数据转发的是FIB表，路由器将路由表中的最优路由下载到FIB表，此后如果路由表中的相关表项发生变化，FIB表也将立即同步。</p>
+<p>​    ▫由于两张表的一致性，且路由表阅读起来更直观，因此在绝大多数场合，在阐述路由器数据转发过程时，会用“路由表”这个说法，实际上，路由器查询的是FIB表，位于控制层面的路由表只是提供路由信息。</p>
+<p>•FIB表：</p>
+<p>​    ▫FIB表位于路由器的数据平面，亦被称为转发表项，每条转发表项都指定要到达某个目的地所需通过的出接口及下一跳IP地址等信息。</p>
+<p>•注意：</p>
+<p>​    ▫具有路由功能的华为数通产品包括路由器、三层交换机等，本课程以路由器为例进行讲解。</p>
+<p>​    ▫OSPF（Open Shortest Path First，开放式最短路径优先）和IS-IS（Intermediate System to Intermediate System，中间系统到中间系统），均基于链路状态信息，使用最短路径优先算法进行路由计算。OSPF及IS-IS的详细内容，将在后续课程介绍。</p>
+<p>​    ▫路由进程：路由器支持OSPF和IS-IS多进程，可以根据业务类型划分不同的进程，不同的进程之间相互独立。进程号是本地概念，不影响与其它路由器之间的报文交换。因此，不同的路由器之间，即使进程号不同也可以进行报文交换。</p>
+</blockquote>
+<h2 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a><strong>路由表</strong></h2><p>每个路由器都有路由表，而路由表又分为本地核心路由表和协议路由表。</p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/3.png"></p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/4.png"></p>
+<blockquote>
+<p>•路由表中的关键字段：</p>
+<ul>
+<li><p>Destination：表示此路由的目的地址。用来标识IP包的目的地址或目的网络。</p>
+</li>
+<li><p>Mask：表示此目的地址的子网掩码长度。与目的地址一起来标识目的主机或路由器所在的网段的地址。</p>
+</li>
+<li><p>Proto（Protocol）：表示学习此路由的路由协议。</p>
+</li>
+<li><p>Pre（Preference）：表示此路由的路由协议优先级。</p>
+<ul>
+<li>路由器分别定义了外部优先级和内部优先级。外部优先级是指用户可以手工为各路由协议配置的优先级，内部优先级则不能被用户手工修改。</li>
+<li>选择路由时先比较路由的外部优先级，当不同的路由协议配置了相同的优先级后，系统会通过内部优先级决定哪个路由协议发现的路由将成为最优路由。</li>
+</ul>
+</li>
+<li><p>Cost：路由开销。</p>
+</li>
+<li><p>NextHop：表示转发到此目的网络的下一跳。指明数据转发的下一个设备。</p>
+</li>
+<li><p>Interface：表示转发到此目的网络的出接口。指明数据将从本地路由器哪个接口转发出去。</p>
+</li>
+<li><p>Preference用于不同路由协议间路由优先级的比较，Cost用于同一种路由协议内部不同路由的优先级的比较。</p>
+</li>
+<li><p>注意：正文内的路由表为截取版，非完整路由表。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="IP路由查找的最长匹配原则"><a href="#IP路由查找的最长匹配原则" class="headerlink" title="IP路由查找的最长匹配原则"></a><strong>IP路由查找的最长匹配原则</strong></h2><p>•路由器查找FIB表时，将报文的目的IP地址和FIB表中各表项的掩码进行按位“逻辑与”，得到的地址符合FIB表中的网络地址则匹配。</p>
+<p>•最终选择一个掩码最长的FIB表项转发报文。</p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/5.png"></p>
+<blockquote>
+<p>•FIB表中每条转发项都指明到达某网段或某主机的报文应通过路由器的哪个物理接口或逻辑接口发送，然后就可到达该路径的下一个路由器，或者不再经过别的路由器而传送到直接相连的网络中的目的主机。</p>
+<p>•FIB表信息查看命令：<strong>display fib</strong> [ <em>slot-id</em> ]</p>
+<ul>
+<li><em>slot-id</em>：显示指定槽位号的FIB表信息。整数形式，取值范围请根据设备实际配置选取。</li>
+</ul>
+<p>•FIB表中的字段说明：</p>
+<ul>
+<li><p>Total number of Routes：路由表总数。</p>
+</li>
+<li><p>Destination/Mask：目的地址/掩码长度。</p>
+</li>
+<li><p>Nexthop：下一跳。</p>
+</li>
+<li><p>Flag：当前标志，G、H、U、S、D、B的组合。</p>
+<ul>
+<li>G（Gateway）：网关路由，表示下一跳是网关。</li>
+<li>H（Host）：主机路由，表示该路由为主机路由。</li>
+<li>U（Up）：可用路由，表示该路由状态是Up。</li>
+<li>S（Static）：静态路由。</li>
+<li>D（Dynamic）：动态路由。</li>
+<li>B（Black Hole）：黑洞路由，表示下一跳是空接口。</li>
+</ul>
+</li>
+<li><p>TimeStamp：时间戳，表示该表项存在的时间，单位是秒。</p>
+</li>
+<li><p>Interface：到目的地址的出接口。</p>
+</li>
+<li><p>TunnelID：表示转发表项索引。该值不为0时，表示匹配该项的报文通过隧道转发（如：MPLS隧道转发）。该值为0时，表示报文不通过隧道转发。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="路由的来源"><a href="#路由的来源" class="headerlink" title="路由的来源"></a><strong>路由的来源</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/6.png"></p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/7.png"></p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/8.png"></p>
+<blockquote>
+<p>•直连路由：直连接口所在网段的路由，由设备自动生成。</p>
+<p>•静态路由：由网络管理员手工配置的路由条目。</p>
+<p>•动态路由：路由器通过动态路由协议（如OSPF、IS-IS、BGP等）学习到的路由。</p>
+<p>​    ▫BGP（Border Gateway Protocol，边界网关协议）是一种实现AS（Autonomous System，自治系统）之间的路由可达，并选择最佳路由的距离矢量路由协议。</p>
+<p>​    ▫AS是指在一个实体管辖下的拥有相同选路策略的IP网络。</p>
+</blockquote>
+<h2 id="动态路由协议"><a href="#动态路由协议" class="headerlink" title="动态路由协议"></a><strong>动态路由协议</strong></h2><p>动态路由协议根据作用范围不同，可分为：</p>
+<p>▫内部网关协议IGP（Interior Gateway Protocol）：在一个自治系统内部运行。常见的IGP协议包括OSPF和IS-IS。</p>
+<p>▫外部网关协议EGP（Exterior Gateway Protocol）：运行于不同自治系统之间。BGP是目前最常用的EGP协议。</p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/9.png"></p>
+<h2 id="路由迭代"><a href="#路由迭代" class="headerlink" title="路由迭代"></a><strong>路由迭代</strong></h2><p>路由必须有直连的下一跳才能够指导转发，静态路由或BGP路由的下一跳可能不是直连的邻居，因此需要计算出一个直连的下一跳，这个过程就叫做路由迭代。</p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/10.png"></p>
+<h2 id="数据转发流程"><a href="#数据转发流程" class="headerlink" title="数据转发流程"></a><strong>数据转发流程</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/11.png"></p>
+<blockquote>
+<p>PC1发送数据包到PC2的流程如下：</p>
+<p>1.PC1将报文发往网关设备R1。</p>
+<p>2.R1查找路由表项，确定转发的下一跳、出接口，之后将报文转发给R2。</p>
+<p>3.R2通过查找路由表项转发给R3。</p>
+<p>4.R3收到后查找路由表项，发现IP报文的目的IP地址属于本地接口所在网段，则直接本地转发，最终该报文被发往目的主机PC2。</p>
+</blockquote>
+<h1 id="IP路由高级应用"><a href="#IP路由高级应用" class="headerlink" title="IP路由高级应用"></a><strong>IP路由高级应用</strong></h1><h2 id="IP路由高级应用场景分析-1"><a href="#IP路由高级应用场景分析-1" class="headerlink" title="IP路由高级应用场景分析 (1)"></a><strong>IP路由高级应用场景分析</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/12.png"></p>
+<p>场景描述：</p>
+<p>▫假设A公司和B公司各有自己的网络，这两个网络被独立管理及运维，A公司网络使用的路由协议为OSPF，B公司网络使用的路由协议为IS-IS。</p>
+<p>▫现在两家公司合并成一家公司，导致原有的两张网络不得不进行整合，为了使合并后的新公司业务流量能够正常在整合后的网络上交互，最重要的就是实现路由互通。</p>
+<blockquote>
+<p>•OSPF与IS-IS是两种不同的动态路由协议，路由信息无法在路由协议之间直接交互。</p>
+<p>•如图所示，A公司部署OSPF，边界设备为R1和R2；B公司部署IS-IS，边界设备为R3和R4。边界互联部分可以部署OSPF或IS-IS，例如：可以将R1与R3互联网段、R2与R4互联网段部署进A公司的OSPF，此时边界设备仅为R3和R4。</p>
+</blockquote>
+<h2 id="IP路由高级应用场景分析-2"><a href="#IP路由高级应用场景分析-2" class="headerlink" title="IP路由高级应用场景分析 (2)"></a>IP路由高级应用场景分析 (2)</h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/13.png"></p>
+<p>场景描述：</p>
+<p>▫在大型企业网络中，网络规模十分庞大，选用单一的路由协议无法满足网络的需求，因此多种路由协议共存的情况十分常见。</p>
+<p>▫或者出于业务逻辑或行政管理的考虑，会在不同的网络结构中设计和部署不同的路由协议，使路由的层次结构更加清晰可控。</p>
+<p>▫在这样的网络环境下，也需要实现全网路由互通。</p>
+<h2 id="路由引入的基本概念"><a href="#路由引入的基本概念" class="headerlink" title="路由引入的基本概念"></a><strong>路由引入的基本概念</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/14.png"></p>
+<p>路由引入指的是将路由信息从一种路由协议发布到另一种路由协议的操作。</p>
+<p>▫通过路由引入，可以实现路由信息在不同路由协议间传递。</p>
+<p>▫执行路由引入时，还可以部署路由控制，从而实现对业务流量的灵活把控。</p>
+<blockquote>
+<p>•如上图所示，OSPF和IS-IS网络中存在不同的网段，只有R1和R2同时知道所有路由条目。</p>
+<p>•思考：如何让全部设备都能获取到所有的路由呢？</p>
+</blockquote>
+<h2 id="路由引入的方向性"><a href="#路由引入的方向性" class="headerlink" title="路由引入的方向性"></a><strong>路由引入的方向性</strong></h2><p>•路由引入是具有方向性的，将路由信息从路由协议A引入到路由协议B（A-to-B），则路由协议B可获知A中的路由信息，但是此时，A还并不知晓B路由协议中的路由信息，除非配置B-to-A的路由引入。</p>
+<p>•路由引入时需要注意以下几点：</p>
+<p>​    ▫路由优先级</p>
+<p>​    ▫路由回灌</p>
+<p>​    ▫路由度量值</p>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/15.png"></p>
+<h2 id="路由引入：路由优先级"><a href="#路由引入：路由优先级" class="headerlink" title="路由引入：路由优先级"></a><strong>路由引入：路由优先级</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/16.png"></p>
+<p>场景描述：</p>
+<ol>
+<li><p>R1将直连路由10.1.1.0/24引入到OSPF中。</p>
+</li>
+<li><p>R3通过OSPF学习到10.1.1.0/24网段路由（OSPF外部路由，路由优先级为150）。</p>
+</li>
+<li><p>R2在IS-IS进程中引入OSPF路由。</p>
+</li>
+<li><p>R3也会通过IS-IS学习到10.1.1.0/24网段路由（路由优先级为15）。</p>
+</li>
+<li><p>对R3而言，IS-IS路由优于OSPF外部路由，因此优选来自R4的IS-IS路由。</p>
+</li>
+</ol>
+<p>后续R3访问10.1.1.0/24网段的路径为：R3-&gt;R4-&gt;R2-&gt;R1，这是次优路径。</p>
+<blockquote>
+<p>•华为定义的路由优先级：</p>
+<p>▫Direct：0</p>
+<p>▫OSPF：10</p>
+<p>▫IS-IS：15</p>
+<p>▫Static：60</p>
+<p>▫OSPF ASE：150</p>
+<p>▫OSPF NSSA：150</p>
+<p>▫IBGP：255</p>
+<p>▫EBGP：255</p>
+<p>•注意：不同的厂商路由优先级的协定可能不同。</p>
+</blockquote>
+<h2 id="路由引入：路由回灌"><a href="#路由引入：路由回灌" class="headerlink" title="路由引入：路由回灌"></a><strong>路由引入：路由回灌</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/17.png"></p>
+<p>场景描述：</p>
+<ol>
+<li><p>R1将直连路由10.1.1.0/24引入到OSPF中。</p>
+</li>
+<li><p>10.1.1.0/24网段路由全OSPF域内通告。</p>
+</li>
+<li><p>R2在IS-IS进程中引入OSPF路由。</p>
+</li>
+<li><p>10.1.1.0/24网段路由全IS-IS域内通告。</p>
+</li>
+<li><p>R3在OSPF进程中引入IS-IS路由。</p>
+</li>
+<li><p>10.1.1.0/24网段路由再次被通告进OSPF域内，形成路由回灌。</p>
+</li>
+</ol>
+<h2 id="路由引入：路由度量值"><a href="#路由引入：路由度量值" class="headerlink" title="路由引入：路由度量值"></a><strong>路由引入：路由度量值</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/18.png"></p>
+<p>场景描述：</p>
+<ol>
+<li><p>在IS-IS中引入OSPF路由。</p>
+</li>
+<li><p>在OSPF中引入IS-IS路由。</p>
+</li>
+</ol>
+<p>不同的路由协议对路由度量值的定义不同，那么在路由协议之间进行路由引入时，被引入的路由的度量值该如何定义？定义成多少？</p>
+<h2 id="路由引入场景"><a href="#路由引入场景" class="headerlink" title="路由引入场景"></a><strong>路由引入场景</strong></h2><p>路由引入主要涉及以下几种场景：</p>
+<ol>
+<li><p>动态路由协议之间的路由引入</p>
+</li>
+<li><p>引入直连路由到动态路由协议</p>
+</li>
+<li><p>引入静态路由到动态路由协议</p>
+</li>
+</ol>
+<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/19.png"></p>
+<h2 id="路由引入的基础配置命令"><a href="#路由引入的基础配置命令" class="headerlink" title="路由引入的基础配置命令"></a><strong>路由引入的基础配置命令</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/20.png"></p>
+<blockquote>
+<p>•说明：当OSPF网络中的设备需要访问运行其他协议的网络中的设备时，需要将其他协议的路由引入到OSPF网络中。</p>
+</blockquote>
+<h2 id="案例1：引入直连路由到OSPF"><a href="#案例1：引入直连路由到OSPF" class="headerlink" title="案例1：引入直连路由到OSPF"></a><strong>案例1：引入直连路由到OSPF</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/21.png"></p>
+<p>•可以通过使用<strong>import-route direct</strong>命令，将路由表中所有直连路由引入到动态路由协议。</p>
+<p>•引入后的路由会作为OSPF外部路由，在整个OSPF网络内通告。</p>
+<blockquote>
+<p>•在设备上部署动态路由协议，如果希望该设备的直连接口路由能够被发布到动态路由协议中，则需要激活该端口相应的动态路由协议。除此之外，也可以通过将直连路由引入到动态路由协议实现该目的。</p>
+<p>•如图所示：</p>
+<ul>
+<li>R1、R2及R3运行OSPF，R1存在一个直连网段192.168.11.0/24，为了让R2和R3生成192.168.11.0/24的路由，可以在R1上将直连路由引入到OSPF。</li>
+</ul>
+<p>•说明：在OSPF网络中，若路由表的协议字段显示为O_ASE，表明该路由为OSPF的外部路由。</p>
+</blockquote>
+<h2 id="案例2：引入静态路由到OSPF"><a href="#案例2：引入静态路由到OSPF" class="headerlink" title="案例2：引入静态路由到OSPF"></a><strong>案例2：引入静态路由到OSPF</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/22.png"></p>
+<p>•可以通过使用<strong>import-route</strong> <strong>static</strong>命令，将路由表中所有静态路由引入到动态路由协议。</p>
+<p>•引入后的路由会作为OSPF外部路由，在整个OSPF网络内通告。</p>
+<blockquote>
+<p>•对于动态路由协议而言，静态路由被视为域外的路由信息，这些路由并不被动态路由协议直接感知。如果希望动态路由协议域内所有设备都能学习到该静态路由，则需要将静态路由引入到动态路由协议中。</p>
+<p>•如图所示：</p>
+<ul>
+<li>R2及R3运行了OSPF，而R1不支持OSPF。在R2上添加静态路由指向192.168.11.0/24网段，并且在R2上将静态路由引入到OSPF，从而使R2和R3均能生成192.168.11.0/24的路由。</li>
+</ul>
+</blockquote>
+<h2 id="案例3：将IS-IS路由引入到OSPF"><a href="#案例3：将IS-IS路由引入到OSPF" class="headerlink" title="案例3：将IS-IS路由引入到OSPF"></a><strong>案例3：将IS-IS路由引入到OSPF</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/23.png"></p>
+<p>•可以通过使用<strong>import-route</strong> <strong>isis</strong> <strong>1</strong>命令，将路由表中所有IS-IS路由引入到动态路由协议。</p>
+<p>•引入后的路由会作为OSPF外部路由，在整个OSPF网络内通告。</p>
+<blockquote>
+<p>•在两个动态路由协议域的边界执行路由引入操作，是最常见的场景之一，就是将路由信息从一个动态路由协议引入另一个动态路由协议中。</p>
+<p>•如图所示：</p>
+<ul>
+<li>R1及R2运行了IS-IS，R2及R3运行了OSPF，两个协议维护的路由信息是完全隔离的。因此，此时R1有IS-IS网络内全部路由，但无法访问到OSPF网络；R3有OSPF网络内全部路由，但无法访问到IS-IS网络。在R2上执行路由引入，将IS-IS路由引入到OSPF中。</li>
+</ul>
+</blockquote>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 在某路由器的FIB表中存在以下4条路由转发表项，那么该路由器对于目的IP地址为10.0.1.1的IP报文将根据哪条路由进行转发？（  ）</p>
+<p>A.0.0.0.0/0</p>
+<p>B.10.0.0.0.0/16</p>
+<p><strong>C.10.0.1.0/24</strong></p>
+<p>D.10.0.2.0/24</p>
+<p>2.(多选题) 以下关于路由引入的说法，<strong>错误</strong>的有（  ）。</p>
+<p>A.在某路由器的OSPF进程中，执行<strong>import-route direct</strong>命令，则该路由器会把路由表中的所有直连路由都引入OSPF</p>
+<p>B.在某路由器的OSPF进程中，执行<strong>import-route</strong> <strong>static</strong>命令，则该路由器会把路由表中的所有静态路由都引入OSPF</p>
+<p><strong>C.在某路由器上，将路由表中来源于X路由协议的路由引入Y路由协议，需要在X路由协议视图下执行</strong>import-route<strong>命令</strong></p>
+<p><strong>D.在某路由器上执行了</strong>import-route<strong>命令并成功将其GE0/0/1的直连路由引入OSPF，该接口也就激活了OSPF，并开始周期性地发送Hello报文</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•由于不同路由协议工作原理不同，因此到达同一目的网段可能会生成多个路由条目，路由器根据路由协议的优先级以及路由开销选择最优路由，并且把最优路由放入FIB表。路由器根据FIB表执行数据转发。</p>
+<p>•当网络规模较大且使用多种路由协议时，路由协议间通过路由引入的方式实现路由的相互通告。由于路由引入可能会引入大量路由，并导致部分性能较低的设备无法承受，因此在进行路由引入时需要进行路由控制来实现路由的按需分发。</p>
+<p>•本课程所列举的OSPF路由协议，IS-IS路由协议以及路由控制将在后续课程中详细介绍。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/MSTP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/06/MSTP/" itemprop="url">MSTP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:11:06+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP/STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。</p>
+<p>•为了弥补RSTP/STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree Protocol，多生成树协议）。MSTP兼容STP和RSTP，通过建立多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述RSTP/STP技术的缺陷</p>
+<p>▫描述MSTP对RSTP/STP技术的改进</p>
+<p>▫描述MSTP的各种概念</p>
+<p>▫描述MSTP的工作过程</p>
+<p>▫实现MSTP的基本配置</p>
+<h1 id="MSTP概述"><a href="#MSTP概述" class="headerlink" title="MSTP概述"></a>MSTP概述</h1><h2 id="RSTP-STP的不足-1"><a href="#RSTP-STP的不足-1" class="headerlink" title="RSTP/STP的不足 (1)"></a><strong>RSTP/STP的不足</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/1.png"></p>
+<h2 id="RSTP-STP的不足-2"><a href="#RSTP-STP的不足-2" class="headerlink" title="RSTP/STP的不足 (2)"></a><strong>RSTP/STP的不足</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/2.png"></p>
+<h2 id="多生成树协议概述"><a href="#多生成树协议概述" class="headerlink" title="多生成树协议概述"></a><strong>多生成树协议概述</strong></h2><p>•MSTP是IEEE 802.1S中定义的生成树协议，MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。</p>
+<p>•MSTP可以将一个或多个VLAN映射到一个Instance（实例），再基于Instance计算生成树，映射到同一个Instance的VLAN共享同一棵生成树。</p>
+<p><img src="/2021/05/06/MSTP/3.png"></p>
+<blockquote>
+<p>•如图中例子，经计算，最终生成两棵生成树：</p>
+<ul>
+<li><p>Instance1对应的生成树以SW1为根交换设备，转发VLAN1~VLAN10的报文。</p>
+</li>
+<li><p>Instance2对应的生成树以SW2为根交换设备，转发VLAN11~VLAN20的报文。</p>
+</li>
+<li><p>不同VLAN的报文沿不同的路径转发，实现了负载分担。</p>
+</li>
+</ul>
+<p>•注意：生成树不是基于VLAN运行的，而是基于Instance运行的。</p>
+</blockquote>
+<h1 id="MSTP的基本概念"><a href="#MSTP的基本概念" class="headerlink" title="MSTP的基本概念"></a><strong>MSTP的基本概念</strong></h1><h2 id="MST-Region"><a href="#MST-Region" class="headerlink" title="MST Region"></a><strong>MST</strong> <strong>Region</strong></h2><p><img src="/2021/05/06/MSTP/5.png"></p>
+<blockquote>
+<p>•同一个MST域的设备具有下列特点：</p>
+<ul>
+<li><p>都启动了MSTP。</p>
+</li>
+<li><p>具有相同的域名。</p>
+</li>
+<li><p>具有相同的VLAN到生成树实例映射配置。</p>
+</li>
+<li><p>具有相同的MSTP修订级别配置。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTI"><a href="#MSTI" class="headerlink" title="MSTI"></a><strong>MSTI</strong></h2><p><img src="/2021/05/06/MSTP/6.png"></p>
+<blockquote>
+<p>•Instance0是缺省存在的，而且缺省时，华为交换机上所有的VLAN都映射到了Instance0。</p>
+<p>•通过设置VLAN映射表（即VLAN和MSTI的对应关系表），把VLAN和MSTI联系起来。</p>
+<ul>
+<li>每个VLAN只能对应一个MSTI，即同一VLAN的数据只能在一个MSTI中传输，而一个MSTI可能对应多个VLAN。</li>
+</ul>
+</blockquote>
+<h2 id="CST"><a href="#CST" class="headerlink" title="CST"></a><strong>CST</strong></h2><p><img src="/2021/05/06/MSTP/7.png"></p>
+<h2 id="IST"><a href="#IST" class="headerlink" title="IST"></a><strong>IST</strong></h2><p><img src="/2021/05/06/MSTP/8.png"></p>
+<h2 id="CIST"><a href="#CIST" class="headerlink" title="CIST"></a><strong>CIST</strong></h2><p><img src="/2021/05/06/MSTP/9.png"></p>
+<h2 id="SST"><a href="#SST" class="headerlink" title="SST"></a><strong>SST</strong></h2><p><img src="/2021/05/06/MSTP/10.png"></p>
+<h2 id="总根，域根和主桥"><a href="#总根，域根和主桥" class="headerlink" title="总根，域根和主桥"></a><strong>总根，域根和主桥</strong></h2><p><img src="/2021/05/06/MSTP/11.png"></p>
+<blockquote>
+<p>•主桥包括总根和IST域根。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><img src="/2021/05/06/MSTP/12.png"></p>
+<h2 id="MSTP的端口角色-1"><a href="#MSTP的端口角色-1" class="headerlink" title="MSTP的端口角色 (1)"></a><strong>MSTP的端口角色 (1)</strong></h2><p>MSTP中定义的所有端口角色包括：</p>
+<p>根端口、指定端口、Alternate端口、Backup端口、Master端口、域边缘端口和边缘端口。</p>
+<p><img src="/2021/05/06/MSTP/15.png"></p>
+<p><img src="/2021/05/06/MSTP/14.png"></p>
+<p><img src="/2021/05/06/MSTP/16.png"></p>
+<blockquote>
+<p>•除边缘端口外，其他端口角色都参与MSTP的计算过程。</p>
+<p>•同一端口在不同的生成树实例中可以担任不同的角色。</p>
+</blockquote>
+<h2 id="MSTP的端口状态"><a href="#MSTP的端口状态" class="headerlink" title="MSTP的端口状态"></a><strong>MSTP的端口状态</strong></h2><p>MSTP定义的端口状态与RSTP协议中定义相同:</p>
+<ul>
+<li><p>Forwarding状态：端口既转发用户流量，学习MAC地址，又接收/发送BPDU报文。</p>
+</li>
+<li><p>Learning状态：过渡状态，端口接收/发送BPDU报文，不转发用户流量但是学习MAC地址。</p>
+</li>
+<li><p>Discarding状态：端口只接收BPDU报文，不转发用户流量也不学习MAC地址。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>MSTP端口状态</strong></th>
+<th><strong>端口在拓扑中的角色</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Forwarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Discarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口、Alternate端口、Backup端口</td>
+</tr>
+</tbody></table>
+<h2 id="MSTP报文"><a href="#MSTP报文" class="headerlink" title="MSTP报文"></a><strong>MSTP报文</strong></h2><p><img src="/2021/05/06/MSTP/18.png"></p>
+<p><img src="/2021/05/06/MSTP/19.png"></p>
+<p>•无论是域内的MST BPDU还是域间的，前36个字节和RST BPDU相同。从第37个字节开始是MSTP专有字段。最后的MSTI配置信息字段由若干MSTI配置信息组连缀而成。</p>
+<p>•MST BPDU中主要信息说明：</p>
+<ul>
+<li><p>Protocol Identifier：2 Byte，协议标识符。</p>
+</li>
+<li><p>Protocol Version Identifier：1 Byte，协议版本标识符，STP为0，RSTP为2，MSTP为3。</p>
+</li>
+<li><p>BPDU Type：1 Byte，BPDU类型：</p>
+<ul>
+<li>0x00：STP的Configuration BPDU</li>
+<li>0x80：STP的TCN BPDU（Topology Change Notification BPDU）</li>
+<li>0x02：RST BPDU（Rapid Spanning-Tree BPDU）或者MST BPDU（Multiple Spanning-Tree BPDU）</li>
+</ul>
+</li>
+<li><p>CIST Flags：1 Byte，CIST标志字段。</p>
+</li>
+<li><p>CIST Root Identifier：8 Byte，CIST的总根交换设备ID。</p>
+</li>
+<li><p>CIST External Path Cost：4 Byte，CIST外部路径开销指从本交换设备所属的MST域到CIST根交换设备所属的MST域的累计路径开销。CIST外部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Regional Root Identifier：8 Byte，CIST的域根交换设备ID，即IST Master的ID。如果总根在这个域内，那么域根交换设备ID就是总根交换设备ID。</p>
+</li>
+<li><p>CIST Port Identifier：2 Byte，本端口在IST中的指定端口ID。</p>
+</li>
+<li><p>Message Age：2 Byte，BPDU报文的生存期。</p>
+</li>
+<li><p>Max Age：2 Byte，BPDU报文的最大生存期，超时则认为到根交换设备的链路故障。</p>
+</li>
+<li><p>Hello Time：2 Byte，Hello定时器，缺省为2秒。</p>
+</li>
+<li><p>Forward Delay：2 Byte，Forward Delay定时器，缺省为15秒。</p>
+</li>
+<li><p>Version 1 Length：1 Byte，Version1 BPDU的长度，值固定为0。</p>
+</li>
+<li><p>Version 3 Length：2 Byte，Version3 BPDU的长度。</p>
+</li>
+<li><p>MST Configuration Identifier：51 Byte，MST配置标识，表示MST域的标签信息，包含4个字段。</p>
+</li>
+<li><p>CIST Internal Root Path Cost：4 Byte，CIST内部路径开销指从本端口到IST Master交换设备的累计路径开销。CIST内部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Bridge Identifier：8 Byte，CIST的指定交换设备ID。</p>
+</li>
+<li><p>CIST Remaining Hops：1 Byte，BPDU报文在CIST中的剩余跳数。</p>
+</li>
+<li><p>MSTI Configuration Messages：16 Byte，MSTI配置信息。每个MSTI的配置信息占16 Byte，如果有n个MSTI就占用n×16 Byte。</p>
+</li>
+</ul>
+<h1 id="MSTP的工作原理"><a href="#MSTP的工作原理" class="headerlink" title="MSTP的工作原理"></a>MSTP的工作原理</h1><h2 id="MSTP拓扑计算"><a href="#MSTP拓扑计算" class="headerlink" title="MSTP拓扑计算"></a><strong>MSTP拓扑计算</strong></h2><p>•MSTP拓扑计算：</p>
+<ul>
+<li><p>MSTP可以将整个二层网络划分为多个MST域，各个域之间通过计算生成CST，域内生成IST，CST和IST构成了整个交换设备网络的CIST。</p>
+</li>
+<li><p>域内还可以基于实例计算生成多棵生成树，每棵生成树都被称为是一个MSTI。</p>
+</li>
+</ul>
+<p>•CIST和MSTI都是根据优先级向量来计算的，这些优先级向量信息都包含在MST BPDU中。各交换设备互相交换MST BPDU来生成CIST和MSTI 。</p>
+<ul>
+<li><p>参与CIST计算的优先级向量为：</p>
+<p>▪{ 根交换设备ID，外部路径开销，域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>参与MSTI计算的优先级向量为：</p>
+<p>▪{ 域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>注意：括号中的向量的优先级从左到右依次递减。</p>
+</li>
+</ul>
+<blockquote>
+<p>•优先级向量说明：</p>
+<ul>
+<li><p>根交换设备ID：根交换设备ID用于选择CIST中的根交换设备。</p>
+<ul>
+<li><p>根交换设备ID = Priority(16 bit) + MAC(48 bit)。</p>
+</li>
+<li><p>其中Priority为MSTI0的优先级。</p>
+</li>
+</ul>
+</li>
+<li><p>外部路径开销（External Root Path Cost，ERPC）：从CIST的域根到达总根的路径开销。</p>
+<ul>
+<li>MST域内所有交换设备上保存的外部路径开销相同。</li>
+<li>若CIST根交换设备在域中，则域内所有交换设备上保存的外部路径开销为0。</li>
+</ul>
+</li>
+<li><p>域根ID：域根ID用于选择MSTI中的域根。</p>
+<ul>
+<li>域根ID = Priority(16 bit) + MAC(48 bit)。</li>
+<li>其中Priority为MSTI0的优先级。</li>
+</ul>
+</li>
+<li><p>内部路径开销（Internal Root Path Cost，IRPC）：本桥到达域根的路径开销。</p>
+<ul>
+<li>域边缘端口保存的内部路径开销大于非域边缘端口保存的内部路径开销。</li>
+</ul>
+</li>
+<li><p>指定交换设备ID：CIST或MSTI实例的指定交换设备是本桥通往域根的最邻近的上游桥。</p>
+<ul>
+<li>如果本桥就是总根或域根，则指定交换设备为自己。</li>
+</ul>
+</li>
+<li><p>指定端口ID：指定交换设备上同本设备上根端口相连的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+<li><p>接收端口ID：接收到BPDU报文的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>•优先级向量比较原则：</p>
+<ul>
+<li><p>同一向量比较，值最小的向量具有最高优先级。</p>
+</li>
+<li><p>优先级向量比较原则如下</p>
+<p>1.首先，比较根交换设备ID。</p>
+<p>2.如果根交换设备ID相同，再比较外部路径开销。</p>
+<p>3.如果外部路径开销相同，再比较域根ID。</p>
+<p>4.如果域根ID仍然相同，再比较内部路径开销。</p>
+<p>5.如果内部路径仍然相同，再比较指定交换设备ID。</p>
+<p>6.如果指定交换设备ID仍然相同，再比较指定端口ID。</p>
+<p>7.如果指定端口ID还相同，再比较接收端口ID。</p>
+</li>
+<li><p>如果端口接收到的BPDU内包含的配置消息优于端口上保存的配置消息，则端口上原来保存的配置消息被新收到的配置消息替代。端口同时更新交换设备保存的全局配置消息。反之，新收到的BPDU被丢弃。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="CIST计算"><a href="#CIST计算" class="headerlink" title="CIST计算"></a><strong>CIST计算</strong></h2><p>•经过比较MST BPDU消息后，在整个网络中选择一个优先级最高的交换设备作为CIST的树根，即总根。</p>
+<p>•在每个MST域内，MSTP通过计算生成IST；同时MSTP将每个MST域作为单台交换设备对待，通过计算在MST域间生成CST。CST和IST构成了整个交换设备网络的CIST。</p>
+<p><img src="/2021/05/06/MSTP/20.png"></p>
+<h2 id="MSTI计算"><a href="#MSTI计算" class="headerlink" title="MSTI计算"></a>MSTI计算</h2><p>•在MST域内，MSTP根据VLAN和生成树实例的映射关系，针对不同的VLAN生成不同的生成树实例。</p>
+<p>•每棵生成树独立进行计算，计算过程与STP计算生成树的过程类似。</p>
+<p><img src="/2021/05/06/MSTP/21.png"></p>
+<blockquote>
+<p>•MSTI的特点：</p>
+<p>​    ▫每个MSTI独立计算自己的生成树，互不干扰。</p>
+<p>​    ▫每个MSTI的生成树计算方法与STP基本相同。</p>
+<p>​    ▫每个MSTI的生成树可以有不同的根，不同的拓扑。</p>
+<p>​    ▫每个MSTI在自己的生成树内发送BPDU。</p>
+<p>​    ▫每个MSTI的拓扑通过命令配置决定。</p>
+<p>​    ▫每个端口在不同MSTI上的生成树参数可以不同。</p>
+<p>​    ▫每个端口在不同MSTI上的角色、状态可以不同。</p>
+<p>•根桥和备份根桥：可以通过计算来自动确定生成树的根桥，用户也可以手动配置设备为指定生成树的根桥或备份根桥。</p>
+<p>​    ▫设备在各生成树中的角色互相独立，在作为一棵生成树的根    桥或备份根桥的同时，也可以作为其它生成树的根桥或备份    根桥；但在同一棵生成树中，一台设备不能既作为根桥，又    作为备份根桥。</p>
+<p>​    ▫在一棵生成树中，生效的根桥只有一个；当两台或两台以上    的设备被指定为同一棵生成树的根桥时，系统将选择MAC地    址最小的设备作为根桥。</p>
+<p>​    ▫可以在每棵生成树中指定多个备份根桥。当根桥出现故障或    被关机时，备份根桥可以取代根桥成为指定生成树的根桥；    但此时若配置了新的根桥，则备份根桥将不会成为根桥。如    果配置了多个备份根桥，则MAC地址最小的备份根桥将成为    指定生成树的根桥。</p>
+</blockquote>
+<h2 id="MSTP网络数据转发"><a href="#MSTP网络数据转发" class="headerlink" title="MSTP网络数据转发"></a><strong>MSTP网络数据转发</strong></h2><p>在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：</p>
+<ul>
+<li><p>在MST域内，沿着其对应的MSTI转发。</p>
+</li>
+<li><p>在MST域间，沿着CST转发。</p>
+</li>
+</ul>
+<p><img src="/2021/05/06/MSTP/22.png"></p>
+<blockquote>
+<p>•如图所示，以VLAN2的数据发送为例。</p>
+</blockquote>
+<h1 id="MSTP的基本配置"><a href="#MSTP的基本配置" class="headerlink" title="MSTP的基本配置"></a>MSTP的基本配置</h1><h2 id="MSTP的基础配置命令"><a href="#MSTP的基础配置命令" class="headerlink" title="MSTP的基础配置命令"></a><strong>MSTP的基础配置命令</strong></h2><p><img src="/2021/05/06/MSTP/23.png"></p>
+<blockquote>
+<p>•命令：<strong>stp mode</strong> <strong>mstp</strong></p>
+<p>▫STP和MSTP不能互相识别报文，而MSTP和RSTP可以互相识别报文，所以若工作在MSTP工作模式下，交换设备会设置所有和运行STP的交换设备直接相连的端口工作在STP模式下，其他端口工作在MSTP模式下，实现运行不同生成树协议的设备之间的互通。</p>
+</blockquote>
+<h2 id="配置MST域并激活"><a href="#配置MST域并激活" class="headerlink" title="配置MST域并激活"></a><strong>配置MST域并激活</strong></h2><p><img src="/2021/05/06/MSTP/24.png"></p>
+<p><img src="/2021/05/06/MSTP/25.png"></p>
+<blockquote>
+<p>•命令：<strong>stp region-configuration</strong></p>
+<ul>
+<li>缺省情况下，MST域的三个参数均取缺省值。</li>
+</ul>
+<p>•命令：<strong>region-name</strong> <em>name</em></p>
+<ul>
+<li><em>name</em>：指定交换设备的MST域名。字符串形式，不支持空格，区分大小写，长度为1～32个字符。</li>
+</ul>
+<p>•命令：<strong>instance</strong> <em>instance-id</em> <strong>vlan</strong> { <em>vlan-id1</em> [ <strong>to</strong> <em>vlan-id2</em> ] }</p>
+<ul>
+<li><em>instance-id</em>：指定生成树实例的编号。整数形式，取值范围是0～4094，取值为0表示的是CIST。</li>
+</ul>
+<p>•命令：<strong>revision-level</strong> <em>level</em></p>
+<ul>
+<li><p><em>level</em>：指定MST域的修订级别。整数形式，取值范围是0～65535。</p>
+</li>
+<li><p>MSTP是标准协议，各厂商设备的MSTP修订级别一般都默认为0。如果某厂商的设备不为0，为保持MST域内计算，在部署MSTP时，需要将各设备的MSTP修订级别修改为一致。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTP的可选配置命令"><a href="#MSTP的可选配置命令" class="headerlink" title="MSTP的可选配置命令"></a>MSTP的可选配置命令</h2><p><img src="/2021/05/06/MSTP/26.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>root</strong> { <strong>primary</strong> | <strong>secondary</strong> }</p>
+<ul>
+<li><p><strong>instance</strong> <em>instance-id</em>：指定生成树实例的编号。如果不指定instance，则配置设备在实例0上为根桥/备份根桥设备。</p>
+</li>
+<li><p><strong>primary</strong>：指定配置为生成树的根桥设备。配置后该设备优先级值自动为0，将不能更改设备优先级。</p>
+</li>
+<li><p><strong>secondary</strong>：指定配置为生成树的备份根桥设备。配置后该设备优先级值自动为4096，将不能更改设备优先级。</p>
+</li>
+</ul>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定交换设备的优先级数值。优先级值越小，则交换设备的优先级越高。整数形式，取值范围是0～61440，步长为4096，如0、4096、8192等。缺省值是32768。</li>
+</ul>
+<p>•命令：<strong>stp</strong> <strong>pathcost-standard</strong> { <strong>dot1d-1998</strong> | <strong>dot1t</strong> | <strong>legacy</strong> }</p>
+<ul>
+<li><p><strong>dot1d-1998</strong>：指定路径开销值的计算方法是IEEE 802.1D-1998标准方法，取值范围为1~65535。</p>
+</li>
+<li><p><strong>dot1t</strong>：指定路径开销值的计算方法是IEEE 802.1T标准方法，取值范围为1~200,000,000。</p>
+</li>
+<li><p><strong>legacy</strong>：指定路径开销值的计算方法是华为计算方法，取值范围为1~200,000。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/05/06/MSTP/27.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>port priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定端口在生成树计算时的优先级。整数形式，取值范围是0～240，步长为16，如0、16、32等。</li>
+</ul>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-1"><a href="#案例：单域多实例场景配置-1" class="headerlink" title="案例：单域多实例场景配置 (1)"></a><strong>案例：单域多实例场景配置</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/29.png"></p>
+<blockquote>
+<p>可以配置SW1为VLAN2的网关（VLANIF2：192.168.1.254/24），SW2为VLAN3的网关（VLANIF3:192.168.2.254/24），最终实现PC1能Ping通SW1的VLANIF2接口，PC2能Ping通SW2的VLANIF3接口。</p>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-2"><a href="#案例：单域多实例场景配置-2" class="headerlink" title="案例：单域多实例场景配置 (2)"></a><strong>案例：单域多实例场景配置</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/30.png"></p>
+<p><img src="/2021/05/06/MSTP/31.png"></p>
+<h2 id="案例：单域多实例场景配置-3"><a href="#案例：单域多实例场景配置-3" class="headerlink" title="案例：单域多实例场景配置 (3)"></a><strong>案例：单域多实例场景配置</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/32.png"></p>
+<p><img src="/2021/05/06/MSTP/33.png"></p>
+<p><img src="/2021/05/06/MSTP/34.png"></p>
+<h2 id="验证配置结果-1"><a href="#验证配置结果-1" class="headerlink" title="验证配置结果 (1)"></a><strong>验证配置结果</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/35.png"></p>
+<p><img src="/2021/05/06/MSTP/36.png"></p>
+<h2 id="验证配置结果-2"><a href="#验证配置结果-2" class="headerlink" title="验证配置结果 (2)"></a><strong>验证配置结果</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/37.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 某运行MSTP协议的交换机的端口角色如下图所示，请问GigabitEthernet0/0/1端口在Instance1中的端口状态应该是？</p>
+<p>A.Blocking</p>
+<p><strong>B.Discarding</strong></p>
+<p>C.Forwarding</p>
+<p>D.Learning</p>
+<p><img src="/2021/05/06/MSTP/4.png"></p>
+<p>2.(判断题) CIST是由内部生成树和公共生成树构成的一棵树。（  ）</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•在MSTP网络中，可以将一个或多个VLAN映射到一个Instance，然后MSTP基于该Instance计算生成树。基于Instance的生成树被称为MSTI，MSTP为每个Instance维护独立的MSTI，映射到同一个Instance的VLAN将共享同一棵生成树。</p>
+<p>•在以太网中部署MSTP协议后可实现如下功能：</p>
+<ul>
+<li><p>形成多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+</li>
+<li><p>多棵生成树在VLAN间实现负载均衡，不同VLAN的流量按照不同的路径转发。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/RSTP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2773,425 +3606,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/SDN/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/02/SDN/" itemprop="url">SDN</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T12:03:32+08:00">
-                2021-05-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="传统网络的缺点"><a href="#传统网络的缺点" class="headerlink" title="传统网络的缺点"></a>传统网络的缺点</h2><h3 id="计算机时代的演进"><a href="#计算机时代的演进" class="headerlink" title="计算机时代的演进"></a>计算机时代的演进</h3><p><img src="/2021/05/02/SDN/1.png"></p>
-<h3 id="网络产业发展-来自IT行业的启示"><a href="#网络产业发展-来自IT行业的启示" class="headerlink" title="网络产业发展:来自IT行业的启示"></a>网络产业发展:来自IT行业的启示</h3><ul>
-<li>IT产业的变革引发了网络产业的思考。业界开始提出SDN (Software Defined Networking )的概念，并不断在其商用化进程上作出尝试。目的是希望网络变得更开放、灵活和简单。</li>
-</ul>
-<p><img src="/2021/05/02/SDN/2.png"></p>
-<h3 id="网络界的现状-经典IP网络–分布式网络"><a href="#网络界的现状-经典IP网络–分布式网络" class="headerlink" title="网络界的现状:经典IP网络–分布式网络"></a>网络界的现状:经典IP网络–分布式网络</h3><ul>
-<li>经典的IP网络是一个分布式的、对等控制的网络。每台网络设备存在独立的数据平台、控制平面和管理平面.设备的控制平面对等的交互路由协议，然后独立的生成数据平面指导报文转发。</li>
-<li>经典IP网络的优势在于设备与协议解耦，厂家之间兼容性较好且故障场景下协议保证网络收敛。</li>
-</ul>
-<p><img src="/2021/05/02/SDN/3.png"></p>
-<h3 id="网络界的思考-经典网络面临的问题"><a href="#网络界的思考-经典网络面临的问题" class="headerlink" title="网络界的思考:经典网络面临的问题"></a>网络界的思考:经典网络面临的问题</h3><h4 id="网络易拥塞"><a href="#网络易拥塞" class="headerlink" title="网络易拥塞"></a>网络易拥塞</h4><p><img src="/2021/05/02/SDN/4.png"></p>
-<h4 id="网络技术太复杂"><a href="#网络技术太复杂" class="headerlink" title="网络技术太复杂"></a>网络技术太复杂</h4><p>网络协议多︰如果您准备成为一名网络技术专家，您需要阅读网络设备相关RFC 2500篇。如果一天阅读一篇，需要长达6年时间，而这只是整个RFC的 1/3，其数量还在持续增加。</p>
-<p>网络配置难:如果您准备成为某个设备商设备的百事通，您需要掌握的命令行超过10000条，而其数量还在增加。</p>
-<p><img src="/2021/05/02/SDN/5.png"></p>
-<h4 id="网络故障定位、诊断困难"><a href="#网络故障定位、诊断困难" class="headerlink" title="网络故障定位、诊断困难"></a>网络故障定位、诊断困难</h4><p><img src="/2021/05/02/SDN/6.png"></p>
-<h4 id="网络业务的部署速度太慢"><a href="#网络业务的部署速度太慢" class="headerlink" title="网络业务的部署速度太慢"></a>网络业务的部署速度太慢</h4><p><img src="/2021/05/02/SDN/7.png"></p>
-<h2 id="SDN定义"><a href="#SDN定义" class="headerlink" title="SDN定义"></a>SDN定义</h2><h3 id="SDN的起源"><a href="#SDN的起源" class="headerlink" title="SDN的起源"></a>SDN的起源</h3><ul>
-<li>SDN ( Software Defined Networking )即软件定义网络。是由斯坦福大学Clean Slate研究组提出的一种新型网络创新架构。其核心理念通过将网络设备控制平面与数据平面分离，从而实现了网络控制平面的集中控制，为网络应用的创新提供了良好的支撑。</li>
-<li>SDN起源提出了三个特征，“转控分离”、“集中控制”和“开放可编程接口”。</li>
-</ul>
-<p><img src="/2021/05/02/SDN/8.png"></p>
-<h3 id="OpenFlow基本概念"><a href="#OpenFlow基本概念" class="headerlink" title="OpenFlow基本概念"></a>OpenFlow基本概念</h3><p>OpenFlow是控制器与交换机之间的一种南向接口协议。它定义了三种类型的消息，Controller-to-Switch、Asynchronous和Symmetric。每一种消息又包含了更多的子类型。</p>
-<p><strong>Controller-to-Switch</strong><br>该消息由Controller发送。用于管理Switch和查询Switch的相关信息。<br><strong>Asynchronous</strong><br>该消息由Switch发起。当Switch状态发生改变时，发送该消息告诉Controller状态变化。<br><strong>Symmetric</strong><br>该消息没有固定发起方，可由Switch或者Controller发起。例如Hello、Echo、Error等。</p>
-<p><img src="/2021/05/02/SDN/9.png"></p>
-<h3 id="Flow-Table简介"><a href="#Flow-Table简介" class="headerlink" title="Flow Table简介"></a>Flow Table简介</h3><ul>
-<li>OpenFlow交换机基于流表(Flow Table )转发报文。</li>
-<li>每个流表项由匹配字段、优先级、计数器、指令、超时、Cookie、Flags这七部分组成。其中关于转发的关键的两个内容是匹配字段和指令。<ul>
-<li>匹配字段是匹配规则，支持自定义。</li>
-<li>指令是用来描述匹配后的处理方式。</li>
-</ul>
-</li>
-</ul>
-<p><img src="/2021/05/02/SDN/10.png"></p>
-<h3 id="转发方式对比"><a href="#转发方式对比" class="headerlink" title="转发方式对比"></a>转发方式对比</h3><h4 id="经典路由协议基于路由表转发"><a href="#经典路由协议基于路由表转发" class="headerlink" title="经典路由协议基于路由表转发"></a>经典路由协议基于路由表转发</h4><ul>
-<li>经典的网络转发方式是网络设备通过查询路由表指导流量转发。</li>
-<li>路由表的条目由网络设备之间运行路由协议而计算生成。</li>
-<li>路由表是定长的。路由表通过最长匹配原则执行报文转发。一台网络设备只有一张路由表。</li>
-</ul>
-<h4 id="OpenFlow基于流表转发"><a href="#OpenFlow基于流表转发" class="headerlink" title="OpenFlow基于流表转发"></a>OpenFlow基于流表转发</h4><p><img src="/2021/05/02/SDN/12.png"></p>
-<ul>
-<li>OpenFlow是一个网络协议。运行OpenFlow的交换机通过查询流表指导流量转发。</li>
-<li>流表一般是由OF控制器统一计算，然后下发到交换机。流表是</li>
-<li>变长的，拥有丰富的匹配规则和转发规则。一台网络设备有多张流表。</li>
-</ul>
-<h3 id="SDN的本质诉求"><a href="#SDN的本质诉求" class="headerlink" title="SDN的本质诉求"></a>SDN的本质诉求</h3><ul>
-<li>SDN的本质诉求是让网络更加开放、灵活和简单。它的实现方式是为网络构建一个集中的大脑，通过全局视图集中控制，实现或业务快速部署、或流量调优、或网络业务开放等目标</li>
-</ul>
-<p>SDN的价值是:</p>
-<ul>
-<li><p>集中管理，简化网络管理与运维;</p>
-</li>
-<li><p>屏蔽技术细节，降低网络复杂度，降低运维成本;。自动化调优，提高网络利用率;</p>
-</li>
-<li><p>快速业务部署，缩短业务上线时间;</p>
-</li>
-<li><p>网络开放，支撑开放可编程的第三方应用。</p>
-</li>
-</ul>
-<blockquote>
-<p>SDN带来了网络架构的变革。</p>
-</blockquote>
-<h3 id="SDN网络架构"><a href="#SDN网络架构" class="headerlink" title="SDN网络架构"></a>SDN网络架构</h3><p>SDN网络架构分为协同应用层、控制器层和设备层。不同层次之间通过开放接口连接。以控制器层为主要视角，区分面向设备层的南向接口和面向协同应用层的北向接口。OpenFlow属于南向接口协议的一种。</p>
-<p><img src="/2021/05/02/SDN/13.png"></p>
-<h3 id="华为SDN网络架构"><a href="#华为SDN网络架构" class="headerlink" title="华为SDN网络架构"></a>华为SDN网络架构</h3><p>华为SDN网络架构支持丰富的南北向接口，包括OpenFlow、OVSDB、NETCONF、PCEP、RESTful .SNMP、BGP、JsonRPC、RESTCONF等。</p>
-<p><img src="/2021/05/02/SDN/14.png"></p>
-<h3 id="华为SDN解决方案-管、控、析构建智简网络"><a href="#华为SDN解决方案-管、控、析构建智简网络" class="headerlink" title="华为SDN解决方案-管、控、析构建智简网络"></a>华为SDN解决方案-管、控、析构建智简网络</h3><p><img src="/2021/05/02/SDN/15.png"></p>
-<h2 id="iMaster-NCE解决方案"><a href="#iMaster-NCE解决方案" class="headerlink" title="iMaster NCE解决方案"></a>iMaster NCE解决方案</h2><h3 id="什么是iMaster-NCE"><a href="#什么是iMaster-NCE" class="headerlink" title="什么是iMaster NCE ?"></a>什么是iMaster NCE ?</h3><p>iMaster NCE，自动驾驶网络管理与控制系统，是华为集管理、控制、分析和Al智能功能于一体的网络自动化与智能化平台。</p>
-<p><img src="/2021/05/02/SDN/16.png"></p>
-<h3 id="iMaster-NCE种类"><a href="#iMaster-NCE种类" class="headerlink" title="iMaster NCE种类"></a>iMaster NCE种类</h3><p><img src="/2021/05/02/SDN/17.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/" itemprop="url">网络编程与自动化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T10:50:27+08:00">
-                2021-05-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="网络编程与自动化"><a href="#网络编程与自动化" class="headerlink" title="网络编程与自动化"></a>网络编程与自动化</h2><h3 id="背景-传统网络运维困境"><a href="#背景-传统网络运维困境" class="headerlink" title="背景:传统网络运维困境"></a>背景:传统网络运维困境</h3><p>传统的网络运维工作需要网络工程师手动登录网络设备，人工查看和执行配置命令，肉眼筛选配置结果。这种严重依赖“人”的工作方式操作流程长，效率低下，而且操作过程不易审计。</p>
-<p>经典运维场景</p>
-<ol>
-<li>设备升级∶现网有数千台网络设备，你需要周期性、批量<br>性地对设备进行升级。</li>
-<li>配置审计:企业年度需要对设备进行配置审计。例如要求<br>所有设备开启Telnet功能，以太网交换机配置生成树安全功能。你需要快速地找出不符合要求的设备。</li>
-<li>配置变更:因为网络安全要求，需要每三个月修改设备账<br>号和密码。你需要在数干台网络设备上删除原有账号并新建账号。</li>
-</ol>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/1.png"></p>
-<h3 id="网络自动化"><a href="#网络自动化" class="headerlink" title="网络自动化"></a>网络自动化</h3><ul>
-<li>网络自动化，通过工具实现网络自动化地部署、运行和运维，逐步减少对“人”的依赖。这能够很好地解决传统网络运维的问题。</li>
-<li>业界有很多实现网络自动化的开源工具，例如Ansible、SaltStack、Puppet、Chef等。从网络工程能力构建的角度考虑，更推荐工程师具备代码编程能力。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/2.png"></p>
-<h3 id="基于编程实现的网络自动化"><a href="#基于编程实现的网络自动化" class="headerlink" title="基于编程实现的网络自动化"></a>基于编程实现的网络自动化</h3><ul>
-<li>近几年随着网络自动化技术的兴起，以Python为主的编程能力成为了网络工程师的新技能要求。</li>
-<li>Python编写的自动化脚本能够很好的执行重复、耗时、有规则的操作。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/3.png"></p>
-<h2 id="编程语言概述"><a href="#编程语言概述" class="headerlink" title="编程语言概述"></a>编程语言概述</h2><h3 id="编程语言"><a href="#编程语言" class="headerlink" title="编程语言"></a>编程语言</h3><ul>
-<li>编程语言（Programming Language )，是一种用于编写计算机程序的语言，用于控制计算机的行为。</li>
-<li>按照语言在执行之前是否需要编译区分，可以将编程语言分为需要编译的编译型语言(Compiled Language)，不需要编译的解释型语言( Interpreted Language )。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/4.png"></p>
-<h3 id="计算技术栈与程序执行过程"><a href="#计算技术栈与程序执行过程" class="headerlink" title="计算技术栈与程序执行过程"></a>计算技术栈与程序执行过程</h3><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/5.png"></p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/6.png"></p>
-<h3 id="高级编程语言–编译型语言"><a href="#高级编程语言–编译型语言" class="headerlink" title="高级编程语言–编译型语言"></a>高级编程语言–编译型语言</h3><ul>
-<li>编译型语言︰编译型语言的程序在执行之前有一个编译过程，把程序编译成为机器语言的文件。运行时不需要重新翻译，直接使用编译的结果。典型的如C/C++/Go语言，都属于编译型语言。</li>
-<li>从源码到程序的过程:源码需要由编译器、汇编器翻译成机器指令，再通过链接器链接库函数生成机器语言程序。机器语言必须与CPU的指令集匹配，在运行时通过加载器加载到内存，由CPU执行指令。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/7.png"></p>
-<h3 id="高级编程语言–解释型语言"><a href="#高级编程语言–解释型语言" class="headerlink" title="高级编程语言–解释型语言"></a>高级编程语言–解释型语言</h3><ul>
-<li>解释型语言∶解释型语言的程序不需要在运行前编译，在运行程序的时候才逐行翻译。典型的如Java/Python语言，都属于解释型语言。</li>
-<li>从源码到程序的过程:解释型语言的源代码由编译器生成字节码，然后再由虚拟机（JVM/PVM）解释执行。虚拟机将不<br>同CPU指令集的差异屏蔽，因此解释型语言的可移植性相对较好。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/8.png"></p>
-<h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><p>.Python是一门完全开源的高级编程语言。它的作者是Guido Van Rossum。</p>
-<h3 id="Python的优缺点"><a href="#Python的优缺点" class="headerlink" title="Python的优缺点"></a>Python的优缺点</h3><p>优点：</p>
-<ul>
-<li>Python拥有优雅的语法、动态类型具有解释性质。能够让学习者从语法细节的学习中抽离，专注于程序逻辑。</li>
-<li>Python同时支持面向过程和面向对象的编程。</li>
-<li>Python拥有丰富的第三方库。</li>
-<li> Python可以调用其他语言所写的代码，又被称为胶水语言。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>运行速度慢。Python是解释型语言,不需要编译即可运行。代码在运行时会逐行地翻译成CPU能理解的机器码这个翻译过程非常耗时。</li>
-</ul>
-<p>由于Python具有非常丰富的第三方库，加上Python语言本身的优点，所以Python可以在非常多的领域内使用:人工智能、数据科学、APP、自动化运维脚本等。</p>
-<h3 id="Python代码执行过程"><a href="#Python代码执行过程" class="headerlink" title="Python代码执行过程"></a>Python代码执行过程</h3><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/9.png"></p>
-<h3 id="Python运行方式"><a href="#Python运行方式" class="headerlink" title="Python运行方式"></a>Python运行方式</h3><p>Python有两种运行方式，交互式运行和脚本式运行。</p>
-<h4 id="交互式运行"><a href="#交互式运行" class="headerlink" title="交互式运行"></a>交互式运行</h4><p>交互式编程不需要创建脚本文件，是通过Python解释器的交互模式编写代码。</p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/10.png"></p>
-<h4 id="脚本式运行"><a href="#脚本式运行" class="headerlink" title="脚本式运行"></a>脚本式运行</h4><p>脚本模式里的代码可以在各种Python编译器或者集成开发环境上运行。例如Python自带的IDLE、Atom、Visual Studio、Pycharm和Anaconda等。</p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/11.png"></p>
-<h3 id="Python编码规范"><a href="#Python编码规范" class="headerlink" title="Python编码规范"></a>Python编码规范</h3><ul>
-<li>编码规范是使用Python编写代码时应遵守的命名规则、代码缩进、代码和语句分割方式等。良好的编码规范<br>有助于提高代码的可读性，便于代码的维护和修改。</li>
-<li>例如分号、圆括号、空行和空格的使用规范建议如下:</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/12.png"></p>
-<h4 id="Python编码规范-标识符命名"><a href="#Python编码规范-标识符命名" class="headerlink" title="Python编码规范-标识符命名"></a>Python编码规范-标识符命名</h4><ul>
-<li>Python标识符用于表示常量、变量、函数以及其他对象的名称。</li>
-<li>标识符通常由字母、数字和下划线组成，但不能以数字开头。标识符大小写敏感，不允许重名。如果标识符不符合规则，编译器运行代码时会输出SyntaxError语法错误。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/13.png"></p>
-<h4 id="Python编码规范-代码缩进"><a href="#Python编码规范-代码缩进" class="headerlink" title="Python编码规范-代码缩进"></a>Python编码规范-代码缩进</h4><ul>
-<li>在Python程序中，代码缩进代表代码块的作用域。如果一个代码块包含两个或更多的语句，则这些语句必须具有相同的缩进量。对于Python而言代码缩进是一种语法规则，它使用代码缩进和冒号来区分代码之间的层次。</li>
-<li>编写代码时候，建议使用4个空格来生成缩进。如果程序代码中使用了错误的缩进，则会在运行中发出IndentationError错误信息。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/14.png"></p>
-<h4 id="Python编码规范-使用注释"><a href="#Python编码规范-使用注释" class="headerlink" title="Python编码规范-使用注释"></a>Python编码规范-使用注释</h4><ul>
-<li>注释就是在程序中添加解释说明，能够增强程序的可读性。在Python程序中，注释分为单行注释和多行注释。</li>
-<li>单行注释以#字符开始直到行尾结束。</li>
-<li>多行注释内容可以包含多行，这些内容包含在一对三引号内(“…””或者”””…”””)。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/15.png"></p>
-<h4 id="Python编码规范–源码文件结构"><a href="#Python编码规范–源码文件结构" class="headerlink" title="Python编码规范–源码文件结构"></a>Python编码规范–源码文件结构</h4><ul>
-<li>一个完整的Python源码文件一般包含几个组成部分︰解释器和编码格式声明、文档字符串、模块导入和运行代码。</li>
-<li>如果会在程序中调用标准库或其他第三方库的类时，需要先使用import或from…. import语句导入相关的模块。导入语句始终在文件的顶部。在模块注释或文档字符串(docstring)之后。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/16.png"></p>
-<h3 id="Python的函数与模块"><a href="#Python的函数与模块" class="headerlink" title="Python的函数与模块"></a>Python的函数与模块</h3><ul>
-<li>函数(Function)是组织好的、可重复使用的一段代码。它能够提高程序的模块化程度和代码利用率。函数使用关键字def定义。</li>
-<li>模块(Module)是一个保存好的Python文件。模块可以由函数或者类组成。模块和常规Python程序之间的唯一区别是用途不同:模块用于被其他程序调用。因此，模块通常没有main函数。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/17.png"></p>
-<h3 id="Python的类与方法"><a href="#Python的类与方法" class="headerlink" title="Python的类与方法"></a>Python的类与方法</h3><ul>
-<li>类(Class)是用来描述具有一类相同的属性和方法的集合。类的定义使用关键字class。</li>
-<li>被实例化的类的”函数”被称作方法(Method)。类定义方法时候必须携带 self 关键字，它表示类的实例本身。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/18.png"></p>
-<h3 id="telnetlib介绍"><a href="#telnetlib介绍" class="headerlink" title="telnetlib介绍"></a>telnetlib介绍</h3><p>telnetlib是Python标准库中的模块。它提供了实现Telnet功能的类telnetlib.Telnet。这里通过调用telnetlib.Telnet类里的不同方法实现不同功能。</p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/19.png"></p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/20.png"></p>
-<h3 id="案例-使用telnetlib登陆设备"><a href="#案例-使用telnetlib登陆设备" class="headerlink" title="案例:使用telnetlib登陆设备"></a>案例:使用telnetlib登陆设备</h3><h4 id="案例描述"><a href="#案例描述" class="headerlink" title="案例描述"></a>案例描述</h4><ul>
-<li>现有一台网络设备作为Telnet服务器，需要实现使用Python telnetlib作为Telnet客户端登录此设备。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/21.png"></p>
-<p>实现过程分为四个步骤:</p>
-<ul>
-<li><p>配置设备Telnet服务。</p>
-</li>
-<li><p>手动验证和查看Telnet登录步骤，作为代码实现的参考。</p>
-</li>
-<li><p>编写和运行Python代码。</p>
-</li>
-<li><p>验证结果。</p>
-</li>
-</ul>
-<h4 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h4><h5 id="配置设备Telnet"><a href="#配置设备Telnet" class="headerlink" title="配置设备Telnet"></a>配置设备Telnet</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/22.png"></p>
-<h5 id="查看Telent登录步骤"><a href="#查看Telent登录步骤" class="headerlink" title="查看Telent登录步骤"></a>查看Telent登录步骤</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/23.png"></p>
-<h5 id="编写Python代码"><a href="#编写Python代码" class="headerlink" title="编写Python代码"></a>编写Python代码</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/24.png"></p>
-<h5 id="运行结果对比"><a href="#运行结果对比" class="headerlink" title="运行结果对比"></a>运行结果对比</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/25.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3246,7 +3660,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">67</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3259,7 +3673,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
