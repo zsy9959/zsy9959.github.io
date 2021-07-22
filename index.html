@@ -241,6 +241,475 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/" itemprop="url">IE-WAN技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-20T22:22:43+08:00">
+                2021-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/1.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/2.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/3.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/4.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/5.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/6.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/7.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/8.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/9.png"></p>
+<blockquote>
+<p>lT: 表示双绞线；</p>
+<p>lTX：表示2对高质量的双绞线；</p>
+<p>lFX：表示2根光纤。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/10.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/11.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/12.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/13.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/14.png"></p>
+<blockquote>
+<p>lOC-n: Optical Carrier level n（光载体等级）是光纤传输的一种单位，最小的单位为OC-1，其传输数据量约为51.84 Mbps。</p>
+<p>lSTM: Synchronous Transport Module，同步传输模块。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/15.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/16.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/17.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/18.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/19.png"></p>
+<blockquote>
+<ul>
+<li><p>PPP共定义了三个协议组件，分别是数据封装方式，链路控制协议（Link Control Protocol，LCP）和网络层控制协议（Network Control Protocol，NCP）。</p>
+</li>
+<li><p>数据封装方式定义了如何封装多种类型的上层协议数据包。</p>
+</li>
+<li><p>为了能适应多种多样的链路类型，PPP定义了链路控制协议LCP。LCP可以自动检测链路环境，如是否存在环路；协商链路参数，如最大数据包长度，使用何种认证协议等等。与其他数据链路层协议相比，PPP协议的一个重要特点是可以提供认证功能，链路两端可以协商使用何种认证协议并实施认证过程，只有认证成功才会建立连接。这个特点使PPP协议适合运营商用来接入分散的用户。</p>
+</li>
+<li><p>PPP定义了一组网络层控制协议NCP，每一个协议对应一种网络层协议，用于协商网络层地址等参数，例如IPCP用于协商控制IP，IPXCP用于协商控制IPX协议等。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/20.png"></p>
+<blockquote>
+<p>PPP报文封转格式</p>
+<ul>
+<li><p>Flag域</p>
+<ul>
+<li>Flag域标识一个物理帧的起始和结束，该字节为0x7E。</li>
+</ul>
+</li>
+<li><p>Address域</p>
+<ul>
+<li>Address域可以唯一标识对端。PPP协议是被运用在点对点的链路上，因此，使用PPP协议互连的两个通信设备无须知道对方的数据链路层地址。按照协议的规定将该字节填充为全1的广播地址，对于PPP协议来说，该字段无实际意义。</li>
+</ul>
+</li>
+<li><p>Control域</p>
+<ul>
+<li>该字段默认值为0x03，表明为无序号帧，PPP默认没有采用序列号和确认来实现可靠传输。</li>
+<li>Address和Control域一起标识此报文为PPP报文，即PPP报文头为FF03。</li>
+</ul>
+</li>
+<li><p>Protocol域</p>
+<ul>
+<li>协议域可用来区分PPP数据帧中信息域所承载的数据报类型。</li>
+</ul>
+</li>
+<li><p>Code域</p>
+<ul>
+<li>代码域的长度为一个字节，主要是用来标识LCP数据报文的类型。</li>
+</ul>
+</li>
+<li><p>Identifier域</p>
+<ul>
+<li>标识域为1个字节，用来匹配请求和响应，当标识域值为非法时，该报文将被丢弃。</li>
+<li>通常一个配置请求报文的ID是从0x01开始逐步加1的。当对端接收到该配置请求报文后，无论使用何种报文回应对方，但必须要求回应报文中的ID要与接收报文中的ID一致。</li>
+</ul>
+</li>
+<li><p>Length域</p>
+<ul>
+<li>长度域的值就是该LCP报文的总字节数据。它是代码域、标志域、长度域和数据域四个域长度的总和。</li>
+<li>长度域所指示字节数之外的字节将被当作填充字节而忽略掉，而且该域的内容不能超过MRU的值。</li>
+</ul>
+</li>
+<li><p>Data域</p>
+<ul>
+<li>Type为协商选项类型。</li>
+<li>Length为协商选项长度，它是指Data域的总长度，也就是包含Type、Length和Data。</li>
+<li>Data为协商的选项具体内容。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/22.png"></p>
+<blockquote>
+<p>建链过程</p>
+<ul>
+<li>Dead：这是PPP工作开始和结束的阶段。当物理层变为可用状态（UP）之后，PPP进入Establish阶段。</li>
+<li>Establish：PPP在此阶段使用LCP协商链路层参数。如果链路层参数协商不成功（FAIL），则PPP连接建立不成功，PPP退回到Dead阶段。如果链路层参数协商成功（OPENED），则PPP进入Authenticate阶段。</li>
+<li>Authenticate：PPP在此阶段认证对端，如果认证失败（FAIL），则PPP进入Terminate阶段；如果认证成功（SUCCESS）或者没配置认证（NONE），则PPP进入Network阶段。</li>
+<li>Network：PPP在此阶段使用NCP进行网络层参数协商，协商成功则PPP连接建立成功，开始传输网络层数据包。当上层协议认为应当关闭此连接（例如按需电路）或者管理员手工关闭PPP连接（CLOSING），则PPP进入Terminate阶段。</li>
+<li>Terminate：PPP在此阶段使用LCP关闭PPP连接。PPP连接关闭（Down）后，PPP进入Dead阶段。</li>
+</ul>
+<p>注意：此处列出的是PPP的工作阶段，并非PPP的协议状态。由于PPP是由一组协议组成的，因此PPP本身没有协议状态。只有特定的的协议如LCP和NCP等才有协议状态和状态转换（协议状态机）。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/23.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/24.png"></p>
+<blockquote>
+<ul>
+<li><p>LCP协议有3大类报文：</p>
+<p>1.链路配置包，用于建立和配置链路：Configure-Request（匹配请求），Configure-Ack（匹配确认），Configure-Nak（匹配否认），和Configure-Reject（匹配拒绝）。</p>
+<p>2.链路结束包，用于结束一个链路：Terminate-Request（终止请求） 和 Terminate-Ack（终止确认）。</p>
+<p>3.链路维修包，用于管理和调试一个链路：Code-Reject（代码拒绝）, Protocol-Reject（协议拒绝）, Echo-Request（回波请求）, Echo-Reply（回波应答）, 和 Discard-Request（抛弃请求）。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/25.png"></p>
+<blockquote>
+<ul>
+<li>用于协商的参数<ul>
+<li>在VRP平台上，MRU参数使用接口上配置的最大传输单元（MTU）值来表示的。</li>
+<li>常用的PPP认证协议有PAP和CHAP（后续章节介绍），一条PPP链路的两端可以使用不同的认证协议认证对端，但是被认证方必须支持认证方使用的认证协议并正确配置用户名和密码等认证信息。</li>
+<li>LCP使用魔术字（Magic-Number）检测链路环路和其它异常情况。魔术字为随机产生的一个数字，随机机制需要保证两端产生相同魔术字的可能性几乎为0。</li>
+<li>收到一个Configure-Request报文之后，其包含的魔术字需要和本地产生的魔术字做比较，如果不同，表示链路无环路，则使用Confugure-Ack报文确认（其他参数也协商成功），表示魔术字协商成功。在后续发送的报文中，如果报文含有魔术字字段，则该字段设置为协商成功的魔术字，LCP不再产生新的魔术字。</li>
+<li>如果收到的Configure-Request报文和自身产生的魔术字相同，则发送一个Configure-Nak报文，携带一个新的魔术字。然后，不管新收到的Configure-Nak报文中是否携带相同的魔术字，LCP都发送一个新的Configure-Request报文，携带一个新的魔术字。如果链路有环路，则这个过程会不停的持续下去，如果链路没有环路，则报文交互会很快恢复正常。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/26.png"></p>
+<blockquote>
+<ul>
+<li><p>链路协商成功</p>
+<ul>
+<li>如图所示，R1和R2使用串行链路相连，运行PPP。当物理层链路变为可用状态之后，R1和R2使用LCP协商链路参数。本例中，R1首先发送一个LCP报文。</li>
+<li>R1向R2发送Configure-Request报文，此报文包含在发送者（R1）上配置的链路层参数，每个链路层参数使用“类型，长度，取值”的结构表示。</li>
+<li>当R2收到此Configure-Request报文之后，如果R2能识别此报文中的所有链路层参数，并且认为每个参数的取值都是可以接受的，则向R1回应一个Configure-Ack报文。</li>
+<li>在没有收到Configure-Ack报文的情况下，每隔3秒重传一次Configure-Request报文，如果连续10次发送Configure-Request报文仍然没有收到Configure-Ack报文，则认为对端不可用，停止发送Configure-Request报文。</li>
+</ul>
+</li>
+<li><p>注：完成上述过程只是表明R2认为R1上的链路参数配置是可接受的。R2也需要向R1发送Configure-Request报文，使R1检测R2上的链路参数配置是不是可接受的。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/27.png"></p>
+<blockquote>
+<ul>
+<li>链路协商参数不成功</li>
+<li>当R2收到R1发送的Configure-Request报文之后，如果R2能识别此报文中携带的所有链路层参数，但是认为部分或全部参数的取值不能接受，即参数的取值协商不成功，则R2需要向R1回应一个Configure-Nak报文。</li>
+<li>在这个Configure-Nak报文中，只包含不能接受的那部分链路层参数列表，每一个包含在此报文中链路层参数的取值均被修改为此报文的发送者（R2）上可以接受的取值（或取值范围）。</li>
+<li>在收到Configure-Nak报文之后，R1需要根据此报文中的链路层参数重新选择本地使用的相关参数，并重新发送一个Configure-Request。</li>
+<li>连续五次协商仍然不成功的参数将被禁用，不再继续协商。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/28.png"></p>
+<blockquote>
+<ul>
+<li>链路参数协商参数不能识别<ul>
+<li>当R2收到R1发送的Configure-Request报文之后，如果R2不能识别此报文中携带的部分或全部链路层参数，则R2需要向R1回应一个Configure-Reject报文。</li>
+<li>在此Configure-Reject报文中，只包含不被识别的那部分链路层参数列表。</li>
+<li>在收到Configure-Reject报文之后，R1需要向R2重新发送一个Configure-Request报文，在新的Configure-Request报文中，不再包含不被对端（R2）识别的参数。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/29.png"></p>
+<blockquote>
+<ul>
+<li>检测链路状态<ul>
+<li>LCP建立连接之后，可以使用Echo-Request报文和Echo-Reply报文检测链路状态，收到一个Echo-Request报文之后应当回应一个Echo-Reply报文，表示链路状态正常。</li>
+<li>VRP平台默认每隔10秒发送一次Echo-Request报文。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/30.png"></p>
+<blockquote>
+<ul>
+<li>连接关闭<ul>
+<li>认证不成功或者管理员手工关闭等原因可以使LCP关闭已经建立的连接。</li>
+<li>LCP关闭连接使用Terminate-Request报文和Terminate-Ack报文，Terminate-Request报文用于请求对端关闭连接，一旦收到一个Terminate-Request报文，LCP必须回应一个Terminate-Ack报文确认连接关闭。</li>
+<li>在没有收到Terminate-Ack报文的情况下，每隔3秒重传一次Terminate-Request报文，连续两次重传没有收到Terminate-Ack报文，则认为对端不可用，连接关闭。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/31.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/32.png"></p>
+<blockquote>
+<p>lPAP报文直接封装在PPP报文中。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/33.png"></p>
+<blockquote>
+<ul>
+<li>PAP工作模式<ul>
+<li>被认证方将配置的用户名和密码信息使用Authenticate-Request报文以明文方式发送给认证方，本例中，用户名为“huawei”，密码为“hello”；</li>
+<li>认证方收到被认证方发送的用户名和密码信息之后，根据本地配置的用户名和密码数据库检查用户名和密码信息是否正确匹配，如果正确，则返回Authenticate-Ack报文，表示认证成功，如果不能正确匹配，则返回Authenticate-Nak报文，表示认证失败。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/34.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/35.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/36.png"></p>
+<blockquote>
+<ul>
+<li><p>CHAP的认证过程需要三次报文的交互。为了匹配请求报文和回应报文，报文中含有Identifier字段，一次认证过程所使用的报文均使用相同的Identifier信息。CHAP单向验证过程分为两种情况：验证方配置了用户名和验证方没有配置用户名。推荐使用验证方配置用户名的方式，这样可以对验证方的用户名进行确认。</p>
+</li>
+<li><p>验证方配置了用户名的验证过程（即接口配置命令ppp chap user username）：</p>
+<ul>
+<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge），并同时将本端的用户名附带上一起发送给被验证方。</li>
+<li>被验证方接到验证方的验证请求后，先检查本端接口上是否配置了ppp chap password命令，如果配置了该命令，则被验证方将生成的密文（（Identifier＋密码＋随机数）的MD5）和自己的用户名发回验证方（Response）。如果接口上未配置ppp chap password命令，则根据此报文中验证方的用户名在本端的用户表查找该用户对应的密码，将密文（（Identifier＋密码＋随机数）的MD5）和被验证方自己的用户名发回验证方（Response）。</li>
+<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
+</ul>
+</li>
+<li><p>验证方没有配置用户名（即接口没有配置命令ppp chap user username）：</p>
+<ul>
+<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge）。</li>
+<li>被验证方接到验证方的验证请求后，利用Identifier、ppp chap password命令配置的CHAP密码和随机数进行MD5算法，将生成的密文和自己的用户名发回验证方（Response）。</li>
+<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/37.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/38.png"></p>
+<blockquote>
+<ul>
+<li><p>IPCP，用于协商控制IP参数，使PPP可用于传输IP数据包。</p>
+</li>
+<li><p>IPCP使用和LCP相同的协商机制、报文类型，但IPCP并非调用LCP，只是工作过程、报文等和LCP相同。</p>
+<ul>
+<li>两端配置的IP地址分别为12.1.1.1/24和12.1.1.2/24（两端IP地址即使不在同一网段也会通过IPCP协商）。</li>
+<li>两端静态配置IP地址的时候协商过程如下：<ul>
+<li>R1和R2都要发送Configure-Request报文，在此报文中包含本地配置的IP地址。</li>
+<li>R1和R2接收到对端的Configure-Request报文之后，检查其中的IP地址，如果IP地址是一个合法的单播IP地址，而且和本地配置的IP地址不同（没有IP冲突），则认为对端可以使用该地址，回应一个Configure-Ack报文。</li>
+<li>通过IPCP发送的信息，PPP链路的两端都可以知道对端使用的32位IP地址。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/39.png"></p>
+<blockquote>
+<ul>
+<li><p>如图所示，R1配置为请求对端分配IP地址，R2配置IP地址12.1.1.2/24，并且启用R2给对端分配IP地址的能力，给R1分配IP地址12.1.1.1。</p>
+</li>
+<li><p>两端动态协商IP地址的过程如下：</p>
+<ul>
+<li>R1向R2发送一个Configure-Request报文，此报文中含有IP地址0.0.0.0，一个含有0.0.0.0的IP地址的Configure-Request报文表示向对端请求IP地址；</li>
+<li>R2收到上述Configure-Request报文后，认为其中包含的地址（0.0.0.0）不合法，使用Configure-Nak回应一个新的IP地址12.1.1.1；</li>
+<li>R1收到此Configure-Nak报文之后，更新本地IP地址，并重新发送一个Configure-Request报文，包含新的IP地址12.1.1.1；</li>
+<li>R2收到Configure-Request报文后，认为其中包含的IP地址为合法地址，回应一个Configure-Ack报文；</li>
+<li>同时，R2也要向R1发送Configure-Request报文请求使用地址12.1.1.2，R1认为此地址合法，回应Configure-Ack报文。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/40.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/41.png"></p>
+<blockquote>
+<p>MultiLink PPP允许将报文分片，分片将从多个点对点链路上送到同一个目的地。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/42.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/43.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>ppp authentication-mode命令用来设置本端PPP协议对对端设备的认证方式。</li>
+<li>ppp chap user命令用来配置CHAP验证的用户名。</li>
+<li>ppp chap password命令用来配置CHAP验证的口令。</li>
+<li>ip address ppp-negotiate命令用来为本端接口配置IP地址可协商属性，使本端接口接受PPP协商产生的由对端分配的IP地址。</li>
+<li>remote address命令用来配置为对端分配IP地址或指定地址池。</li>
+</ul>
+</li>
+<li><p>ppp authentication-mode { chap | pap }</p>
+<ul>
+<li>chap：采用CHAP认证方式。</li>
+<li>pap：采用PAP认证方式。</li>
+</ul>
+</li>
+<li><p>ppp chap user username</p>
+<ul>
+<li>username：设置CHAP验证的用户名。</li>
+</ul>
+</li>
+<li><p>ppp chap password { cipher | simple } password</p>
+<ul>
+<li>cipher：表示密码为密文显示。</li>
+<li>simple：表示密码为明文显示。</li>
+<li>password：设置CHAP认证的口令。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/44.png"></p>
+<blockquote>
+<ul>
+<li>命令含义<ul>
+<li>interface mp-group命令用来创建一个MP-Group类型的接口并进入MP-Group接口视图。</li>
+<li>ppp mp mp-group命令用来将接口加入指定的MP-group，使该接口工作在MP方式。</li>
+<li>restart命令用来重新启动当前接口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/45.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/46.png"></p>
+<blockquote>
+<ul>
+<li>Trunk接口分为Eth-Trunk和IP-Trunk两种。<ul>
+<li>Eth-Trunk只能由以太网链路构成。</li>
+<li>IP-Trunk一般由POS接口构成。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/47.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/48.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/49.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/50.png"></p>
+<blockquote>
+<ul>
+<li>PPPoE概述<ul>
+<li>PPPoE利用以太网将大量主机组成网络，通过一个远端接入设备连入因特网，并运用PPP协议对接入的每个主机进行控制，具有适用范围广、安全性高、计费方便的特点。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/51.png"></p>
+<blockquote>
+<ul>
+<li><p>PPPoE可分为三个阶段，即Discovery阶段、Session阶段和Terminate阶段。</p>
+</li>
+<li><p>Discovery阶段：</p>
+<ul>
+<li>PPPoE Client广播发送一个PADI（PPPoE Active Discovery Initial）报文，在此报文中包含PPPoE Client想要得到的服务类型信息。</li>
+<li>所有的PPPoE Server收到PADI报文之后，将其中请求的服务与自己能够提供的服务进行比较，如果可以提供，则单播回复一个PADO（PPPoE Active Discovery Offer）报文。</li>
+<li>根据网络的拓扑结构，PPPoE Client可能收到多个PPPoE Server发送的PADO报文，PPPoE Client选择最先收到的PADO报文对应的PPPoE Server做为自己的PPPoE Server，并单播发送一个PADR（PPPoE Active Discovery Request）报文。</li>
+<li>PPPoE Server产生一个唯一的会话ID（Session ID），标识和PPPoE Client的这个会话，通过发送一个PADS（PPPoE Active Discovery Session-confirmation）报文把会话ID发送给PPPoE Client，会话建立成功后便进入PPPoE Session阶段。</li>
+<li>完成后通信双方都会知道PPPoE的Session_ID及对方MAC，它们共同确定唯一的PPPoE Session。</li>
+</ul>
+</li>
+<li><p>Seesion阶段：</p>
+<ul>
+<li>PPPoE Session上的PPP协商和普通的PPP协商方式一致。PPPoE Session的PPP协商成功后，就可以承载PPP数据报文。在PPPoE Session阶段所有的以太网数据包都是单播发送的。</li>
+</ul>
+</li>
+<li><p>Terminate阶段：</p>
+<ul>
+<li>进入PPPoE Session阶段后，PPPoE Client和PPPoE Server都可以通过发送PADT报文的方式来结束PPPoE连接。PADT数据包可以在会话建立以后的任意时刻单播发送。在发送或接收到PADT后，就不允许再使用该会话发送PPP流量了。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/52.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/53.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/54.png"></p>
+<blockquote>
+<p>此例中，R1模拟PPPoE客户机PC进行PPPoE拨号上网，R4作为PPPoE Server对其进行验证和地址分配。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/55.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -979,475 +1448,6 @@
 </ul>
 </blockquote>
 <p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8761.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/" itemprop="url">IE-WAN技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-20T08:22:43+08:00">
-                2021-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/1.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/2.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/3.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/4.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/5.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/6.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/7.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/8.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/9.png"></p>
-<blockquote>
-<p>lT: 表示双绞线；</p>
-<p>lTX：表示2对高质量的双绞线；</p>
-<p>lFX：表示2根光纤。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/10.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/11.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/12.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/13.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/14.png"></p>
-<blockquote>
-<p>lOC-n: Optical Carrier level n（光载体等级）是光纤传输的一种单位，最小的单位为OC-1，其传输数据量约为51.84 Mbps。</p>
-<p>lSTM: Synchronous Transport Module，同步传输模块。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/15.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/16.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/17.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/18.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/19.png"></p>
-<blockquote>
-<ul>
-<li><p>PPP共定义了三个协议组件，分别是数据封装方式，链路控制协议（Link Control Protocol，LCP）和网络层控制协议（Network Control Protocol，NCP）。</p>
-</li>
-<li><p>数据封装方式定义了如何封装多种类型的上层协议数据包。</p>
-</li>
-<li><p>为了能适应多种多样的链路类型，PPP定义了链路控制协议LCP。LCP可以自动检测链路环境，如是否存在环路；协商链路参数，如最大数据包长度，使用何种认证协议等等。与其他数据链路层协议相比，PPP协议的一个重要特点是可以提供认证功能，链路两端可以协商使用何种认证协议并实施认证过程，只有认证成功才会建立连接。这个特点使PPP协议适合运营商用来接入分散的用户。</p>
-</li>
-<li><p>PPP定义了一组网络层控制协议NCP，每一个协议对应一种网络层协议，用于协商网络层地址等参数，例如IPCP用于协商控制IP，IPXCP用于协商控制IPX协议等。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/20.png"></p>
-<blockquote>
-<p>PPP报文封转格式</p>
-<ul>
-<li><p>Flag域</p>
-<ul>
-<li>Flag域标识一个物理帧的起始和结束，该字节为0x7E。</li>
-</ul>
-</li>
-<li><p>Address域</p>
-<ul>
-<li>Address域可以唯一标识对端。PPP协议是被运用在点对点的链路上，因此，使用PPP协议互连的两个通信设备无须知道对方的数据链路层地址。按照协议的规定将该字节填充为全1的广播地址，对于PPP协议来说，该字段无实际意义。</li>
-</ul>
-</li>
-<li><p>Control域</p>
-<ul>
-<li>该字段默认值为0x03，表明为无序号帧，PPP默认没有采用序列号和确认来实现可靠传输。</li>
-<li>Address和Control域一起标识此报文为PPP报文，即PPP报文头为FF03。</li>
-</ul>
-</li>
-<li><p>Protocol域</p>
-<ul>
-<li>协议域可用来区分PPP数据帧中信息域所承载的数据报类型。</li>
-</ul>
-</li>
-<li><p>Code域</p>
-<ul>
-<li>代码域的长度为一个字节，主要是用来标识LCP数据报文的类型。</li>
-</ul>
-</li>
-<li><p>Identifier域</p>
-<ul>
-<li>标识域为1个字节，用来匹配请求和响应，当标识域值为非法时，该报文将被丢弃。</li>
-<li>通常一个配置请求报文的ID是从0x01开始逐步加1的。当对端接收到该配置请求报文后，无论使用何种报文回应对方，但必须要求回应报文中的ID要与接收报文中的ID一致。</li>
-</ul>
-</li>
-<li><p>Length域</p>
-<ul>
-<li>长度域的值就是该LCP报文的总字节数据。它是代码域、标志域、长度域和数据域四个域长度的总和。</li>
-<li>长度域所指示字节数之外的字节将被当作填充字节而忽略掉，而且该域的内容不能超过MRU的值。</li>
-</ul>
-</li>
-<li><p>Data域</p>
-<ul>
-<li>Type为协商选项类型。</li>
-<li>Length为协商选项长度，它是指Data域的总长度，也就是包含Type、Length和Data。</li>
-<li>Data为协商的选项具体内容。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/22.png"></p>
-<blockquote>
-<p>建链过程</p>
-<ul>
-<li>Dead：这是PPP工作开始和结束的阶段。当物理层变为可用状态（UP）之后，PPP进入Establish阶段。</li>
-<li>Establish：PPP在此阶段使用LCP协商链路层参数。如果链路层参数协商不成功（FAIL），则PPP连接建立不成功，PPP退回到Dead阶段。如果链路层参数协商成功（OPENED），则PPP进入Authenticate阶段。</li>
-<li>Authenticate：PPP在此阶段认证对端，如果认证失败（FAIL），则PPP进入Terminate阶段；如果认证成功（SUCCESS）或者没配置认证（NONE），则PPP进入Network阶段。</li>
-<li>Network：PPP在此阶段使用NCP进行网络层参数协商，协商成功则PPP连接建立成功，开始传输网络层数据包。当上层协议认为应当关闭此连接（例如按需电路）或者管理员手工关闭PPP连接（CLOSING），则PPP进入Terminate阶段。</li>
-<li>Terminate：PPP在此阶段使用LCP关闭PPP连接。PPP连接关闭（Down）后，PPP进入Dead阶段。</li>
-</ul>
-<p>注意：此处列出的是PPP的工作阶段，并非PPP的协议状态。由于PPP是由一组协议组成的，因此PPP本身没有协议状态。只有特定的的协议如LCP和NCP等才有协议状态和状态转换（协议状态机）。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/23.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/24.png"></p>
-<blockquote>
-<ul>
-<li><p>LCP协议有3大类报文：</p>
-<p>1.链路配置包，用于建立和配置链路：Configure-Request（匹配请求），Configure-Ack（匹配确认），Configure-Nak（匹配否认），和Configure-Reject（匹配拒绝）。</p>
-<p>2.链路结束包，用于结束一个链路：Terminate-Request（终止请求） 和 Terminate-Ack（终止确认）。</p>
-<p>3.链路维修包，用于管理和调试一个链路：Code-Reject（代码拒绝）, Protocol-Reject（协议拒绝）, Echo-Request（回波请求）, Echo-Reply（回波应答）, 和 Discard-Request（抛弃请求）。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/25.png"></p>
-<blockquote>
-<ul>
-<li>用于协商的参数<ul>
-<li>在VRP平台上，MRU参数使用接口上配置的最大传输单元（MTU）值来表示的。</li>
-<li>常用的PPP认证协议有PAP和CHAP（后续章节介绍），一条PPP链路的两端可以使用不同的认证协议认证对端，但是被认证方必须支持认证方使用的认证协议并正确配置用户名和密码等认证信息。</li>
-<li>LCP使用魔术字（Magic-Number）检测链路环路和其它异常情况。魔术字为随机产生的一个数字，随机机制需要保证两端产生相同魔术字的可能性几乎为0。</li>
-<li>收到一个Configure-Request报文之后，其包含的魔术字需要和本地产生的魔术字做比较，如果不同，表示链路无环路，则使用Confugure-Ack报文确认（其他参数也协商成功），表示魔术字协商成功。在后续发送的报文中，如果报文含有魔术字字段，则该字段设置为协商成功的魔术字，LCP不再产生新的魔术字。</li>
-<li>如果收到的Configure-Request报文和自身产生的魔术字相同，则发送一个Configure-Nak报文，携带一个新的魔术字。然后，不管新收到的Configure-Nak报文中是否携带相同的魔术字，LCP都发送一个新的Configure-Request报文，携带一个新的魔术字。如果链路有环路，则这个过程会不停的持续下去，如果链路没有环路，则报文交互会很快恢复正常。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/26.png"></p>
-<blockquote>
-<ul>
-<li><p>链路协商成功</p>
-<ul>
-<li>如图所示，R1和R2使用串行链路相连，运行PPP。当物理层链路变为可用状态之后，R1和R2使用LCP协商链路参数。本例中，R1首先发送一个LCP报文。</li>
-<li>R1向R2发送Configure-Request报文，此报文包含在发送者（R1）上配置的链路层参数，每个链路层参数使用“类型，长度，取值”的结构表示。</li>
-<li>当R2收到此Configure-Request报文之后，如果R2能识别此报文中的所有链路层参数，并且认为每个参数的取值都是可以接受的，则向R1回应一个Configure-Ack报文。</li>
-<li>在没有收到Configure-Ack报文的情况下，每隔3秒重传一次Configure-Request报文，如果连续10次发送Configure-Request报文仍然没有收到Configure-Ack报文，则认为对端不可用，停止发送Configure-Request报文。</li>
-</ul>
-</li>
-<li><p>注：完成上述过程只是表明R2认为R1上的链路参数配置是可接受的。R2也需要向R1发送Configure-Request报文，使R1检测R2上的链路参数配置是不是可接受的。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/27.png"></p>
-<blockquote>
-<ul>
-<li>链路协商参数不成功</li>
-<li>当R2收到R1发送的Configure-Request报文之后，如果R2能识别此报文中携带的所有链路层参数，但是认为部分或全部参数的取值不能接受，即参数的取值协商不成功，则R2需要向R1回应一个Configure-Nak报文。</li>
-<li>在这个Configure-Nak报文中，只包含不能接受的那部分链路层参数列表，每一个包含在此报文中链路层参数的取值均被修改为此报文的发送者（R2）上可以接受的取值（或取值范围）。</li>
-<li>在收到Configure-Nak报文之后，R1需要根据此报文中的链路层参数重新选择本地使用的相关参数，并重新发送一个Configure-Request。</li>
-<li>连续五次协商仍然不成功的参数将被禁用，不再继续协商。</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/28.png"></p>
-<blockquote>
-<ul>
-<li>链路参数协商参数不能识别<ul>
-<li>当R2收到R1发送的Configure-Request报文之后，如果R2不能识别此报文中携带的部分或全部链路层参数，则R2需要向R1回应一个Configure-Reject报文。</li>
-<li>在此Configure-Reject报文中，只包含不被识别的那部分链路层参数列表。</li>
-<li>在收到Configure-Reject报文之后，R1需要向R2重新发送一个Configure-Request报文，在新的Configure-Request报文中，不再包含不被对端（R2）识别的参数。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/29.png"></p>
-<blockquote>
-<ul>
-<li>检测链路状态<ul>
-<li>LCP建立连接之后，可以使用Echo-Request报文和Echo-Reply报文检测链路状态，收到一个Echo-Request报文之后应当回应一个Echo-Reply报文，表示链路状态正常。</li>
-<li>VRP平台默认每隔10秒发送一次Echo-Request报文。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/30.png"></p>
-<blockquote>
-<ul>
-<li>连接关闭<ul>
-<li>认证不成功或者管理员手工关闭等原因可以使LCP关闭已经建立的连接。</li>
-<li>LCP关闭连接使用Terminate-Request报文和Terminate-Ack报文，Terminate-Request报文用于请求对端关闭连接，一旦收到一个Terminate-Request报文，LCP必须回应一个Terminate-Ack报文确认连接关闭。</li>
-<li>在没有收到Terminate-Ack报文的情况下，每隔3秒重传一次Terminate-Request报文，连续两次重传没有收到Terminate-Ack报文，则认为对端不可用，连接关闭。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/31.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/32.png"></p>
-<blockquote>
-<p>lPAP报文直接封装在PPP报文中。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/33.png"></p>
-<blockquote>
-<ul>
-<li>PAP工作模式<ul>
-<li>被认证方将配置的用户名和密码信息使用Authenticate-Request报文以明文方式发送给认证方，本例中，用户名为“huawei”，密码为“hello”；</li>
-<li>认证方收到被认证方发送的用户名和密码信息之后，根据本地配置的用户名和密码数据库检查用户名和密码信息是否正确匹配，如果正确，则返回Authenticate-Ack报文，表示认证成功，如果不能正确匹配，则返回Authenticate-Nak报文，表示认证失败。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/34.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/35.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/36.png"></p>
-<blockquote>
-<ul>
-<li><p>CHAP的认证过程需要三次报文的交互。为了匹配请求报文和回应报文，报文中含有Identifier字段，一次认证过程所使用的报文均使用相同的Identifier信息。CHAP单向验证过程分为两种情况：验证方配置了用户名和验证方没有配置用户名。推荐使用验证方配置用户名的方式，这样可以对验证方的用户名进行确认。</p>
-</li>
-<li><p>验证方配置了用户名的验证过程（即接口配置命令ppp chap user username）：</p>
-<ul>
-<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge），并同时将本端的用户名附带上一起发送给被验证方。</li>
-<li>被验证方接到验证方的验证请求后，先检查本端接口上是否配置了ppp chap password命令，如果配置了该命令，则被验证方将生成的密文（（Identifier＋密码＋随机数）的MD5）和自己的用户名发回验证方（Response）。如果接口上未配置ppp chap password命令，则根据此报文中验证方的用户名在本端的用户表查找该用户对应的密码，将密文（（Identifier＋密码＋随机数）的MD5）和被验证方自己的用户名发回验证方（Response）。</li>
-<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
-</ul>
-</li>
-<li><p>验证方没有配置用户名（即接口没有配置命令ppp chap user username）：</p>
-<ul>
-<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge）。</li>
-<li>被验证方接到验证方的验证请求后，利用Identifier、ppp chap password命令配置的CHAP密码和随机数进行MD5算法，将生成的密文和自己的用户名发回验证方（Response）。</li>
-<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/37.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/38.png"></p>
-<blockquote>
-<ul>
-<li><p>IPCP，用于协商控制IP参数，使PPP可用于传输IP数据包。</p>
-</li>
-<li><p>IPCP使用和LCP相同的协商机制、报文类型，但IPCP并非调用LCP，只是工作过程、报文等和LCP相同。</p>
-<ul>
-<li>两端配置的IP地址分别为12.1.1.1/24和12.1.1.2/24（两端IP地址即使不在同一网段也会通过IPCP协商）。</li>
-<li>两端静态配置IP地址的时候协商过程如下：<ul>
-<li>R1和R2都要发送Configure-Request报文，在此报文中包含本地配置的IP地址。</li>
-<li>R1和R2接收到对端的Configure-Request报文之后，检查其中的IP地址，如果IP地址是一个合法的单播IP地址，而且和本地配置的IP地址不同（没有IP冲突），则认为对端可以使用该地址，回应一个Configure-Ack报文。</li>
-<li>通过IPCP发送的信息，PPP链路的两端都可以知道对端使用的32位IP地址。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/39.png"></p>
-<blockquote>
-<ul>
-<li><p>如图所示，R1配置为请求对端分配IP地址，R2配置IP地址12.1.1.2/24，并且启用R2给对端分配IP地址的能力，给R1分配IP地址12.1.1.1。</p>
-</li>
-<li><p>两端动态协商IP地址的过程如下：</p>
-<ul>
-<li>R1向R2发送一个Configure-Request报文，此报文中含有IP地址0.0.0.0，一个含有0.0.0.0的IP地址的Configure-Request报文表示向对端请求IP地址；</li>
-<li>R2收到上述Configure-Request报文后，认为其中包含的地址（0.0.0.0）不合法，使用Configure-Nak回应一个新的IP地址12.1.1.1；</li>
-<li>R1收到此Configure-Nak报文之后，更新本地IP地址，并重新发送一个Configure-Request报文，包含新的IP地址12.1.1.1；</li>
-<li>R2收到Configure-Request报文后，认为其中包含的IP地址为合法地址，回应一个Configure-Ack报文；</li>
-<li>同时，R2也要向R1发送Configure-Request报文请求使用地址12.1.1.2，R1认为此地址合法，回应Configure-Ack报文。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/40.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/41.png"></p>
-<blockquote>
-<p>MultiLink PPP允许将报文分片，分片将从多个点对点链路上送到同一个目的地。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/42.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/43.png"></p>
-<blockquote>
-<ul>
-<li><p>命令含义</p>
-<ul>
-<li>ppp authentication-mode命令用来设置本端PPP协议对对端设备的认证方式。</li>
-<li>ppp chap user命令用来配置CHAP验证的用户名。</li>
-<li>ppp chap password命令用来配置CHAP验证的口令。</li>
-<li>ip address ppp-negotiate命令用来为本端接口配置IP地址可协商属性，使本端接口接受PPP协商产生的由对端分配的IP地址。</li>
-<li>remote address命令用来配置为对端分配IP地址或指定地址池。</li>
-</ul>
-</li>
-<li><p>ppp authentication-mode { chap | pap }</p>
-<ul>
-<li>chap：采用CHAP认证方式。</li>
-<li>pap：采用PAP认证方式。</li>
-</ul>
-</li>
-<li><p>ppp chap user username</p>
-<ul>
-<li>username：设置CHAP验证的用户名。</li>
-</ul>
-</li>
-<li><p>ppp chap password { cipher | simple } password</p>
-<ul>
-<li>cipher：表示密码为密文显示。</li>
-<li>simple：表示密码为明文显示。</li>
-<li>password：设置CHAP认证的口令。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/44.png"></p>
-<blockquote>
-<ul>
-<li>命令含义<ul>
-<li>interface mp-group命令用来创建一个MP-Group类型的接口并进入MP-Group接口视图。</li>
-<li>ppp mp mp-group命令用来将接口加入指定的MP-group，使该接口工作在MP方式。</li>
-<li>restart命令用来重新启动当前接口。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/45.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/46.png"></p>
-<blockquote>
-<ul>
-<li>Trunk接口分为Eth-Trunk和IP-Trunk两种。<ul>
-<li>Eth-Trunk只能由以太网链路构成。</li>
-<li>IP-Trunk一般由POS接口构成。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/47.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/48.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/49.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/50.png"></p>
-<blockquote>
-<ul>
-<li>PPPoE概述<ul>
-<li>PPPoE利用以太网将大量主机组成网络，通过一个远端接入设备连入因特网，并运用PPP协议对接入的每个主机进行控制，具有适用范围广、安全性高、计费方便的特点。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/51.png"></p>
-<blockquote>
-<ul>
-<li><p>PPPoE可分为三个阶段，即Discovery阶段、Session阶段和Terminate阶段。</p>
-</li>
-<li><p>Discovery阶段：</p>
-<ul>
-<li>PPPoE Client广播发送一个PADI（PPPoE Active Discovery Initial）报文，在此报文中包含PPPoE Client想要得到的服务类型信息。</li>
-<li>所有的PPPoE Server收到PADI报文之后，将其中请求的服务与自己能够提供的服务进行比较，如果可以提供，则单播回复一个PADO（PPPoE Active Discovery Offer）报文。</li>
-<li>根据网络的拓扑结构，PPPoE Client可能收到多个PPPoE Server发送的PADO报文，PPPoE Client选择最先收到的PADO报文对应的PPPoE Server做为自己的PPPoE Server，并单播发送一个PADR（PPPoE Active Discovery Request）报文。</li>
-<li>PPPoE Server产生一个唯一的会话ID（Session ID），标识和PPPoE Client的这个会话，通过发送一个PADS（PPPoE Active Discovery Session-confirmation）报文把会话ID发送给PPPoE Client，会话建立成功后便进入PPPoE Session阶段。</li>
-<li>完成后通信双方都会知道PPPoE的Session_ID及对方MAC，它们共同确定唯一的PPPoE Session。</li>
-</ul>
-</li>
-<li><p>Seesion阶段：</p>
-<ul>
-<li>PPPoE Session上的PPP协商和普通的PPP协商方式一致。PPPoE Session的PPP协商成功后，就可以承载PPP数据报文。在PPPoE Session阶段所有的以太网数据包都是单播发送的。</li>
-</ul>
-</li>
-<li><p>Terminate阶段：</p>
-<ul>
-<li>进入PPPoE Session阶段后，PPPoE Client和PPPoE Server都可以通过发送PADT报文的方式来结束PPPoE连接。PADT数据包可以在会话建立以后的任意时刻单播发送。在发送或接收到PADT后，就不允许再使用该会话发送PPP流量了。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/52.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/53.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/54.png"></p>
-<blockquote>
-<p>此例中，R1模拟PPPoE客户机PC进行PPPoE拨号上网，R4作为PPPoE Server对其进行验证和地址分配。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/55.png"></p>
 
           
         
