@@ -241,6 +241,396 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IPadv-MPLSLDP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T13:37:44+08:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•MPLS是一种根根据标签报文中携带的短而定长的标签来转发数据的技术。</p>
+<p>•MPLS的一个基本概念就是两台LSR必须对在它们之间转发的数据的标签使用上“达成共识”。LSR之间可以运行标签分发协议（Label Distribution Protocol，LDP）来告知其他LSR本设备上的标签绑定信息，从而实现标签报文的正确转发。</p>
+<p>•本课程将介绍LDP基本工作原理与特性，以及LDP的基本配置。</p>
+<blockquote>
+<p>•本课程的标签分发协议特指由RFC3036首次定义的标签分发协议，当前该标准已被RFC5036废弃。</p>
+<p>•除了LDP外，标签分发协议也可以指MP-BGP、RSVP等可执行标签分发的一类协议。</p>
+</blockquote>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述LDP的基本概念及工作机制</p>
+<p>▫描述MPLS标签分发控制模式、通告模式及保留模式</p>
+<p>▫实现LDP的基础配置</p>
+<h1 id="1-LDP基本概念"><a href="#1-LDP基本概念" class="headerlink" title="1.LDP基本概念"></a>1.LDP基本概念</h1><h2 id="LDP协议概述"><a href="#LDP协议概述" class="headerlink" title="LDP协议概述"></a>LDP协议概述</h2><p>•LDP是MPLS的一种控制协议，相当于传统网络中的信令协议，负责FEC的分类、标签的分配以及LSP的建立和维护等操作。LDP规定了标签分发过程中的各种消息以及相关处理过程。</p>
+<p>•LDP的工作过程主要分为两部分：</p>
+<p>​    1.LSR之间建立LDP会话。</p>
+<p>​    2.LSR之间基于LDP会话动态交换标签与FEC的映射信息，并根据标签信息建立LSP。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="LDP会话、LDP邻接体、LDP对等体"><a href="#LDP会话、LDP邻接体、LDP对等体" class="headerlink" title="LDP会话、LDP邻接体、LDP对等体"></a>LDP会话、LDP邻接体、LDP对等体</h2><p>•LSR之间交互标签绑定消息之前必须建立LDP会话。LDP会话可以分为：</p>
+<p>​    ▫本地LDP会话（Local LDP Session）：建立会话的两个LSR之间是直连的；</p>
+<p>​    ▫远程LDP会话（Remote LDP Session）：建立会话的两个LSR之间可以是直连的，也可以是非直连的。</p>
+<p>•两台LSR之间交互Hello消息之后，即建立起邻接体（Adjacency）关系；</p>
+<p>•在建立邻接体关系的基础上，两台LSR之间交互LDP会话消息，建立起LDP会话，两台设备之间形成LDP对等体关系；</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<h2 id="LSR-ID与LDP-ID"><a href="#LSR-ID与LDP-ID" class="headerlink" title="LSR ID与LDP ID"></a>LSR ID与LDP ID</h2><p>•每一台运行了LDP的LSR除了必须配置LSR ID，还必须拥有LDP ID。</p>
+<ul>
+<li><p>LDP ID的长度为48bit，由32bit的LSR ID与16bit的标签空间标识符（Label Space ID）构成。</p>
+</li>
+<li><p>LDP ID以“LSR ID : 标签空间标识”的形式呈现。例如2.2.2.2:0。</p>
+</li>
+</ul>
+<p>•标签空间标识一般存在两种形态：</p>
+<ul>
+<li><p>值为0：表示基于设备（或基于平台）的标签空间；</p>
+</li>
+<li><p>值非0：表示基于接口的标签空间。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<blockquote>
+<p>•在本课程中，均使用基于设备（或基于平台）的标签空间。</p>
+</blockquote>
+<h2 id="LDP消息"><a href="#LDP消息" class="headerlink" title="LDP消息"></a>LDP消息</h2><p>运行LDP协议的LSR之间通过交换LDP消息来实现邻居发现、会话建立与维护以及标签管理等功能。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•按照消息的功能，LDP消息一共可以分为四大类型：发现消息（Discovery Message），会话消息（Session Message），通告消息（Advertisement Message）和通知消息（Notification Message）。</p>
+<p>▫发现消息：用来宣告和维护网络中一个LSR的存在；用于通告和维护网络中LSR的存在，如Hello报文。</p>
+<p>▫会话消息：用于建立、维护和终止LDP对等体之间的会话，如Initialization报文、KeepAlive报文。</p>
+<p>▫通告消息：用来生成、改变和删除FEC的标签映射；</p>
+<p>▫通知消息：用来宣告告警和错误信息。</p>
+<p>•LDP消息承载在UDP或TCP之上，端口号均为646 。其中发现消息用来发现邻居，承载在UDP报文上。其他消息的传递要求可靠而有序，所以LDP使用TCP建立会话，会话、通告和通知消息都基于TCP传递。</p>
+</blockquote>
+<h2 id="LDP报文封装"><a href="#LDP报文封装" class="headerlink" title="LDP报文封装"></a>LDP报文封装</h2><p>•LDP协议报文包括了LDP头部和LDP消息两部分。</p>
+<p>​    ▫LDP头部中携带了LDP版本、报文长度等信息；</p>
+<p>​    ▫LDP消息中携带了消息类型、消息长度等信息。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<blockquote>
+<p>•LDP头部长度为10Byte，包括Version，PDU Length和LDP Identifier三部分。</p>
+<ul>
+<li>Version占用2Byte，表示LDP版本号，当前版本号为1。</li>
+<li>PDU Length占用2Byte，以字节为单位表示除了Version和PDU Length以外的其他部分的总长度。</li>
+<li>LDP Identifier，即LDP ID，长度6Byte，其中前4Byte用来唯一标识一个LSR，后2Byte用来表示LSR的标签空间。</li>
+</ul>
+<p>•LDP消息包含五个部分。</p>
+<ul>
+<li>U占用1个bit，为Unknown Message bit。当LSR收到一个无法识别的消息时，该消息的U=0时，LSR会返回给该消息的生成者一个通告，当U=1时，忽略该无法识别的消息，不发送通告给生成者。</li>
+<li>Message Length占用2个bytes，以字节为单位表示Message ID、Mandatory Parameters和Optional Parameters的总长度。</li>
+<li>Message ID占用32个bit，用来标识一个消息。</li>
+<li>Mandatory Parameters和Optional Parameters分别为可变长的该消息的必须的参数和可选的参数。</li>
+<li>Message Type表示具体的消息类型，目前LDP定义的常用的消息有Notification，Hello，Initialization，KeepAlive，Address，Address Withdraw，Label Mapping，Label Request，Label Abort Request，Label Withdraw，Label Release。</li>
+</ul>
+</blockquote>
+<h1 id="2-LDP工作原理"><a href="#2-LDP工作原理" class="headerlink" title="2.LDP工作原理"></a>2.LDP工作原理</h1><h2 id="LDP会话建立"><a href="#LDP会话建立" class="headerlink" title="LDP会话建立"></a>LDP会话建立</h2><h3 id="LDP会话状态机"><a href="#LDP会话状态机" class="headerlink" title="LDP会话状态机"></a>LDP会话状态机</h3><p>LDP使用5种状态描述LDP会话状态机。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>•LDP Session协商过程可以通过状态机来描述。如图所示，有5种状态。分别是Non-Existent，Initialized，OpenRec，OpenSent，Operational。</p>
+<p>▫Non-Existent状态：该状态为LDP Session最初的状态，在此状态双方发送HELLO消息，选举主动方，在收到TCP连接建立成功事件的触发后变为Initialized状态。</p>
+<p>▫Initialized状态：该状态下分为主动方和被动方两种情况，主动方将主动发送Initialization消息，转向OpenSent 状态，等待回应的Initialization消息；被动方在此状态等待主动方发给自己的Initialization消息，如果收到的Initialization消息的参数可以接受，则发送Initialization和KeepAlive转向OpenRec状态。主动方和被动方在此状态下收到任何非Initialization消息或等待超时时，都会转向Non-Existent状态。</p>
+<p>▫OpenSent 状态：此状态为主动方发送Initialization消息后的状态，在此状态等待被动方回答Initialization消息和KeepAlive消息，如果收到的Initialization消息中的参数可以接受则转向OpenRec状态，如果参数不能接受或Initialization消息超时则断开TCP连接转向Non-Existent状态。</p>
+<p>▫OpenRec状态：在此状态不管主动方还是被动方都是发出KeepAlive后的状态，在等待对方回应KeepAlive，只要收到KeepAlive消息就转向Operational状态；如果收到其它消息或KeepAlive超时则转向Non-Existent状态。</p>
+<p>▫Operational状态：该状态是LDP Session成功建立的标志。在此状态下可以发送和接收所有其它的LDP消息。在此状态如果KeepAlive超时或收到致命错误的Notification消息（Shutdown消息）或者自己主动发送Shutdown消息主动结束会话，都会转向Non-Existent状态。</p>
+<p>•LDP状态切换信息可以通过指令<strong>debug</strong> <strong>mpls</strong> <strong>ldp</strong> <strong>session</strong>看到。</p>
+</blockquote>
+<h3 id="LDP会话建立-发现阶段与TCP连接建立"><a href="#LDP会话建立-发现阶段与TCP连接建立" class="headerlink" title="LDP会话建立 - 发现阶段与TCP连接建立"></a>LDP会话建立 - 发现阶段与TCP连接建立</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<blockquote>
+<p>•除了基本发现机制外，可以通过拓展发现机制发现非直连的远端邻接体，该内容不属于课程的重点，详细内容可以查阅RFC5036相关内容。</p>
+<p>•LDP的传输地址用于与邻居建立TCP连接。</p>
+<ul>
+<li>两台LSR之间在建立LDP会话之前，需要先建立TCP连接，以便进行LDP协议报文的交换。</li>
+<li>设备的传输地址被包含在LDP Hello报文中，LSR通过Hello报文知晓邻居的传输地址。</li>
+<li>在使用Hello报文发现邻居并且知道了对方的传输地址后，邻居之间就会开始尝试TCP三次握手（基于传输地址），并且交互LDP的初始化报文、标签映射报文等，这些报文都使用双方的传输地址作为源、目的IP地址。</li>
+<li>LSR必须拥有到达邻居的传输地址的路由。</li>
+<li>缺省情况下，公网的LDP传输地址等于设备的LSR ID，私网的传输地址等于接口的主IP地址。 </li>
+<li>在接口视图下，使用<strong>mpls</strong> <strong>ldp</strong> <strong>transport-address</strong>命令，可以修改传输地址。</li>
+</ul>
+</blockquote>
+<h3 id="LDP会话建立-会话建立与保持"><a href="#LDP会话建立-会话建立与保持" class="headerlink" title="LDP会话建立 - 会话建立与保持"></a>LDP会话建立 - 会话建立与保持</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h3 id="LDP邻居状态"><a href="#LDP邻居状态" class="headerlink" title="LDP邻居状态"></a>LDP邻居状态</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<h3 id="LDP会话状态"><a href="#LDP会话状态" class="headerlink" title="LDP会话状态"></a>LDP会话状态</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<blockquote>
+<p>•LDP会话的状态：</p>
+<p>▫NonExistent：表示LDP会话的最初状态。在此状态双方互相发送Hello消息，在收到TCP连接建立成功事件的触发后变为Initialized状态。 </p>
+<p>▫Initialized：表示LDP会话处于初始化状态。</p>
+<p>▫Open Sent：表示LDP会话进入初始化状态后，主动方给被动方发送了Initialized消息，并等待对方的回应。</p>
+<p>▫Open Recv：表示LDP会话进入初始化状态后，当双方都收到了对方发送的KeepAlive消息后，LDP会话进入Operational状态。 </p>
+<p>▫Operational：表示LDP会话建立成功。</p>
+</blockquote>
+<h2 id="LDP标签分发"><a href="#LDP标签分发" class="headerlink" title="LDP标签分发"></a>LDP标签分发</h2><h3 id="标签的发布和管理"><a href="#标签的发布和管理" class="headerlink" title="标签的发布和管理"></a>标签的发布和管理</h3><p>•在MPLS网络中，下游LSR决定标签和FEC的绑定关系，并将这种绑定关系发布给上游LSR。</p>
+<p>•LDP通过发送标签请求和标签映射消息，在LDP对等体之间通告FEC和标签的绑定关系来建立LSP</p>
+<p>•标签的发布和管理由标签发布方式、标签分配控制方式和标签保持方式来决定。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<h3 id="上游与下游"><a href="#上游与下游" class="headerlink" title="上游与下游"></a>上游与下游</h3><p>•MPLS根据数据的转发方向确定上、下游关系。标签报文从上游LSR发出，被下游LSR接收并处理。</p>
+<p>•如图所示，对于到达192.168.3.0/24的LSP而言，R3是R2的下游LSR，R1是R2的上游LSR。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<h3 id="标签发布方式-DU模式"><a href="#标签发布方式-DU模式" class="headerlink" title="标签发布方式 - DU模式"></a>标签发布方式 - DU模式</h3><p>•DU模式</p>
+<ul>
+<li><p>对于一个特定的FEC，LSR无需从上游获得标签请求消息即进行标签分配与分发。</p>
+</li>
+<li><p>LSR会主动将自己为FEC捆绑的标签通告给上游邻居，无需邻居先发起请求再通告。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<blockquote>
+<p>•标签分配：LSR从本地标签空间中取出一个标签与FEC绑定。</p>
+<p>•标签分发：LSR将标签与FEC的绑定关系通知给上游LSR。</p>
+<p>•标签发布方式为DU时，系统默认支持LDP为所有对等体分标签，即每个节点都可以向所有的对等体发布标签映射关系，不再区分上下游关系。因为在只给上游对等体分标签情况下，发送标签映射消息的时候，要根据路由信息对会话的上下游关系进行确认。</p>
+</blockquote>
+<h3 id="标签发布方式-DoD模式"><a href="#标签发布方式-DoD模式" class="headerlink" title="标签发布方式 - DoD模式"></a>标签发布方式 - DoD模式</h3><p>•DoD模式</p>
+<p>​    ▫对于一个特定的FEC，LSR获得标签请求消息之后才进行标签分配与分发。</p>
+<p>​    ▫一般情况下，对特定FEC的访问需求会触发标签请求消息。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•只有上游邻居向自己请求标签映射时，LSR才会通告标签映射给该邻居</p>
+</blockquote>
+<h3 id="标签分配控制方式-独立模式"><a href="#标签分配控制方式-独立模式" class="headerlink" title="标签分配控制方式 - 独立模式"></a>标签分配控制方式 - 独立模式</h3><p>独立（Independent）模式</p>
+<p>▫本地LSR可以自主地分配一个标签绑定到某个FEC，并通告给上游LSR，而无需等待下游的标签。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•标签分配控制方式需要与标签发布方式结合使用：</p>
+<ul>
+<li><p>在使用DU作为标签分发方式的情况下，如图所示，R2和R3对192.168.4.0/24这条FEC，可以在上游LSR无请求，且自身没有收到下游LSR的标签绑定信息的情况下，主动向上游LSR通告标签绑定信息。</p>
+</li>
+<li><p>采用DoD作为标签发布方式时，如图所示，R2和R3对192.168.4.0/24这条FEC，只要收到上游LSR的标签请求消息，可以在自身没有收到下游LSR的标签绑定信息的情况下，向上游LSR通告标签绑定信息。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="标签分配控制方式-有序模式"><a href="#标签分配控制方式-有序模式" class="headerlink" title="标签分配控制方式 - 有序模式"></a>标签分配控制方式 - 有序模式</h3><p>•有序（Ordered）模式</p>
+<p>▫对于LSR上某个FEC的标签映射，只有当该LSR已经具有此FEC下一跳的标签映射消息、或者该LSR就是此FEC的出节点时，该LSR才可以向上游发送此FEC的标签映射。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<blockquote>
+<p>•当标签控制方式为Ordered，只有当LSR收到特定FEC下一跳发送的特定FEC标签映射消息或者LSR是LSP的出口节点时，LSR才可以向上游发送标签映射消息。</p>
+<ul>
+<li><p>当标签分发方式为DU时，如图所示，对于192.168.4.0/24这条FEC，不论上游LSR是否有请求，必须收到下游LSR对此FEC的标签绑定信息才向上游LSR发布标签绑定信息，所以必须由Egress LSR，也就是R4作为LSP建立的“起点”。</p>
+</li>
+<li><p>当标签发布方式采用DoD时，如图所示，对于192.168.4.0/24这条FEC，只有收到上游LSR请求的请求，且自身已经收到下游LSR的标签绑定信息的情况下，才向上游LSR通告标签绑定信息。因此，必须由Ingress LSR（R1）发起请求，逐跳请求到Egress LSR（R4），最终由R4开始，向上游建立LSP。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="标签保留-自由模式"><a href="#标签保留-自由模式" class="headerlink" title="标签保留 - 自由模式"></a>标签保留 - 自由模式</h3><p>自由（Liberal）模式</p>
+<p>▫LSR收到的标签映射可能来自下一跳，也可能来自非下一跳。</p>
+<p>▫对于从邻居LSR收到的标签映射，无论邻居LSR是不是自己的下一跳都保留。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<blockquote>
+<p>•当基于IP网络部署MPLS时，LSR根据IP路由表判断接收到的标签映射是否来自下一跳。</p>
+<p>•Liberal方式的最大优点在于路由发生变化时能够快速建立新的LSP进行数据转发，因为Liberal方式保留了所有的标签。缺点是需要分发和维护不必要的标签映射。</p>
+<ul>
+<li><p>DU标签分发方式下，如果采用Liberal保持方式，则R3保留所有LDP邻居 R2和R5发来的关于192.168.1.0/24这个FEC的标签，无论该R2和R5是否是IP路由表中到达192.168.1.0/24的下一跳。</p>
+</li>
+<li><p>DoD标签分发方式下，如果采用Liberal保持方式， LSR会向所有LDP邻居请求标签。但通常来说，DoD分发方式都会和Conservative保持方式搭配使用。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="标签保留-保守模式"><a href="#标签保留-保守模式" class="headerlink" title="标签保留 - 保守模式"></a>标签保留 - 保守模式</h3><p>•保守（Conservative）模式</p>
+<p>▫对于从邻居LSR收到的标签映射，只有当邻居LSR是自己的下一跳时才保留。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<blockquote>
+<p>•Conservative方式的优点在于只需保留和维护用于转发数据的标签，以达到节约标签的目的。</p>
+<ul>
+<li>当使用DU标签分发方式时，LSR可能从多个LDP邻居收到到同一网段的标签映射消息，如图中R3会分别从R2和R5收到网段192.168.1.0/24的标签映射消息。如果采用Conservative保持方式，则R3只保留下一跳R2发来的标签，丢弃非下一跳R5发来的标签。</li>
+<li>当使用DoD标签分发方式时， LSR根据路由信息只向它的下一跳请求标签。</li>
+</ul>
+<p>•当网络拓扑变化引起下一跳邻居改变时：</p>
+<ul>
+<li>使用自由标签保持方式，LSR可以直接利用原来非下一跳邻居发来的标签，迅速重建LSP，但需要更多的内存和标签空间。</li>
+<li>使用保守标签保持方式，LSR只保留来自下一跳邻居的标签，节省了内存和标签空间，但LSP的重建会比较慢。</li>
+<li>保守标签保持方式通常与DoD方式一起，用于标签空间有限的LSR。</li>
+</ul>
+</blockquote>
+<h3 id="PHP特性"><a href="#PHP特性" class="headerlink" title="PHP特性"></a>PHP特性</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<p>•PHP（Penultimate Hop Popping，次末跳弹出），如果激活了PHP特性，那么egress节点在为本地路由分配标签的时候，会分配一个特殊标签—<strong>3</strong>，该标签被称为隐式空标签（Implicit NULL Label）。当LSR转发一个标签报文时，如果发现对应的出标签值为3，则LSR会将栈顶标签弹出，并将里面所封装的数据转发给下游LSR。</p>
+<blockquote>
+<p>•在标签发布时，R3为作为192.168.3.0/24这条FEC的Egress LSR。分配标签时，R3为该FEC分配了标签3，并将该标签绑定信息通告给R2。</p>
+<p>•在数据转发时，R2作为到达192.168.3.0的次末跳（倒数第二跳），发现出标签值为3，于是将标签头部弹出，将IP报文转发给R3，而R3则仅需执行一次查询操作（查询FIB表）即可获得相应的转发信息，转发效率得到了提升。</p>
+</blockquote>
+<h3 id="隐式空标签与显式空标签-1"><a href="#隐式空标签与显式空标签-1" class="headerlink" title="隐式空标签与显式空标签 (1)"></a>隐式空标签与显式空标签 (1)</h3><p>•缺省情况下，Egress节点向倒数第二跳分配隐式空标签（implicit-null），即特殊标签3。</p>
+<p>•但在部署QoS的场景下，标签被弹出后，其中的优先级也会一并丢失。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<h3 id="隐式空标签与显式空标签-2"><a href="#隐式空标签与显式空标签-2" class="headerlink" title="隐式空标签与显式空标签 (2)"></a>隐式空标签与显式空标签 (2)</h3><p>•显式空标签机制，Egress节点向倒数第二跳分配特殊标签0。</p>
+<p>•R3在转发标签报文时，若出标签封装为0，则不会将标签头部弹出，标签头部中的QoS信息得以保存。R4在收到带0标签的报文的时候，直接弹出标签，不用去查找ILM表项。</p>
+<p>•缺省情况下，Egress分配的是隐式空标签，通过label advertise explicit-null使能Egress节点向倒数第二跳分配显式空标签。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<blockquote>
+<p>•在MPLS视图下，执行命令<strong>label advertise</strong> { <strong>explicit-null</strong> | <strong>implicit-null</strong> | <strong>non-null</strong> }，配置向倒数第二跳分配的标签。</p>
+<p>•根据参数的不同，可以配置Egress向倒数第二跳分配不同的标签。</p>
+<p>▫缺省情况下，使用的是<strong>implicit-null</strong>，Egress向倒数第二跳节点分配隐式空标签，值为3。</p>
+<p>▫如果配置的是<strong>explicit-null</strong>，Egress节点向倒数第二跳分配显式空标签，值为0。当需要支持MPLS QoS属性时，可以选用<strong>explicit-null</strong>。</p>
+<p>▫如果配置的是<strong>non-null</strong>，Egress向倒数第二跳正常分配标签，即分配的标签值不小于16。</p>
+</blockquote>
+<h2 id="LDP工作过程详解"><a href="#LDP工作过程详解" class="headerlink" title="LDP工作过程详解"></a>LDP工作过程详解</h2><h3 id="组网介绍"><a href="#组网介绍" class="headerlink" title="组网介绍"></a>组网介绍</h3><p>•网络中已经部署OSPF路由协议且各设备之间能够正常学习到对方的路由信息。</p>
+<p>•已在各设备及相应接口上激活MPLS及LDP，且在相邻的设备之间已正常建立本地LDP会话。</p>
+<p>•所有LSR均采用DU + Independent +Liberal方式。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<blockquote>
+<p>•华为设备目前缺省模式为下游自主方式（DU）＋ 有序标签分配控制方式（Ordered）＋ 自由标签保持方式（Liberal）。</p>
+<p>•对于从R1进入，到达192.168.4.0/24的数据，R1为Ingress LSR，R4为Egress LSR。</p>
+</blockquote>
+<h3 id="标签分发-Egress-LSR"><a href="#标签分发-Egress-LSR" class="headerlink" title="标签分发 - Egress LSR"></a>标签分发 - Egress LSR</h3><p>•R4直连网段192.168.4.0/24，R4将主动为到达该网段的路由分配标签，如1041，并主动通过LDP协议报文将标签映射通告给LDP对等体R2和R3。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<blockquote>
+<p>•注：缺省情况下，根据32位的主机IP路由触发LDP建立LSP。可以通过手工配置触发非32位路由的LSP建立。</p>
+</blockquote>
+<h3 id="标签分发-Transit-LSR"><a href="#标签分发-Transit-LSR" class="headerlink" title="标签分发 - Transit LSR"></a>标签分发 - Transit LSR</h3><p>•以R2为例，在其路由表中，192.168.4.0/24路由的下一跳为R4，当它从R4收到关于192.168.4.0/24的标签映射通告时，由于该通告来自下游LDP邻居，因此这将触发它自己为该路由分配标签1021，并将标签映射通告给LDP邻居（如R1）。R3同理。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<h3 id="标签分发-Ingress-LSR"><a href="#标签分发-Ingress-LSR" class="headerlink" title="标签分发 - Ingress LSR"></a>标签分发 - Ingress LSR</h3><p>•R1收到LDP邻居R2及R3通告过来的关于192.168.4.0/24路由的标签映射后，将这两个标签都<strong>存储</strong>起来，但是由于在自己的路由表中，到达192.168.4.0/24的下一跳是R2，因此当前它只会<strong>使用</strong>R2所通告的标签1021。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<blockquote>
+<p>•注：当R2发生故障时，OSPF路由将会重新收敛，此时R1的路由表中192.168.4.0/24路由的下一跳将会切换至R3，此时R1将启用R3所通告的、关于192.168.4.0/24的标签。</p>
+</blockquote>
+<h3 id="标签转发-Ingress-LSR"><a href="#标签转发-Ingress-LSR" class="headerlink" title="标签转发 - Ingress LSR"></a>标签转发 - Ingress LSR</h3><p>R1作为Ingress LSR，需要对接收的IP报文执行Push操作压入标签，并进行标签转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<blockquote>
+<p>•当R1收到发往192.168.4.1的IP报文时，首先在其FIB表中查询该目的IP地址，它发现所匹配的表项的Tunnel ID为非0，因此继续在NHLFE中查询该Tunnel ID，然后意识到需要将对该IP报文压入标签并进行标签转发，出接口为GE0/0/0、下一跳为R2、出站标签为1021，于是为报文插入标签头部并转发出去。</p>
+</blockquote>
+<h3 id="标签转发-Transit-LSR"><a href="#标签转发-Transit-LSR" class="headerlink" title="标签转发 - Transit LSR"></a>标签转发 - Transit LSR</h3><p>•R2作为Transit LSR，需要对接收的IP报文执行Swap操作交换标签，并进行标签转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<blockquote>
+<p>•当R2收到携带1021标签的标签报文时，查询ILM，根据ILM对应到NHLFE中的表项。于是，R2对该标签报文通过swap操作将标签更换为1041，并从相应的接口转发出去。</p>
+</blockquote>
+<h3 id="标签转发-Egress-LSR"><a href="#标签转发-Egress-LSR" class="headerlink" title="标签转发 - Egress LSR"></a>标签转发 - Egress LSR</h3><p>R4作为Egress LSR，需要对接收的IP报文执行Pop操作交换标签，并进行IP转发。</p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<blockquote>
+<p>•当R4收到携带1041标签的标签报文时，查询ILM，根据ILM查询到操作为Pop。于是，R4对该标签报文通过Pop操作将最外层标签剥离，此时该报文已经变成了标准IP报文，R4将对该IP报文执行标准的IP转发流程。</p>
+<p>•R4在转发该报文时分别查询了LFIB和FIB表，作为最后Egress LSR，其存在转发效率提升的可能性，怎么做？</p>
+</blockquote>
+<h3 id="在MPLS中，运行LDP协议的LSR的操作小结"><a href="#在MPLS中，运行LDP协议的LSR的操作小结" class="headerlink" title="在MPLS中，运行LDP协议的LSR的操作小结"></a>在MPLS中，运行LDP协议的LSR的操作小结</h3><p>•LSR首先通过运行IGP协议（例如OSPF、IS-IS等）来构建路由表、FIB表；</p>
+<p>•LDP根据相应的模式，为路由表中的路由前缀（FEC）分配标签；</p>
+<p>•LDP根据相应的模式，将自己为路由前缀分配的标签，通过LDP标签映射报文通告给LDP邻居；</p>
+<p>•LSR将自己为路由前缀分配的标签，以及LDP邻居为该路由前缀通告的标签存储起来，并与出接口、下一跳地址等信息形成关联（标签转发表项）；</p>
+<p>•当LSR转发到达目的网络的标签报文时，所使用的出站标签总是下游LDP邻居所通告的标签，此处所指的下游邻居，是设备的路由表中到达该目的网络的下一跳设备。</p>
+<h1 id="3-LDP基础配置"><a href="#3-LDP基础配置" class="headerlink" title="3.LDP基础配置"></a>3.LDP基础配置</h1><h2 id="LDP基本配置命令-1"><a href="#LDP基本配置命令-1" class="headerlink" title="LDP基本配置命令 (1)"></a>LDP基本配置命令 (1)</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
+<h2 id="LDP基本配置命令-2"><a href="#LDP基本配置命令-2" class="headerlink" title="LDP基本配置命令 (2)"></a><strong>LDP基本配置命令 (2)</strong></h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
+<blockquote>
+<p>•BGP路由也可以触发LDP LSP的建立，但此部分内容不在本课程的讨论范围内。</p>
+</blockquote>
+<h2 id="LDP基本配置命令-3"><a href="#LDP基本配置命令-3" class="headerlink" title="LDP基本配置命令 (3)"></a>LDP基本配置命令 (3)</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
+<h2 id="配置案例"><a href="#配置案例" class="headerlink" title="配置案例"></a>配置案例</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
+<h2 id="检查配置-查看LSP"><a href="#检查配置-查看LSP" class="headerlink" title="检查配置 - 查看LSP"></a>检查配置 - 查看LSP</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选）以下哪条命令用于查看已经为特定FEC分配的标签？（    ）</p>
+<p>A、display mpls ldp</p>
+<p>B、display mpls ldp interface</p>
+<p><strong>C、display mpls lsp</strong></p>
+<p>D、display mpls ldp session</p>
+<p>2.（单选）华为设备默认的标签发布方式、标签分配控制方式和标签保持方式的组合是（   ）</p>
+<p>A、DU + Independent + Conservative</p>
+<p><strong>B、DU + Ordered+ Liberal</strong></p>
+<p>C、DoD + Independent+ Liberal</p>
+<p>D、DoD + Ordered + Conservative</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS体系有多种标签分配协议，LDP标签分配协议是这些协议中使用较广的一种。</p>
+<p>•LDP是LSR之间协商标签含义的过程。LDP协议使用发现、会话、通告、通知四类报文进行会话的建立和标签的分发。</p>
+<p>•LDP通过标签发布方式、标签分配控制方式和标签保持方式来决定标签的发布和管理。华为数通产品默认的方式为：下游自主标签发布方式+有序标签分配控制方式+自由标签保持方式。</p>
+<p>•利用LDP可以实现将网络层的路由信息直接映射到标签信息，进而建立起标签交换路径（LSP）。LSR之间将依据本地转发表中对应于一个特定FEC的入标签、下一跳节点、出标签等信息连接在一起，从而形成跨越整个MPLS域的标签交换路径。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3465,356 +3855,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/" itemprop="url">IP-VPN技术概述</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:19:55+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、办事处、出差员工、合作单位等也需要访问公司总部的网络资源，可以采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。</p>
-<p>•VPN是一类技术的统称，不同的VPN技术拥有不同的特性和实现方式，常见的VPN技术包括IPSec VPN、GRE VPN、L2TP VPN、MPLS VPN等。</p>
-<p>•本课程将从VPN的定义、常见的VPN类型与应用场景等几个方面对VPN进行一个简单而又全面的介绍。</p>
-<blockquote>
-<p>•IPSec：Internet Protocol Security， 因特网协议安全协议。</p>
-<p>•GRE：Generic Routing Encapsulation， 通用路由封装协议。</p>
-<p>•L2TP：Layer 2 Tunneling Protocol， 二层隧道协议。</p>
-<p>•MPLS：Multiprotocol Label Switching，多协议标签交换协议。</p>
-</blockquote>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述VPN的分类</p>
-<p>▫描述VPN的实现方式</p>
-<h1 id="1-什么是VPN"><a href="#1-什么是VPN" class="headerlink" title="1.什么是VPN"></a>1.什么是VPN</h1><h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p>•在VPN出现之前，企业分支之间的数据传输只能依靠现有物理网络（例如Internet）。由于Internet中存在多种不安全因素，报文容易被网络中的黑客窃取或篡改，最终造成数据泄密、重要数据被破坏等后果。</p>
-<p>•除了通过Internet，还可以通过搭建一条物理专网连接保证数据的安全传输，但其费用会非常昂贵，且专网的搭建和维护十分困难。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/1.png"></p>
-<h2 id="VPN简介"><a href="#VPN简介" class="headerlink" title="VPN简介"></a>VPN简介</h2><p>VPN即虚拟专用网，泛指通过VPN技术在公用网络上构建的虚拟专用网络。VPN用户在此虚拟网络中传输私网流量，在不改变网络现状的情况下实现安全、可靠的连接。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/2.png"></p>
-<blockquote>
-<p>•VPN和传统的数据专网相比具有如下优势：</p>
-<ul>
-<li><p>安全：在远端用户、驻外机构、合作伙伴、供应商与公司总部之间建立可靠的连接，保证数据传输的安全性。这对于实现电子商务或金融网络与通讯网络的融合特别重要。</p>
-</li>
-<li><p>廉价：利用公共网络进行信息通讯，企业可以用更低的成本连接远程办事机构、出差人员和业务伙伴。</p>
-</li>
-<li><p>支持移动业务：支持驻外VPN用户在任何时间、任何地点的移动接入，能够满足不断增长的移动业务需求。</p>
-</li>
-<li><p>可扩展性：由于VPN为逻辑上的网络，物理网络中增加或修改节点，不影响VPN的部署。</p>
-</li>
-</ul>
-<p>•公共网络又经常被称为VPN骨干网（VPN Backbone），公共网络可以是Internet，也可以是企业自建专网或运营商租赁专网。</p>
-</blockquote>
-<h2 id="VPN分类-根据建设单位不同"><a href="#VPN分类-根据建设单位不同" class="headerlink" title="VPN分类 - 根据建设单位不同"></a>VPN分类 - 根据建设单位不同</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/3.png"></p>
-<h2 id="VPN分类-根据组网方式不同"><a href="#VPN分类-根据组网方式不同" class="headerlink" title="VPN分类 - 根据组网方式不同"></a>VPN分类 - 根据组网方式不同</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/4.png"></p>
-<h2 id="VPN分类-根据实现的网络层次"><a href="#VPN分类-根据实现的网络层次" class="headerlink" title="VPN分类 - 根据实现的网络层次"></a>VPN分类 - 根据实现的网络层次</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/5.png"></p>
-<blockquote>
-<p>•工作在网络层和数据链路层的VPN又被称为三层VPN和二层VPN。</p>
-</blockquote>
-<h2 id="VPN关键技术-隧道技术"><a href="#VPN关键技术-隧道技术" class="headerlink" title="VPN关键技术 - 隧道技术"></a>VPN关键技术 - 隧道技术</h2><p>•VPN技术的基本原理是利用隧道（Tunnel）技术，对传输报文进行封装，利用VPN骨干网建立专用数据传输通道，实现报文的安全传输。</p>
-<p>•位于隧道两端的VPN网关，通过对原始报文的“封装”和“解封装”，建立一个点到点的虚拟通信隧道。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/6.png"></p>
-<blockquote>
-<p>•隧道的功能就是在两个网络节点之间提供一条通路，使数据能够在这个通路上透明传输。VPN隧道一般是指在VPN骨干网的VPN节点之间建立的用来传输VPN数据的虚拟连接。隧道是构建VPN不可或缺的部分，用于把VPN数据从一个VPN节点透明传送到另一个上。</p>
-<p>•隧道通过隧道协议实现。目前已存在不少隧道协议，如GRE（Generic Routing Encapsulation）、L2TP（Layer 2 Tunneling Protocol）等。隧道协议通过在隧道的一端给数据加上隧道协议头，即进行封装，使这些被封装的数据能都在某网络中传输，并且在隧道的另一端去掉该数据携带的隧道协议头，即进行解封装。报文在隧道中传输前后都要通过封装和解封装两个过程。</p>
-<p>•部分隧道可以混合使用，如GRE Over IPSec隧道。</p>
-</blockquote>
-<h2 id="VPN关键技术-身份认证、数据加密与验证"><a href="#VPN关键技术-身份认证、数据加密与验证" class="headerlink" title="VPN关键技术 - 身份认证、数据加密与验证"></a>VPN关键技术 - 身份认证、数据加密与验证</h2><p>身份认证、数据加密和认证技术可以有效保证VPN网络与数据的安全性：</p>
-<ul>
-<li><p>身份认证：可用于部署了远程接入VPN的场景，VPN网关对用户的身份进行认证，保证接入网络的都是合法用户而非恶意用户。也可以用于VPN网关之间对对方身份的认证。</p>
-</li>
-<li><p>数据加密：将明文通过加密变成密文，使得数据即使被黑客截获，黑客也无法获取其中的信息。</p>
-</li>
-<li><p>数据验证：通过数据验证技术对报文的完整性和真伪进行检查，丢弃被伪造和被篡改的报文。</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/7.png"></p>
-<h1 id="2-常见VPN技术"><a href="#2-常见VPN技术" class="headerlink" title="2.常见VPN技术"></a>2.常见VPN技术</h1><h2 id="IPSec概述"><a href="#IPSec概述" class="headerlink" title="IPSec概述"></a>IPSec概述</h2><p>IPSec（IP Security） VPN一般部署在企业出口设备之间，通过加密与验证等方式，实现了数据来源验证、数据加密、数据完整性保证和抗重放等功能。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/8.png"></p>
-<blockquote>
-<p>•数据来源验证：接收方验证发送方身份是否合法。</p>
-<p>•数据加密：发送方对数据进行加密，以密文的形式在Internet上传送，接收方对接收的加密数据进行解密后处理或直接转发。</p>
-<p>•数据完整性：接收方对接收的数据进行验证，以判定报文是否被篡改。</p>
-<p>•抗重放：接收方拒绝旧的或重复的数据包，防止恶意用户通过重复发送捕获到的数据包所进行的攻击。</p>
-</blockquote>
-<h2 id="IPSec协议体系"><a href="#IPSec协议体系" class="headerlink" title="IPSec协议体系"></a>IPSec协议体系</h2><p>IPSec不是一个单独的协议，它给出了IP网络上数据安全的一整套体系结构，包括AH（Authentication Header）、ESP（Encapsulating Security Payload）、IKE（Internet Key Exchange）等协议。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/9.png"></p>
-<blockquote>
-<p>•IPSec使用认证头AH（Authentication Header）和封装安全载荷ESP（Encapsulating Security Payload）两种安全协议来传输和封装数据，提供认证或加密等安全服务。</p>
-<ul>
-<li><p>AH和ESP协议提供的安全功能依赖于协议采用的验证、加密算法。</p>
-</li>
-<li><p>AH仅支持认证功能，不支持加密功能。ESP支持认证和加密功能。</p>
-</li>
-<li><p>安全协议提供认证或加密等安全服务需要有秘钥的存在。</p>
-</li>
-</ul>
-<p>•秘钥交换的方式有两种：</p>
-<ul>
-<li><p>带外共享密钥：在发送、接收设备上手工配置静态的加密、验证密钥。双方通过带外共享的方式（例如通过电话或邮件方式）保证密钥一致性。这种方式的缺点是可扩展性差，在点到多点组网中配置密钥的工作量成倍增加。另外，为提升网络安全性需要周期性修改密钥，这种方式下也很难实施。</p>
-</li>
-<li><p>通过IKE协议自动协商密钥：IKE建立在Internet安全联盟和密钥管理协议ISAKMP定义的框架上，采用DH（Diffie-Hellman）算法在不安全的网络上安全地分发密钥。这种方式配置简单，可扩展性好，特别是在大型动态的网络环境下此优点更加突出。同时，通信双方通过交换密钥交换材料来计算共享的密钥，即使第三方截获了双方用于计算密钥的所有交换数据，也无法计算出真正的密钥。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="IPSec基本原理"><a href="#IPSec基本原理" class="headerlink" title="IPSec基本原理"></a>IPSec基本原理</h2><p>IPSec隧道建立过程中需要协商IPSec SA（Security Association，安全联盟），IPSec SA一般通过IKE协商生成。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/10.png"></p>
-<blockquote>
-<p>•SA由一个三元组来唯一标识，这个三元组包括安全参数索引SPI（Security Parameter Index）、目的IP地址和使用的安全协议号（AH或ESP）。其中，SPI是为唯一标识SA而生成的一个32位比特的数值，它在AH和ESP头中传输。在手工配置SA时，需要手工指定SPI的取值。使用IKE协商产生SA时，SPI将随机生成。</p>
-<p>•SA是单向的逻辑连接，因此两个IPSec对等体之间的双向通信，最少需要建立两个SA来分别对两个方向的数据流进行安全保护。</p>
-<p>•IKE作为秘钥协商协议，存在两个版本：IKEv1和IKEv2，本课程采用IKEv1为例进行介绍，IKEv2内容可参考产品文档对应内容。</p>
-<ul>
-<li><p>IKEv1协商阶段1的目的是建立IKE SA。IKE SA建立后对等体间的所有ISAKMP消息都将通过加密和验证，这条安全通道可以保证IKEv1第二阶段的协商能够安全进行。IKE SA是一个双向的逻辑连接，两个IPSec对等体间只建立一个IKE SA。</p>
-</li>
-<li><p>IKEv1协商阶段2的目的就是建立用来安全传输数据的IPSec SA，并为数据传输衍生出密钥。该阶段使用IKEv1协商阶段1中生成的密钥对ISAKMP消息的完整性和身份进行验证，并对ISAKMP消息进行加密，故保证了交换的安全性。</p>
-</li>
-</ul>
-<p>•IKE协商成功意味着双向的IPSec隧道已经建立，可以通过ACL方式或者安全框架方式定义IPSec“感兴趣流”，符合感兴趣流流量特征的数据都将被送入IPSec隧道进行处理。</p>
-<p>•感兴趣流：需要被IPSec保护的数据流。</p>
-</blockquote>
-<h2 id="GRE概述"><a href="#GRE概述" class="headerlink" title="GRE概述"></a>GRE概述</h2><p>通用路由封装协议（General Routing Encapsulation，GRE）是一种三层VPN封装技术。GRE可以对某些网络层协议（如IPX、IPv4、IPv6等）的报文进行封装，使封装后的报文能够在另一种网络中（如IPv4）传输，从而解决了跨越异种网络的报文传输问题。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/11.png"></p>
-<blockquote>
-<p>•如图所示，通过在IPv4网络上建立GRE隧道，解决了两个IPv6网络的通信问题。</p>
-<p>•GRE还具备封装组播报文的能力。由于动态路由协议中会使用组播报文，因此更多时候GRE会在需要传递组播路由数据的场景中被用到，这也是GRE被称为通用路由封装协议的原因。</p>
-</blockquote>
-<h2 id="GRE基本原理"><a href="#GRE基本原理" class="headerlink" title="GRE基本原理"></a>GRE基本原理</h2><p>•GRE构成要素分为3个部分：乘客协议、封装协议和运输协议。</p>
-<p>▫乘客协议是指用户在传输数据时所使用的原始网络协议。</p>
-<p>▫封装协议的作用就是用来“包装”乘客协议对应的报文，使原始报文能够在新的网络中传输。</p>
-<p>▫运输协议是指被封装以后的报文在新网络中传输时所使用的网络协议。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/12.png"></p>
-<blockquote>
-<p>•隧道接口（Tunnel Interface）是为实现报文的封装而提供的一种点对点类型的虚拟接口，与Loopback接口类似，都是一种逻辑接口。</p>
-<p>•如图所示，乘客协议为IPv6，封装协议为GRE，运输协议为IPv4。整体转发流程如下：</p>
-<ol>
-<li><p>当R1收到IP1发来的IPv6数据包，查询设备路由表，发现出接口是隧道接口，则将此报文发给隧道接口处理。</p>
-</li>
-<li><p>隧道接口给原始报文添加GRE头部，然后根据配置信息，给报文加上IP头。该IP头的源地址就是隧道源地址，IP头的目的地址就是隧道目的地址。</p>
-</li>
-<li><p>封装后的报文在IPv4网络中进行普通的IPv4路由转发，最终到达目的地R2。</p>
-</li>
-<li><p>解封装过程和封装过程相反，这里不再赘述。</p>
-</li>
-</ol>
-</blockquote>
-<h2 id="GRE-Over-IPSec"><a href="#GRE-Over-IPSec" class="headerlink" title="GRE Over IPSec"></a>GRE Over IPSec</h2><p>•GRE的主要缺点是不支持加密和认证，数据的安全传输得不到很好的保障。</p>
-<p>•IPSec的主要缺点是只支持IP协议，且不支持组播。</p>
-<p>•可通过部署GRE Over IPSec结合两种VPN技术的优点。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/13.png"></p>
-<h2 id="L2TP概述"><a href="#L2TP概述" class="headerlink" title="L2TP概述"></a>L2TP概述</h2><p>•L2TP是虚拟私有拨号网VPDN（Virtual Private Dial-up Network）隧道协议的一种，它扩展了点到点协议PPP的应用，是一种在远程办公场景中为出差员工或企业分支远程访问企业内网资源提供接入服务的VPN。</p>
-<p>•L2TP组网架构中包括LAC（L2TP Access Concentrator，L2TP访问集中器）和LNS（L2TP Network Server，L2TP网络服务器）</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/14.png"></p>
-<blockquote>
-<p>•VPDN是指利用公共网络（如ISDN和PSTN）的拨号功能及接入网来实现虚拟专用网，为企业、小型ISP、移动办公人员提供接入服务。VPDN采用专用的网络加密通信协议，在公共网络上为企业建立安全的虚拟专网。企业驻外机构和出差人员可从远程经由公共网络，通过虚拟加密隧道实现和企业总部之间的网络连接，而公共网络上其它用户则无法穿过虚拟隧道访问企业网内部的资源。VPDN隧道协议有多种，目前使用最广泛的是L2TP。</p>
-<p>•LAC是网络上具有PPP和L2TP协议处理能力的设备。LAC负责和LNS建立L2TP隧道连接。在不同的组网环境中，LAC可以是不同的设备，可以是一台网关设备，也可以是一台终端设备。LAC可以发起建立多条L2TP隧道使数据流之间相互隔离。</p>
-<p>•LNS是LAC的对端设备，即LAC和LNS建立了L2TP隧道；LNS位于企业总部私网与公网边界，通常是企业总部的网关设备。</p>
-</blockquote>
-<h2 id="L2TP消息"><a href="#L2TP消息" class="headerlink" title="L2TP消息"></a>L2TP消息</h2><p>L2TP协议包含两种类型的消息，控制消息和数据消息，消息的传输在LAC和LNS之间进行。</p>
-<p>​    ▫控制消息用于L2TP隧道和会话连接的建立、维护和拆除。</p>
-<p>​    ▫数据消息用于封装PPP数据帧并在隧道上传输。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/15.png"></p>
-<blockquote>
-<p>•控制消息</p>
-<ul>
-<li><p>用于L2TP隧道和会话连接的建立、维护和拆除。在控制消息的传输过程中，使用消息丢失重传和定时检测隧道连通性等机制来保证控制消息传输的可靠性，支持对控制消息的流量控制和拥塞控制。</p>
-</li>
-<li><p>控制消息承载在L2TP控制通道上，控制通道实现了控制消息的可靠传输，将控制消息封装在L2TP报头内，再经过IP网络传输。</p>
-</li>
-</ul>
-<p>•数据消息</p>
-<ul>
-<li><p>用于封装PPP数据帧并在隧道上传输。数据消息是不可靠的传输，不重传丢失的数据报文，不支持对数据消息的流量控制和拥塞控制。</p>
-</li>
-<li><p>数据消息携带PPP帧承载在不可靠的数据通道上，对PPP帧进行L2TP封装，再经过IP网络传输。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="L2TP工作过程"><a href="#L2TP工作过程" class="headerlink" title="L2TP工作过程"></a>L2TP工作过程</h2><p>L2TP主要可分为以下三种工作场景，其工作过程并不相同：</p>
-<p>​    ▫NAS-Initiated场景：拨号用户通过NAS访问企业内网</p>
-<p>​    ▫Client-Initiated场景：移动办公用户访问企业内网</p>
-<p>​    ▫Call-LNS场景：通过LAC自主拨号实现企业内网互连</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/16.png"></p>
-<blockquote>
-<p>•NAS-Initiated场景：由远程拨号用户发起，远程系统通过PSTN/ISDN拨入LAC，由LAC通过Internet向LNS发起建立隧道连接请求。拨号用户地址由LNS分配；对远程拨号用户的验证与计费既可由LAC侧的代理完成，也可在LNS完成。</p>
-<ul>
-<li><p>用户必须采用PPP的方式接入到Internet，也可以是PPPoE等协议。</p>
-</li>
-<li><p>运营商的接入设备（主要是BAS设备）需要开通相应的VPN服务。用户需要到运营商处申请该业务。</p>
-</li>
-<li><p>L2TP隧道两端分别驻留在LAC侧和LNS侧，且一个L2TP隧道可以承载多个会话。</p>
-</li>
-</ul>
-<p>•Client-Initialized场景：直接由LAC客户（指可在本地支持L2TP协议的用户）发起。客户需要知道LNS的IP地址。LAC客户可直接向LNS发起隧道连接请求，无需再经过一个单独的LAC设备。在LNS设备上收到了LAC客户的请求之后，根据用户名、密码进行验证，并且给LAC客户分配私有IP地址。</p>
-<ul>
-<li>用户需要安装L2TP的拔号软件。部分操作系统自带L2TP客户端软件。</li>
-<li>用户上网的方式和地点没有限制，不需ISP介入。</li>
-<li>L2TP隧道两端分别驻留在用户侧和LNS侧，一个L2TP隧道承载一个L2TP会话。</li>
-<li>该场景建立过程如下：</li>
-</ul>
-<ol>
-<li><p>移动办公用户与LNS建立L2TP隧道。</p>
-</li>
-<li><p>移动办公用户与LNS建立L2TP会话：移动办公用户在第3步会与LNS间建立PPP连接，L2TP会话用来记录和管理它们之间的PPP连接状态。因此，在建立PPP连接以前，隧道双方需要为PPP连接预先协商出一个L2TP会话。会话中携带了移动办公用户的LCP协商信息和用户认证信息，LNS对收到的信息认证通过后，通知移动办公用户会话建立成功。L2TP会话连接由会话ID进行标识。</p>
-</li>
-<li><p>移动办公用户与LNS建立PPP连接。移动办公用户通过与LNS建立PPP连接获取LNS分配的企业内网IP地址。</p>
-</li>
-<li><p>移动办公用户发送业务报文访问企业总部服务器。</p>
-</li>
-</ol>
-<p>•Call-LNS场景：L2TP除了可以为出差员工提供远程接入服务以外，还可以进行企业分支与总部的内网互联，实现分支用户与总部用户的互访。一般是由分支路由器充当LAC与LNS建立L2TP隧道，这样就可实现分支与总部网络之间的数据通过L2TP隧道互通。</p>
-</blockquote>
-<h2 id="L2TP-Over-IPSec"><a href="#L2TP-Over-IPSec" class="headerlink" title="L2TP Over IPSec"></a>L2TP Over IPSec</h2><p>当企业对数据和网络的安全性要求较高时，L2TP无法为报文传输提供足够的保护。这时可以和IPSec功能结合使用，保护传输的数据，有效避免数据被截取或攻击。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/17.png"></p>
-<blockquote>
-<p>•企业出差用户和总部通信，使用L2TP功能建立VPN连接，总部部署为LNS对接入的用户进行认证。当出差用户需要向总部传输高机密信息时，L2TP无法为报文传输提供足够的保护，这时可以和IPSec功能结合使用，保护传输的数据。在出差用户的PC终端上运行拨号软件，将数据报文先进行L2TP封装，再进行IPSec封装，发往总部。在总部网关，部署IPSec策略，最终还原数据。这种方式IPSec功能会对所有源地址为LAC、目的地址为LNS的报文进行保护。</p>
-</blockquote>
-<h2 id="MPLS-VPN概述"><a href="#MPLS-VPN概述" class="headerlink" title="MPLS VPN概述"></a>MPLS VPN概述</h2><p>•MPLS是一种利用标签（Label）进行转发的技术，最初为了提高IP报文转发速率而被提出，现主要应用于VPN和流量工程、QoS等场景。 </p>
-<p>•根据部署的不同，MPLS VPN可分为MPLS L2 VPN或者MPLS L3 VPN。</p>
-<p>•企业可以自建MPLS专网也可以通过租用运营商MPLS专网的方式获得MPLS VPN接入服务。</p>
-<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/18.png"></p>
-<blockquote>
-<p>•MPLS VPN网络一般由运营商搭建，VPN用户购买VPN服务来实现用户网络之间（图中的分公司和总公司）的路由传递、数据互通等。</p>
-<p>•基本的MPLS VPN网络架构由CE（Customer Edge）、PE（Provider Edge）和P（Provider）三部分组成：</p>
-<ul>
-<li><p>CE：用户网络边缘设备，有接口直接与运营商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。</p>
-</li>
-<li><p>PE：运营商边缘路由器，是运营商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。</p>
-</li>
-<li><p>P：运营商网络中的骨干路由器，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN相关信息。</p>
-</li>
-</ul>
-<p>•更多MPLS及MPLS VPN的相关内容，参考HCIP-Datacom-Advance相应课程。</p>
-</blockquote>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（判断题）L2TP VPN工作在网络层。</p>
-<p>A. 正确</p>
-<p><strong>B. 错误</strong></p>
-<p>2.（多选题）IPSec SA包含以下哪些内容？</p>
-<p><strong>A. SPI</strong></p>
-<p><strong>B. 安全协议</strong></p>
-<p>C. 源地址</p>
-<p><strong>D. 目的地址</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VPN技术拥有安全、廉价、支持移动业务、灵活等一系列优势，已经成为现网中部署最为广泛的一类技术。</p>
-<p>•本课程从VPN基本概念与分类出发，简单介绍了如下几类常见VPN技术：</p>
-<ul>
-<li><p>IPSec VPN：是一系列为IP网络提供安全性的协议和服务的集合，为IP网络提供安全的传输。</p>
-</li>
-<li><p>GRE VPN：提供了将一种协议的报文封装在另一种协议报文中的机制，解决异种网络的传输问题。</p>
-</li>
-<li><p>L2TP VPN：是一种能够提供移动用户远程接入服务的二层VPN技术。</p>
-</li>
-<li><p>MPLS VPN：一种通过标签交换技术，实现站点与站点之间互联的VPN技术。</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3869,7 +3909,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-count">68</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3882,7 +3922,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

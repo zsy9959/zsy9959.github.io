@@ -241,6 +241,400 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/" itemprop="url">IP-园区网典型技术应用概述</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:09:50+08:00">
+                2021-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•工厂、政府机关、商场、写字楼、校园、公园等，这些场所内为了实现数据互通而搭建的网络都可以称之为园区网。园区有大有小，有行业属性的不同，相应地，园区网络也变化多样。但是，无论如何变化，园区网络一般划分为出口层、核心层、汇聚层及接入层。</p>
+<p>•本课程主要介绍园区网络的总体架构、网络各层次中所使用的常用技术及协议、典型的组网场景。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述大型园区网络的典型架构。</p>
+<p>▫描述常用以太网交换技术。</p>
+<p>▫描述WLAN常见应用场景。</p>
+<p>▫描述园区网络可靠性的常用技术。</p>
+<p>▫描述园区网络网络服务与管理的常用技术。</p>
+<p>▫描述园区网络安全的常用技术。</p>
+<p>▫描述园区网络常用的VPN技术。</p>
+<h1 id="1-园区网络架构与常见技术概述"><a href="#1-园区网络架构与常见技术概述" class="headerlink" title="1.园区网络架构与常见技术概述"></a>1.<strong>园区网络架构与常见技术概述</strong></h1><h2 id="“城市，除了马路，都是园区”"><a href="#“城市，除了马路，都是园区”" class="headerlink" title="“城市，除了马路，都是园区”"></a>“城市，除了马路，都是园区”</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/1.png"></p>
+<h2 id="什么是园区网络？"><a href="#什么是园区网络？" class="headerlink" title="什么是园区网络？"></a>什么是园区网络？</h2><p>•园区网络一般是指企业或者机构的内部网络。</p>
+<p>•园区网络的主要目的是使企业或者机构的各项业务运作更有效率。</p>
+<p>•按规模可以将园区网络划分成：</p>
+<p>▫大型园区网络：终端用户数量/个 &gt; 2000；网元数量/个 &gt; 100。</p>
+<p>▫中型园区网络：2000 &gt; 终端用户数量/个 &gt; 200；100 &gt;网元数量/个 &gt; 25。</p>
+<p>▫小型园区网络：终端用户数量/个 &lt; 200；网元数量/个 &lt; 25。</p>
+<p>•有些企业还存在不同地域的办公分支机构，每个分支机构网络可看做一个单园区网络。</p>
+<h2 id="常见的行业园区网"><a href="#常见的行业园区网" class="headerlink" title="常见的行业园区网"></a>常见的行业园区网</h2><p>•企业园区网络</p>
+<p>▫关注网络可靠性、先进性，持续提升员工的办公体验，保障运营生产的效率和质量。</p>
+<p>•校园网络</p>
+<p>▫分为普教园区和高教园区。</p>
+<p>▫高教园区相对复杂，通常存在教研网、学生网，还可能有运营性的宿舍网络。</p>
+<p>▫网络可管理性、安全性要求高；对网络先进性亦有要求。</p>
+<p>•政务园区网络</p>
+<p>▫通常指政府机构的内部网络。</p>
+<p>▫安全要求极高，通常采用内网和外网隔离的措施保障涉密信息的绝对安全。</p>
+<p>•商业园区网络</p>
+<p>▫商场、超市、酒店、公园等。</p>
+<p>▫网络主要用于服务消费者，此外还包含服务内部办公的子网。</p>
+<p>▫提供上网服务，并构建商业智能化系统提升用户体验，降低运维成本，提升商业效率，实现价值转移。</p>
+<blockquote>
+<p>•为了满足不同行业园区的需求，园区网络架构会根据其服务的行业特点进行设计， 最终打造的是带有行业属性的园区网络方案。</p>
+</blockquote>
+<h2 id="园区网络典型架构"><a href="#园区网络典型架构" class="headerlink" title="园区网络典型架构"></a>园区网络典型架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/2.png"></p>
+<p>•<strong>核心层</strong>：是园区网骨干，是园区数据交换的核心，联接园区网的各个组成部分，如数据中心、管理中心、园区出口等。</p>
+<p>•<strong>汇聚层</strong>：处于园区网的中间层次，完成数据汇聚或交换的功能，可以提供一些关键的网络基本功能，如路由、安全等。</p>
+<p>•<strong>接入层</strong>：为终端用户提供园区网接入功能，是园区网的边界。</p>
+<p>•<strong>出口区</strong>：园区内部网络到外部网络的边界，用于实现内部用户接入到公网，外部用户（包括客户、合作伙伴、分支机构、远程用户等）接入到内部网络。</p>
+<p>•<strong>数据中心区</strong>：部署服务器和应用系统的区域，为企业内部和外部用户提供数据和应用服务。</p>
+<h2 id="园区网络主要协议-技术"><a href="#园区网络主要协议-技术" class="headerlink" title="园区网络主要协议/技术"></a>园区网络主要协议/技术</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/3.png"></p>
+<blockquote>
+<p>•NAT：Network Address Translation，网络地址转换。</p>
+<p>•LLDP：Link Layer Discovery Protocol，链路层发现协议。链路层发现协议是IEEE 802.1ab中定义的第二层发现协议。通过采用LLDP技术，在网络规模迅速扩大时，网管系统可以快速掌握二层网络拓扑信息、拓扑变化信息。</p>
+<p>•NETCONF：Network Configuration Protocol，网络配置协议。NETCONF是一种提供网络设备配置管理的协议，采用基于数据编码的可扩展标记语言配置数据以及协议信息，提供了安装、操作和删除网元配置的机制。</p>
+<p>•YANG：Yet Another Next Generation，通过NETCONF网络配置协议发送的数据的数据建模语言，可以用来建模网元的配置数据和状态数据。</p>
+<p>•SNMP：Simple Network Management Protocol，简单网络管理协议。</p>
+<p>•VRRP：Virtual Router Redundancy Protocol，虚拟路由冗余协议。</p>
+<p>•MSTP：Multiple Spanning Tree Protocol，多生成树协议。</p>
+</blockquote>
+<h1 id="2-以太网交换基础"><a href="#2-以太网交换基础" class="headerlink" title="2.以太网交换基础"></a>2.以太网交换基础</h1><h2 id="从TCP-IP对等模型说起"><a href="#从TCP-IP对等模型说起" class="headerlink" title="从TCP/IP对等模型说起"></a>从TCP/IP对等模型说起</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/4.png"></p>
+<p>•将网络的通信过程划分为小一些、简单一些的部件，有助于各个部件的开发、设计和故障排除。</p>
+<p>•通过网络组件的标准化，允许多个供应商进行开发。</p>
+<p>•通过定义在模型的每一层实现什么功能，鼓励产业的标准化。</p>
+<p>•允许各种类型的网络硬件和软件相互通信。</p>
+<h2 id="从园区网络到以太网二层交换"><a href="#从园区网络到以太网二层交换" class="headerlink" title="从园区网络到以太网二层交换"></a>从园区网络到以太网二层交换</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/5.png"></p>
+<p>•接入层为用户提供各种接入方式，是终端接入网络的第一层。</p>
+<p>•接入层通常由接入交换机组成，接入层交换机在网络中数量众多，安装位置分散，通常是简单的二层交换机。</p>
+<p>•如果终端层存在无线终端设备，接入层需要无线接入点AP设备，AP设备通过接入交换机接入网络。</p>
+<h2 id="什么是二层交换"><a href="#什么是二层交换" class="headerlink" title="什么是二层交换"></a>什么是二层交换</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/6.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/7.png"></p>
+<p>•二层交换是以太网交换机的基本功能。</p>
+<p>•二层交换指的是交换机根据数据帧的第二层头部中的目的MAC地址进行帧转发的行为。</p>
+<p>•每台交换机都维护一个MAC地址表，用于指导数据帧转发。</p>
+<p>•当交换机收到数据帧时，将在其MAC地址表中查询该帧的目的MAC地址，并根据匹配的表项执行相应的操作。此外，交换机收到数据帧时，还会进行源MAC地址学习。</p>
+<blockquote>
+<p>•二层交换设备工作在OSI模型的第二层，即数据链路层，它对数据包的转发是建立在MAC（Media Access Control ）地址基础之上的。</p>
+<p>•二层交换设备通过解析和学习以太网帧的源MAC来维护MAC地址与接口的对应关系（保存MAC与接口对应关系的表称为MAC表），通过其目的MAC来查找MAC表决定向哪个接口转发。</p>
+<p>•二层交换设备不同的接口发送和接收数据独立，各接口属于不同的冲突域，因此有效地隔离了网络中物理层冲突域，使得通过它互连的主机（或网络）之间不必再担心流量大小对于数据发送冲突的影响。</p>
+</blockquote>
+<h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/8.png"></p>
+<p>•VLAN（Virtual Local Area Network）即虚拟局域网，是将一个物理的LAN在逻辑上划分成多个广播域的通信技术。</p>
+<p>•一个VLAN中所有设备都是在同一广播域内，不同的VLAN为不同的广播域。</p>
+<p>•VLAN内的设备间可以直接通信，而VLAN间不能直接互通。</p>
+<p>•VLAN之间互相隔离，不同VLAN间需通过三层设备实现相互通信。</p>
+<p>•一个VLAN一般为一个逻辑子网。</p>
+<p>•VLAN中成员多基于交换机的端口分配，所谓的VLAN划分，通常指的是将交换机的接口添加到特定的VLAN中，从而该接口所连接的设备也加入到了该VLAN。</p>
+<h2 id="以太网二层接口类型概述"><a href="#以太网二层接口类型概述" class="headerlink" title="以太网二层接口类型概述"></a>以太网二层接口类型概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/9.png"></p>
+<p>交换机的以太网二层接口主要存在以下三种类型：</p>
+<p>•<strong>Access</strong>：常用来连接用户PC、服务器等终端设备的接口。Access接口所连接的这些设备的网卡往往只收发无标记帧。Access接口只能加入一个VLAN。</p>
+<p>•<strong>Trunk</strong>：Trunk接口允许多个VLAN的数据帧通过，这些数据帧通过802.1Q Tag实现区分。Trunk接口常用于交换机之间的互联，也用于连接路由器、防火墙等设备的子接口。</p>
+<p>•<strong>Hybrid</strong>：Hybrid接口与Trunk接口类似，也允许多个VLAN的数据帧通过，这些数据帧通过802.1Tag实现区分。用户可以灵活指定Hybrid接口在发送某个（或某些）VLAN的数据帧时是否携带Tag。</p>
+<h3 id="Access接口"><a href="#Access接口" class="headerlink" title="Access接口"></a>Access接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/10.png"></p>
+<blockquote>
+<p>•所有的二层接口无论其类型如何，都有一个缺省VLAN ID，这个缺省VLAN ID被称为PVID（Port Default VLAN ID），在华为的交换机上，PVID缺省为1。另外，出于提高数据帧处理效率的考虑，在交换机内部，数据帧一律携带Tag。 </p>
+</blockquote>
+<h3 id="Trunk接口"><a href="#Trunk接口" class="headerlink" title="Trunk接口"></a>Trunk接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/11.png"></p>
+<h3 id="Hybrid接口"><a href="#Hybrid接口" class="headerlink" title="Hybrid接口"></a>Hybrid接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/12.png"></p>
+<p>•Hybrid接口也能承载多个VLAN的数据，它与Trunk接口在数据帧的接收行为上大体相同，这里不再赘述。Trunk接口在发送数据帧时，仅当待发送的数据帧与发送接口的PVID相同时，数据帧的Tag才会被移除，除此之外，该接口发送出去的其他VLAN的数据帧都是携带Tag的。而Hybrid接口发送数据帧的行为则与Trunk接口不同。我们可以通过命令指定Hybrid接口在发送某个，或者某些VLAN的数据帧时不携带Tag。</p>
+<h3 id="VLAN划分方式总览"><a href="#VLAN划分方式总览" class="headerlink" title="VLAN划分方式总览"></a>VLAN划分方式总览</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/13.png"></p>
+<h3 id="实现VLAN之间的IP可达性"><a href="#实现VLAN之间的IP可达性" class="headerlink" title="实现VLAN之间的IP可达性"></a>实现VLAN之间的IP可达性</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/14.png"></p>
+<h2 id="以太网链路聚合"><a href="#以太网链路聚合" class="headerlink" title="以太网链路聚合"></a>以太网链路聚合</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/15.png"></p>
+<p>•<strong>链路聚合（Link Aggregation,LAG）</strong>是将多条物理链路捆绑在一起成为一条逻辑链路，从而增加链路带宽的技术。</p>
+<p>•完成聚合后的链路称为以太网聚合链路。</p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/16.png"></p>
+<blockquote>
+<p>•随着网络规模不断扩大，用户对骨干链路的带宽和可靠性提出越来越高的要求。在传统技术中，常用更换高速率的接口板或更换支持高速率接口板的设备的方式来增加带宽，但这种方案需要付出高额的费用，而且不够灵活。</p>
+<p>•采用链路聚合技术可以在不进行硬件升级的条件下，通过将多个物理接口捆绑为一个逻辑接口，达到增加链路带宽的目的。在实现增大带宽目的的同时，链路聚合采用备份链路的机制，可以有效的提高设备之间链路的可靠性。</p>
+<p>•LAG是指将若干条以太链路捆绑在一起所形成的逻辑链路，简写为Eth-Trunk。每个聚合组唯一对应着一个逻辑接口，这个逻辑接口称之为聚合接口或Eth-Trunk接口。</p>
+<p>•链路聚合技术主要有以下三个优势：</p>
+<p>▫增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</p>
+<p>▫提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</p>
+<p>▫负载分担：在一个链路聚合组内，可以实现在各成员活动链路上的负载分担。</p>
+</blockquote>
+<h2 id="生成树技术：防环-保证二层网络可靠性"><a href="#生成树技术：防环-保证二层网络可靠性" class="headerlink" title="生成树技术：防环+保证二层网络可靠性"></a>生成树技术：防环+保证二层网络可靠性</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/17.png"></p>
+<p>•解决交换网络中的环路问题</p>
+<p>•动态地适应根据网络拓扑变更</p>
+<p>•配合冗余链路，保证二层网络可靠性</p>
+<h1 id="3-无线接入"><a href="#3-无线接入" class="headerlink" title="3.无线接入"></a>3.无线接入</h1><h2 id="WLAN与主要网元"><a href="#WLAN与主要网元" class="headerlink" title="WLAN与主要网元"></a>WLAN与主要网元</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/18.png"></p>
+<h2 id="WLAN组网架构综述"><a href="#WLAN组网架构综述" class="headerlink" title="WLAN组网架构综述"></a>WLAN组网架构综述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/19.png"></p>
+<blockquote>
+<p>无线接入点 (AP, Access Point)</p>
+<p>▫一般支持FAT AP（胖AP）、FIT AP（瘦AP）和云管理AP三种工作模式，根据网络规划的需求，可以灵活地在多种模式下切换。</p>
+<p>▫FAT AP：适用于家庭，独立工作，需单独配置，功能较为单一，成本低。独立完成用户接入、认证、数据安全、业务转发和QoS等功能。</p>
+<p>▫FIT AP：适用于大中型企业，需要配合AC使用，由AC统一管理和配置，功能丰富，对网络维护人员的技能要求高。用户接入、AP上线、认证、路由、AP管理、安全协议、QoS等功能需要同AC配合完成。</p>
+<p>▫云管理：适用于中小型企业，需要配合云管理平台使用，由云管理平台统一管理和配置，功能丰富，即插即用，对网络维护人员的技能要求低。</p>
+<p>无线接入控制器 (AC, Access Controller)</p>
+<p>▫一般位于整个网络的汇聚层，提供高速、安全、可靠的WLAN业务。</p>
+<p>▫提供大容量、高性能、高可靠性、易安装、易维护的无线数据控制业务，具有组网灵活、绿色节能等优势。</p>
+</blockquote>
+<h2 id="AC-FIT-AP架构"><a href="#AC-FIT-AP架构" class="headerlink" title="AC+FIT AP架构"></a>AC+FIT AP架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/20.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/21.png"></p>
+<blockquote>
+<p>•AC和AP之间使用的通信协议是无线接入点控制和配置（Control And Provisioning of Wireless Access Points，CAPWAP）。CAPWAP协议定义的主要内容有：AP自动发现AC，AC对AP进行安全认证，AP从AC获取软件，AP从AC获得初始和动态配置等。通过该协议，AP和AC之间建立起CAPWAP隧道。CAPWAP隧道有两种：控制隧道和数据隧道。控制隧道主要传输控制报文（也称管理报文，是AC管理控制AP的报文）；数据隧道主要传输数据报文。CAPWAP隧道可以进行数据传输层安全（Datagram Transport Layer Security，DTLS）加密，因此传输的报文更加安全。</p>
+<p>•相比于FAT AP架构，AC+FIT AP架构的优点如下。</p>
+<p>▫配置与部署：通过AC进行集中地网络配置和管理，不再需要对每个AP进行单独配置操作，同时对整网AP进行信道、功率的自动调整，免去了烦琐的人工调整过程。</p>
+<p>▫安全性：由于FAT AP无法进行统一的升级操作，无法保证所有AP版本都有最新的安全补丁，而AC+FIT AP架构主要的安全能力是在AC上的，软件更新和安全配置仅需在AC上进行，从而可以快速进行全局安全设置；同时，为了防止加载恶意代码，设备会对软件进行数字签名认证，增强了更新过程的安全性。AC也实现了FAT AP架构无法支持的一些安全功能，包括病毒检测、统一资源定位地址（Uniform Resource Locater，URL）过滤、状态检测防火墙等高级安全特性。</p>
+<p>▫更新与扩展：架构的集中管理模式使得同一AC下的AP有着相同的软件版本。当需要更新时，先由AC获取更新包或补丁，然后由AC统一更新AP版本。AP和AC的功能拆分也减少了对AP版本的频繁更新，有关用户认证、网管和安全等功能的更新只需在AC上进行。</p>
+</blockquote>
+<h2 id="AC-FIT-AP架构-1"><a href="#AC-FIT-AP架构-1" class="headerlink" title="AC+FIT AP架构"></a>AC+FIT AP架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/22.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/23.png"></p>
+<h1 id="4-网络可靠性"><a href="#4-网络可靠性" class="headerlink" title="4.网络可靠性"></a>4.网络可靠性</h1><h2 id="使用VRRP实现网关冗余"><a href="#使用VRRP实现网关冗余" class="headerlink" title="使用VRRP实现网关冗余"></a>使用VRRP实现网关冗余</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/24.png"></p>
+<blockquote>
+<p>•虚拟路由冗余协议VRRP（Virtual Router Redundancy Protocol）通过把几台路由设备联合组成一台虚拟的路由设备，将虚拟路由设备的IP地址作为用户的默认网关实现与外部网络通信。当网关设备发生故障时，VRRP机制能够选举新的网关设备承担数据流量，从而保障网络的可靠通信。</p>
+<p>•通常，同一网段内的所有主机上都设置一条相同的、以网关为下一跳的缺省路由。主机发往其他网段的报文将通过缺省路由发往网关，再由网关进行转发，从而实现主机与外部网络的通信。当网关发生故障时，本网段内所有以网关为缺省路由的主机将无法与外部网络通信。增加出口网关是提高系统可靠性的常见方法，此时如何在多个出口之间进行选路就成为需要解决的问题。</p>
+<p>•VRRP的出现很好的解决了这个问题。VRRP能够在不改变组网的情况下，将多台路由设备组成一个虚拟路由器，通过配置虚拟路由器的IP地址为默认网关，实现默认网关的备份。</p>
+<ul>
+<li><strong>冗余备份</strong>：VRRP可以将多台路由设备配置为缺省网关路由器，当出现单点故障的时候通过备份链路进行业务传输，从而降低网络故障的可能性，保证用户的各种业务不中断传输。</li>
+<li><strong>负载分担</strong>：VRRP可以实现多台设备同时承担业务流量，从而减轻主用设备上数据流量的承载压力，在路由设备之间更均衡地分担流量。</li>
+<li><strong>联动功能</strong>：VRRP联动可以监视上行链路的故障。当上行接口或链路故障时，VRRP备份组的Master设备降低优先级，重新进行选举，确保Master路由器为最佳的VRRP路由设备，保证流量的正常转发。VRRP与BFD联动可以提高VRRP备份组中主备设备的切换速度。利用BFD检测速度快的特点，在Master设备和Backup设备之间建立BFD会话并与VRRP备份组进行绑定，实现Master设备和Backup设备之间的链路出现故障时，Backup设备迅速切换为Master，承担网络流量。</li>
+</ul>
+</blockquote>
+<h2 id="集群-堆叠简介"><a href="#集群-堆叠简介" class="headerlink" title="集群/堆叠简介"></a>集群/堆叠简介</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/25.png"></p>
+<p>•iStack（Intelligent Stack，智能堆叠），简称堆叠，是指将多台支持堆叠特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。iStack针对华为盒式交换机。</p>
+<p>•CSS（Cluster Switch System，集群交换机系统），又称为集群，是指将两台支持集群特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。CSS针对华为框式交换机。</p>
+<h2 id="堆叠与园区网络树形结构组网形态"><a href="#堆叠与园区网络树形结构组网形态" class="headerlink" title="堆叠与园区网络树形结构组网形态"></a>堆叠与园区网络树形结构组网形态</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/26.png"></p>
+<p>•堆叠iStack（Intelligent Stack），是指将多台支持堆叠特性的交换机设备组合在一起，从逻辑上组合成一台整体交换设备。</p>
+<p>•堆叠系统建立之前，每台交换机都是单独的实体，有自己独立的IP地址和MAC地址，对外体现为多台交换机，用户需要独立的管理所有的交换机；堆叠建立后堆叠成员对外体现为一个统一的逻辑实体，用户使用一个IP地址对堆叠中的所有交换机进行管理和维护，如图所示。通过交换机堆叠，可以实现网络大数据量转发和网络高可靠性，同时简化网络管理。</p>
+<h1 id="5-网络服务与网络管理"><a href="#5-网络服务与网络管理" class="headerlink" title="5.网络服务与网络管理"></a>5.网络服务与网络管理</h1><h2 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/27.png"></p>
+<blockquote>
+<p>•动态主机配置协议DHCP（Dynamic Host Configuration Protocol）是一种用于集中对用户IP地址进行动态管理和配置的技术。即使规模较小的网络，通过DHCP也可以使后续增加网络设备变得简单快捷。</p>
+<p>•DHCP允许计算机动态地获取IP地址，而不是静态为每台主机指定地址。</p>
+<p>•DHCP能够分配其他配置参数，例如客户端的启动配置文件，使客户端仅用一个消息就获取它所需要的所有配置信息。</p>
+<p>•DHCP协议由RFC 2131定义，采用客户端/服务器通信模式，由客户端（DHCP Client）向服务器（DHCP Server）提出配置申请，服务器返回为客户端分配的配置信息。</p>
+<p>•DHCP可以提供两种地址分配机制，网络管理员可以根据网络需求为不同的主机选择不同的分配策略。</p>
+<p>▫动态分配机制：通过DHCP为主机分配一个有使用期限（这个使用期限通常叫做租期）的IP地址。这种分配机制适用于主机需要临时接入网络或者空闲地址数小于网络主机总数且主机不需要永久连接网络的场景。</p>
+<p>▫静态分配机制：网络管理员通过DHCP为指定的主机分配固定的IP地址。相比手工静态配置IP地址，通过DHCP方式静态分配机制避免人工配置发生错误，方便管理员统一维护管理。</p>
+<p>•DHCP受益主要有以下两点：</p>
+<p>▫降低客户端的配置和维护成本</p>
+<p>▫集中管理</p>
+</blockquote>
+<h2 id="NTP"><a href="#NTP" class="headerlink" title="NTP"></a>NTP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/28.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/29.png"></p>
+<blockquote>
+<p>•网络时间协议NTP（Network Time Protocol）是TCP/IP协议族里面的一个应用层协议。NTP用于在一系列分布式时间服务器与客户端之间同步时钟。NTP的实现基于IP和UDP。NTP报文通过UDP传输，端口号是123。</p>
+<p>•随着网络拓扑的日益复杂，整个网络内设备的时钟同步将变得十分重要。如果依靠管理员手工修改系统时钟，不仅工作量巨大，而且时钟的准确性也无法得到保证。NTP的出现就是为了解决网络内设备系统时钟的同步问题。</p>
+<p>•NTP主要应用于网络中所有设备时钟需要保持一致的场合，比如：网络管理：对从不同路由器采集来的日志信息、调试信息进行分析时，需要以时间作为参照依据。</p>
+<p>▫计费系统：要求所有设备的时钟保持一致。</p>
+<p>▫多个系统协同处理同一个复杂事件：为保证正确的执行顺序，多个系统必须参考同一时钟。</p>
+<p>▫备份服务器和客户机之间进行增量备份：要求备份服务器和所有客户机之间的时钟同步。</p>
+<p>▫系统时间：某些应用程序需要知道用户登录系统的时间以及文件修改的时间。</p>
+<p>•交换机既可以作为NTP的服务器，也可以作为NTP的客户端。</p>
+</blockquote>
+<h2 id="LLDP"><a href="#LLDP" class="headerlink" title="LLDP"></a>LLDP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/30.png"></p>
+<blockquote>
+<p>•LLDP（Link Layer Discovery Protocol）是IEEE 802.1ab中定义的链路层发现协议。LLDP是一种标准的二层发现方式，可以将本端设备的管理地址、设备标识、接口标识等信息组织起来，并发布给自己的邻居设备，邻居设备收到这些信息后将其以标准的管理信息库MIB（Management Information Base）的形式保存起来，以供网络管理系统查询及判断链路的通信状况。</p>
+<p>•随着网络规模越来越大，网络设备种类繁多，并且各自的配置错综复杂，对网络管理能力的要求也越来越高。传统网络管理系统多数只能分析到三层网络拓扑结构，无法确定网络设备的详细拓扑信息、是否存在配置冲突等。因此需要有一个标准的二层信息交流协议。</p>
+<p>•LLDP提供了一种标准的链路层发现方式。通过LLDP获取的设备二层信息能够快速获取相连设备的拓扑状态；显示出客户端、交换机、路由器、应用服务器以及网络服务器之间的路径；检测设备间的配置冲突、查询网络失败的原因。企业网用户可以通过使用网管系统，对支持运行LLDP协议的设备进行链路状态监控，在网络发生故障的时候快速进行故障定位。</p>
+</blockquote>
+<h2 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/31.png"></p>
+<h2 id="NETCONF-YANG"><a href="#NETCONF-YANG" class="headerlink" title="NETCONF/YANG"></a>NETCONF/YANG</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/32.png"></p>
+<h1 id="6-网络安全"><a href="#6-网络安全" class="headerlink" title="6.网络安全"></a>6.网络安全</h1><h2 id="园区网络安全概述"><a href="#园区网络安全概述" class="headerlink" title="园区网络安全概述"></a>园区网络安全概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/33.png"></p>
+<h2 id="基于防火墙的安全区域划分及安全策略"><a href="#基于防火墙的安全区域划分及安全策略" class="headerlink" title="基于防火墙的安全区域划分及安全策略"></a>基于防火墙的安全区域划分及安全策略</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/34.png"></p>
+<p>•安全区域（Security Zone），或者简称为区域（Zone），是一个安全的概念，大部分的安全策略都基于安全区域实施。</p>
+<p>•一个安全区域是防火墙若干接口所连网络的集合，这些网络中的用户具有相同的安全属性。</p>
+<p>•将企业员工网络、公司服务器网络、外部网络划分到不同安全区域，对安全区域间的流量进行检测和保护。</p>
+<blockquote>
+<p>•在一台防火墙上不允许创建两个相同安全级别（Priority）的安全区域；</p>
+<p>•防火墙的接口必须加入一个安全区域，否则不能正常转发流量。</p>
+<p>•防火墙的一个接口只能属于一个安全区域。</p>
+<p>•防火墙的一个安全区域可以拥有多个接口。</p>
+<p>•系统自带的缺省安全区域不能删除，用户可以根据实际需求创建自定义的安全区域。</p>
+</blockquote>
+<h2 id="防火墙双机热备概述"><a href="#防火墙双机热备概述" class="headerlink" title="防火墙双机热备概述"></a>防火墙双机热备概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/35.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/36.png"></p>
+<h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/37.png"></p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/38.png"></p>
+<h1 id="7-VPN"><a href="#7-VPN" class="headerlink" title="7.VPN"></a>7.VPN</h1><h2 id="VPN技术应用场景"><a href="#VPN技术应用场景" class="headerlink" title="VPN技术应用场景"></a>VPN技术应用场景</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/39.png"></p>
+<p>•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、出差员工、合作单位等也需要访问公司总部的网络资源，一般采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。</p>
+<p>•VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。</p>
+<p>•VPN是一类技术的统称，不同的VPN技术拥有不同的特性和实现方式，常见的VPN技术包括IPSec VPN、GRE VPN、L2TP VPN、MPLS VPN等。</p>
+<blockquote>
+<p>•IPSec：IP Security， 因特网协议安全协议。</p>
+<p>•GRE：Generic Routing Encapsulation， 通用路由封装协议。</p>
+<p>•L2TP：Layer 2 Tunneling Protocol， 二层隧道协议。</p>
+<p>•MPLS：Multiprotocol Label Switching，多协议标签交换协议。</p>
+</blockquote>
+<h1 id="8-组播"><a href="#8-组播" class="headerlink" title="8.组播"></a>8.组播</h1><h2 id="组播应用场景"><a href="#组播应用场景" class="headerlink" title="组播应用场景"></a>组播应用场景</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/40.png"></p>
+<p>•企业存在一些公告信息，例如天气、值班表、机房注意事项、宣传视频等，为方便公司员工和来访人员及时获取这些信息，通常采用在公司人员密集处布置显示屏的方式。</p>
+<p>•每一块显示屏显示的内容一致，这是典型的点到多点通信的场景。如果采用单播的方式传递信息，网络中的设备性能及链路带宽都会面临一定程度的浪费。</p>
+<p>•组播技术有效地满足了单点发送、多点接收的需求，实现了IP网络中点到多点业务数据的高效传送，能够大量节约网络带宽、降低网络负载。</p>
+<blockquote>
+<p>•单播（Unicast）是在一台源IP主机和一台目的IP主机之间进行。网络上绝大部分的数据都是以单播的形式传输的，例如电子邮件收发、网上银行都是采用单播实现的。</p>
+<ul>
+<li>在单播通信中每一个数据包都有确切的目的IP地址；对于同一份数据，如果存在多个接收者，Server需发送与接收者数目相同的单播数据包；当接收者增加到成百上千时，将极大加重Server创建相同数据和发送多份相同拷贝后所产生的消耗，网络中的设备性能及链路带宽都会面临一定程度的浪费；单播方式较适合用户稀少的网络，当用户量较大时很难保证网络传输质量。</li>
+</ul>
+<p>•广播（Broadcast）是在一台源IP主机和网络中所有其它的IP主机之间进行，属于一对所有的通讯方式，所有主机都可以接收到（不管是否需要）。</p>
+<ul>
+<li>广播数据包被限制在广播域中；一旦有设备发送广播数据，则广播域内所有设备都会收到这个数据包，并且不得不耗费资源去处理，大量的广播数据包将消耗网络的带宽及设备资源；广播方式只适合共享网段，且信息安全性和有偿服务得不到保障。</li>
+</ul>
+<p>•组播（Multicast）是在一台源IP主机和多台（一组）IP主机之间进行，中间的网络设备根据接收者的需要，有选择性地对数据进行复制和转发。</p>
+</blockquote>
+<h2 id="组播网络基本架构"><a href="#组播网络基本架构" class="headerlink" title="组播网络基本架构"></a>组播网络基本架构</h2><p>组播网络大体可以分为三个部分：</p>
+<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
+<p>▫组播转发网络：形成无环的组播转发路径，该转发路径也被称为组播分发树（Multicast Distribution Tree）。</p>
+<p>▫成员端网络：让组播网络感知组播组成员位置与加入的组播组。</p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/41.png"></p>
+<blockquote>
+<p>•组播源（Source）：组播流量的发送者，例如多媒体服务器。组播源无需运行任何组播协议，只需简单 地将组播数据发送出来即可。 </p>
+<p>•组播接收者（Receiver）：也被称为组播组成员，是期望接收特定组播组流量的设备，例如运行多媒体直播客户端软件的PC。</p>
+<p>•组播组（Multicast Group）：用IP组播地址进行标识的一个集合。任何用户主机（或其他接收设备），加入一个组播组，就成为了该组成员，可以识别并接收发往该组播组的组播数据。</p>
+<p>•组播路由器（Multicast Router）：支持组播、运行组播协议的网络设备，实际上不仅仅路由器能够支持 组播，交换机、防火墙等设备也能够支持组播（取决于设备型号），路由器仅是一个代表。</p>
+<p>•第一跳路由器（First-Hop Router）：组播转发路径上，与组播源相连且负责转发该组播源发出的组播数据的PIM路由器。</p>
+<p>•最后一跳路由器（Last-Hop Router）：组播转发路径上，与组播组成员相连且负责向该组成员转发组播数据的PIM路由器。</p>
+<p>•IGMP（Internet Group Management Protocol，因特网组管理协议），是TCP/IP协议族中负责IP组播成员管理的协议，它用来在接收者和与其直接相邻的组播路由器之间建立、维护组播组成员关系。</p>
+</blockquote>
+<h1 id="9-IPv6"><a href="#9-IPv6" class="headerlink" title="9.IPv6"></a>9.IPv6</h1><h2 id="IPv6概述"><a href="#IPv6概述" class="headerlink" title="IPv6概述"></a>IPv6概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/42.png"></p>
+<p>•IPv4协议是目前广泛部署的因特网协议。在因特网发展初期，IPv4以其协议简单、易于实现、互操作性好的优势而得到快速发展。但随着因特网的迅猛发展， IPv4地址空间不足的问题日趋明显，IPv6取代IPv4势在必行。</p>
+<p>•IPv6（Internet Protocol Version 6）是网络层协议的第二代标准协议，也被称为IPng（IP Next Generation）。它是Internet工程任务组IETF（Internet Engineering Task Force）设计的一套规范，是IPv4（Internet Protocol Version 4）的升级版本。</p>
+<p>•IPv6地址长度为128 bit，海量的地址空间，满足物联网等新兴业务、有利于业务演进及扩展。</p>
+<h2 id="ICMPv6"><a href="#ICMPv6" class="headerlink" title="ICMPv6"></a>ICMPv6</h2><p>•ICMPv6 （Internet Control Message Protocol for IPv6）是IPv6的基础协议之一。</p>
+<p>•ICMPv6报文被广泛应用于其它协议中，包括NDP、PathMTU发现机制等。</p>
+<p>•ICMPv6控制着IPv6中的地址自动配置、地址解析、地址冲突检测、路由选择、以及差错控制等关键环节。</p>
+<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/43.png"></p>
+<blockquote>
+<p>•NDP：Neighbor Discovery Protocol，邻居发现协议。</p>
+</blockquote>
+<h2 id="IPv6路由"><a href="#IPv6路由" class="headerlink" title="IPv6路由"></a>IPv6路由</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/44.png"></p>
+<p>IPv6网络支持静态路由和动态路由协议：</p>
+<ul>
+<li><p>静态路由：</p>
+<ul>
+<li>IPv6静态路由的配置方式和IPv4静态路由的配置方式相同。</li>
+</ul>
+</li>
+<li><p>动态路由协议：</p>
+<ul>
+<li>OSPFv3</li>
+<li>IS-IS</li>
+<li>BGP4+</li>
+</ul>
+</li>
+</ul>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下关于交换机二层接口的描述，正确的是？(   )</p>
+<p><strong>A.交换机的二层接口类型有Access、Trunk、Hybrid。</strong></p>
+<p><strong>B.Access接口只能加入一个VLAN。</strong></p>
+<p><strong>C.缺省情况下，Trunk接口允许VLAN1的流量通过，而且在发送时不携带VLAN Tag。</strong></p>
+<p><strong>D.在Hybrid接口上可通过命令指定接口在发送特定VLAN的流量时，是否携带VLAN Tag。</strong></p>
+<p>2.（多选题）以太网链路聚合技术有哪些优势？(   )</p>
+<p><strong>A.增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</strong></p>
+<p><strong>B.提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</strong></p>
+<p><strong>C.负载分担：在一个链路聚合组内，可以实现在各成员活动链路上的负载分担。</strong></p>
+<p>D.智能调优：可根据流量大小自动调整活动接口数量。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章系统地介绍了园区网络典型技术场景化应用：以太网交换基础、无线接入、网络可靠性、网络服务与网络管理、路由与网络可达性、网络安全、VPN。</p>
+<p>•受限于课程篇幅，本文无法将园区网络中所用的技术一一列举。通过本章的学习，读者已经了解园区网络的典型架构，以及典型技术在园区网络中的应用，有助于读者继续学习后续课程。</p>
+<p>•在后续的课程中，我们将深入探讨园区网络的关键技术，为将来学习园区网络解决方案打下扎实基础。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1227,7 +1621,8 @@
       
         
           
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•BGP是一个应用非常广泛的边界网关路由协议，在全球范围内被大量部署。BGP定义了多种路径属性，并且拥有丰富的路由策略工具，这使得BGP在路由操控和路径决策上变得非常灵活。</p>
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89/BGP%E8%B7%AF%E7%94%B1%E4%BC%98%E9%80%89.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•BGP是一个应用非常广泛的边界网关路由协议，在全球范围内被大量部署。BGP定义了多种路径属性，并且拥有丰富的路由策略工具，这使得BGP在路由操控和路径决策上变得非常灵活。</p>
 <p>•针对BGP路由的各种属性的操作都可能影响路由的优选，从而对网络的流量产生影响，因此掌握BGP路由的优选规则十分重要。</p>
 <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP路由优选规则</p>
 <p>▫实现BGP路由控制</p>
@@ -1666,7 +2061,8 @@
       
         
           
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•任何一条BGP路由都拥有多个路径属性（Path Attributes），当路由器通告BGP路由给它的对等体时，该路由将会携带多个路径属性，这些属性描述了BGP路由的各项特征，同时在某些场景下也会影响BGP路由优选的决策。</p>
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/BGP%E8%B7%AF%E5%BE%84%E5%B1%9E%E6%80%A7%E4%B8%8E%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8/BGP%E8%B7%AF%E5%BE%84%E5%B1%9E%E6%80%A7%E4%B8%8E%E8%B7%AF%E7%94%B1%E5%8F%8D%E5%B0%84%E5%99%A8.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•任何一条BGP路由都拥有多个路径属性（Path Attributes），当路由器通告BGP路由给它的对等体时，该路由将会携带多个路径属性，这些属性描述了BGP路由的各项特征，同时在某些场景下也会影响BGP路由优选的决策。</p>
 <p>•IBGP水平分割规则用于防止AS内部产生环路，在很大程度上杜绝了IBGP路由产生环路的可能性，但是同时也带来了新的问题：BGP路由在AS内部只能传递一跳，如果建立IBGP对等体全互联模型又会加重设备的负担。</p>
 <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP常见的路径属性及作用</p>
 <p>▫描述BGP路由反射器的概念及应用场景</p>
@@ -1978,7 +2374,8 @@
       
         
           
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•为方便管理规模不断扩大的网络，网络被分成了不同的AS（Autonomous System，自治系统）。早期，EGP（Exterior Gateway Protocol，外部网关协议）被用于实现在AS之间动态交换路由信息。但是EGP设计得比较简单，只发布网络可达的路由信息，而不对路由信息进行优选，同时也没有考虑环路避免等问题，很快就无法满足网络管理的要求。</p>
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/BGP.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•为方便管理规模不断扩大的网络，网络被分成了不同的AS（Autonomous System，自治系统）。早期，EGP（Exterior Gateway Protocol，外部网关协议）被用于实现在AS之间动态交换路由信息。但是EGP设计得比较简单，只发布网络可达的路由信息，而不对路由信息进行优选，同时也没有考虑环路避免等问题，很快就无法满足网络管理的要求。</p>
 <p>•BGP是为取代最初的EGP而设计的另一种外部网关协议。不同于最初的EGP，BGP能够进行路由优选、避免路由环路、更高效率的传递路由和维护大量的路由信息。</p>
 <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP基本概念</p>
 <p>▫描述BGP的对等体类型</p>
@@ -3437,400 +3834,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/" itemprop="url">IP-OSPF基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:14:14+08:00">
-                2021-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•路由器根据路由表转发数据包，路由表项可通过手动配置和动态路由协议生成。</p>
-<p>•静态路由比动态路由使用更少的带宽，并且不占用CPU资源来计算和分析路由更新。当网络结构比较简单时，只需配置静态路由就可以使网络正常工作。但是当网络发生故障或者拓扑发生变化后，静态路由不会自动更新，必须手动重新配置。</p>
-<p>•相比较于静态路由，动态路由协议具有更强的可扩展性，具备更强的应变能力。</p>
-<p>•OSPF（Open Shortest Path First，开放式最短路径优先）具有扩展性强，收敛速度快等特点，作为优秀的内部网关协议被广泛使用。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述OSPF路由计算的整体过程</p>
-<p>▫阐明DR与BDR的作用</p>
-<p>▫描述OSPF报文类型和作用</p>
-<p>▫实现OSPF的基本配置</p>
-<p>▫区分OSPF邻居关系和邻接关系</p>
-<h1 id="动态路由协议简介"><a href="#动态路由协议简介" class="headerlink" title="动态路由协议简介"></a><strong>动态路由协议简介</strong></h1><h2 id="动态路由协议的分类"><a href="#动态路由协议的分类" class="headerlink" title="动态路由协议的分类"></a><strong>动态路由协议的分类</strong></h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/1.png"></p>
-<blockquote>
-<p>•BGP使用一种基于距离矢量算法修改后的算法，该算法被称为路径矢量（Path Vector）算法。因此在某些场合下，BGP也被称为路径矢量路由协议。</p>
-<p>•IGP（内部网关协议）在同一个自治系统内交换路由信息，IGP的主要目的是发现和计算自治域内的路由信息。</p>
-<p>•EGP（外部网关协议）主要用于AS（自治系统）之间的互联。</p>
-</blockquote>
-<h2 id="距离矢量路由协议"><a href="#距离矢量路由协议" class="headerlink" title="距离矢量路由协议"></a><strong>距离矢量路由协议</strong></h2><p>•运行距离矢量路由协议的路由器周期性地泛洪自己的路由表。通过路由的交互，每台路由器都从相邻的路由器学习到路由，并且加载进自己的路由表中，然后再通告给其他相邻路由器。</p>
-<p>•对于网络中的所有路由器而言，路由器并不清楚网络的拓扑，只是简单的知道要去往某个目的网段方向在哪里，开销有多大。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/2.png"> </p>
-<h2 id="链路状态路由协议-LSA泛洪"><a href="#链路状态路由协议-LSA泛洪" class="headerlink" title="链路状态路由协议 - LSA泛洪"></a>链路状态路由协议 - LSA泛洪</h2><p>•链路状态路由协议通告的的是链路状态而不是路由信息。</p>
-<p>•运行链路状态路由协议的路由器之间首先会建立邻居关系，然后彼此之间开始交互LSA（Link State Advertisement，链路状态通告）。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/3.png"></p>
-<blockquote>
-<p>•链路状态通告，可以简单的理解为每台路由器都产生一个描述自己直连接口状态（包括接口的开销、与邻居路由器之间的关系等）的通告。</p>
-</blockquote>
-<h2 id="链路状态路由协议-LSDB维护"><a href="#链路状态路由协议-LSDB维护" class="headerlink" title="链路状态路由协议 - LSDB维护"></a>链路状态路由协议 - LSDB维护</h2><p>每台路由器都会产生LSA，路由器将接收到的LSA放入自己的LSDB（Link State DataBase，链路状态数据库）。路由器通过对LSDB中所存储的LSA进行解析，进而了解全网拓扑。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/4.png"></p>
-<h2 id="链路状态路由协议-SPF计算"><a href="#链路状态路由协议-SPF计算" class="headerlink" title="链路状态路由协议 - SPF计算"></a>链路状态路由协议 - SPF计算</h2><p>每台路由器基于LSDB，使用SPF（Shortest Path First，最短路径优先）算法进行计算。每台路由器都计算出一棵以自己为根的、无环的、拥有最短路径的“树”。有了这棵“树”，路由器就已经知道了到达所有网段的优选路径。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/5.png"></p>
-<blockquote>
-<p>•SPF是OSPF路由协议的一个核心算法，用来在一个复杂的网络中做出路由优选的决策。</p>
-</blockquote>
-<h2 id="链路状态路由协议-路由表生成"><a href="#链路状态路由协议-路由表生成" class="headerlink" title="链路状态路由协议 - 路由表生成"></a>链路状态路由协议 - 路由表生成</h2><p>路由器将计算出来的优选路径，加载进自己的路由表（Routing Table）。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/6.png"></p>
-<h2 id="链路状态路由协议总结"><a href="#链路状态路由协议总结" class="headerlink" title="链路状态路由协议总结"></a>链路状态路由协议总结</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/7.png"></p>
-<blockquote>
-<p>链路状态路由协议有四个步骤：</p>
-<p>▫第一步是建立相邻路由器之间的邻居关系。</p>
-<p>▫第二步是邻居之间交互链路状态信息和同步LSDB。</p>
-<p>▫第三步是进行优选路径计算。</p>
-<p>▫第四步是根据最短路径树生成路由表项加载到路由表。</p>
-</blockquote>
-<h1 id="OSPF简介"><a href="#OSPF简介" class="headerlink" title="OSPF简介"></a>OSPF简介</h1><h2 id="OSPF概述"><a href="#OSPF概述" class="headerlink" title="OSPF概述"></a>OSPF概述</h2><p>•OSPF是IETF定义的一种基于链路状态的内部网关路由协议。目前针对IPv4协议使用的是OSPF Version 2（RFC2328）；针对IPv6协议使用OSPF Version 3（RFC2740）。</p>
-<p>•OSPF有以下优点：</p>
-<p>▫基于SPF算法，以“累计链路开销”作为选路参考值</p>
-<p>▫采用组播形式收发部分协议报文</p>
-<p>▫支持区域划分</p>
-<p>▫支持对等价路由进行负载分担</p>
-<p>▫支持报文认证</p>
-<h2 id="OSPF应用场景"><a href="#OSPF应用场景" class="headerlink" title="OSPF应用场景"></a>OSPF应用场景</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/8.png"></p>
-<p>•接入层：接入层利用光纤、双绞线、同轴电缆、无线接入技术等传输介质，实现与用户连接，并进行业务和带宽的分配。接入层目的是允许终端用户连接到网络，因此接入层交换机具有低成本和高端口密度特性。</p>
-<p>•汇聚层：汇聚层为接入层提供基于策略的连接，如地址合并，协议过滤,路由服务，认证管理等。通过网段划分实现与网络隔离，可以防止网络故障蔓延和影响到核心层。汇聚层同时也可以提供接入层虚拟网之间的互连，控制和限制接入层对核心层的访问，保证核心层的安全和稳定。</p>
-<p>•核心层：核心层的功能主要是实现骨干网络之间的优化传输，核心层任务的重点通常是冗余能力、可靠性和高速的传输。</p>
-<h2 id="OSPF基础术语-Router-ID"><a href="#OSPF基础术语-Router-ID" class="headerlink" title="OSPF基础术语 - Router ID"></a>OSPF基础术语 - Router ID</h2><p>•Router ID用于在自治系统中唯一标识一台运行OSPF的路由器，它是一个32位的无符号整数。</p>
-<p>•Router ID选举规则如下：</p>
-<p>▫手动配置OSPF路由器的Router ID（建议手动配置）</p>
-<p>▫如果没有手动配置Router ID，则路由器使用Loopback接口中最大的IP地址作为Router ID</p>
-<p>▫如果没有配置Loopback接口，则路由器使用物理接口中最大的IP地址作为Router ID</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/9.png"></p>
-<blockquote>
-<p>•Router ID一旦选定，之后如果要更改的话就需要重启OSPF进程。</p>
-<p>•在实际工程中，推荐手工指定OSPF路由设备的Router ID。首先规划出一个私有网段用于OSPF的Router ID选择，例如：192.168.1.0/24。在启用OSPF进程前在每个OSPF路由器上建立一个Loopback接口，使用一个32位掩码的私有地址作为其IP地址，这个32位的私有地址即作为该路由设备的Router ID。如果没有特殊要求，这个Loopback接口地址可以不发布在OSPF网络中。</p>
-</blockquote>
-<h2 id="OSPF基础术语-区域"><a href="#OSPF基础术语-区域" class="headerlink" title="OSPF基础术语 - 区域"></a>OSPF基础术语 - 区域</h2><p>•OSPF Area用于标识一个OSPF的区域。</p>
-<p>•区域是从逻辑上将设备划分为不同的组，每个组用区域号（Area ID）来标识。</p>
-<p>•OSPF的区域ID是一个32bit的非负整数，按点分十进制的形式（与IPv4地址的格式一样）呈现，例如Area0.0.0.1。为了简便起见，我们也会采用十进制的形式来表示。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/10.png"></p>
-<blockquote>
-<p>•几个例子：Area0.0.0.1等同于Area1，Area0.0.0.255等同于Area255，Area0.0.1.0等同于Area256。许多网络厂商的设备同时支持这两种区域ID配置及表示方式。</p>
-</blockquote>
-<h2 id="OSPF基础术语-度量值"><a href="#OSPF基础术语-度量值" class="headerlink" title="OSPF基础术语 - 度量值"></a>OSPF基础术语 - 度量值</h2><p>•OSPF使用Cost（开销）作为路由的度量值。每一个激活了OSPF的接口都会维护一个接口Cost值，缺省的接口Cost = “100 Mbit/s “ /“接口带宽” 。其中100 “Mbit/s”为OSPF指定的缺省参考值，该值是可配置的。</p>
-<p>•OSPF以“累计cost”为开销值，也就是流量从源网络到目的网络所经过所有路由器的出接口的cost总和。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/11.png"></p>
-<blockquote>
-<p>•在实际应用中，推荐根据接口带宽大小手动配置Cost值，而不是修改OSPF参考带宽。</p>
-</blockquote>
-<h2 id="OSPF基础术语-度量值修改举例"><a href="#OSPF基础术语-度量值修改举例" class="headerlink" title="OSPF基础术语 - 度量值修改举例"></a>OSPF基础术语 - 度量值修改举例</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/12.png"></p>
-<blockquote>
-<p>•在规划流量路径时，推荐将汇聚层直连链路Cost值&gt;接入环所有链路Cost值之和，这样可以保证从接入层访问R1或R2时，流量可通过接入层路由器直达R1或R2。</p>
-<p>•以上图为例。R1和R2位于企业网中的汇聚层，R1和R2的直连链路属于区域0，R1有一个直连网段10.0.1.1/32通过在区域0。</p>
-<p>​    ▫在缺省情况下，R4到达10.0.1.1/32的路由存在两个下一跳。</p>
-<p>​    ▫修改Cost之后，R4到达10.0.1.1的路由仅存在一个下一跳。</p>
-</blockquote>
-<h2 id="OSPF三大表项-邻居表"><a href="#OSPF三大表项-邻居表" class="headerlink" title="OSPF三大表项 - 邻居表"></a>OSPF三大表项 - 邻居表</h2><p>OSPF有三张重要的表项，OSPF邻居表、LSDB和OSPF路由表。对于OSPF的邻居表，需要了解：</p>
-<p>▫OSPF在传递链路状态信息之前，需先建立OSPF邻居关系。</p>
-<p>▫OSPF的邻居关系通过交互Hello报文建立。</p>
-<p>▫OSPF邻居表显示了OSPF路由器之间的邻居状态，使用display ospf peer查看。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/13.png"></p>
-<h2 id="OSPF三大表项-LSDB"><a href="#OSPF三大表项-LSDB" class="headerlink" title="OSPF三大表项 - LSDB"></a>OSPF三大表项 - LSDB</h2><p>对于OSPF的LSDB，需要了解：</p>
-<p>▫LSDB会保存自己产生的及从邻居收到的LSA信息，本例中R1的LSDB包含了三条LSA。</p>
-<p>▫Type标识LSA的类型，AdvRouter标识发送LSA的路由器。</p>
-<p>▫使用命令行display ospf lsdb查看LSDB表。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/14.png"></p>
-<h2 id="OSPF三大表项-OSPF路由表"><a href="#OSPF三大表项-OSPF路由表" class="headerlink" title="OSPF三大表项 - OSPF路由表"></a>OSPF三大表项 - OSPF路由表</h2><p>对于OSPF的路由表，需要了解：</p>
-<p>▫OSPF路由表和路由器路由表是两张不同的表。本例中OSPF路由表有三条路由。</p>
-<p>▫OSPF路由表包含Destination、Cost和NextHop等指导转发的信息。</p>
-<p>▫使用命令display ospf routing查看OSPF路由表。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/15.png"></p>
-<blockquote>
-<p>•路由器路由表通常称为全局路由表，并非所有OSPF路由都可以放到路由器路由表。</p>
-</blockquote>
-<h2 id="OSPF报文格式和类型"><a href="#OSPF报文格式和类型" class="headerlink" title="OSPF报文格式和类型"></a>OSPF报文格式和类型</h2><p>•OSPF一共定义了5种类型的报文，不同类型的OSPF报文有相同的头部格式。</p>
-<p>•OSPF报文直接采用IP封装，在报文的IP头部中，协议号为89。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/16.png"></p>
-<blockquote>
-<p>•重要字段解释</p>
-<p>▫Version ：对于当前所使用的OSPFv2，该字段的值为2。</p>
-<p>▫Router ID：表示生成此报文的路由器的Router ID。</p>
-<p>▫Area ID：表示此报文需要被通告到的区域。</p>
-<p>▫Type：类型字段。</p>
-<p>▫Packet length：表示整个OSPF报文的长度，单位是字节。</p>
-<p>▫Checksum：校验字段，其校验的范围是整个OSPF报文，包括OSPF报文头部。</p>
-<p>▫Auth Type：为0时表示不认证；为1时表示简单的明文密码认证；为2时表示加密（MD5）认证。</p>
-<p>▫Authentication：认证所需的信息。该字段的内容随AuType的值不同而不同。</p>
-</blockquote>
-<h1 id="OSPF工作过程"><a href="#OSPF工作过程" class="headerlink" title="OSPF工作过程"></a>OSPF工作过程</h1><h2 id="OSPF工作过程概览"><a href="#OSPF工作过程概览" class="headerlink" title="OSPF工作过程概览"></a>OSPF工作过程概览</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/17.png"></p>
-<h2 id="建立邻居关系"><a href="#建立邻居关系" class="headerlink" title="建立邻居关系"></a>建立邻居关系</h2><p>•OSPF使用Hello报文发现和建立邻居关系。</p>
-<p>•在以太网链路上，缺省时，OSPF采用组播的形式发送Hello报文（目的地址224.0.0.5）。</p>
-<p>•OSPF Hello报文中包含了路由器的Router ID、邻居列表等信息。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/18.png"></p>
-<blockquote>
-<p>•R1和R2路由器相互发送Hello报文，第一个Hello报文包含的邻居列表为空。</p>
-<p>•R2收到R1发送的Hello报文后，如果各项参数匹配，再次发送Hello报文时，将R1加入自己的邻居列表。</p>
-<p>•在以太网链路上，通常以组播形式发送Hello报文：</p>
-<p>​    ▫224.0.0.5的组播地址为OSPF设备的预留IP组播地址。</p>
-<p>​    ▫224.0.0.6的组播地址为OSPF DR/BDR的预留IP组播地址。</p>
-<p>•对于不支持组播的链路，OSPF支持采用单播的方式发送Hello报文。</p>
-</blockquote>
-<h3 id="影响邻居建立的因素"><a href="#影响邻居建立的因素" class="headerlink" title="影响邻居建立的因素"></a>影响邻居建立的因素</h3><ol>
-<li><p><strong>Router ID</strong>：直连不能相同，非直连相同导致路由震荡</p>
-</li>
-<li><p><strong>认证</strong>：认证必须配置一致，否则不能建立邻居</p>
-</li>
-<li><p><strong>Area ID</strong>:必须一致，否则不能建立</p>
-</li>
-<li><p><strong>Hello间隔</strong>:必须一致否则不能建立</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>MA</th>
-<th>P2P</th>
-<th>NBMA</th>
-<th>P2MP</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Hello time</td>
-<td>10</td>
-<td>10</td>
-<td>30</td>
-<td>30</td>
-</tr>
-<tr>
-<td>Hello dead time</td>
-<td>40</td>
-<td>40</td>
-<td>120</td>
-<td>120</td>
-</tr>
-</tbody></table>
-</li>
-<li><p><strong>接口网络类型</strong>：</p>
-<p>NBMA与其它网络类型不能建立起邻居关系</p>
-<p>MA与P2P可以建立起来，但不能进行路由计算</p>
-</li>
-<li><p><strong>接口MTU值</strong>:默认不开启，ospf mtu-enable，如果不相同会卡在exstart或exchang状态。</p>
-</li>
-<li><p><strong>静默接口 silent-interface</strong>：接口配置成静默接口不会发送hello报文</p>
-</li>
-<li><p><strong>hello报文中掩码信息不一致</strong>：MA网络 不一致不能建立 P2P可以建立因为此网络类型不检查掩码信息</p>
-</li>
-<li><p><strong>option字段</strong>：常规区域与特殊区域不能建立邻居关系</p>
-</li>
-<li><p><strong>DR priority 为 0</strong>：不建立<strong>邻接</strong>关系</p>
-</li>
-</ol>
-<h2 id="Hello报文"><a href="#Hello报文" class="headerlink" title="Hello报文"></a>Hello报文</h2><p>•Hello报文的主要作用：</p>
-<p>▫邻居发现：自动发现邻居路由器。</p>
-<p>▫邻居建立：完成Hello报文中的参数协商，建立邻居关系。</p>
-<p>▫邻居保持：通过周期性发送和接收，检测邻居运行状态。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/19.png"></p>
-<p>•<strong>重要字段解释</strong></p>
-<p>​    ▫<strong>Network</strong> <strong>Mask：</strong>发送Hello报文的接口的网络掩码。</p>
-<p>​    ▫<strong>HelloInterval：</strong>发送Hello报文的时间间隔。通常为10s。</p>
-<p>​    ▫<strong>RouterDeadInterval：</strong>失效时间。如果在此时间内未收到邻居发来的Hello报文，则认为邻居失效。通常为40s。</p>
-<p>▫<strong>Neighbor：</strong>邻居，以Router ID标识。</p>
-<p>•<strong>其它字段解释</strong></p>
-<p>▫<strong>Options：</strong> </p>
-<p>​    ▪E：是否支持外部路由</p>
-<p>​    ▪MC：是否支持转发组播数据包</p>
-<p>​    ▪N/P：是否为NSSA区域</p>
-<p>▫<strong>Router Priority：DR优先级。默认为1。如果设置为0，则路由器不能参与DR或BDR的选举</strong>。</p>
-<p>▫<strong>Designated</strong> <strong>Router：</strong>DR的接口地址。</p>
-<p>▫<strong>Backup Designated</strong> <strong>Router</strong>：BDR的接口地址。</p>
-<h2 id="邻接关系建立-1"><a href="#邻接关系建立-1" class="headerlink" title="邻接关系建立 (1)"></a>邻接关系建立 (1)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/20.png"></p>
-<p>•<strong>DD报文部分字段解释</strong></p>
-<p>▫<strong>I</strong>：当发送连续多个DD报文时，如果这是第一个DD报文，则置为1，否则置为0。</p>
-<p>▫**M (More)**：当发送连续多个DD报文时，如果这是最后一个DD报文，则置为0。否则置为1，表示后面还有其他的DD报文。</p>
-<p>▫**MS (Master/Slave)**：当两台OSPF路由器交换DD报文时，首先需要确定双方的主从关系，Router ID大的一方会成为Master。当值为1时表示发送方为Master。</p>
-<p>▫<strong>DD sequence</strong> <strong>number</strong>：DD报文序列号。主从双方利用序列号来保证DD报文传输的可靠性和完整性。</p>
-<blockquote>
-<p>•R1和R2的Router ID分别为10.0.1.1和10.0.2.2并且二者已建立了邻居关系。当R1的邻居状态变为ExStart后，R1会发送第一个DD报文。此报文中，M-bit设置为1，表示后续还有DD报文要发送，MS-bit设置为1，表示R1宣告自己为Master。DD序列号被随机设置为X，I-bit设置为1，表示这是第一个DD报文。</p>
-<p>•同样当R2的邻居状态变为ExStart后，R2也会发送第一个DD报文。此报文中，DD序列号被随机设置为Y（I-bit=1，M-bit=1，MS-bit=1，含义同上）。由于R2的Router ID较大，所以R2将成为真正的Master。收到此报文后，R1会产生一个Negotiation-Done事件，并将邻居状态从ExStart变为Exchange。</p>
-<p>•当R1的邻居状态变为Exchange后，R1会发送一个新的DD报文，此报文中包含了LSDB的摘要信息，序列号设置为R2在步骤2中使用的序列号Y，I-bit=0，表示这不是第一个DD报文，M-bit=0，表示这是最后一个包含LSDB摘要信息的DD报文，MS-bit=0，表示R1宣告自己为Slave。收到此报文后，R2将邻居状态从ExStart变为Exchange。</p>
-<p>•当R2的邻居状态变为Exchange后，R2会发送一个新的DD报文，此报文包含了LSDB的摘要信息。DD序列号设置为Y+1, MS-bit=1，表示R2宣告自己为Master。</p>
-<p>•虽然R1不需要发送新的包含LSDB摘要信息的DD报文，但是作为Slave，R1需要对Master发送的每一个DD报文进行确认。所以，R1向R2发送一个新的DD报文，序列号为Y+1，该报文内容为空。发送完此报文后，RTA产生一个Exchange-Done事件，将邻居状态变为Loading。R2收到此报文后，会将邻居状态变为Full（假设R2的LSDB是最新最全的，不需要向R1请求更新）。</p>
-</blockquote>
-<h2 id="DD报文"><a href="#DD报文" class="headerlink" title="DD报文"></a>DD报文</h2><p>DD报文包含LSA头部信息，包括LS Type、LS ID、Advertising Router、LS Sequence Number、LS Checksum。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/21.png"></p>
-<h2 id="邻接关系建立-2"><a href="#邻接关系建立-2" class="headerlink" title="邻接关系建立 (2)"></a>邻接关系建立 (2)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/23.png"></p>
-<p>•R1开始向R2发送LSR报文，请求那些在Exchange状态下通过DD报文发现的、并且在本地LSDB中没有的链路状态信息。</p>
-<p>•R2向R1发送LSU报文，LSU报文中包含了那些被请求的链路状态的详细信息。R1在完成LSU报文的接收之后，且没有其他待请求的LSA后，会将邻居状态从Loading变为Full。</p>
-<p>•R1向R2发送LSAck报文，作为对LSU报文的确认。</p>
-<h2 id="DR与BDR的作用"><a href="#DR与BDR的作用" class="headerlink" title="DR与BDR的作用"></a>DR与BDR的作用</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/24.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/25.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/26.png"></p>
-<blockquote>
-<p>•MA（ Multiple Access，多路访问 ）分为BMA（ Broadcast Multi-Access，广播多路访问）和NBMA（Non-Broadcast Multiple Access，非广播多路访问）。以太网链路组成的网络是典型的BMA网络。帧中继链路通过逻辑上的划分组成典型的NBMA网络（注：帧中继相关知识不再介绍）。</p>
-<p>•DRother：既不是DR也不是BDR的路由器就是DRother路由器。</p>
-</blockquote>
-<h2 id="DR与BDR的选举规则"><a href="#DR与BDR的选举规则" class="headerlink" title="DR与BDR的选举规则"></a>DR与BDR的选举规则</h2><p>•DR/BDR的选举是非抢占式的。</p>
-<p>•DR/BDR的选举是基于接口的。</p>
-<p>​    ▫接口的DR优先级越大越优先。</p>
-<p>​    ▫接口的DR优先级相等时，Router ID越大越优先。</p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/28.png"></p>
-<p>•思考：</p>
-<p>▫如果将上图中4台路由器的优先级全部设置为0，OSPF是否可以正常工作？</p>
-<p>▫缺省情况下，哪些链路类型组成的网络是MA网络呢？</p>
-<blockquote>
-<p>广播链路或者NBMA链路上DR和BDR的选举过程如下：</p>
-<p>▫接口UP后，发送Hello报文，同时进入到Waiting状态。在Waiting状态下会有一个WaitingTimer，该计时器的长度与DeadTimer是一样的。默认值为40秒，用户不可自行调整。</p>
-<p>▫在WaitingTimer触发前，发送的Hello报文是没有DR和BDR字段的。在Waiting阶段，如果收到Hello报文中有DR和BDR，那么直接承认网络中的DR和BDR，而不会触发选举。直接离开Waiting状态，开始邻居同步。</p>
-<p>▫假设网络中已经存在一个DR和一个BDR，这时新加入网络中的路由器，不论它的Router ID或者DR优先级有多大，都会承认现网中已有的DR和BDR。</p>
-<p>▫当DR因为故障Down掉之后，BDR会继承DR的位置，剩下的优先级大于0的路由器会竞争成为新的BDR。</p>
-<p>▫只有当不同Router ID，或者配置不同DR优先级的路由器同时起来，在同一时刻进行DR选举才会应用DR选举规则产生DR。</p>
-</blockquote>
-<h2 id="不同网络类型中DR与BDR的选举操作"><a href="#不同网络类型中DR与BDR的选举操作" class="headerlink" title="不同网络类型中DR与BDR的选举操作"></a>不同网络类型中DR与BDR的选举操作</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/29.png"></p>
-<h2 id="可按需调整设备接口的OSPF网络类型"><a href="#可按需调整设备接口的OSPF网络类型" class="headerlink" title="可按需调整设备接口的OSPF网络类型"></a>可按需调整设备接口的OSPF网络类型</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/30.png"></p>
-<p>•OSPF的网络类型是根据接口的数据链路层封装自动设置的。</p>
-<p>•图中的路由器采用以太网接口互联，因此这些接口的网络类型缺省均为Broadcast。</p>
-<p>•每段链路实际上都是点对点链路，因此在链路上选举DR与BDR是没有必要的。</p>
-<p>•为了提高OSPF的工作效率，加快邻接关系的建立过程，可以把这些互联接口的网络类型都修改为P2P。</p>
-<blockquote>
-<p>•OSPF的网络类型是协议根据接口的数据链路层封装自动设置的，在图中，两台处于网络接入层的路由器AS-R1及AS-R2都通过双链路上联到核心层的路由器CO-R1及CO-R2。四台路由器都在各自接口上激活OSPF。由于这些路由器都是采用以太网接口互联，因此这些接口的网络类型缺省均为Broadcast，于是在邻居关系的建立过程中，OSPF会在每段以太网链路上选举DR及BDR。</p>
-<p>•然而，这实际上是没有必要而且浪费时间的（DR及BDR的选举过程涉及一个等待计时器，这增加了直连路由器形成邻接关系的时间），因为这些链路其实从逻辑的角度看都是点对点的连接，选举DR或BDR实在是画蛇添足。因此为了提高OSPF的工作效率，加快邻接关系的建立过程，可以把这些互联接口的网络类型都修改为P2P。</p>
-</blockquote>
-<h1 id="OSPF的基本配置"><a href="#OSPF的基本配置" class="headerlink" title="OSPF的基本配置"></a>OSPF的基本配置</h1><h2 id="配置命令介绍-1"><a href="#配置命令介绍-1" class="headerlink" title="配置命令介绍 (1)"></a>配置命令介绍 (1)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/31.png"></p>
-<blockquote>
-<p>•缺省情况下，OSPF以32位主机路由的方式对外发布Loopback接口的IP地址，与Loopback接口上配置的掩码长度无关。如果要发布Loopback接口的实际网段，需要在接口下配置网络类型为NBMA或广播型。</p>
-</blockquote>
-<h2 id="配置命令介绍-2"><a href="#配置命令介绍-2" class="headerlink" title="配置命令介绍 (2)"></a>配置命令介绍 (2)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/32.png"></p>
-<h2 id="OSPF配置举例"><a href="#OSPF配置举例" class="headerlink" title="OSPF配置举例"></a>OSPF配置举例</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/33.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/34.png"></p>
-<h2 id="OSPF配置验证-1"><a href="#OSPF配置验证-1" class="headerlink" title="OSPF配置验证 (1)"></a>OSPF配置验证 (1)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/35.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/36.png"></p>
-<h2 id="OSPF配置验证-2"><a href="#OSPF配置验证-2" class="headerlink" title="OSPF配置验证 (2)"></a>OSPF配置验证 (2)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/37.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/38.png"></p>
-<h2 id="OSPF配置验证-3"><a href="#OSPF配置验证-3" class="headerlink" title="OSPF配置验证 (3)"></a>OSPF配置验证 (3)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/39.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/40.png"></p>
-<h2 id="OSPF配置验证-4"><a href="#OSPF配置验证-4" class="headerlink" title="OSPF配置验证 (4)"></a>OSPF配置验证 (4)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/41.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/42.png"></p>
-<h2 id="OSPF配置验证-5"><a href="#OSPF配置验证-5" class="headerlink" title="OSPF配置验证 (5)"></a>OSPF配置验证 (5)</h2><p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/43.png"></p>
-<p><img src="/2021/05/06/OSPF%E5%9F%BA%E7%A1%80/44.png"></p>
-<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（单选题）OSPF使用以下哪种报文维护邻居关系？（   ）</p>
-<p><strong>A.Hello</strong></p>
-<p>B.Database Description</p>
-<p>C.LSR</p>
-<p>D.LSU</p>
-<p>2.（多选题）OSPF支持以下哪些网络类型？（   ）</p>
-<p><strong>A.P2P网络</strong></p>
-<p><strong>B.P2MP网络</strong></p>
-<p><strong>C.广播网络</strong></p>
-<p><strong>D.NBMA网络</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本文简单介绍了OSPF的基本概念，内容包括Router ID、区域、Cost。运行OSPF的路由器通过相互发送链路状态信息完成拓扑和路由计算。</p>
-<p>•本文详细介绍了OSPF邻居和邻接关系建立的过程。在MA网络中，需要选举DR和BDR。OSPF有5种类型的报文，所有报文有相同的报文头部格式。运行OSPF的路由器通过周期性的发送Hello报文发现和维持邻居关系，通过DD、LSR、LSU、LSAck报文配合完成链路状态数据库的同步。最后介绍了OSPF单区域的简单配置。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3885,7 +3888,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">67</span>
+                  <span class="site-state-item-count">68</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3898,7 +3901,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
