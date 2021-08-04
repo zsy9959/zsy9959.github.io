@@ -241,6 +241,369 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/" itemprop="url">IP-交换机堆叠与集群</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T11:17:56+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着企业的发展，企业网络的规模越来越大，这对企业网络提出了更高的要求：更高的可靠性、更低的故障恢复时间、设备更加易于管理等。</p>
+<p>•传统的园区网高可靠性技术出现故障时切换时间很难做到毫秒级别、实现可靠性的方案通常为一主一备，存在着严重的资源浪费。同时随着网络设备的越来越多，管理将会变得越加复杂。为构建可靠、易管理、资源利用率高、易于扩展的交换网络，引入了交换机堆叠、集群技术。</p>
+<p>•本章节中将介绍交换机堆叠、集群技术的技术原理、组网方式等。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述交换机堆叠、集群的基本概念</p>
+<p>▫阐述堆叠、集群的建立过程</p>
+<p>▫阐述堆叠、集群的分裂检测技术原理</p>
+<h1 id="1-堆叠、集群技术概述"><a href="#1-堆叠、集群技术概述" class="headerlink" title="1.堆叠、集群技术概述"></a>1.堆叠、集群技术概述</h1><h2 id="堆叠、集群简介"><a href="#堆叠、集群简介" class="headerlink" title="堆叠、集群简介"></a>堆叠、集群简介</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/1.png"></p>
+<blockquote>
+<p>•堆叠（iStack），将多台支持堆叠特性的交换机通过堆叠线缆连接在一起，从逻辑上虚拟成一台交换设备，作为一个整体参与数据转发。</p>
+<p>•集群（Cluster Switch System，CSS），将两台支持集群特性的交换机设备组合在一起，从逻辑上虚拟成一台交换设备。</p>
+<p>•集群只支持两台设备，一般高端框式交换机支持CSS、盒式设备支持iStack。</p>
+<p>•通过使用堆叠、集群技术结合链路聚合技术可以简单构建高可靠、无环的园区网络。</p>
+</blockquote>
+<h2 id="堆叠、集群架构"><a href="#堆叠、集群架构" class="headerlink" title="堆叠、集群架构"></a>堆叠、集群架构</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/2.png"></p>
+<p>•使用堆叠、集群技术将独立的交换机虚拟化成一台逻辑的交换机，一般接入、汇聚层盒式交换机采用堆叠技术，汇聚、核心层交换机采用集群技术。</p>
+<p>•在逻辑交换机之间使用链路聚合技术，无需部署STP、VRRP实现高可靠性。</p>
+<p>•实现高可靠性的同时设备之间的链路可以同时传输流量，链路利用率得以提升。</p>
+<h2 id="堆叠、集群的优势-1"><a href="#堆叠、集群的优势-1" class="headerlink" title="堆叠、集群的优势 (1)"></a>堆叠、集群的优势 (1)</h2><p>使用堆叠、集群可有效提高资源利用率，获得更高的转发性能、链路带宽。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/3.png"></p>
+<h2 id="堆叠、集群的优势-2"><a href="#堆叠、集群的优势-2" class="headerlink" title="堆叠、集群的优势 (2)"></a>堆叠、集群的优势 (2)</h2><p>使用堆叠、集群可以降低网络规划的复杂度，方便对于网络的管理。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/4.png"></p>
+<h2 id="堆叠、集群的优势-3"><a href="#堆叠、集群的优势-3" class="headerlink" title="堆叠、集群的优势 (3)"></a>堆叠、集群的优势 (3)</h2><p>使用堆叠、集群可以大大降低故障导致的业务中断时间。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/5.png"></p>
+<h1 id="2-堆叠技术原理"><a href="#2-堆叠技术原理" class="headerlink" title="2.堆叠技术原理"></a>2.堆叠技术原理</h1><h2 id="堆叠基本概念"><a href="#堆叠基本概念" class="headerlink" title="堆叠基本概念"></a>堆叠基本概念</h2><p>•堆叠系统中所有的单台交换机都称为成员交换机，按照功能不同，可以分为三种角色：</p>
+<ul>
+<li><p>主交换机（Master）：主交换机负责管理整个堆叠。堆叠系统中只有一台主交换机。</p>
+</li>
+<li><p>备交换机（Standby）：备交换机是主交换机的备份交换机。堆叠系统中只有一台备交换机。当主交换机故障时，备交换机会接替原主交换机的所有业务。</p>
+</li>
+<li><p>从交换机（Slave）：从交换机用于业务转发，堆叠系统中可以有多台从交换机。从交换机数量越多，堆叠系统的转发带宽越大。除主交换机和备交换机外，堆叠中其他所有的成员交换机都是从交换机。当备交换机不可用时，从交换机承担备交换机的角色。</p>
+</li>
+</ul>
+<p>•堆叠优先级：堆叠优先级是成员交换机的一个属性，主要用于角色选举过程中确定成员交换机的角色，优先级值越大表示优先级越高，优先级越高当选为主交换机的可能性越大。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/6.png"></p>
+<h2 id="堆叠ID"><a href="#堆叠ID" class="headerlink" title="堆叠ID"></a>堆叠ID</h2><p>•堆叠ID，即成员交换机的槽位号（Slot ID），用来标识和管理成员交换机，堆叠中所有成员交换机的堆叠ID都是唯一的。</p>
+<p>•设备堆叠ID缺省为0。堆叠时由堆叠主交换机对设备的堆叠ID进行管理，当堆叠系统有新成员加入时，如果新成员与已有成员堆叠ID冲突，则堆叠主交换机从0～最大的堆叠ID进行遍历，找到第一个空闲的ID分配给该新成员。</p>
+<p>•在建立堆叠时，建议提前规划好设备的堆叠ID。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/7.png"></p>
+<h2 id="堆叠逻辑接口"><a href="#堆叠逻辑接口" class="headerlink" title="堆叠逻辑接口"></a>堆叠逻辑接口</h2><p>•堆叠逻辑接口：交换机之间用于建立堆叠的逻辑接口，每台交换机支持两个逻辑堆叠端口，分别为stack-port n/1和stack-port n/2，其中n为成员交换机的堆叠ID。</p>
+<p>•一个逻辑堆叠端口可以绑定多个物理成员端口，用来提高堆叠的可靠性和堆叠带宽。</p>
+<p>•堆叠成员设备之间，本端设备的逻辑堆叠端口stack-port n/1必须与对端设备的逻辑堆叠端口stack-port m/2相连。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/8.png"></p>
+<blockquote>
+<p>•如果两端设备对应的逻辑堆叠端口（本端的stack-port n/1与对端的stack-port m/2）内包含多个物理成员端口，对物理成员端口的连接无对应端口号的要求。</p>
+</blockquote>
+<h2 id="堆叠系统组建过程"><a href="#堆叠系统组建过程" class="headerlink" title="堆叠系统组建过程"></a>堆叠系统组建过程</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/9.png"></p>
+<h2 id="堆叠方式"><a href="#堆叠方式" class="headerlink" title="堆叠方式"></a>堆叠方式</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/10.png"></p>
+<blockquote>
+<p>•每台交换机支持两个逻辑堆叠端口，分别为stack-port n/1和stack-port n/2，其中n为成员交换机的堆叠ID。</p>
+</blockquote>
+<h2 id="堆叠连接拓扑"><a href="#堆叠连接拓扑" class="headerlink" title="堆叠连接拓扑"></a>堆叠连接拓扑</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/11.png"></p>
+<h2 id="主交换机选举"><a href="#主交换机选举" class="headerlink" title="主交换机选举"></a>主交换机选举</h2><p>•确定出堆叠的连接方式和连接拓扑，完成成员交换机之间的物理连接之后，所有成员交换机上电。此时，堆叠系统开始进行主交换机的选举。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/12.png"></p>
+<h2 id="备交换机选举"><a href="#备交换机选举" class="headerlink" title="备交换机选举"></a>备交换机选举</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/13.png"></p>
+<h2 id="软件、配置同步"><a href="#软件、配置同步" class="headerlink" title="软件、配置同步"></a>软件、配置同步</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/14.png"></p>
+<h2 id="堆叠管理与配置文件"><a href="#堆叠管理与配置文件" class="headerlink" title="堆叠管理与配置文件"></a>堆叠管理与配置文件</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/15.png"></p>
+<blockquote>
+<p>•堆叠系统的配置文件包括：</p>
+<p>​    ▫全局配置：例如IP地址、STP、VLAN、SNMP等，适用于所有堆叠成员交换机。新加入堆叠系统的交换机使用堆叠系统的全局配置，不再使用交换机自己的全局配置。交换机离开堆叠系统时，将继续使用堆叠系统的配置直到加入新的堆叠系统。</p>
+<p>​    ▫接口配置：适用于接口所在成员交换机。接口上的配置和堆叠ID有关，当堆叠ID改变时：</p>
+<p>▪如果新ID在配置文件中不存在对应的接口配置，则新ID的接口配置使用默认配置。</p>
+<p>▪如果新ID在配置文件中存在对应的接口配置，则新ID的接口配置使用对应的配置。</p>
+<p>•堆叠相关配置不会丢失，即从设备离开堆叠之后，堆叠相关配置仍会继续存在，同样会进行堆叠的选举，如果需要彻底清除堆叠配置需要通过命令手动清除，清除的配置内容包括：</p>
+<p>​    ▫交换机槽位号</p>
+<p>​    ▫堆叠优先级</p>
+<p>​    ▫堆叠保留VLAN</p>
+<p>​    ▫系统MAC切换时间</p>
+<p>​    ▫堆叠口配置</p>
+<p>​    ▫堆叠口速率配置</p>
+<p>​    执行该命令会导致设备重启</p>
+</blockquote>
+<h2 id="堆叠成员退出"><a href="#堆叠成员退出" class="headerlink" title="堆叠成员退出"></a>堆叠成员退出</h2><p>堆叠成员退出是指成员交换机从堆叠系统中离开。根据退出成员交换机角色的不同，对堆叠系统的影响也有所不同：</p>
+<p>▫当主交换机退出，备份交换机升级为主交换机，重新计算堆叠拓扑并同步到其他成员交换机，指定新的备交换机，之后进入稳定运行状态。</p>
+<p>▫当备交换机退出，主交换机重新指定备交换机，重新计算堆叠拓扑并同步到其他成员交换机，之后进入稳定运行状态。</p>
+<p>▫当从交换机退出，主交换机重新计算堆叠拓扑并同步到其他成员交换机，之后进入稳定运行状态。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/16.png"></p>
+<blockquote>
+<p>•堆叠成员交换机退出的过程，主要就是拆除堆叠线缆和移除交换机的过程：</p>
+<ul>
+<li><p>对于环形堆叠：成员交换机退出后，为保证网络的可靠性还需要把退出交换机连接的两个端口通过堆叠线缆进行连接。</p>
+</li>
+<li><p>对于链形堆叠：拆除中间交换机会造成堆叠分裂。这时需要在拆除前进行业务分析，尽量减少对业务的影响。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="堆叠成员加入"><a href="#堆叠成员加入" class="headerlink" title="堆叠成员加入"></a>堆叠成员加入</h2><p>堆叠成员加入是指向已经稳定运行的堆叠系统添加一台新的交换机：</p>
+<p>▫将未上电的交换机连线加入堆叠之后再上电启动，新加入的交换机会选举为从交换机，堆叠系统中原有主备从角色不变。</p>
+<p>▫角色选举结束后，主交换机更新堆叠拓扑信息，同步到其他成员交换机上，并向新加入的交换机分配堆叠ID（新加入的交换机没有配置堆叠ID或配置的堆叠ID与原堆叠系统的冲突时）。</p>
+<p>▫新加入的交换机更新堆叠ID，并同步主交换机的配置文件和系统软件，之后进入稳定运行状态。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/17.png"></p>
+<blockquote>
+<p>•未上电的交换机加入堆叠：</p>
+<p>​    ▫如果是链形连接，新加入的交换机建议添加到链形的两端，这样对现有的业务影响最小。</p>
+<p>​    ▫如果是环形连接，需要把当前环形拆成链形，然后在链形的两端添加设备。</p>
+</blockquote>
+<h2 id="堆叠合并"><a href="#堆叠合并" class="headerlink" title="堆叠合并"></a>堆叠合并</h2><p>•堆叠合并是指稳定运行的两个堆叠系统合并成一个新的堆叠系统。</p>
+<p>•例如：已上电的一台交换机并且配置了堆叠（已形成单机堆叠），通过堆叠线缆与已经在运行的堆叠系统连接。该过程为堆叠合并，与堆叠加入不同。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/18.png"></p>
+<blockquote>
+<p>•单机堆叠：单机堆叠就是一台交换机使能了堆叠功能，整个堆叠系统中只有一台主交换机。只有使能了堆叠功能的交换机才可以加入堆叠系统或与其他使能了堆叠功能的交换机组建堆叠。</p>
+<p>•堆叠合并过程如下：</p>
+<p>▫两个堆叠系统的主交换机通过竞争，选举出一个更优的作为新堆叠系统的主交换机。</p>
+<p>▫竞争成功的主交换机所在的堆叠系统将保持原有主备从角色和配置不变，业务也不会受到影响</p>
+<p>▫而另外一个堆叠系统的所有成员交换机将重新启动，以从交换机的角色加入到新堆叠系统，其堆叠ID将由新主交换机重新分配，并将同步新主交换机的配置文件和系统软件，该堆叠系统的原有业务也将中断。</p>
+</blockquote>
+<h2 id="堆叠分裂"><a href="#堆叠分裂" class="headerlink" title="堆叠分裂"></a>堆叠分裂</h2><p>堆叠分裂是指稳定运行的堆叠系统中带电移出部分成员交换机，或者堆叠线缆多点故障导致一个堆叠系统变成多个堆叠系统。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/19.png"></p>
+<h2 id="堆叠分裂引起的问题"><a href="#堆叠分裂引起的问题" class="headerlink" title="堆叠分裂引起的问题"></a>堆叠分裂引起的问题</h2><p>由于堆叠系统中所有成员交换机都使用同一个IP地址（VLANIF接口地址）和MAC地址（堆叠系统MAC），一个堆叠系统分裂后，可能产生多个具有相同IP地址和MAC地址的堆叠系统，从而引起网络故障，为此必须进行IP地址和MAC地址的冲突检查。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/20.png"></p>
+<blockquote>
+<p> •堆叠系统作为一台设备与网络中其他设备通信，具有唯一的MAC地址，称为堆叠系统MAC地址。通常情况下使用主交换机的MAC地址作为堆叠系统MAC地址。</p>
+<p>•当堆叠系统的MAC地址是主交换机的MAC地址，主交换机故障或者离开堆叠系统，在默认情况下堆叠系统MAC地址会延时10分钟切换，即在10分钟内两个分裂的堆叠系统的MAC相同。</p>
+</blockquote>
+<h2 id="MAD"><a href="#MAD" class="headerlink" title="MAD"></a>MAD</h2><p>•多主检测MAD（Multi-Active Detection）：一种检测和处理堆叠分裂的协议，链路故障导致堆叠系统分裂后，MAD可以实现堆叠分裂的检测、冲突处理和故障恢复，降低堆叠分裂对业务的影响。</p>
+<p>•MAD检测方式有两种：直连检测方式和代理检测方式。在同一个堆叠系统中，两种检测方式互斥，不可以同时配置。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/21.png"></p>
+<blockquote>
+<p>•分裂后的堆叠系统通过MAD检测线缆（普通线缆，手动配置为MAD检测链路）发送MAD检测报文进行竞选，竞选失败的堆叠系统会关闭所有的物理端口（手动配置的保留端口除外）以保证不会因IP、MAC冲突对业务产生影响。</p>
+<p>•MAD检测过程如下：</p>
+<p>▫堆叠分裂之后，分裂后的堆叠系统存在相同的IP地址、MAC地址（堆叠系统MAC），将会导致网络中表项错误，如下游设备的ARP表项、MAC地址表项，从而导致业务异常。</p>
+<p>▫为此分类后的堆叠系统会通过MAC检测线缆进行竞选。</p>
+<p>▫竞选失败者关闭自身物理接口，从而不会和竞选成功地堆叠系统产生IP地址、MAC地址冲突。</p>
+</blockquote>
+<h2 id="MAD检测-直连检测"><a href="#MAD检测-直连检测" class="headerlink" title="MAD检测 - 直连检测"></a>MAD检测 - 直连检测</h2><p>直连检测方式是指堆叠成员交换机间通过普通线缆直连的专用链路进行多主检测。在直连检测方式中，堆叠系统正常运行时，不发送MAD报文；堆叠系统分裂后，分裂后的两台交换机以1秒为周期通过检测链路发送MAD报文进行多主冲突处理。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/22.png"></p>
+<blockquote>
+<p>•通过中间设备直连可以实现通过中间设备缩短堆叠成员交换机之间的检测链路长度，适用于成员交换机相距较远的场景。与通过中间设备直连相比，Full-mesh方式直连可以避免由中间设备故障导致的MAD检测失败，但是每两台成员交换机之间都建立全连接会占用较多的接口，所以该方式适用于成员交换机数目较少的场景。</p>
+</blockquote>
+<h2 id="MAD检测-代理检测"><a href="#MAD检测-代理检测" class="headerlink" title="MAD检测 - 代理检测"></a>MAD检测 - 代理检测</h2><p>代理检测方式是在堆叠系统Eth-Trunk上启用代理检测，在代理设备上启用MAD检测功能。此种检测方式要求堆叠系统中的所有成员交换机都与代理设备连接，并将这些链路加入同一个Eth-Trunk内。与直连检测方式相比，代理检测方式无需占用额外的接口，Eth-Trunk接口可同时运行MAD代理检测和其他业务。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/23.png"></p>
+<blockquote>
+<p>•在代理检测方式中，堆叠系统正常运行时，堆叠成员交换机以30s为周期通过检测链路发送MAD报文。堆叠成员交换机对在正常工作状态下收到的MAD报文不做任何处理；堆叠分裂后，分裂后的两个堆叠系统以1s为周期通过检测链路发送MAD报文进行多主冲突处理。</p>
+</blockquote>
+<h2 id="MAD冲突处理-1"><a href="#MAD冲突处理-1" class="headerlink" title="MAD冲突处理 (1)"></a>MAD冲突处理 (1)</h2><p>堆叠分裂后，MAD冲突处理机制使用MAD报文进行MAD竞争，竞争结果为堆叠系统处于Detect状态或者Recovery状态：</p>
+<p>▫Detect：竞争成功，堆叠系统将处于正常工作状态。</p>
+<p>▫Recovery：竞争失败，堆叠系统将状态处于禁用状态，关闭除手动配置的保留端口以外的其它所有物理端口。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/24.png"></p>
+<h2 id="MAD冲突处理-2"><a href="#MAD冲突处理-2" class="headerlink" title="MAD冲突处理 (2)"></a>MAD冲突处理 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/25.png"></p>
+<h2 id="堆叠主备倒换"><a href="#堆叠主备倒换" class="headerlink" title="堆叠主备倒换"></a>堆叠主备倒换</h2><p>•如果堆叠系统当前的主交换机不是用户期望的，此时可以通过配置主备倒换实现将堆叠备交换机升为堆叠主交换机。</p>
+<p>•除了用户通过命令执行的主备倒换之外，主交换机故障重启也会引起主备倒换。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/26.png"></p>
+<blockquote>
+<p>•原来的备交换机升为主交换机</p>
+<p>•新主交换机重新指定备交换机</p>
+<p>•原来的主交换机重启后重新加入堆叠系统，并被选举为从交换机。</p>
+</blockquote>
+<h2 id="堆叠升级"><a href="#堆叠升级" class="headerlink" title="堆叠升级"></a>堆叠升级</h2><p>堆叠升级方式有三种：智能升级、传统升级和平滑升级。</p>
+<p>▫智能升级：堆叠建立或者新的交换机加入堆叠时会自动和主交换机的版本进行同步。</p>
+<p>▫传统升级：和普通设备升级一样，指定下次启动版本，重启整个堆叠系统进行升级，会造成较长时间的业务中断。</p>
+<p>▫平滑升级：将堆叠系统划分成为active、backup区域，可以分区域升级，整个堆叠系统的上下行采用备份组网，主、备链路分别处于active、backup区域，可以实现升级时的业务不中断。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/27.png"></p>
+<blockquote>
+<p>•Active区域：主交换机所在的区域</p>
+<p>•平滑升级的三个阶段：</p>
+<p>▫主交换机下发命令触发整个堆叠系统进入平滑升级状态，backup区各个成员交换机以新的系统软件进行启动。</p>
+<p>▫backup区以新版本建立一个独立的堆叠系统，并通知active区进入升级阶段，主控权由active区的主交换机转移到backup区的主交换机，backup区负责流量传输，active区进入升级过程。</p>
+<p>▫active区以新系统软件重新启动并加入backup区的堆叠系统，backup区的主交换机根据最终堆叠建立的结果发布升级的结果。</p>
+</blockquote>
+<h2 id="跨设备链路聚合-1"><a href="#跨设备链路聚合-1" class="headerlink" title="跨设备链路聚合 (1)"></a>跨设备链路聚合 (1)</h2><p>•堆叠支持跨设备链路聚合技术，堆叠后成为逻辑上的一台交换机，支持将Eth-Trunk的成员接口分布在不同的成员交换机上。</p>
+<p>•当其中一条聚合链路故障或堆叠中某台成员交换机故障时，Eth-Trunk接口通过堆叠线缆将流量重新分布到其他聚合链路上，实现了链路间和设备间的备份，保证了数据流量的可靠传输。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/28.png"></p>
+<h2 id="跨设备链路聚合-2"><a href="#跨设备链路聚合-2" class="headerlink" title="跨设备链路聚合 (2)"></a>跨设备链路聚合 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/29.png"></p>
+<blockquote>
+<p>•如上图所时，在上行链路出现故障时跨设备链路聚合技术能够通过堆叠线缆将流量负载分担到其他成员交换机上的成员接口，从而提高网络可靠性。</p>
+<p>•跨成员设备的流量会经过堆叠线缆，如果跨成员设备流量较大，将会大大增加堆叠线缆的带宽压力。</p>
+</blockquote>
+<h2 id="流量本地优先转发-1"><a href="#流量本地优先转发-1" class="headerlink" title="流量本地优先转发 (1)"></a>流量本地优先转发 (1)</h2><p>链路聚合的负载分担算法根据流量特征将报文分担在不同的成员链路上，对于跨设备链路聚合极有可能出现报文的出接口和入接口不在同一台成员设备之上的情况，此时堆叠成员之间将会通过堆叠线缆转发流量，这增加了堆叠线缆的流量负担，同时也降低了转发效率。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/30.png"></p>
+<blockquote>
+<p>•如上图所示，当链路聚合将流量分担到其他成员设备上时，部分流量将会经过堆叠线缆转发，这会大大增加堆叠线缆的带宽承载压力。如果通过堆叠线缆需要转发的流量甚至超过了堆叠线缆的带宽，报文将无法及时得到传输。</p>
+</blockquote>
+<h2 id="流量本地优先转发-2"><a href="#流量本地优先转发-2" class="headerlink" title="流量本地优先转发 (2)"></a>流量本地优先转发 (2)</h2><p>为保证流量转发效率、降低堆叠线缆带宽负载，设备可以开启流量本地优先转发，从本设备进入的流量优先从本地转发出去，当本设备无出接口或者出接口全部故障，才会从其它成员交换机的接口转发出去。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/31.png"></p>
+<h1 id="3-集群技术原理"><a href="#3-集群技术原理" class="headerlink" title="3.集群技术原理"></a>3.<strong>集群技术原理</strong></h1><h2 id="集群介绍"><a href="#集群介绍" class="headerlink" title="集群介绍"></a>集群介绍</h2><p>•集群交换机系统CSS（Cluster Switch System），又称为集群，是指将两台支持集群特性的交换机设备组合在一起，从逻辑上虚拟成一台交换设备。</p>
+<p>•CSS与iStack的区别在于，一般框式交换机堆叠称为CSS，盒式交换机称为堆叠，堆叠与集群两者只是叫法和实现有些差异，但是功能是一样的。</p>
+<p>•本小节着重介绍集群与堆叠存在的差异之处。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/32.png"></p>
+<h2 id="集群基本概念"><a href="#集群基本概念" class="headerlink" title="集群基本概念"></a>集群基本概念</h2><p>•集群中的单台交换机称为集群成员交换机，按照功能不同，可以分为两种角色：</p>
+<p>▫主交换机（Master）：主交换机，即Master，负责管理整个集群。</p>
+<p>▫备交换机（Standby）：备交换机，即Standby，是主交换机的备份交换机。</p>
+<p>•集群ID：即CSS ID，用来标识成员交换机，集群中成员交换机的集群ID是唯一的。</p>
+<p>•CSS Link：集群链路，专门用于组建集群，实现主交换机和备交换机之间数据通信。</p>
+<p>•集群优先级：即CSS Priority，主要用于角色选举过程中确定成员交换机的角色。优先级值越大优先级越高。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/33.png"></p>
+<blockquote>
+<p>•备交换机，即Standby，是主交换机的备份交换机。当主交换机故障时，备交换机会接替原主交换机的所有业务。集群中只有一台备交换机。</p>
+<p>•集群链路可以是一条链路，也可以是捆绑在一起的多条链路。</p>
+<p>•缺省情况下，交换机的集群ID为1。相同ID的两台交换机不能建立集群，所以在建立集群前，需要手工配置集群中一台交换机的集群ID为2。</p>
+<p>•交换机的集群优先级越高当选为主交换机的可能性越大，但选举主交换机比较的不止优先级。</p>
+</blockquote>
+<h2 id="集群控制平面"><a href="#集群控制平面" class="headerlink" title="集群控制平面"></a>集群控制平面</h2><p>•两台交换机使用集群线缆连接好，分别使能集群功能并完成配置后重启，集群系统会自动建立。</p>
+<p>•集群系统建立后，在控制平面上，主交换机的主用主控板成为集群系统的控制平面，作为整个系统的管理主角色。备交换机的主用主控板成为集群系统的备用控制平面，作为系统的管理备角色。主交换机和备交换机的备用主控板作为集群系统候选备用主控板。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/34.png"></p>
+<blockquote>
+<p>•集群主交换机选举规则与堆叠选举规则一致，另外一台交换机则是备交换机。</p>
+</blockquote>
+<h2 id="集群物理连接"><a href="#集群物理连接" class="headerlink" title="集群物理连接"></a>集群物理连接</h2><p>根据集群技术发展阶段不同，集群物理连接方式也存在区别：</p>
+<p>▫传统CSS：使用主控板上的集群卡建立集群连接，或者使用业务口建立集群连接。</p>
+<p>▫CSS2：第二代集群交换机系统，专指使用交换网板上的集群卡方式建立集群连接的集群。</p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/35.png"></p>
+<blockquote>
+<p>•使用业务口连接时两端成员接口数量、类型相同，接线顺序无限制。</p>
+<p>•业务口集群按照链路的分布，有两种组网形式：</p>
+<ul>
+<li><p>1+0组网：每台成员交换机配置一个逻辑集群端口，物理成员端口分布在一块业务板上，依靠一块业务板上物理成员端口与对框的物理成员端口实现集群连接。</p>
+</li>
+<li><p>1+1组网：每台成员交换机配置两个逻辑集群端口，物理成员端口分布在两块业务板上，如图所示，不同业务板上的集群链路形成备份。</p>
+</li>
+</ul>
+<p>•CSS2：专指交换网板上通过集群卡方式建立的交换网硬件集群，并且在原有集群技术的基础上，增加了集群主控1+N备份等技术。</p>
+</blockquote>
+<h2 id="传统CSS"><a href="#传统CSS" class="headerlink" title="传统CSS"></a>传统CSS</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/36.png"></p>
+<p>•对于只支持CSS构架的框式交换机，框内接口板之间流量、跨框流量必须经过主控板。</p>
+<p>•单框上没有正常工作的主控板时流量无法从一个接口板转发到另外一个接口板，同时也无法跨框转发到另一个框。</p>
+<h2 id="CSS2"><a href="#CSS2" class="headerlink" title="CSS2"></a>CSS2</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/37.png"></p>
+<p>•支持CSS2构架的框式交换机采用转控分离的构架，单框内接口板之间流量、跨框流量无需经过主控板，集群系统内单台框无能够正常工作的主控板不影响该框的流量转发。</p>
+<p>•CSS2支持任意一个框式交换机内存在一个主控板运行正常，集群的两个框式交换机上的接口板都可以正常转发报文，该特性被称为“集群主控1+N备份”。</p>
+<h1 id="4-基本配置"><a href="#4-基本配置" class="headerlink" title="4.基本配置"></a>4.基本配置</h1><h2 id="堆叠配置-1"><a href="#堆叠配置-1" class="headerlink" title="堆叠配置 (1)"></a>堆叠配置 (1)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/38.png"></p>
+<h2 id="堆叠配置-2"><a href="#堆叠配置-2" class="headerlink" title="堆叠配置 (2)"></a>堆叠配置 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/39.png"></p>
+<h2 id="堆叠配置-3"><a href="#堆叠配置-3" class="headerlink" title="堆叠配置 (3)"></a>堆叠配置 (3)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/40.png"></p>
+<h2 id="堆叠配置-4"><a href="#堆叠配置-4" class="headerlink" title="堆叠配置 (4)"></a>堆叠配置 (4)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/41.png"></p>
+<h2 id="堆叠配置案例"><a href="#堆叠配置案例" class="headerlink" title="堆叠配置案例"></a>堆叠配置案例</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/42.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/43.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/44.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/45.png"></p>
+<h2 id="集群配置-1"><a href="#集群配置-1" class="headerlink" title="集群配置 (1)"></a>集群配置 (1)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/46.png"></p>
+<h2 id="集群配置-2"><a href="#集群配置-2" class="headerlink" title="集群配置 (2)"></a>集群配置 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/47.png"></p>
+<blockquote>
+<p>•集群的MAD检测功能，配置方式、配置命令与堆叠一致。</p>
+</blockquote>
+<h2 id="集群配置案例"><a href="#集群配置案例" class="headerlink" title="集群配置案例"></a>集群配置案例</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/48.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/49.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/50.png"></p>
+<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/51.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）堆叠加入与堆叠合并有什么区别？</p>
+<p><strong>堆叠加入是交换机未上电之前已经通过堆叠线缆连接到了已有的堆叠系统，当上电启动之后因为堆叠系统已经存在主交换机，所以该交换机只会竞选成为从交换机。堆叠合并是两个堆叠系统通过堆叠线缆连在一起，此时两个堆叠系统会竞选新的主交换机并更新拓扑。<br> 一台交换机已经上电之后自身会成为一个堆叠系统并且由于没有竞争者自己会成为主交换机，这种情况下把该交换机通过堆叠线缆与另外一个堆叠系统相连就属于堆叠合并，这是一种典型的堆叠合并与堆叠加入的差异性场景。</strong></p>
+<p>2.（简答题）多主检测的目的是？多主检测失败的一方会采取什么操作？</p>
+<p><strong>防止堆叠、集群分裂之后相同的IP地址、MAC地址造成网络中其他网络设备的表项冲突，从而导致转发异常。检测失败的一方将会关闭除保留端口之外的所有端口，从而避免相同IP地址、相同MAC地址对其他网络设备造成表项冲突。</strong></p>
+<p>3.（简答题） CSS2相比较于传统CSS区别在于？</p>
+<p><strong>CSS2支持1+N主控备份，整个集群系统中只要有一个主控板处于工作状态，整个集群系统的控制平面可以正常工作的情况下，集群系统整体的数据平面就可以正常转发报文。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•堆叠、集群技术大大简化了网络部署的复杂化、降低了网络管理的复杂度，实现了快速部署高可靠、无环的园区网络，同时也极大地降低了网络故障的影响时间。</p>
+<p>•为防止相同的IP地址、MAC地址造成的转发异常，可以配置MAD检测，MAD检测分为直接连接的检测方式以及代理设备检测，MAD竞争失败的一方会关闭除保留端口之外的所有物理端口。</p>
+<p>•为保证报文的转发效率，在堆叠、集群上部署Eth-Trunk时尽量开启本地优先转发尽量避免跨框流量的产生。</p>
+<p>•CSS2技术通过交换网板上的集群卡进行集群，结合交换机转控分离的构架，可以实现主控的1+N备份。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3480,362 +3843,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/" itemprop="url">OSPF路由计算</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-09T19:04:13+08:00">
-                2021-05-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•同一区域内的OSPF路由器拥有完全一致的LSDB，在区域内部，OSPF采用SPF算法完成路由计算。</p>
-<p>•随着网络规模不断扩大，路由器为了完成路由计算所消耗的内存、CPU资源也越来越多。通过区域划分可以在一定程度上缓解路由器的压力。</p>
-<p>•在大规模网络中除了OSPF之外，还可能存在其它路由协议，OSPF支持外部路由引入，从而使得OSPF路由器知晓到达域外的路由。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫解释LSA关键字段的作用；</p>
-<p>▫描述常见的LSA类型及其功能；</p>
-<p>▫阐明SPF算法；</p>
-<p>▫描述OSPF区域内路由、区域间路由计算原理；</p>
-<p>▫描述OSPF区域间路由的防环机制；</p>
-<p>▫描述OSPF外部路由计算原理。</p>
-<h1 id="区域内路由计算"><a href="#区域内路由计算" class="headerlink" title="区域内路由计算"></a>区域内路由计算</h1><h2 id="LSA概述"><a href="#LSA概述" class="headerlink" title="LSA概述"></a>LSA概述</h2><h3 id="LSA的基本概念"><a href="#LSA的基本概念" class="headerlink" title="LSA的基本概念"></a>LSA的基本概念</h3><p>•LSA是OSPF进行路由计算的关键依据。</p>
-<p>•OSPF的LSU报文可以携带多种不同类型的LSA。</p>
-<p>•各种类型的LSA拥有相同的报文头部。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/1.png"></p>
-<p><strong>重要字段解释</strong></p>
-<p>•<strong>LS Age</strong>（链路状态老化时间）：此字段表示LSA已经生存的时间，单位是秒。</p>
-<p>•<strong>Options</strong>（可选项）：每一个bit都对应了OSPF所支持的某种特性。</p>
-<p>•<strong>LS Type</strong>（链路状态类型）<strong>：</strong>指示本LSA的类型。</p>
-<p>•<strong>Link State ID</strong>（链路状态ID）<strong>：</strong>不同的LSA，对该字段的定义不同。</p>
-<p>•<strong>Advertising Router</strong>（通告路由器）：产生该LSA的路由器的Router ID。</p>
-<p>•<strong>LS</strong> <strong>Sequence</strong> <strong>Number</strong>（链路状态序列号）：当LSA每次有新的实例产生时，序列号就会增加。</p>
-<p>•<strong>LS Checksum</strong>（校验和）：用于保证数据的完整性和准确性。</p>
-<p>•<strong>Length</strong>：是一个包含LSA头部在内的LSA的总长度值。</p>
-<blockquote>
-<p>•链路状态类型、链路状态ID、通告路由器三元组唯一地标识了一个LSA。</p>
-<p>•链路状态老化时间 、链路状态序列号 、校验和用于判断LSA的新旧</p>
-<p>•LS Age：当LSA被始发时，该字段为0，随着LSA在网络中被泛洪，该时间逐渐累加，当到达MaxAge（缺省值为3600s）时，LSA不再用于路由计算。</p>
-<p>•LS Sequence Number：该字段用于判断LSA的新旧或是否存在重复的实例。序列号范围是0x80000001-0x7FFFFFFF，路由器始发一个LSA，序列号为0x80000001，之后每次更新序列号加1，当LSA达到最大序列号时，重新产生该LSA，并且把序列号设置为0x80000001。</p>
-</blockquote>
-<h3 id="常见LSA的类型"><a href="#常见LSA的类型" class="headerlink" title="常见LSA的类型"></a>常见LSA的类型</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/2.png"></p>
-<blockquote>
-<p>•在许多场合中，我们习惯使用类型值来称呼对应的LSA，例如1类LSA等同于Router LSA，2类LSA等同于Network LSA，以此类推。</p>
-</blockquote>
-<h2 id="Router-LSA"><a href="#Router-LSA" class="headerlink" title="Router-LSA"></a>Router-LSA</h2><h3 id="Router-LSA详解-1"><a href="#Router-LSA详解-1" class="headerlink" title="Router LSA详解 (1)"></a>Router LSA详解 (1)</h3><p>•Router LSA（1类LSA）：每台OSPF路由器都会产生。它描述了该路由器直连接口的信息。</p>
-<p>•Router LSA只能在所属的区域内泛洪。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/3.png"></p>
-<p>•V (Virtual Link ) ：如果产生此LSA的路由器是虚连接的端点，则置为1。 </p>
-<p>•E (External )： 如果产生此LSA的路由器是ASBR，则置为1。 </p>
-<p>•B (Border )：如果产生此LSA的路由器是ABR，则置为1。 </p>
-<p>•links ：LSA中的Link（链路）数量。Router LSA使用Link来承载路由器直连接口的信息。</p>
-<h3 id="Router-LSA详解-2"><a href="#Router-LSA详解-2" class="headerlink" title="Router LSA详解 (2)"></a>Router LSA详解 (2)</h3><p>•Router LSA使用Link来承载路由器直连接口的信息。</p>
-<p>•每条Link均包含“链路类型”、“链路ID”、“链路数据”以及“度量值”这几个关键信息。</p>
-<p>•路由器可能会采用一个或者多个Link来描述某个接口。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/4.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/5.png"></p>
-<blockquote>
-<p>•度量值（Metric）：Cost值。</p>
-</blockquote>
-<h3 id="Router-LSA描述P2P网络"><a href="#Router-LSA描述P2P网络" class="headerlink" title="Router LSA描述P2P网络"></a>Router LSA描述P2P网络</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/6.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/7.png"></p>
-<h3 id="Router-LSA描述TransNet"><a href="#Router-LSA描述TransNet" class="headerlink" title="Router LSA描述TransNet"></a>Router LSA描述TransNet</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/8.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/9.png"></p>
-<h2 id="Network-LSA"><a href="#Network-LSA" class="headerlink" title="Network-LSA"></a>Network-LSA</h2><h3 id="Network-LSA详解"><a href="#Network-LSA详解" class="headerlink" title="Network LSA详解"></a>Network LSA详解</h3><p>•Network LSA（2类LSA） ：由DR产生，描述本网段的链路状态，在所属的区域内传播。</p>
-<p>•Network LSA 记录了该网段内所有与DR建立了邻接关系的OSPF路由器，同时携带了该网段的网络掩码。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/10.png"></p>
-<p>•<strong>Link State ID</strong> <strong>：</strong>DR的接口IP地址。</p>
-<p>•<strong>Network Mask</strong>：MA网络的子网掩码。</p>
-<p>•<strong>Attached Router</strong>：连接到该MA网络的路由器的Router-ID（与该DR建立了邻接关系的邻居的Router-ID，以及DR自己的Router-ID），如果有多台路由器接入该MA网络，则使用多个字段描述。</p>
-<h3 id="Network-LSA描述MA网络"><a href="#Network-LSA描述MA网络" class="headerlink" title="Network LSA描述MA网络"></a>Network LSA描述MA网络</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/11.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/12.png"></p>
-<h2 id="SPF计算过程"><a href="#SPF计算过程" class="headerlink" title="SPF计算过程"></a>SPF计算过程</h2><h3 id="SPF算法-1"><a href="#SPF算法-1" class="headerlink" title="SPF算法 (1)"></a>SPF算法 (1)</h3><p>Phase 1：构建SPF树。</p>
-<p>▫路由器将自己作为最短路径树的树根，根据Router-LSA和Network-LSA中的拓扑信息，依次将Cost值最小的路由器添加到SPF树中。路由器以Router ID或者DR标识。</p>
-<p>▫广播网络中DR和其所连接路由器的Cost值为0。</p>
-<p>▫SPF树中只有单向的最短路径，保证了OSPF区域内路由计算不会出现环路。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/13.png"></p>
-<h3 id="SPF算法-2"><a href="#SPF算法-2" class="headerlink" title="SPF算法 (2)"></a>SPF算法 (2)</h3><p>Phase 2：计算最优路由。</p>
-<p>▫将Router-LSA、Network-LSA中的路由信息以叶子节点形式附加在对应的OSPF路由器上，计算最优路由。</p>
-<p>▫已经出现的路由信息不会再添加到SPF树干上。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/14.png"></p>
-<h3 id="SPF算法举例"><a href="#SPF算法举例" class="headerlink" title="SPF算法举例"></a>SPF算法举例</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/15.png"></p>
-<h3 id="构建SPF树-1"><a href="#构建SPF树-1" class="headerlink" title="构建SPF树 (1)"></a>构建SPF树 (1)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/16.png"></p>
-<h3 id="构建SPF树-2"><a href="#构建SPF树-2" class="headerlink" title="构建SPF树 (2)"></a>构建SPF树 (2)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/17.png"></p>
-<h3 id="构建SPF树-3"><a href="#构建SPF树-3" class="headerlink" title="构建SPF树 (3)"></a>构建SPF树 (3)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/18.png"></p>
-<h3 id="构建SPF树-4"><a href="#构建SPF树-4" class="headerlink" title="构建SPF树 (4)"></a>构建SPF树 (4)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/19.png"></p>
-<blockquote>
-<p>•R3在候选列表中存在两个不同的Cost值，分别为48和2，因此将Cost值较小的添加到最短路径树，并从候选列表中删除。</p>
-</blockquote>
-<h3 id="构建SPF树-5"><a href="#构建SPF树-5" class="headerlink" title="构建SPF树 (5)"></a>构建SPF树 (5)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/20.png"></p>
-<h3 id="构建SPF树-6"><a href="#构建SPF树-6" class="headerlink" title="构建SPF树 (6)"></a>构建SPF树 (6)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/21.png"></p>
-<h3 id="构建SPF树-7"><a href="#构建SPF树-7" class="headerlink" title="构建SPF树 (7)"></a>构建SPF树 (7)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/22.png"></p>
-<h3 id="计算最优路由"><a href="#计算最优路由" class="headerlink" title="计算最优路由"></a>计算最优路由</h3><p>•从根节点开始依次添加各节点LSA中的路由信息。</p>
-<p>•添加顺序为各节点加入SPF树的顺序，已经出现的忽略。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/23.png"></p>
-<blockquote>
-<p>•第二阶段根据Router LSA中的Stub、Network LSA中的路由信息，完成最优路由的计算。</p>
-<p>•从根节点开始，依次添加LSA中的路由信息（添加顺序按照每个节点加入SPF树的顺序）：</p>
-<p>▫10.0.1.1（R1）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.13.0/24，Metric=48；</p>
-<p>▫10.0.12.2（DR）的Network LSA中，网络号/子网掩码10.0.12.0/24，Metric=1+0=1；</p>
-<p>▫10.0.2.2（R2）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.24.0/24，Metric=1+0+48=49；</p>
-<p>▫10.0.235.2（DR）的Network LSA中，网络号/子网掩码10.0.235.0/24，Metric=1+0+1=2；</p>
-<p>▫10.0.3.3（R3）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.13.0/24，已在R1上，忽略；</p>
-<p>▫10.0.5.5（R5）的Router LSA中，共1个Stub连接，网络号/子网掩码10.0.45.0/24，Metric=1+0+0+1+48=50；</p>
-<p>▫10.0.4.4（R4）的Router LSA中，共2个Stub连接，网络号/子网掩码10.0.24.0/24，已在R2上，忽略；网络号/子网掩码10.0.45.0/24，已在R5上，忽略。</p>
-</blockquote>
-<h3 id="结果验证"><a href="#结果验证" class="headerlink" title="结果验证"></a>结果验证</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/24.png"></p>
-<h2 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h2><p>1.（多选题）Router-LSA中主要包含哪几种链路类型？(   )</p>
-<p><strong>A.P2P</strong></p>
-<p><strong>B.TransNet</strong></p>
-<p><strong>C.StubNet</strong></p>
-<p><strong>D.Vlink</strong></p>
-<p>2.（判断题）经过SPF算法计算后，被认为是最优的OSPF路由一定会被放入路由器的路由表。(  )</p>
-<p>A.对</p>
-<p><strong>B.错</strong></p>
-<h2 id="本节小结"><a href="#本节小结" class="headerlink" title="本节小结"></a>本节小结</h2><p>•OSPF根据LSDB计算路由表，LSDB中可能存在多种类型的LSA，并且所有的LSA有相同的报文头部格式。</p>
-<p>•同一区域的OSPF路由器拥有完全一致的LSDB。在只有一个区域的情况下，区域内部主要存在两种类型的LSA，即Router-LSA和Network-LSA。</p>
-<p>•每台路由器都会产生Router-LSA，描述了路由器的直连接口信息。</p>
-<p>•在MA网络中，DR会产生Network-LSA来描述接入该MA网络的所有路由器的Router-ID（其中包括DR自身），以及这个网络的掩码。</p>
-<h1 id="区域间路由计算"><a href="#区域间路由计算" class="headerlink" title="区域间路由计算"></a>区域间路由计算</h1><h2 id="区域间路由计算过程"><a href="#区域间路由计算过程" class="headerlink" title="区域间路由计算过程"></a>区域间路由计算过程</h2><h3 id="大型网络中，单区域OSPF存在的问题"><a href="#大型网络中，单区域OSPF存在的问题" class="headerlink" title="大型网络中，单区域OSPF存在的问题"></a>大型网络中，单区域OSPF存在的问题</h3><p>•一系列连续的OSPF路由器构成的网络称为OSPF域（Domain）。</p>
-<p>•OSPF要求网络内的路由器同步LSDB，实现对于网络的一致认知。</p>
-<p>•当网络规模越来越大时，LSDB将变得非常臃肿，设备基于该LSDB进行路由计算，其负担也极大地增加了，此外路由器的路由表规模也变大了，这些无疑都将加大路由器的性能损耗。</p>
-<p>•当网络拓扑发生变更时，这些变更需要被扩散到整个网络，并可能引发整网的路由重计算。</p>
-<p>•单区域的设计，使得OSPF无法部署路由汇总。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/25.png"></p>
-<h3 id="区域划分"><a href="#区域划分" class="headerlink" title="区域划分"></a>区域划分</h3><p>•Router LSA和Network LSA只在区域内泛洪，因此通过区域划分在一定程度上降低网络设备的内存及CPU的消耗。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/26.png"></p>
-<p>划分区域后，路由器可以分为两种角色：</p>
-<p>区域内部路由器（Internal Router）：该类设备的所有接口都属于同一个OSPF区域。如R1、R4、R5。</p>
-<p>区域边界路由器（Area Border Router）：该类设备接口分别连接两个及两个以上的不同区域。如R2、R3。</p>
-<h3 id="区域间路由信息传递"><a href="#区域间路由信息传递" class="headerlink" title="区域间路由信息传递"></a>区域间路由信息传递</h3><p>•OSPF区域间路由信息传递是通过ABR产生的Network Summary LSA（3类LSA）实现的。</p>
-<p>•以192.168.1.0/24路由信息为例：</p>
-<p>​    ▫R2依据Area 1内所泛洪的Router LSA及Network LSA计算得出192.168.1.0/24路由（区域内路由），并将该路由通过Network Summary LSA通告到Area 0。R3根据该LSA可计算出到达192.168.1.0/24的区域间路由。</p>
-<p>​    ▫R3重新生成一份Network Summary LSA通告到Area 2中，至此所有OSPF区域都能学习到去往192.168.1.0/24的路由。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/27.png"></p>
-<h3 id="Network-Summary-LSA详解"><a href="#Network-Summary-LSA详解" class="headerlink" title="Network Summary LSA详解"></a>Network Summary LSA详解</h3><p>Network Summary LSA（3类LSA）由ABR产生，用于向一个区域通告到达另一个区域的路由。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/28.png"></p>
-<h3 id="Network-Summary-LSA示例"><a href="#Network-Summary-LSA示例" class="headerlink" title="Network Summary LSA示例"></a>Network Summary LSA示例</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/29.png"></p>
-<h3 id="R1和R3的路由计算"><a href="#R1和R3的路由计算" class="headerlink" title="R1和R3的路由计算"></a>R1和R3的路由计算</h3><p>1.通过区域内SPF的计算，R1到达R2的Cost值为1，R3到达R2的Cost值为2。</p>
-<p>2.R1和R3根据收到的Network Summary LSA进行路由计算：</p>
-<p>▫R1将到达R2和Cost值和Network Summary LSA所携带的Cost值相加，因此R1到达192.168.1.0/24的Cost值为2。</p>
-<p>▫R3将到达R2和Cost值和Network Summary LSA所携带的Cost值相加，因此R3到达192.168.1.0/24的Cost值为3。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/30.png"></p>
-<h3 id="R5的路由计算"><a href="#R5的路由计算" class="headerlink" title="R5的路由计算"></a>R5的路由计算</h3><p>1.R3作为ABR，它通过Area 0内泛洪的Network Summary LSA计算出到达192.168.1.0/24的路由，然后重新向Area 2注入到达该网段的Network Summary LSA，其中包含自己到达该网段的Cost（值为3）。</p>
-<p>2.R5在SPF中计算得知到达R3的Cost为1，因此R5到达192.168.1.0/24的Cost为4。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/31.png"></p>
-<h3 id="区域间路由计算结果验证"><a href="#区域间路由计算结果验证" class="headerlink" title="区域间路由计算结果验证"></a>区域间路由计算结果验证</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/32.png"></p>
-<h2 id="区域间路由防环机制"><a href="#区域间路由防环机制" class="headerlink" title="区域间路由防环机制"></a>区域间路由防环机制</h2><h3 id="域间路由环路的产生"><a href="#域间路由环路的产生" class="headerlink" title="域间路由环路的产生"></a>域间路由环路的产生</h3><p>•OSPF区域间路由的传播过程与距离矢量路由协议的路由传播过程非常相似。</p>
-<p>•对于区域间路由的传递，OSPF也需要一定的防环机制。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/33.png"></p>
-<h3 id="区域间路由的防环机制-1"><a href="#区域间路由的防环机制-1" class="headerlink" title="区域间路由的防环机制 (1)"></a>区域间路由的防环机制 (1)</h3><p>OSPF要求所有的非骨干区域必须与Area0直接相连，区域间路由需经由Area0中转。</p>
-<p>区域间的路由传递不能发生在两个非骨干区域之间，这使得OSPF的区域架构在逻辑上形成了一个类似星型的拓扑。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/34.png"></p>
-<h3 id="区域间路由的防环机制-2"><a href="#区域间路由的防环机制-2" class="headerlink" title="区域间路由的防环机制 (2)"></a>区域间路由的防环机制 (2)</h3><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/35.png"></p>
-<h3 id="区域间路由的防环机制-3"><a href="#区域间路由的防环机制-3" class="headerlink" title="区域间路由的防环机制 (3)"></a>区域间路由的防环机制 (3)</h3><p>ABR从非骨干区域收到的3类LSA不能用于区域间路由的计算。</p>
-<p>R1和R2、R3和R4之间的链路中断导致骨干区域不连续。</p>
-<ul>
-<li><p>R4将10.0.2.2/32路由以3类LSA的形式发送到Area 1。</p>
-</li>
-<li><p>R5和R6可以根据上述3类LSA计算出10.0.2.2/32路由。</p>
-</li>
-<li><p>R3从非骨干区域收到3类LSA，不进行路由计算，也不会将此3类LSA发送到其他区域。</p>
-</li>
-<li><p>此时，R1和R3都无法和10.0.2.2/32通信。</p>
-</li>
-</ul>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/36.png"></p>
-<h2 id="虚连接的作用及配置"><a href="#虚连接的作用及配置" class="headerlink" title="虚连接的作用及配置"></a>虚连接的作用及配置</h2><p>•OSPF要求骨干区域必须是连续的，但是并不要求物理上连续，可以使用虚连接使骨干区域在逻辑上连续。</p>
-<p>•虚连接可以在任意两个ABR上建立，但是要求这两个ABR都有端口连接到一个相同的非骨干区域。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/37.png"></p>
-<blockquote>
-<p>•注意：虚连接的创建使OSPF协议可以通过非骨干区域通信，违背了OSPF区域间的防环规则，在某些场景下会导致路由环路的产生，因此不建议部署OSPF虚连接。</p>
-</blockquote>
-<h3 id="虚连接的优缺点"><a href="#虚连接的优缺点" class="headerlink" title="虚连接的优缺点"></a>虚连接的优缺点</h3><p><strong>优点</strong></p>
-<ol>
-<li>解决骨干区域被分割的问题</li>
-<li>解决骨干区域到非骨干区域不相连</li>
-<li>增强冗余性和可靠性</li>
-<li>解决次优路径</li>
-</ol>
-<p><strong>缺点</strong></p>
-<ol>
-<li>配置不当时可能会导致环路</li>
-<li>虚连接不能路由汇总</li>
-</ol>
-<h2 id="思考题-1"><a href="#思考题-1" class="headerlink" title="思考题"></a>思考题</h2><p>1.（判断题）一条Network Summary LSA只能描述一条路由信息。</p>
-<p>A.错</p>
-<p><strong>B.对</strong></p>
-<p>2.（简答题）OSPF如何避免区域间的路由环路？</p>
-<p><strong>OSPF划分了骨干区域和非骨干区域，所有非骨干区域均直接和骨干区域相连，且骨干区域只有一个；非骨干区域之间的通信都要通过骨干区域中转；并规定从骨干区域传来的三类LSA不再传回骨干区域。</strong></p>
-<h2 id="本节小结-1"><a href="#本节小结-1" class="headerlink" title="本节小结"></a>本节小结</h2><p>•OSPF引入了多区域的概念，使得该协议能够支持更大规模的组网。</p>
-<p>•OSPF使用3类LSA来描述区域间的路由信息。</p>
-<p>•为了避免出现区域间路由环路，OSPF设计了多个规则。</p>
-<p>•OSPF Virtual Link是一种虚拟的、逻辑的链路，被部署在两台OSPF路由器之间，它穿越某个非骨干区域，用于实现另一个非骨干区域与Area0的连接。Virtual Link应该始终作为一种临时的技术手段来解决非骨干区域没有与Area0直接相连的情况。</p>
-<h1 id="外部路由计算"><a href="#外部路由计算" class="headerlink" title="外部路由计算"></a>外部路由计算</h1><h2 id="OSPF外部路由引入背景"><a href="#OSPF外部路由引入背景" class="headerlink" title="OSPF外部路由引入背景"></a>OSPF外部路由引入背景</h2><p>网络中存在部分链路未开启OSPF协议如：</p>
-<p>▫路由器连接外部网络使用静态路由或者BGP协议；</p>
-<p>▫服务器直连的链路未开启OSPF协议。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/38.png"></p>
-<h2 id="外部路由引入的基本概念"><a href="#外部路由引入的基本概念" class="headerlink" title="外部路由引入的基本概念"></a>外部路由引入的基本概念</h2><p>•ASBR（AS Boundary Router）：自治系统边界路由器。只要一台OSPF设备引入了外部路由，它就成为了ASBR。如图中的R1。</p>
-<p>•ASBR将外部路由信息以AS-external LSA（5类LSA）的形式在OSPF网络内泛洪。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/39.png"></p>
-<blockquote>
-<p>•<strong>在OSPF进程下，通过如下命令引入外部路由。设备支持引入BGP、ISIS、OSPF、直连以及静态路由。</strong></p>
-<p>▫<strong>import-route</strong> { <strong>limit</strong> <em>limit-number</em> | { <strong>bgp</strong> [ <strong>permit-ibgp</strong> ] | <strong>direct</strong> | <strong>unr</strong> | <strong>rip</strong> [ <em>process-id-rip</em> ] | <strong>static</strong> | <strong>isis</strong> [ process-id-isis ] | <strong>ospf</strong> [ process-id-ospf ] } [ <strong>cost</strong> <em>cost</em> | <strong>type</strong> <em>type</em> | <strong>tag</strong> <em>tag</em> | <strong>route-policy</strong> <em>route-policy-name</em> ]  }</p>
-</blockquote>
-<h2 id="AS-external-LSA详解"><a href="#AS-external-LSA详解" class="headerlink" title="AS-external LSA详解"></a>AS-external LSA详解</h2><p>AS-external LSA（5类LSA）：由ASBR产生，描述到达AS外部的路由，该LSA会被通告到所有的区域（除了Stub区域和NSSA区域）。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/40.png"></p>
-<blockquote>
-<p>•Forwarding Address：当FA为0.0.0.0时，则到达该外部网段的流量会被发往引入这条外部路由的ASBR。而如果FA不为0.0.0.0，则流量会被发往这个转发地址。FA这一概念的引入，使得OSPF在某些特殊的场景中得以规避次优路径问题。</p>
-<p>•External Route Tag（外部路由标记）：这是一个只有外部路由才能够携带的标记，常被用于部署路由策略。</p>
-</blockquote>
-<h2 id="AS-external-LSA示例"><a href="#AS-external-LSA示例" class="headerlink" title="AS-external LSA示例"></a>AS-external LSA示例</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/41.png"></p>
-<h2 id="R3的路由计算过程"><a href="#R3的路由计算过程" class="headerlink" title="R3的路由计算过程"></a>R3的路由计算过程</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/42.png"></p>
-<h2 id="ASBR-Summary-LSA"><a href="#ASBR-Summary-LSA" class="headerlink" title="ASBR-Summary LSA"></a>ASBR-Summary LSA</h2><p>ASBR-Summary LSA（4类LSA）：由ABR产生，描述到ASBR的路由，通告给除ASBR所在区域的其他相关区域。</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/43.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/44.png"></p>
-<h2 id="ASBR-Summary-LSA示例"><a href="#ASBR-Summary-LSA示例" class="headerlink" title="ASBR-Summary LSA示例"></a>ASBR-Summary LSA示例</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/45.png"></p>
-<h2 id="R5的路由计算过程"><a href="#R5的路由计算过程" class="headerlink" title="R5的路由计算过程"></a>R5的路由计算过程</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/46.png"></p>
-<h2 id="区分OSPF外部路由的2种度量值类型-1"><a href="#区分OSPF外部路由的2种度量值类型-1" class="headerlink" title="区分OSPF外部路由的2种度量值类型 (1)"></a>区分OSPF外部路由的2种度量值类型 (1)</h2><p>•<strong>Metric-Type-1</strong></p>
-<p>▫当外部路由的开销与自治系统内部的路由开销相当，并且和OSPF自身路由的开销具有可比性时，可以认为这类路由的可信程度较高，将其配置成Metric-Type-1。</p>
-<p>▫Metric-Type-1外部路由的开销为AS内部开销（路由器到ASBR的开销）与AS外部开销之和。</p>
-<p>•<strong>Metric-Type-2</strong></p>
-<p>▫当ASBR到AS之外的开销远远大于在AS之内到达ASBR的开销时，可以认为这类路由的可信程度较低，将其配置成Metric-Type-2。</p>
-<p>▫Metric-Type-2外部路由的开销等于AS外部开销。</p>
-<p><strong>•相同的路由时路由路径的选择方法</strong></p>
-<p>▫先比外部cost (Type 1&gt;Type2)</p>
-<p>▫当外部cost相同时，比较内部cost值</p>
-<p>▫若内部cost也相同，则负载均衡</p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/47.png"></p>
-<h2 id="区分OSPF外部路由的2种度量值类型-2"><a href="#区分OSPF外部路由的2种度量值类型-2" class="headerlink" title="区分OSPF外部路由的2种度量值类型 (2)"></a>区分OSPF外部路由的2种度量值类型 (2)</h2><p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/48.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/49.png"></p>
-<p><img src="/2021/05/09/OSPF%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/50.png"></p>
-<h2 id="思考题-2"><a href="#思考题-2" class="headerlink" title="思考题"></a>思考题</h2><p>1.（多选题）ABR可能会产生以下哪些类型的LSA？(   )</p>
-<p><strong>A. ASBR-Summary LSA</strong></p>
-<p><strong>B. AS-external-LSA</strong></p>
-<p><strong>C. Router-LSA</strong></p>
-<p><strong>D. Network Summary LSA</strong></p>
-<p>2.（单选题）对于同一个路由前缀，以下哪种优先级最高？(   )</p>
-<p><strong>A.区域内路由</strong></p>
-<p>B.区域间路由</p>
-<p>C.第一类外部路由</p>
-<p>D.第二类外部路由</p>
-<h2 id="本节小结-2"><a href="#本节小结-2" class="headerlink" title="本节小结"></a>本节小结</h2><p>•在一个大规模网络中，可能存在多种不同的路由协议，OSPF支持将AS外部路由引入本AS，使得AS内的路由器能够获知到达AS外部的路由。</p>
-<p>•ASBR将外部路由引入OSPF后，使用5类LSA描述它们，与ASBR同属一个区域的路由器能够根据5类LSA以及区域内的1类、2类LSA完成外部路由计算；与ASBR不在同一个区域的路由器还需借助4类LSA才能完成外部路由计算。</p>
-<p>•OSPF将外部路由引入OSPF后，可以设置路由的度量值类型：Metric-Type-1或Metric-Type-2，不同度量值类型的外部路由，其开销的计算方式不同，其路由的优先级也不相同，Metric-Type-1路由的优先级高于Metric-Type-2路由。</p>
-<h1 id="本章总结"><a href="#本章总结" class="headerlink" title="本章总结"></a>本章总结</h1><p>•本章知识点包括OSPF区域内路由计算、区域间路由计算、外部路由计算等。</p>
-<p>•OSPF路由遵循以下优先级顺序，区域内路由&gt;区域间路由&gt;Metric-Type-1外部路由&gt;Metric-Type-2外部路由。</p>
-<p>•LSA是OSPF链路状态信息的载体，随着网络规模逐渐变大，网络业务逐渐变得复杂，通过OSPF区域的划分以及大量外部路由的引入，路由器的LSDB中可能存在大量的1类、2类、3类、4类、5类LSA，容易造成设备性能的浪费。</p>
-<p>•OSPF存在什么技术手段可以在保证网络可达性的前提下，减少设备性能损耗么？</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3890,7 +3897,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3903,7 +3910,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

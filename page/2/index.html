@@ -241,6 +241,366 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IPadv-MPLSVPN原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T14:29:37+08:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•VPN（Virtual Private Network，虚拟专用网络）指的是在一个公共网络中实现虚拟的专用网络，从而使得用户能够基于该专用网络实现通信的技术。</p>
+<p>•MPLS VPN也是VPN技术中的一种。需要强调的是，本课程所介绍的MPLS VPN指的是BGP/MPLS IP VPN，这是一种被业界广泛使用的三层VPN。</p>
+<p>•本课程将介绍MPLS VPN的基本概念、工作过程以及典型配置方法。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MPLS VPN的模型</p>
+<p>▫描述MPLS VPN中的基本概念</p>
+<p>▫描述MPLS VPN路由传递和标签分发</p>
+<p>▫描述MPLS VPN数据转发流程</p>
+<p>▫执行MPLS VPN的基本配置</p>
+<h1 id="1-MPLS-VPN概述"><a href="#1-MPLS-VPN概述" class="headerlink" title="1.MPLS VPN概述"></a>1.MPLS VPN概述</h1><h2 id="MPLS-VPN定义"><a href="#MPLS-VPN定义" class="headerlink" title="MPLS VPN定义"></a>MPLS VPN定义</h2><p>•BGP/MPLS IP VPN网络一般由<strong>运营商</strong>搭建，<strong>VPN用户购买</strong>VPN服务来实现用户网络之间的路由传递、数据互通等。</p>
+<p>•MPLS VPN使用<strong>BGP</strong>在运营商骨干网（<strong>IP网络</strong>）上发布VPN路由，使用<strong>MPLS</strong>在运营商骨干网上转发VPN报文。BGP/MPLS IP VPN又被简称为MPLS VPN，是一种常见的L3VPN（Layer 3 VPN）技术。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="MPLS-VPN网络架构"><a href="#MPLS-VPN网络架构" class="headerlink" title="MPLS VPN网络架构"></a>MPLS VPN网络架构</h2><p>•MPLS VPN网络架构由三部分组成：CE（Customer Edge）、PE（Provider Edge）和P（Provider），其中PE和P是运营商设备，CE是MPLS VPN用户设备。</p>
+<p>•站点（site）就是MPLS VPN的用户，由CE和其他用户设备构成。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•CE：用户网络边缘设备，有接口直接与运营商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。</p>
+<p>•PE：运营商边缘路由器，是运营商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。</p>
+<p>•P：运营商网络中的骨干路由器，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN相关信息。</p>
+<p>•站点的含义可以从下述几个方面理解：</p>
+<ul>
+<li><p>站点是指相互之间具备IP连通性的一组IP系统，并且这组IP系统的IP连通性不需通过运营商网络实现。</p>
+</li>
+<li><p>站点的划分是根据设备的拓扑关系，而不是地理位置。如图所示，公司A的X省网络和公司A的Y省网络需要通过运营商的骨干网进行互联，所以它们被划分为两个站点。若在当前X省网络和Y省网络的CE之间增加一条物理专线，不需要通过运营商网络就可以互通，那么这两张网络就是一个站点。</p>
+</li>
+</ul>
+<p>•站点与VPN的关系：</p>
+<ul>
+<li><p>对于多个连接到同一服务提供商网络的站点，通过制定策略，可以将它们划分为不同的集合，只有属于相同集合的站点之间才能通过服务提供商网络互访，这种集合就是VPN。</p>
+</li>
+<li><p>一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。</p>
+</li>
+</ul>
+<p>•注：也有可能出现站点为一台主机的情况，此时该主机就是CE设备。本课程仅讨论站点是一个或多个子网，用路由器或交换机作为CE的情况。</p>
+</blockquote>
+<h2 id="MPLS-VPN技术架构"><a href="#MPLS-VPN技术架构" class="headerlink" title="MPLS VPN技术架构"></a>MPLS VPN技术架构</h2><p>•MPLS VPN不是单一的一种VPN技术，是多种技术结合的综合解决方案，主要包含下列技术：</p>
+<p>​    ▫MP-BGP：负责在PE与PE之间传递站点内的路由信息。</p>
+<p>​    ▫LDP：负责PE与PE之间的隧道建立</p>
+<p>​    ▫VRF：负责PE的VPN用户管理。</p>
+<p>​    ▫静态路由、IGP、BGP：负责PE与CE之间的路由信息交换。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<blockquote>
+<p>•MP-BGP（MultiProtocol BGP）：拓展的BGP协议，可提供对多种地址族的支持，后续课程将会详细介绍。</p>
+</blockquote>
+<h2 id="为什么要选择MPLS-VPN"><a href="#为什么要选择MPLS-VPN" class="headerlink" title="为什么要选择MPLS VPN"></a>为什么要选择MPLS VPN</h2><p>•对VPN客户而言：</p>
+<ul>
+<li>“感知”不到VPN的存在，不需要部署和维护VPN，降低企业运维难度和成本。</li>
+<li>一般部署在运营商的MPLS VPN专网上，有一定的安全性保障。</li>
+</ul>
+<p>•对于运营商而言：</p>
+<ul>
+<li>MPLS在无连接的IP网络中增加了面向连接的控制平面，为IP网络增添了管理和运营的手段。</li>
+<li>支持地址空间重叠、支持重叠VPN、组网方式灵活、可扩展性好。</li>
+<li>能够方便地支持MPLS TE合理调控现有网络资源，最大限度的节省运营商成本。</li>
+</ul>
+<blockquote>
+<p>•MPLS TE（MPLS Traffic Engineering，MPLS流量工程）：基于一定约束条件LSP隧道，并将流量引入到这些隧道中进行转发，使网络流量按照指定的路径进行传输。可以在不进行硬件升级的情况下对现有网络资源进行合理调配和利用，并对网络流量提供带宽和QoS保证，最大限度的节省成本。</p>
+</blockquote>
+<h2 id="MPLS-VPN常见组网"><a href="#MPLS-VPN常见组网" class="headerlink" title="MPLS VPN常见组网"></a>MPLS VPN常见组网</h2><p>•根据VPN用户的需求不同，可采用以下几种常见的组网方案：</p>
+<ul>
+<li>Intranet：一个VPN中的所有用户形成闭合用户群，同一VPN站点之间可以互访，不同VPN站点间不能互访。</li>
+<li>Extranet：适用于一个VPN用户希望提供部分本VPN的站点资源给其他VPN的用户访问的场景。</li>
+<li>Hub&amp;Spoke：如果希望在VPN中设置中心访问控制设备，其它用户的互访都通过中心访问控制设备进行，可采用Hub&amp;Spoke组网方案。</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•Intranet组网是最简单也是最典型的MPLS VPN组网方案，后续课程将基于该组网方案对MPLS VPN技术原理展开介绍。</p>
+</blockquote>
+<h1 id="2-MPLS-VPN路由交互"><a href="#2-MPLS-VPN路由交互" class="headerlink" title="2.MPLS VPN路由交互"></a>2.MPLS VPN路由交互</h1><h2 id="MPLS-VPN路由发布概述"><a href="#MPLS-VPN路由发布概述" class="headerlink" title="MPLS VPN路由发布概述"></a>MPLS VPN路由发布概述</h2><p>•若想实现同一个VPN的不同站点之间的通信，首先需要完成不同站点之间的路由交互。在基本MPLS VPN组网中，VPN路由信息的发布涉及CE和PE，P路由器只维护骨干网的路由，不需要了解任何VPN路由信息。VPN路由信息的发布过程包括三部分：</p>
+<p>​    ▫本地CE到入口PE</p>
+<p>​    ▫入口PE到出口PE</p>
+<p>​    ▫出口PE到远端CE</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<h2 id="CE与PE之间的路由信息交换"><a href="#CE与PE之间的路由信息交换" class="headerlink" title="CE与PE之间的路由信息交换"></a>CE与PE之间的路由信息交换</h2><p>•如图，客户X和客户Y属于不同的VPN，分别拥有两个站点，现需要实现站点间的路由信息交互。</p>
+<p>•CE与PE之间可以使用静态路由、OSPF、IS-IS或BGP交换路由信息。无论使用哪种路由协议，CE和PE之间交换的都是<strong>标准的IPv4</strong>路由。</p>
+<p>•本地CE到入口PE和出口PE到远端CE的路由信息交换原理完全相同。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<h2 id="入口PE到出口PE路由传递-1"><a href="#入口PE到出口PE路由传递-1" class="headerlink" title="入口PE到出口PE路由传递 (1)"></a>入口PE到出口PE路由传递 (1)</h2><p>PE在接收到CE传递来的路由之后，需要独立保存不同VPN的路由，且需要解决不同的客户使用重叠IP地址空间的问题。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<blockquote>
+<p>•VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如图中用户X和用户Y都使用192.168.1.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。以下两种情况允许VPN使用重叠的地址空间：</p>
+<ul>
+<li><p>两个VPN没有共同的站点；</p>
+</li>
+<li><p>两个VPN有共同的站点，但此共同站点中的设备不与两个VPN中使用重叠地址空间的设备互访。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="VRF"><a href="#VRF" class="headerlink" title="VRF"></a>VRF</h2><p>•VRF（Virtual Routing and Forwarding，虚拟路由转发），又称VPN实例，是MPLS VPN架构中的关键技术，每个VPN实例使用独立的路由转发表项，实现VPN之间的逻辑隔离。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h2 id="RD"><a href="#RD" class="headerlink" title="RD"></a>RD</h2><p>•PE收到不同VPN的CE发来的IPv4地址前缀，本地根据VPN实例配置去区分这些地址前缀。但是VPN实例只是一个<strong>本地</strong>的概念，PE无法将VPN实例信息传递到对端PE，故有了RD（Route Distinguisher，路由标识符）。</p>
+<p>▫RD长8字节，用于区分使用相同地址空间的IPv4前缀。</p>
+<p>▫PE从CE接收到IPv4路由后，在IPv4前缀前加上RD，转换为<strong>全局唯一</strong>的<strong>VPN-IPv4</strong>路由。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<blockquote>
+<p>•配置RD时，只需要指定RD的Administrator子字段和Assigned Number子字段。</p>
+<p>•RD的配置格式有四种，常用的两种如下：</p>
+<p>​    ▫16bits自治系统号:32bits用户自定义数字（例如：100:1）。</p>
+<p>​    ▫32bits IPv4地址:16bits用户自定义数字（例如：172.1.1.1:1）。</p>
+<p>•RD的结构使得每个运营商可以独立地分配RD，但为了在某些应用场景下保证路由正常，必须保证RD全局唯一。</p>
+</blockquote>
+<h2 id="VPN-IPv4地址"><a href="#VPN-IPv4地址" class="headerlink" title="VPN-IPv4地址"></a>VPN-IPv4地址</h2><p>VPN-IPv4地址又被称为VPNv4地址：VPNv4地址共有12个字节，包括8字节的路由标识符RD（Route Distinguisher）和4字节的IPv4地址前缀。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<h2 id="入口PE到出口PE路由传递-2"><a href="#入口PE到出口PE路由传递-2" class="headerlink" title="入口PE到出口PE路由传递 (2)"></a>入口PE到出口PE路由传递 (2)</h2><p>•PE之间建立BGP邻居关系，并通过BGP进行路由传递。为什么采用BGP呢？</p>
+<p>▫BGP使用TCP作为其传输层协议，提高了协议的可靠性。可以跨路由器的两个PE设备之间直接交换路由。</p>
+<p>▫BGP拓展性强，为PE间传播VPN路由提供了便利。</p>
+<p>▫PE之间需要传送的路由条目可能较大，BGP只发送更新的路由，提高传递路由数量的同时不占用过多链路带宽。</p>
+<p>•传统的BGP-4<strong>不支持</strong>处理VPNv4路由。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<h2 id="MP-BGP"><a href="#MP-BGP" class="headerlink" title="MP-BGP"></a>MP-BGP</h2><p>•为了正确处理VPN路由，MPLS VPN使用RFC2858（Multiprotocol Extensions for BGP-4）中规定的MP-BGP，即BGP-4的多协议扩展。</p>
+<p>•MP-BGP采用地址族（Address Family）来区分不同的网络层协议，既可以支持传统的IPv4地址族，又可以支持其它地址族（比如VPN-IPv4地址族、IPv6地址族等）。</p>
+<p>•MP-BGP新增了两种路径属性：</p>
+<ul>
+<li><p>MP_REACH_NLRI：Multiprotocol Reachable NLRI，多协议可达NLRI。用于发布可达路由及下一跳信息。</p>
+</li>
+<li><p>MP_UNREACH_NLRI：Multiprotocol Unreachable NLRI，多协议不可达NLRI。用于撤销不可达路由。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•NLRI：Network Layer Reachability Information，网络层可达信息。</p>
+<p>•关于地址族的一些取值请参考RFC3232（Assigned Numbers）。</p>
+<p>•MP_REACH_NLRI用于发布可达路由及下一跳信息。该属性由一个或多个三元组&lt;地址族信息、下一跳信息、网络可达性信息&gt;组成，格式如下：</p>
+<p>▫地址族信息（Address Family Information）域：由2字节的地址族标识AFI（Address Family Identifier）和1字节的子地址族标识SAFI（Subsequent Address Family Identifier）组成。</p>
+<p>▪AFI标识网络层协议，对应RFC3232的“Address Family Number”所定义的地址族值。例如IPv4的值是1，IPv6的值是2。</p>
+<p>▪SAFI表示NLRI的类型。AFI值为1，SAFI值为128表示NLRI中的地址为MPLS-labeled VPN-IPv4地址。</p>
+<ul>
+<li><p>下一跳信息（Next Hop Network Address Information）域：由一字节的下一跳网络地址长度和可变长度的下一跳网络地址组成。</p>
+</li>
+<li><p>网络层可达性信息（NLRI）域：由一个或多个三元组&lt;长度、标签、前缀&gt;组成，该部分内容将在后面的课程里详细介绍。</p>
+</li>
+</ul>
+<p>•MP_UNREACH_NLRI用于通知对等体删除不可达的路由。该属性的格式如下：</p>
+<ul>
+<li><p>地址族标识AFI：与MP_REACH_NLRI属性中的相同。</p>
+</li>
+<li><p>子地址族标识SAFI：与MP_REACH_NLRI属性中的相同，表示NLRI的类型。</p>
+</li>
+<li><p>撤销路由（Withdrawn Routes）：不可达路由列表，也是由一个或多个NLRI组成。BGP发言者可以通过在撤销路由域中携带与之前发布的可达路由中相同的NLRI来撤销路由。</p>
+</li>
+</ul>
+<p>•MP-BGP的报文类型、VPNv4路由发布策略仍与普通BGP相同。</p>
+</blockquote>
+<h2 id="入口PE到出口PE路由传递-3"><a href="#入口PE到出口PE路由传递-3" class="headerlink" title="入口PE到出口PE路由传递 (3)"></a>入口PE到出口PE路由传递 (3)</h2><p>•MP-BGP将VPNv4传递到远端PE之后，远端PE需要将VPNv4路由导入正确的VPN实例。</p>
+<p>•MPLS VPN使用32位的BGP扩展团体属性－VPN Target（也称为Route Target）来控制VPN路由信息的发布与接收。</p>
+<p>•本地PE在发布VPNv4路由前附上RT属性，对端RT在接到到VPNv4路由后根据RT将路由导入对应的VPN实例。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<h2 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h2><p>•在PE上，每一个VPN实例都会与<strong>一个或多个</strong>VPN Target属性绑定，有两类VPN Target属性：</p>
+<ul>
+<li><p>Export Target（ERT）：本地PE从直接相连站点学到IPv4路由后，转换为VPN IPv4路由，并为这些路由添加Export Target属性。Export Target属性作为BGP的扩展团体属性随路由发布。</p>
+</li>
+<li><p>Import Target（IRT）：PE收到其它PE发布的VPN-IPv4路由时，检查其Export Target属性。当此属性与PE上某个VPN实例的Import Target匹配时，PE就把路由加入到该VPN实例的路由表。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•与RD相同，RT由Type、Administrator和Assigned Number三个字段构成，长度也是8字节。 </p>
+<p>•配置VPN-Target时，只需要指定VPN-Target的Administrator子字段和Assigned Number子字段。VPN-Target的配置格式与RD格式一致。</p>
+</blockquote>
+<h2 id="入口PE到出口PE路由传递-4"><a href="#入口PE到出口PE路由传递-4" class="headerlink" title="入口PE到出口PE路由传递 (4)"></a>入口PE到出口PE路由传递 (4)</h2><p>•PE根据VPNv4路由所携带的RT将路由导入正确的VPN实例之后，VPNv4路由的RD值剥除，将<strong>IPv4路由</strong>通告给相应的客户的CE设备。</p>
+<p>•站点B和站点D的CE设备就能学习到去往各自远端站点的路由。同理，通过一系列的操作，可以实现同一用户（同一VPN）不同站点之间的路由互通。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<h2 id="数据转发时遇到的问题"><a href="#数据转发时遇到的问题" class="headerlink" title="数据转发时遇到的问题"></a>数据转发时遇到的问题</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<h2 id="通过标签解决问题"><a href="#通过标签解决问题" class="headerlink" title="通过标签解决问题"></a>通过标签解决问题</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<h2 id="入口PE到出口PE路由传递-5"><a href="#入口PE到出口PE路由传递-5" class="headerlink" title="入口PE到出口PE路由传递 (5)"></a>入口PE到出口PE路由传递 (5)</h2><p>•PE和P设备之间运行LDP，交换公网标签，建立PE之间的LSP隧道（公网隧道）。</p>
+<p>•入口PE在通过MP-BGP传递VPNv4路由时，会携带私网标签，用于区分不同VPN的数据。</p>
+<p>•出口PE在接收到VPNv4路由后，需要执行私网路由交叉和隧道迭代来选择路由。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<blockquote>
+<p>•PE上分配私网标签的方法有如下两种：</p>
+<ul>
+<li>基于路由的MPLS标签分配：为VPN路由表的每一条路由分配一个标签（one label per route）。这种方式的缺点是：当路由数量比较多时，设备入标签映射表ILM（Incoming Label Map）需要维护的表项也会增多，从而提高了对设备容量的要求。</li>
+<li>基于VPN实例的MPLS标签分配：为整个VPN实例分配一个标签，该VPN实例里的所有路由都共享一个标签。使用这种分配方法的好处是节约了标签。</li>
+</ul>
+<p>•私网路由交叉：VPNv4路由与本地VPN实例的VPN-Target进行匹配的过程称为私网路由交叉。PE在收到VPNv4路由后，既不进行优选，也不检查隧道是否存在，直接将其与本地的VPN实例进行交叉。</p>
+<p>•隧道迭代：为了将私网流量通过公网传递到另一端，需要有一条公网隧道承载这个私网流量。因此私网路由交叉完成后，需要根据目的IPv4前缀进行路由迭代，即该IPv4路由的下一跳有对应的LSP存在；只有隧道迭代成功，该路由才被放入对应的VPN实例路由表。</p>
+</blockquote>
+<h2 id="MPLS-VPN中的路由交互全过程"><a href="#MPLS-VPN中的路由交互全过程" class="headerlink" title="MPLS VPN中的路由交互全过程"></a>MPLS VPN中的路由交互全过程</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>•在MPLS VPN中，PE与CE，PE与PE之间需要进行VPN路由信息的传递。</p>
+<ul>
+<li>PE与CE之间可以采用BGP、IGP以及静态路由方式交互<strong>IPv4</strong>路由信息。</li>
+<li>PE与PE之间通过MP-BGP交互<strong>VPNv4</strong>路由信息，包含<ul>
+<li>RD：与IPv4前缀组合组成VPNv4前缀。</li>
+<li>RT：用于控制PE之间路由信息的接收和发布。</li>
+<li>标签：数据转发时的内层（私网）标签，在PE上用来区分不同VPN的数据。</li>
+</ul>
+</li>
+</ul>
+<h1 id="3-MPLS-VPN报文转发"><a href="#3-MPLS-VPN报文转发" class="headerlink" title="3.MPLS VPN报文转发"></a>3.MPLS VPN报文转发</h1><h2 id="报文转发过程"><a href="#报文转发过程" class="headerlink" title="报文转发过程"></a>报文转发过程</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
+<h1 id="4-MPLS-VPN配置与实现"><a href="#4-MPLS-VPN配置与实现" class="headerlink" title="4.MPLS VPN配置与实现"></a>4.MPLS VPN配置与实现</h1><h2 id="配置命令-VPN实例配置"><a href="#配置命令-VPN实例配置" class="headerlink" title="配置命令 - VPN实例配置"></a>配置命令 - VPN实例配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
+<h2 id="配置命令-MP-BGP配置"><a href="#配置命令-MP-BGP配置" class="headerlink" title="配置命令 - MP-BGP配置"></a>配置命令 - MP-BGP配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
+<h2 id="配置命令-PE与CE间路由配置"><a href="#配置命令-PE与CE间路由配置" class="headerlink" title="配置命令 - PE与CE间路由配置"></a>配置命令 - PE与CE间路由配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
+<h2 id="MPLS-VPN配置示例-背景介绍"><a href="#MPLS-VPN配置示例-背景介绍" class="headerlink" title="MPLS VPN配置示例 - 背景介绍"></a>MPLS VPN配置示例 - 背景介绍</h2><p>•客户X及Y各自有2个站点，现需要通过MPLS VPN实现站点之间的互联，分别对应VPNX和VPNY；</p>
+<p>•互联接口、AS号及IP地址信息如图；</p>
+<p>•客户X站点与PE之间采用OSPF交互路由信息，客户Y站点与PE之间采用BGP交互路由信息。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
+<h2 id="MPLS-VPN配置示例-配置思路"><a href="#MPLS-VPN配置示例-配置思路" class="headerlink" title="MPLS VPN配置示例 - 配置思路"></a>MPLS VPN配置示例 - 配置思路</h2><p>1.MPLS VPN骨干网配置</p>
+<p>​    1.1 IGP配置，实现骨干网的IP连通性。</p>
+<p>​    1.2 MPLS与MPLS LDP配置，建立MPLS LSP公网隧道，传输VPN数据。</p>
+<p>​    1.3 MP-BGP配置，建立后续传递VPNv4路由的MP-BGP对等体关系。</p>
+<p>2.VPN用户接入配置</p>
+<p>​    2.1 创建VPN实例并配置参数（RT、RD）</p>
+<p>​    2.2 将接口加入VPN实例</p>
+<p>​    2.3 配置PE与CE之间的路由交换</p>
+<h2 id="MPLS-VPN配置示例-数据规划"><a href="#MPLS-VPN配置示例-数据规划" class="headerlink" title="MPLS VPN配置示例 - 数据规划"></a>MPLS VPN配置示例 - 数据规划</h2><p>•MPLS骨干网采用单区域OSPF实现路由互通，所有PE和P互联接口均使能MPLS LDP功能。</p>
+<p>•PE上的VPN相关配置如表格：</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
+<h2 id="MPLS-VPN骨干网配置"><a href="#MPLS-VPN骨干网配置" class="headerlink" title="MPLS VPN骨干网配置"></a>MPLS VPN骨干网配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
+<blockquote>
+<p>•缺省情况下，只有BGP-IPv4单播地址族的对等体是自动使能的。即在BGP视图下配置peer as-number命令后，系统会自动配置相应的peer enable命令。其他地址族视图下都必须手动使能。</p>
+</blockquote>
+<h2 id="MPLS-VPN骨干网配置-配置验证"><a href="#MPLS-VPN骨干网配置-配置验证" class="headerlink" title="MPLS VPN骨干网配置 - 配置验证"></a>MPLS VPN骨干网配置 - 配置验证</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
+<h2 id="VPN用户接入配置"><a href="#VPN用户接入配置" class="headerlink" title="VPN用户接入配置"></a>VPN用户接入配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/39.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/40.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/41.png"></p>
+<h2 id="配置验证"><a href="#配置验证" class="headerlink" title="配置验证"></a>配置验证</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/42.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/43.png"></p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/44.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选）MP-BGP在传递VPNv4路由时，携带哪种Route Target ？ （ ）</p>
+<p><strong>A. Export RT</strong></p>
+<p>B. Implied RT</p>
+<p>C. Import RT</p>
+<p>D. Extended RT</p>
+<p>2.（多选）基本MPLS VPN组网中，需要对VPN实例做哪些配置（ ）</p>
+<p><strong>A.Import RT</strong></p>
+<p><strong>B.Export RT</strong></p>
+<p><strong>C.配置RD</strong></p>
+<p><strong>D.配置与VPN实例绑定的接口</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS VPN网络一般由运营商搭建，用于向不同的客户提供VPN服务，使得用户的路由和数据能够通过该网络进行传递，且不同的用户之间的路由和数据完全隔离，互不影响。</p>
+<p>•MPLS VPN控制层面：</p>
+<p>​    ▫通过VRF和RD隔离不同用户的私网路由信息并构建唯一的VPNv4路由</p>
+<p>​    ▫通过RT值控制VPNv4路由的发布和接收</p>
+<p>​    ▫通过MP-BGP传递VPNv4路由前缀、标签以及RT等信息</p>
+<p>​    ▫通过MPLS LDP构建公网标签转发路径</p>
+<p>•MPLS转发层面：通过内外两层标签进行数据转发，内层标签区分私网数据，外层标签穿通公网网络。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3683,178 +4043,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/" itemprop="url">IP-VRF基本概念及应用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:33:30+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/VRF.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•回顾前面学习的课程，您还记得几个名字中带“V”的协议或技术？这些协议或技术又有哪些特点或共同点？</p>
-<p>•VRF（Virtual Routing and Rorwarding，虚拟路由转发）技术通过在一台三层转发设备上创建多张路由表实现数据或业务的隔离，常用于MPLS VPN、防火墙等一些需要实现隔离的应用场景。</p>
-<p>•本课程将介绍VRF的基本概念及其基本配置方法。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述VRF的基本概念</p>
-<p>▫描述VRF的典型应用</p>
-<p>▫实现VRF的基本配置</p>
-<h1 id="1-VRF基本概念"><a href="#1-VRF基本概念" class="headerlink" title="1.VRF基本概念"></a>1.VRF基本概念</h1><h2 id="网络需求"><a href="#网络需求" class="headerlink" title="网络需求"></a>网络需求</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/1.png"></p>
-<h2 id="通过部署ACL实现"><a href="#通过部署ACL实现" class="headerlink" title="通过部署ACL实现"></a>通过部署ACL实现</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/2.png"></p>
-<h2 id="通过增加核心交换机实现"><a href="#通过增加核心交换机实现" class="headerlink" title="通过增加核心交换机实现"></a>通过增加核心交换机实现</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/3.png"></p>
-<h2 id="通过VRF技术实现"><a href="#通过VRF技术实现" class="headerlink" title="通过VRF技术实现"></a>通过VRF技术实现</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/4.png"></p>
-<h2 id="VRF的实现过程"><a href="#VRF的实现过程" class="headerlink" title="VRF的实现过程"></a>VRF的实现过程</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/5.png"></p>
-<p>•VRF是对物理设备的一个逻辑划分，每个逻辑单元都被称为一个VPN实例，实例之间在路由层面是隔离的。VRF实现过程如下：</p>
-<ol>
-<li><p>创建实例，并将三层接口（可以是路由器的物理接口或者子接口，也可以是VLANIF接口）绑定到实例；</p>
-</li>
-<li><p>（可选）配置与实例绑定的路由协议或静态路由；</p>
-</li>
-<li><p>基于与实例绑定的接口和路由协议等建立实例路由表并基于实例路由表转发数据，实现实例间隔离。</p>
-</li>
-</ol>
-<blockquote>
-<p>•缺省时，一个网络设备的所有接口都属于同一个转发实例——设备的根实例。</p>
-<p>当前路由器会有几张路由表呢？</p>
-</blockquote>
-<h2 id="举例：部署VRF前"><a href="#举例：部署VRF前" class="headerlink" title="举例：部署VRF前"></a>举例：部署VRF前</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/6.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/7.png"></p>
-<h2 id="举例：创建VPN实例"><a href="#举例：创建VPN实例" class="headerlink" title="举例：创建VPN实例"></a>举例：创建VPN实例</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/8.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/9.png"></p>
-<h2 id="举例：部署动态路由协议"><a href="#举例：部署动态路由协议" class="headerlink" title="举例：部署动态路由协议"></a>举例：部署动态路由协议</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/10.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/11.png"></p>
-<h2 id="常见应用场景"><a href="#常见应用场景" class="headerlink" title="常见应用场景"></a>常见应用场景</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/12.png"></p>
-<blockquote>
-<p>•更多BGP/MPLS IP VPN相关内容，请参考HCIP-Datacom-Advance相关课程。</p>
-</blockquote>
-<h1 id="2-VRF典型配置案例"><a href="#2-VRF典型配置案例" class="headerlink" title="2.VRF典型配置案例"></a>2.VRF典型配置案例</h1><h2 id="VRF基本配置命令"><a href="#VRF基本配置命令" class="headerlink" title="VRF基本配置命令"></a>VRF基本配置命令</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/13.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/14.png"></p>
-<h2 id="配置案例-背景介绍与需求分析"><a href="#配置案例-背景介绍与需求分析" class="headerlink" title="配置案例 - 背景介绍与需求分析"></a>配置案例 - 背景介绍与需求分析</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/15.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/16.png"></p>
-<h2 id="配置案例-配置过程-1"><a href="#配置案例-配置过程-1" class="headerlink" title="配置案例 - 配置过程 (1)"></a>配置案例 - 配置过程 (1)</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/17.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/18.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/19.png"></p>
-<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/20.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）VRF技术可以实现（  ）的隔离。</p>
-<p>A.物理层</p>
-<p><strong>B.网络层</strong></p>
-<p>C.数据链路层</p>
-<p>D.应用层</p>
-<p>2.（判断题）缺省情况下，华为数通产品上所有三层接口都属于根实例。</p>
-<p><strong>A.正确</strong></p>
-<p>B.错误</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VRF技术实现了同一物理设备上不同网络之间的逻辑隔离，当在物理设备上部署多个VRF实例时，每一个VRF实例就相当于一个虚拟的网络设备。VRF实例之间的接口和路由天然隔离，当同一个物理设备连接到多个相同的网段时，也不用担心IP地址冲突的问题。</p>
-<p>•VRF技术广泛应用在防火墙虚拟系统、BGP/MPLS IP VPN等多个场景中。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3909,7 +4097,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3922,7 +4110,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
