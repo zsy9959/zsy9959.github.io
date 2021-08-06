@@ -241,6 +241,283 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/" itemprop="url">IP-IP组播基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T11:18:10+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•网络中存在各种各样的业务，从流量模型看一般可以将业务分为两类：</p>
+<p>▫点到点业务：比如FTP，WEB业务，此类业务主要特点是不同的用户有不同的需求，比如用户A需要下载资料A，用户B需要下载资料B。此类业务一般由单播承载，服务器对于不同用户发送不同的点到点数据流。</p>
+<p>▫点到多点业务：比如IPTV，视频会议等，此类业务的特点是用户对于业务有相同的需求，比如用户A，B，C，D都需要收看视频X，此类业务可以使用单播，组播，广播承载。但使用单播或广播承载点到多点业务时存在一定问题。</p>
+<p>▫组播技术能够较好的解决单播或广播在承载点到多点业务时存在的问题。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述组播的定义及组播的地址结构</p>
+<p>▫描述组播数据的转发原理</p>
+<p>▫描述反向路径转发的原理</p>
+<h1 id="1-IP组播基本概念"><a href="#1-IP组播基本概念" class="headerlink" title="1.IP组播基本概念"></a>1.IP组播基本概念</h1><h2 id="点到多点业务的困境"><a href="#点到多点业务的困境" class="headerlink" title="点到多点业务的困境"></a>点到多点业务的困境</h2><p>点到多点业务可以由单播，组播，广播进行承载，现网中也有各种各样的实现方式。但使用单播或者广播承载点到多点业务时存在一些固有的问题。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/1.png"></p>
+<blockquote>
+<p>•单播（Unicast）是在一台源IP主机和一台目的IP主机之间进行。网络上绝大部分的数据都是以单播的形式传输的，例如电子邮件收发、网上银行都是采用单播实现的。</p>
+<ul>
+<li>在单播通信中每一个数据包都有确切的目的IP地址；对于同一份数据，如果存在多个接收者，Server需发送与接收者数目相同的单播数据包；当接收者增加到成百上千时，将极大加重Server创建相同数据和发送多份相同拷贝后所产生的消耗，网络中的设备性能及链路带宽都会面临一定程度的浪费；单播方式较适合用户稀少的网络，当用户量较大时很难保证网络传输质量。</li>
+</ul>
+<p>•广播（Broadcast）是在一台源IP主机和网络中所有其它的IP主机之间进行，属于一对所有的通讯方式，所有主机都可以接收到（不管是否需要）。</p>
+<ul>
+<li>广播数据包被限制在广播域中；一旦有设备发送广播数据，则广播域内所有设备都会收到这个数据包，并且不得不耗费资源去处理，大量的广播数据包将消耗网络的带宽及设备资源；广播方式只适合共享网段，且信息安全性和有偿服务得不到保障。</li>
+</ul>
+</blockquote>
+<h2 id="使用组播承载点到多点业务"><a href="#使用组播承载点到多点业务" class="headerlink" title="使用组播承载点到多点业务"></a>使用组播承载点到多点业务</h2><p>•组播方式下，单一的信息流沿组播分发树被同时发送给一组用户，相同的组播数据流在每一条链路上最多仅有一份。相比单播和广播，使用组播的好处如下：</p>
+<p>▫相比单播，用户的增加不会导致信息源负载的加重，不会导致网络资源消耗的显著增加。</p>
+<p>▫相比广播，不会造成网络资源的浪费，并能提高信息传输的安全性，而且组播可以实现跨网段的传输。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/2.png"></p>
+<blockquote>
+<p>•组播（Multicast）是在一台源IP主机和多台（一组）IP主机之间进行，中间的网络设备根据接收者的需要，有选择性地对数据进行复制和转发。</p>
+<p>•组播技术有效地满足了单点发送、多点接收的需求，实现了IP网络中点到多点业务数据的高效传送，能够大量节约网络带宽、降低网络负载。</p>
+<p>•组播分发树：组播流量的转发路径。</p>
+</blockquote>
+<h2 id="组播数据报文结构"><a href="#组播数据报文结构" class="headerlink" title="组播数据报文结构"></a>组播数据报文结构</h2><p>•组播数据报文的结构与单播报文类似，但组播数据报文的目的MAC地址与目的IP地址与单播报文有很大差异。</p>
+<p>​    ▫组播目的IP地址：目的IP地址为组播IP地址，地址范围从224.0.0.0到239.255.255.255</p>
+<p>​    ▫组播目的MAC地址：目的MAC地址为组播MAC地址，组播MAC地址由组播IP地址映射而来</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/3.png"></p>
+<h2 id="组播IP地址"><a href="#组播IP地址" class="headerlink" title="组播IP地址"></a>组播IP地址</h2><p>•在IPv4地址空间中，D类地址（224.0.0.0/4）被用于组播。一个组播地址就表示一个点到多点的数据流，比如IPTV数据流，语音会议数据流。</p>
+<p>•大多数情况下，同一个组播网络里不同的业务（比如，IPTV，语音会议）就需要使用不同的组播IP地址。</p>
+<p>•IANA对D类地址做了进一步的定义，几种主要的组播地址如下表所示：</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/4.png"></p>
+<blockquote>
+<p>•IPv4组播地址：</p>
+<p>▫IPv4地址空间分为五类，即A类、B类、C类、D类和E类。D类地址为IPv4组播地址，范围是从224.0.0.0到239.255.255.255，用于标识组播组，且仅能作为组播报文的目的地址使用，不能作为源地址使用。</p>
+<p>▫IPv4组播报文的源地址字段为IPv4单播地址，可使用A、B或C类地址，不能是D类、E类地址。</p>
+<p>▫在网络层上，加入同一组播组的所有用户主机能够识别同一个IPv4组播组地址。一旦网络中某用户加入该组播组，则此用户就能接收以该组地址为目的地址的IP组播报文。</p>
+</blockquote>
+<h2 id="组播MAC地址"><a href="#组播MAC地址" class="headerlink" title="组播MAC地址"></a>组播MAC地址</h2><p>•以太网传输IPv4单播报文的时候，目的MAC地址使用的是接收者的MAC地址。但是在传输组播数据时，其目的地不再是一个具体的接收者，而是一个成员不确定的组，所以要使用IPv4组播MAC地址。</p>
+<p>•IANA规定，IPv4组播MAC地址的高24位为0x01005e，第25位为0，低23位为IPv4组播地址的低23位，例如组播组地址224.0.1.1对应的组播MAC地址为01-00-5e-00-01-01。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/5.png"></p>
+<blockquote>
+<p>•IPv4组播地址的前4位是固定的1110，对应组播MAC地址的高25位，后28位中只有23位被映射到MAC地址，因此丢失了5位的地址信息，直接结果是有32个IPv4组播地址映射到同一MAC地址上。例如IP地址为224.0.1.1、224.128.1.1、225.0.1.1、239.128.1.1等组播组的组播MAC地址都为01-00-5e-00-01-01。网络管理员在分配地址时必须考虑这种情况。</p>
+<p>•IETF认为同一个局域网中两个或多个组地址生成相同的MAC地址的几率非常低，不会造成太大的影响。</p>
+<p>•组播MAC地址标识了一组设备，这种MAC地址第1个字节的最低比特位为1，例如0100-5e-00ab。</p>
+<p>•一个组播MAC地址所标识的一组设备有着共同的特点，那就是它们都加入了相同的组播组，这些设备将会侦听目的MAC地址为该组播MAC地址的数据帧。只有单播MAC地址才能够被分配给一个以太网接口，组播或广播MAC地址是不能被分配给任何一个以太网接口的，换句话说，这两种类型的MAC地址不能作为数据帧的源MAC地址，而只能作为目的MAC地址。</p>
+<p>•对于组播MAC地址，相信大家并不会太陌生，例如STP协议的BPDU载荷便是被直接封装在以太网数据帧中的，并且数据帧的目的MAC地址为0180-c200-0000，这就是一个组播MAC地址，类似这样的例子还有很多，此处不再一一列举，这些组播MAC地址并不与组播IP地址存在关联。</p>
+<p>•除此之外，还有一类组播MAC地址是我们需要格外关注的，那就是与组播IP地址存在映射关系的组播MAC地址。本课程介绍的组播MAC地址对应该类型。</p>
+</blockquote>
+<h2 id="组播网络基本架构"><a href="#组播网络基本架构" class="headerlink" title="组播网络基本架构"></a>组播网络基本架构</h2><p>•组播网络大体可以分为三个部分：</p>
+<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
+<p>▫组播转发网络：形成无环的组播转发路径，该转发路径也被称为组播分发树（Multicast Distribution Tree）。</p>
+<p>▫成员端网络：让组播网络感知组播组成员位置与加入的组播组。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/6.png"></p>
+<blockquote>
+<p>•组播源（Source）：组播流量的发送者，例如多媒体服务器。组播源无需运行任何组播协议，只需简单 地将组播数据发送出来即可。 </p>
+<p>•组播接收者（Receiver）：也被称为组播组成员，是期望接收特定组播组流量的设备，例如运行多媒体 直播客户端软件的PC。</p>
+<p>•组播组（Multicast Group）：用IP组播地址进行标识的一个集合。任何用户主机（或其他接收设备），加入一个组播组，就成为了该组成员，可以识别并接收发往该组播组的组播数据。</p>
+<p>•组播路由器（Multicast Router）：支持组播、运行组播协议的网络设备，实际上不仅仅路由器能够支持 组播，交换机、防火墙等设备也能够支持组播（取决于设备型号），路由器仅是一个代表。</p>
+<p>•第一跳路由器（First-Hop Router）：组播转发路径上，与组播源相连且负责转发该组播源发出的组播数据的PIM路由器。</p>
+<p>•最后一跳路由器（Last-Hop Router）：组播转发路径上，与组播组成员相连且负责向该组成员转发组播数据的PIM路由器。</p>
+<p>•IGMP（Internet Group Management Protocol，因特网组管理协议），是TCP/IP协议族中负责IP组播成员管理的协议，它用来在接收者和与其直接相邻的组播路由器之间建立、维护组播组成员关系。</p>
+</blockquote>
+<h2 id="组播服务模型"><a href="#组播服务模型" class="headerlink" title="组播服务模型"></a>组播服务模型</h2><p>•组播组成员在接收组播数据时可以对于组播数据源进行选择，因此产生了ASM（Any-Source Multicast，任意源组播）和SSM（Source-Specific Multicast，指定源组播）两种组播服务模型。</p>
+<p>▫ASM：组成员加入组播组以后，组成员可以接收到任意源发送到该组的数据。</p>
+<p>▫SSM：组成员加入组播组以后，组成员只会收到指定源发送到该组的数据。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/7.png"></p>
+<blockquote>
+<p>•ASM特点：</p>
+<p>▫ASM为了提高安全性，可以在路由器上配置针对组播源的过滤策略，允许或禁止来自某些组播源的报文通过。最终从接收者角度看，数据是经过筛选的。</p>
+<p>▫ASM模型要求组地址必须整个组播网络中唯一。“唯一”指的是同一时刻一个ASM地址只能被一种组播应用使用。如果有两种不同的应用程序使用了同一个ASM组地址发送数据，它们的接收者会同时收到来自两个源的数据。这样一方面会导致网络流量拥塞，另一方面也会给接收者主机造成困扰。</p>
+<p>•SSM特点：</p>
+<p>▫SSM模型对组地址不再要求全网唯一，只需要每个组播源保持唯一。这里的“唯一”指的是同一个源上不同的组播应用必须使用不同的SSM地址来区分。不同的源之间可以使用相同的组地址，因为SSM模型中针对每一个（源，组）信息都会生成表项。这样一方面节省了组播组地址，另一方面也不会造成网络拥塞。</p>
+</blockquote>
+<h1 id="2-组播数据转发原理"><a href="#2-组播数据转发原理" class="headerlink" title="2.组播数据转发原理"></a>2.组播数据转发原理</h1><h2 id="组播数据转发的困局"><a href="#组播数据转发的困局" class="headerlink" title="组播数据转发的困局"></a>组播数据转发的困局</h2><p>组播数据转发需要依赖路由表项。但是基于目的网络的路由表在转发组播数据时存在一定问题：</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/8.png"></p>
+<h2 id="组播路由与RPF检查"><a href="#组播路由与RPF检查" class="headerlink" title="组播路由与RPF检查"></a>组播路由与RPF检查</h2><p>•由于组播转发容易产生环路，次优，重复报文，所以组播路由表项除了目的网络和出接口外还需要添加组播源和入接口的信息。设备仅转发从特定唯一的入接口收到的组播数据，从而避免组播转发时产生环路，次优，重复报文（部分解决）等问题。</p>
+<p>•对于相同的组播源，设备通过RPF（Reverse Path Forwarding，反向路径转发）检查可以确定设备上唯一的组播流量入接口。</p>
+<p>•组播路由表项以及与RPF检查的关系如下：</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/9.png"></p>
+<blockquote>
+<p>•组播路由表项出接口一般需要通过组播路由协议确定。</p>
+<p>•组播路由协议将在《PIM原理与配置》课程介绍。</p>
+<p>•组播路由表项包含组播源与组播组，因此有事又被称为（S，G）表项。</p>
+</blockquote>
+<h2 id="RPF检查工作原理"><a href="#RPF检查工作原理" class="headerlink" title="RPF检查工作原理"></a>RPF检查工作原理</h2><p>•RPF检查过程如下：</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/10.png"></p>
+<blockquote>
+<p>•组播路由器根据报文的源地址通过路由表（单播路由表、MBGP路由表或组播静态路由表）查找到达“报文源”的路由，查看到“报文源”的路由表项的出接口是否与收到组播报文的入接口一致。如果一致，则认为该组播报文从正确的接口到达，从而保证了整个转发路径的正确性和唯一性。这个过程就被称为RPF检查。</p>
+</blockquote>
+<h2 id="RPF路由选举规则"><a href="#RPF路由选举规则" class="headerlink" title="RPF路由选举规则"></a>RPF路由选举规则</h2><p>RPF路由可以从单播路由、MBGP路由、组播静态路由中选举产生。当路由器收到一份组播报文后，如果这三种路由表都存在，具体检查过程如下：</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/11.png"></p>
+<blockquote>
+<p>•根据以下原则从这三条最优路由中选择一条作为RPF路由：</p>
+<ul>
+<li><p>如果配置了按照最长匹配选择路由，则从这三条路由中选出最长匹配的那条路由；</p>
+</li>
+<li><p>如果这三条路由的掩码一样，则选择优先级最高的那条路由；</p>
+</li>
+<li><p>如果它们的优先级也相同，则按照组播静态路由、MBGP路由、单播路由的顺序进行选择。</p>
+</li>
+</ul>
+<p>•MBGP：</p>
+<ul>
+<li>MBGP（Multicast BGP，组播BGP）主要用于传递组播源相关的路由条目。</li>
+</ul>
+<p>•组播静态路由表：</p>
+<ul>
+<li>手工配置组播源与出接口的对应关系。</li>
+</ul>
+</blockquote>
+<h2 id="组播分发树"><a href="#组播分发树" class="headerlink" title="组播分发树"></a>组播分发树</h2><p>•组播数据转发需要保证转发路径无环，无次优路径且无重复包。</p>
+<p>•通过RPF机制与组播路由协议，组播网络可以最终形成无环、无次优且无重复包的组播转发路径，该路径可以被称为<strong>组播分发树</strong>。</p>
+<p>•组播分发树以<strong>组播源为根</strong>，<strong>以组成员为叶子</strong>形成转发路径，组播数据在转发时都基于组播分发树进行转发。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/12.png"></p>
+<h2 id="组播数据转发流程"><a href="#组播数据转发流程" class="headerlink" title="组播数据转发流程"></a>组播数据转发流程</h2><p>组播数据转发基本流程如下：</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/13.png"></p>
+<blockquote>
+<p>•组播路由表项出接口与组播转发路径由组播路由协议决定。</p>
+<p>​    ▫组播路由协议主要有：PIM，MBGP，MSDP。</p>
+<p>​    ▫关于组播路由协议的内容将在《PIM原理与配置》课程讲解。</p>
+<p>•组播组成员位置由IGMP通告。</p>
+<p>​    ▫关于IGMP的内容将在《IGMP原理与配置》课程讲解。</p>
+</blockquote>
+<h2 id="组播协议介绍"><a href="#组播协议介绍" class="headerlink" title="组播协议介绍"></a>组播协议介绍</h2><p>•组播网络需要基于多种组播协议才能建立转发路径：</p>
+<p>▫工作在成员端网络的主要是IGMP（Internet Group Management Protocol，因特网组管理协议）协议，用于<strong>告知组播网络，组成员的位置与所加组播组。</strong></p>
+<p>▫工作在组播转发网络的协议主要有PIM，MSDP，MBGP。</p>
+<p>▪PIM（Protocol Independent Multicast，协议无关组播）协议主要作用是<strong>生成AS域内的组播分发树</strong>。</p>
+<p>▪MSDP（Multicast Source Discovery Protocol，组播源发现协议）主要作用是<strong>帮助生成AS域间的组播分发树</strong>。</p>
+<p>▪MBGP（Multicast BGP，组播BGP）主要作用是帮助<strong>跨域组播流进行RPF校验</strong>。</p>
+<p><img src="/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/14.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）IPv4组播地址的范围是什么？</p>
+<p>A.192.168.0.0~192.168.255.255</p>
+<p>B.172.21.0.0~172.21.255.255</p>
+<p><strong>C.224.0.0.0~239.255.255.255</strong></p>
+<p>D.240.0.0.0~255.255.255.255</p>
+<blockquote>
+<p>IANA（Internet Assigned Numbers Authority，互联网编号分配委员会）将D类地址空间分配给IPv4组播使用。IPv4地址一共32位，D类地址最高4位为1110，因此地址范围从224.0.0.0到239.255.255.255。</p>
+</blockquote>
+<p>2.（多选题）下面描述RPF作用正确的是？</p>
+<p><strong>A. 避免重复的组播报文</strong></p>
+<p>B. 加速组播流量转发速度</p>
+<p><strong>C. 防环</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•组播主要解决单播或广播在承载点到多点流量时存在的问题：</p>
+<ul>
+<li><p>使用单播承载点到多点流量时，随着点到多点业务客户端的增加，可能会引起带宽占用过高或源服务器压力过大等问题。</p>
+</li>
+<li><p>使用广播承载点到多点流量时，虽然不存在单播承载点到多点流量时的问题，但缺乏安全性。</p>
+</li>
+</ul>
+<p>•组播网络一般由三部分组成：源端网络，组播转发网络，成员端网络。</p>
+<ul>
+<li>组播转发网络负责组播数据在组播路由器之间转发，但是在转发过程中可能存在环路，次优路径，重复报文等问题。这些问题可以通过RPF检查部分或全部解决。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3253,7 +3530,8 @@
       
         
           
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。</p>
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/IS-IS/IS-IS.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。</p>
 <p>•随着TCP/IP协议的流行，为了提供对IP路由的支持，IETF在RFC1195中对IS-IS进行了扩充和修改，使它能够同时应用在TCP/IP和OSI（Open System Interconnect，开放式系统互联）环境中，我们将扩展后的IS-IS称为集成IS-IS。</p>
 <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IS-IS的基本概念</p>
 <p>▫描述IS-IS的工作原理</p>
@@ -3618,231 +3896,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/" itemprop="url">OSPF特殊区域及其它特性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-09T19:04:41+08:00">
-                2021-05-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在一个大型网络中，OSPF路由器通常需要同时维护由域内路由、域间路由、外部路由构成的数据库。当网络规模不断扩大时，LSDB规模也不断增长。如果某区域不需要为其他区域提供流量中转服务，那么该区域内的路由器就没有必要维护本区域外的链路状态信息。</p>
-<p>•OSPF通过划分区域可以减小区域内路由器LSDB的规模，对于那些位于自治系统（AS）边界的非骨干区域的低端路由器来说仍然无法承受，通过OSPF的特殊区域特性可以进一步减少LSA数量和路由表规模。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述OSPF特殊区域类型及相关特征</p>
-<p>▫阐明OSPF路由汇总的应用场景及功能优势</p>
-<p>▫实现OSPF报文认证的配置</p>
-<h1 id="Stub区域和Totally-Stub区域"><a href="#Stub区域和Totally-Stub区域" class="headerlink" title="Stub区域和Totally Stub区域"></a>Stub区域和Totally Stub区域</h1><h2 id="网络规模变大引发的问题"><a href="#网络规模变大引发的问题" class="headerlink" title="网络规模变大引发的问题"></a>网络规模变大引发的问题</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/1.png"></p>
-<p>OSPF路由器计算区域内、区域间、外部路由都需要依靠网络中的LSA，当网络规模变大时，设备的LSDB规模也变大，设备的路由计算变得更加吃力，造成设备性能浪费。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/3.png"></p>
-<h2 id="传输区域和末端区域"><a href="#传输区域和末端区域" class="headerlink" title="传输区域和末端区域"></a>传输区域和末端区域</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/4.png"></p>
-<p>OSPF的区域可分为两种类型：</p>
-<p>▫传输区域（Transit Area）：除了承载本区域发起的流量和访问本区域的流量外，还承载了源IP和目的IP都不属于本区域的流量，即“穿越型流量”，如本例中的Area 0。</p>
-<p>▫末端区域（Stub Area）：只承载本区域发起的流量和访问本区域的流量，如本例中的Area 1和Area 2。</p>
-<h2 id="Stub区域"><a href="#Stub区域" class="headerlink" title="Stub区域"></a>Stub区域</h2><p>•Stub区域的ABR不向Stub区域内传播它接收到的AS外部路由，Stub区域中路由器的LSDB、路由表规模都会大大减小。</p>
-<p>•为保证Stub区域能够到达AS外部，Stub区域的ABR将生成一条缺省路由（使用3类LSA描述）。</p>
-<p>•配置Stub区域时需要注意下列几点：</p>
-<p>​    ▫骨干区域不能被配置为Stub区域。</p>
-<p>​    ▫Stub区域中的所有路由器都必须将该区域配置为Stub。</p>
-<p>​    ▫Stub区域内不能引入也不接收AS外部路由。</p>
-<p>​    ▫虚连接不能穿越Stub区域。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/5.png"></p>
-<h2 id="Stub区域的路由表及3类LSA"><a href="#Stub区域的路由表及3类LSA" class="headerlink" title="Stub区域的路由表及3类LSA"></a>Stub区域的路由表及3类LSA</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/6.png"></p>
-<h2 id="Totally-Stub区域-1"><a href="#Totally-Stub区域-1" class="headerlink" title="Totally Stub区域 (1)"></a>Totally Stub区域 (1)</h2><p>•Totally Stub区域既不允许AS外部路由在本区域内传播，也不允许区域间路由在本区域内传播。</p>
-<p>•Totally Stub区域内的路由器通过本区域ABR下发的缺省路由（使用3类LSA描述）到达其他区域，以及AS外部。</p>
-<p>•配置Totally Stub区域时需要注意：</p>
-<p>▫与Stub区域配置的区别在于，在ABR上需要追加no-summary关键字。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/7.png"></p>
-<blockquote>
-<p>•思考：为什么非ABR设备不需要追加no-summary参数呢？</p>
-</blockquote>
-<h2 id="Totally-Stub区域-2"><a href="#Totally-Stub区域-2" class="headerlink" title="Totally Stub区域 (2)"></a>Totally Stub区域 (2)</h2><p>•Totally Stub区域访问其他区域及AS外部是通过默认路由实现的。</p>
-<p>•AS外部、其他OSPF区域的拓扑及路由变化不会导致Totally Stub区域内的路由器进行路由重计算，减少了设备性能浪费。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/8.png"></p>
-<p>Stub区域、Totally Stub区域解决了末端区域维护过大LSDB带来的问题，但对于某些特定场景，它们并不是最佳解决方案。</p>
-<h1 id="NSSA区域和Totally-NSSA区域"><a href="#NSSA区域和Totally-NSSA区域" class="headerlink" title="NSSA区域和Totally NSSA区域"></a>NSSA区域和Totally NSSA区域</h1><h2 id="Stub区域与Totally-Stub区域存在的问题"><a href="#Stub区域与Totally-Stub区域存在的问题" class="headerlink" title="Stub区域与Totally Stub区域存在的问题"></a>Stub区域与Totally Stub区域存在的问题</h2><p>•OSPF规定Stub区域是不能引入外部路由的，这样可以避免大量外部路由引入造成设备资源消耗。</p>
-<p>•对于既需要引入外部路由又要避免外部路由带来的资源消耗的场景，Stub和Totally Stub区域就不能满足需求了。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/9.png"></p>
-<h2 id="NSSA区域与Totally-NSSA区域"><a href="#NSSA区域与Totally-NSSA区域" class="headerlink" title="NSSA区域与Totally NSSA区域"></a>NSSA区域与Totally NSSA区域</h2><p>•NSSA区域能够引入外部路由，同时又不会学习来自OSPF网络其它区域引入的外部路由。</p>
-<p>•Totally NSSA与NSSA区域的配置区别在于前者在ABR上需要追加no-summary关键字。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/10.png"></p>
-<blockquote>
-<p>NSSA区域能够引入外部路由，同时又不会学习来自OSPF网络其它区域的外部路由。</p>
-<p>▫7类LSA是为了支持NSSA区域而新增的一种LSA类型，用于描述NSSA区域引入的外部路由信息。NSSA区域的ASBR将外部路由引入该区域后，使用7类LSA描述这些路由。</p>
-<p>▫7类LSA的扩散范围仅限于始发NSSA区域，7类LSA不会被注入到普通区域。</p>
-<p>▫NSSA区域的ABR会将7类LSA转化为5类LSA，并将该LSA注入到骨干区域，从而在整个OSPF域内泛洪。</p>
-<p>▫NSSA区域的ABR会阻挡其他区域引入的外部路由引入本区域，即NSSA区域内不会存在4类及5类LSA，为了让NSSA区域内的路由器能够通过骨干区域到达AS外部，NSSA区域的ABR会自动向该区域注入一条缺省路由，该路由采用7类LSA描述。</p>
-</blockquote>
-<h2 id="NSSA区域与Totally-NSSA区域的LSDB"><a href="#NSSA区域与Totally-NSSA区域的LSDB" class="headerlink" title="NSSA区域与Totally NSSA区域的LSDB"></a>NSSA区域与Totally NSSA区域的LSDB</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/11.png"></p>
-<blockquote>
-<p>•场景1（将Area 2配置为NSSA区域）：当R5将外部路由192.168.3.0/24引入NSSA区域时，R5作为ASBR生成7类LSA在Area 2内泛洪；R3生成使用7类LSA描述的缺省路由注入Area 2，Area 2内的路由器依然会收到R3注入的3类LSA，并计算出到达其他区域的区域间路由。</p>
-<p>•场景2（将Area2配置为Totally NSSA区域）：Totally NSSA区域和NSSA区域类似，只是Totally NSSA区域的ABR会阻挡3类LSA进入该区域，因此在场景2中，R3不会将区域间路由注入Area 2，故而在R5的LSDB中，仅会看到一条描述缺省路由的3类LSA。</p>
-</blockquote>
-<h2 id="OSPF-LSA回顾"><a href="#OSPF-LSA回顾" class="headerlink" title="OSPF LSA回顾"></a>OSPF LSA回顾</h2><p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/12.png"></p>
-<h2 id="路由器对LSA的处理原则"><a href="#路由器对LSA的处理原则" class="headerlink" title="路由器对LSA的处理原则"></a>路由器对LSA的处理原则</h2><p>OSPF通过交互LSA实现链路状态数据库同步，路由器收到LSA后，按照以下原则处理：</p>
-<p>▫如果收到的LSA本地没有，则更新LSDB并泛洪该LSA。</p>
-<p>▫如果本地LSDB已存在该LSA，但是收到的更新，则更新LSDB并泛洪该LSA。</p>
-<p>▫如果收到的LSA和LSDB中相同，则忽略，并终止泛洪。</p>
-<p>▫如果收到的LSA损坏，例如Checksum错误，则不接收该LSA。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/13.png"></p>
-<h1 id="区域间路由汇总和外部路由汇总"><a href="#区域间路由汇总和外部路由汇总" class="headerlink" title="区域间路由汇总和外部路由汇总"></a>区域间路由汇总和外部路由汇总</h1><h2 id="在ABR执行路由汇总"><a href="#在ABR执行路由汇总" class="headerlink" title="在ABR执行路由汇总"></a>在ABR执行路由汇总</h2><p>•路由汇总又被称为路由聚合，即是将一组前缀相同的路由汇聚成一条路由，从而达到减小路由表规模以及优化设备资源利用率的目的，我们把汇聚之前的这组路由称为精细路由或明细路由，把汇聚之后的这条路由称为汇总路由或聚合路由。</p>
-<p>•OSPF路由汇总的类型：</p>
-<p>​    ▫在ABR执行路由汇总：对区域间的路由执行路由汇总。</p>
-<p>​    ▫在ASBR执行路由汇总：对引入的外部路由执行路由汇总。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/14.png"></p>
-<h2 id="在ASBR执行路由汇总"><a href="#在ASBR执行路由汇总" class="headerlink" title="在ASBR执行路由汇总"></a>在ASBR执行路由汇总</h2><p>•在ASBR配置路由汇总后，ASBR将对自己所引入的外部路由进行汇总。</p>
-<p>•NSSA区域的ASBR也可以对引入NSSA区域的外部路由进行汇总。</p>
-<p>•在NSSA区域中，ABR执行7类LSA转化成5类LSA动作，此时它也是ASBR。若配置路由汇总，则对由7类LSA转化成的5类LSA进行汇总。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/15.png"></p>
-<blockquote>
-<p>•R1、R3、R5分别对引入的外部路由执行路由汇总。</p>
-</blockquote>
-<h1 id="OSPF协议特性"><a href="#OSPF协议特性" class="headerlink" title="OSPF协议特性"></a>OSPF协议特性</h1><h2 id="Silent-Interface"><a href="#Silent-Interface" class="headerlink" title="Silent-Interface"></a>Silent-Interface</h2><p>•通过Silent-Interface的配置，增强OSPF的组网适应能力，减少系统资源的消耗。</p>
-<p>•Silent-Interface有以下特性：</p>
-<p>​    ▫Silent-Interface不会接收和发送OSPF报文。</p>
-<p>​    ▫Silent-Interface的直连路由仍可以发布出去。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/16.png"></p>
-<h2 id="OSPF报文认证"><a href="#OSPF报文认证" class="headerlink" title="OSPF报文认证"></a>OSPF报文认证</h2><p>•OSPF支持报文认证功能，只有通过认证的OSPF报文才能被接收。</p>
-<p>•路由器支持两种OSPF报文认证方式，当两种认证方式都存在时，优先使用接口认证方式：</p>
-<p>​    ▫区域认证方式：一个OSPF区域中所有的路由器在该区域下的认证模式和口令必须一致。</p>
-<p>​    ▫接口认证方式：相邻路由器直连接口下的认证模式和口令必须一致。</p>
-<p><img src="/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/17.png"></p>
-<blockquote>
-<p>区域视图下，配置OSPF区域的认证模式。</p>
-<ul>
-<li>执行命令<strong>authentication-mode simple</strong>  [ <strong>plain</strong> <em>plain-text</em> | [ <strong>cipher</strong> ] <em>cipher-text</em> ]，配置OSPF区域的认证模式。<ul>
-<li>plain表示明文口令类型。</li>
-<li>cipher表示密文口令类型。对于MD5/HMAC-MD5认证模式，当此参数缺省时，默认为cipher类型。</li>
-</ul>
-</li>
-</ul>
-<p>配置接口认证方式。</p>
-<ul>
-<li>执行命令<strong>ospf</strong> <strong>authentication-mode simple</strong> [ <strong>plain</strong> <em>plain-text</em> | [ <strong>cipher</strong> ] <em>cipher-text</em> ]，配置OSPF接口的认证模式。</li>
-</ul>
-</blockquote>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）OSPF定义了以下哪几种特殊区域？(   )</p>
-<p><strong>A.Stub Area</strong></p>
-<p><strong>B.Totally Stub Area</strong></p>
-<p><strong>C.Not-So-Stubby Area（NSSA)</strong></p>
-<p><strong>D.Totally NSSA</strong></p>
-<p>2.（简答题）Stub区域与Totally Stub区域的主要差别是什么？</p>
-<p><strong>Stub区域不允许4类和5类LSA进入，但允许3类LSA进入。Totally Stub区域不仅不允许4类和5类LSA进入，同时也不允许3类LSA进入，只允许表示缺省路由的3类LSA进入。</strong></p>
-<p>3.（简答题）区域间路由汇总功能在什么路由器上配置？</p>
-<p><strong>在ABR上配置</strong></p>
-<h1 id="本章总结"><a href="#本章总结" class="headerlink" title="本章总结"></a>本章总结</h1><p>•本章详细介绍了OSPF特殊区域，Stub区域内的路由器通过缺省路由到达外部网络、Totally Stub区域内的路由器通过缺省路由到达外部网络和OSPF区域间网络；NSSA、Totally NSSA区域内的路由器可引入外部路由。</p>
-<p>•在本章还介绍了OSPF协议的特性。包括Silent-Interface、认证、以及OSPF路由器收到LSA时的处理方式。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3897,7 +3950,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3910,7 +3963,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

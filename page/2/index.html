@@ -241,6 +241,382 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/" itemprop="url">IPadv-MPLSVPN部署与应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T15:17:09+08:00">
+                2021-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•BGP/MPLS IP VPN因其支持地址空间重叠、组网方式灵活、可扩展性好，并能够方便地支持MPLS TE等一系列优点，已经在广域IP承载网络得到了广泛的应用。</p>
+<p>•针对不同客户的业务需求以及组网情况，MPLS VPN的部署方式不尽相同。</p>
+<p>•本课程将介绍几种常见的MPLS VPN应用场景与这些场景下MPLS VPN的部署方法，此外还将介绍OSPF对MPLS VPN的扩展特性与功能。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MPLS VPN的应用场景与组网类型</p>
+<p>▫部署MPLS VPN的Intranet方案</p>
+<p>▫部署MPLS VPN的Hub&amp;Spoke方案</p>
+<p>▫描述OSPF对MPLS VPN扩展功能与特性</p>
+<h1 id="1-MPLS-VPN应用与组网概述"><a href="#1-MPLS-VPN应用与组网概述" class="headerlink" title="1.MPLS VPN应用与组网概述"></a>1.MPLS VPN应用与组网概述</h1><h2 id="MPLS-VPN典型应用"><a href="#MPLS-VPN典型应用" class="headerlink" title="MPLS VPN典型应用"></a>MPLS VPN典型应用</h2><p>•目前，MPLS VPN的主要应用包括企业互连和虚拟业务网络。</p>
+<p>▫企业互连应用：可通过MPLS VPN将分布在各地的分支机构、出差员工和合作伙伴的IP网络连接在一起；</p>
+<p>▫虚拟业务网络：可在同一物理网络上运行多种业务，如VoIP、IPTV等，为每个业务建立一个VPN，实现业务隔离。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/1.png"></p>
+<blockquote>
+<p>•MPLS VPN的主要优点包括但不限于以下几项：</p>
+<ul>
+<li>可以实现“一点接入，全网连通”，支持异种介质的互连。而不像传统专线那样在每一对用户设备间采用同样的介质连接，可方便地提供普遍服务。</li>
+<li>可以实现“弹性带宽”，采用流量监管技术，在保证用户基本带宽的同时，对突发流量尽力而为，同时基本带宽也可以“软扩容”，即根据用户的需求在一个范围内连续选择。</li>
+<li>在资源隔离或隧道绑定的MPLS VPN技术保证下，充分保证每个VPN的专有带宽，满足各类业务有不同的用户，不同的流量模型，不同的QoS要求。</li>
+</ul>
+</blockquote>
+<h2 id="MPLS-VPN基本组网-Intranet"><a href="#MPLS-VPN基本组网-Intranet" class="headerlink" title="MPLS VPN基本组网 - Intranet"></a>MPLS VPN基本组网 - Intranet</h2><p>当采用Intranet组网方案时，一个VPN中的所有用户形成闭合用户群，相互之间能够进行流量转发，VPN中的用户不能与任何本VPN以外的用户通信，其站点通常是属于同一个组织。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/2.png"></p>
+<h2 id="MPLS-VPN基本组网-Extranet"><a href="#MPLS-VPN基本组网-Extranet" class="headerlink" title="MPLS VPN基本组网 - Extranet"></a>MPLS VPN基本组网 - Extranet</h2><p>当采用Extranet组网方案时，VPN用户可将部分站点中的网络资源给其他VPN用户进行访问。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/3.png"></p>
+<h2 id="MPLS-VPN基本组网-Hub-amp-Spoke-1"><a href="#MPLS-VPN基本组网-Hub-amp-Spoke-1" class="headerlink" title="MPLS VPN基本组网 - Hub&amp;Spoke (1)"></a>MPLS VPN基本组网 - Hub&amp;Spoke (1)</h2><p>当采用Hub&amp;Spoke方案时，可以将多个站点中的一个站点设置为Hub站点，其余站点为Spoke站点。站点间的互访必须通过Hub站点，通过Hub站点集中管控站点间的数据传输。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/4.png"></p>
+<h2 id="MPLS-VPN基本组网-Hub-amp-Spoke-2"><a href="#MPLS-VPN基本组网-Hub-amp-Spoke-2" class="headerlink" title="MPLS VPN基本组网 - Hub&amp;Spoke (2)"></a>MPLS VPN基本组网 - Hub&amp;Spoke (2)</h2><p>从Site1到Site2的路由发布过程如下：</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/5.png"></p>
+<h2 id="MCE组网"><a href="#MCE组网" class="headerlink" title="MCE组网"></a>MCE组网</h2><p>•当一个私网需要根据业务或者网络划分VPN时，不同VPN用户间的业务需要完全隔离。此时，为每个VPN单独配置一台CE将增加用户的设备开支和维护成本。</p>
+<p>•具有MCE（Multi-VPN-Instance，CE多实例CE）功能的CE设备可以在MPLS VPN组网应用中承担多个VPN实例的CE功能，减少用户网络设备的投入。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/6.png"></p>
+<h2 id="MPLS-VPN跨域组网"><a href="#MPLS-VPN跨域组网" class="headerlink" title="MPLS VPN跨域组网"></a>MPLS VPN跨域组网</h2><p>•随着MPLS VPN解决方案的广泛应用，服务的终端用户的规格和范围也在增长，在一个企业内部的站点数目越来越大，某个地理位置与另外一个服务提供商相连的需求变得非常的普遍，例如国内运营商的不同城域网之间，或相互协作的运营商的骨干网之间都存在着跨越不同自治系统（AS，Autonomous System）的情况。</p>
+<p>•一般的MPLS VPN体系结构都是在一个AS内运行，任何VPN的路由信息都是只能在一个AS内按需扩散。AS之间的MPLS VPN部署需要通过跨域（Inter-AS） MPLS VPN解决方案来实现。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/7.png"></p>
+<blockquote>
+<p>•RFC2547中提出了三种跨域VPN解决方案，分别是：</p>
+<ul>
+<li>跨域VPN-OptionA（Inter-Provider Backbones Option A）方式：需要跨域的VPN在ASBR（AS Boundary Router）间通过专用的接口管理自己的VPN路由，也称为VRF-to-VRF；</li>
+<li>跨域VPN-OptionB（Inter-Provider Backbones Option B）方式：ASBR间通过MP-EBGP发布标签VPN-IPv4路由，也称为EBGP redistribution of labeled VPN-IPv4 routes；</li>
+<li>跨域VPN-OptionC（Inter-Provider Backbones Option C）方式：PE间通过Multi-hop MP-EBGP发布标签VPN-IPv4路由，也称为Multihop EBGP redistribution of labeled VPN-IPv4 routes。</li>
+</ul>
+<p>•更多跨域MPLS VPN相关内容，请参考HCIE-Datacom相关课程。</p>
+</blockquote>
+<h1 id="2-MPLS-VPN典型场景部署介绍"><a href="#2-MPLS-VPN典型场景部署介绍" class="headerlink" title="2.MPLS VPN典型场景部署介绍"></a>2.MPLS VPN典型场景部署介绍</h1><h2 id="Intranet场景"><a href="#Intranet场景" class="headerlink" title="Intranet场景"></a>Intranet场景</h2><h3 id="部署Intranet场景的MPLS-VPN"><a href="#部署Intranet场景的MPLS-VPN" class="headerlink" title="部署Intranet场景的MPLS VPN"></a>部署Intranet场景的MPLS VPN</h3><p>•如图所示，客户X及Y各自有2个站点，现需要通过MPLS VPN实现站点之间的互联，分别对应VPNX和VPNY；</p>
+<p>•互联接口、AS号及IP地址信息，CE与PE通过如图的协议或方法交换路由信息；</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/8.png"></p>
+<blockquote>
+<p>•注：本课程仅讨论非跨域的MPLS VPN部署场景。</p>
+</blockquote>
+<h3 id="部署思路"><a href="#部署思路" class="headerlink" title="部署思路"></a>部署思路</h3><p>1.MPLS VPN骨干网配置</p>
+<p>1.1 IGP配置，实现骨干网的IP连通性。</p>
+<p>1.2 MPLS与MPLS LDP配置，建立MPLS LSP公网隧道，传输VPN数据。</p>
+<p>1.3 MP-BGP配置，建立后续传递VPNv4路由的MP-BGP对等体关系。</p>
+<p>2.VPN用户接入配置</p>
+<p>2.1 创建VPN实例并配置参数（RT、RD）</p>
+<p>2.2 将接口加入VPN实例</p>
+<p><strong>2.3</strong> <strong>配置PE与CE之间的路由交换</strong></p>
+<h3 id="PE-CE之间部署OSPF-1"><a href="#PE-CE之间部署OSPF-1" class="headerlink" title="PE-CE之间部署OSPF (1)"></a>PE-CE之间部署OSPF (1)</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/9.png"></p>
+<h3 id="PE-CE之间部署OSPF-2"><a href="#PE-CE之间部署OSPF-2" class="headerlink" title="PE-CE之间部署OSPF (2)"></a>PE-CE之间部署OSPF (2)</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/10.png"></p>
+<h3 id="PE-CE之间部署静态路由"><a href="#PE-CE之间部署静态路由" class="headerlink" title="PE-CE之间部署静态路由"></a>PE-CE之间部署静态路由</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/11.png"></p>
+<h3 id="PE-CE之间部署EBGP"><a href="#PE-CE之间部署EBGP" class="headerlink" title="PE-CE之间部署EBGP"></a>PE-CE之间部署EBGP</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/12.png"></p>
+<h3 id="特殊场景下的BGP配置-AS号替换"><a href="#特殊场景下的BGP配置-AS号替换" class="headerlink" title="特殊场景下的BGP配置 - AS号替换"></a>特殊场景下的BGP配置 - AS号替换</h3><p>在MPLS VPN场景中，若PE与CE之间运行EBGP交互路由信息，则可能会出现两个站点的AS号相同的情况。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/13.png"></p>
+<h3 id="特殊场景下的BGP配置-SoO"><a href="#特殊场景下的BGP配置-SoO" class="headerlink" title="特殊场景下的BGP配置 - SoO"></a>特殊场景下的BGP配置 - SoO</h3><p>•在CE多归属场景，若使能了BGP的AS号替换功能，可能会引起路由环路，需要SoO（Site of Origin）特性来避免环路。</p>
+<ul>
+<li><p>CE1与CE3处于同一个VPN站点1，CE2位于站点Site2，Site1和Site2站点所在的AS号都为65001。PE与CE之间运行的都是EBGP路由协议，为了Site 1和Site 2之间的路由可以正常学习，需要在PE1和PE2上配置AS号替换功能。</p>
+</li>
+<li><p>CE1传递站点内的路由给PE1，PE1传递该路由给CE3，由于配置AS号替换，CE3会接收该路由，可能会导致产生路由环路。</p>
+</li>
+</ul>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/14.png"></p>
+<blockquote>
+<p>•注：192.168.100.1和192.168.200.1分别是CE1和CE3上和PE1建立BGP对等体的接口地址。</p>
+</blockquote>
+<h3 id="PE-CE之间部署IS-IS"><a href="#PE-CE之间部署IS-IS" class="headerlink" title="PE-CE之间部署IS-IS"></a>PE-CE之间部署IS-IS</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/15.png"></p>
+<h2 id="Hub-amp-Spoke场景"><a href="#Hub-amp-Spoke场景" class="headerlink" title="Hub&amp;Spoke场景"></a>Hub&amp;Spoke场景</h2><h3 id="部署Hub-amp-Spoke场景的MPLS-VPN"><a href="#部署Hub-amp-Spoke场景的MPLS-VPN" class="headerlink" title="部署Hub&amp;Spoke场景的MPLS VPN"></a>部署Hub&amp;Spoke场景的MPLS VPN</h3><p>•Hub&amp;Spoke有以下组网方案：</p>
+<p>​    ▫方式一：Hub-CE与Hub-PE，Spoke-PE与Spoke-CE使用EBGP</p>
+<p>​    ▫方式二：Hub-CE与Hub-PE，Spoke-PE与Spoke-CE使用IGP</p>
+<p>​    ▫方式三：Hub-CE与Hub-PE使用EBGP，Spoke-PE与Spoke-CE使用IGP</p>
+<p>•<strong>无法</strong>通过Hub-CE与Hub-PE使用IGP，Spoke-PE与Spoke-CE使用EBGP来部署Hub&amp;Spoke组网的MPLS VPN。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/16.png"></p>
+<h3 id="VRF配置"><a href="#VRF配置" class="headerlink" title="VRF配置"></a>VRF配置</h3><p>•Spoke-PE上创建一个VPN实例，RT配置如图。</p>
+<p>•Hub-PE上创建VPN_in和VPN_out两个VPN实例，分别用于从Spoke-PE接收私网路由或向Spoke-PE发布私网路由，RT配置如图。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/17.png"></p>
+<h3 id="方式一部署-路由发布过程"><a href="#方式一部署-路由发布过程" class="headerlink" title="方式一部署 - 路由发布过程"></a>方式一部署 - 路由发布过程</h3><p>•Spoke-CE与Spoke-PE之间通过EBGP交互路由信息，建立EBGP连接后，把相关的路由发布到BGP即可。</p>
+<p>•Hub-PE与Hub-CE之间建立两条EBGP连接，分别用来发布和接收私网路由。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/18.png"></p>
+<blockquote>
+<p>•以路由从Spoke-CE1发布到Spoke-CE2为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过EBGP将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将该路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表，并通过EBGP发布给Hub-CE。</p>
+<p>4.Hub-CE通过EBGP连接学习到该路由，并通过另一个EBGP连接将该路由发布给Hub-PE的VPN实例（VPN_out）。</p>
+<p>5.Hub-PE发布携带VPN_out的Export Target属性的路由给所有Spoke-PE。</p>
+<p>6.Spoke-PE2通过EBGP将该路由发布给Spoke-CE2。</p>
+</blockquote>
+<h3 id="方式一部署-Hub-PE与Hub-CE间配置"><a href="#方式一部署-Hub-PE与Hub-CE间配置" class="headerlink" title="方式一部署 - Hub-PE与Hub-CE间配置"></a>方式一部署 - Hub-PE与Hub-CE间配置</h3><p>•Hub-PE通过VPN_in对应的EBGP连接将从Spoke站点学习的路由发布到Hub站点。</p>
+<p>•Hub-CE通过VPN_out对应的EBGP将这些路由发布到Spoke站点。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/19.png"></p>
+<h3 id="方式二部署-路由发布过程"><a href="#方式二部署-路由发布过程" class="headerlink" title="方式二部署 - 路由发布过程"></a>方式二部署 - 路由发布过程</h3><p>•以选用OSPF作为IGP协议为例：</p>
+<p>▫Spoke-CE与Spoke-PE之间通过OSPF（进程100）邻居关系交互路由信息。</p>
+<p>▫Hub-PE通过两个OSPF进程与Hub-CE建立OSPF邻居，分别负责私网路由的发送和接收。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/20.png"></p>
+<blockquote>
+<p>•以路由从Spoke-CE1发布到Spoke-CE2为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过OSPF100将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表；通过将BGP引入OSPF100的配置进而将从Spoke-PE1传递来的路由发布给Hub-CE。</p>
+<p>4.Hub-CE通过OSPF100接收该路由；并通过配置路由引入将路由发布到OSPF200，OSPF200再将路由发布给Hub-PE。</p>
+<p>5.Hub-PE的BGP-VPN实例（VPN_out）引入OSPF200多实例的路由，将携带Export Target属性的路由发布给所有Spoke-PE。</p>
+<p>6.Spoke-PE2通过OSPF100将该路由发布给Spoke-CE2。</p>
+</blockquote>
+<h3 id="方式二部署-Hub-PE与Hub-CE间配置"><a href="#方式二部署-Hub-PE与Hub-CE间配置" class="headerlink" title="方式二部署 - Hub-PE与Hub-CE间配置"></a>方式二部署 - Hub-PE与Hub-CE间配置</h3><p>•Hub-PE通过VPN_in对应的OSPF（进程100）将从Spoke站点学习的路由发布到Hub站点。</p>
+<p>•Hub-CE通过VPN_out对应的OSPF（进程200）将这些路由发布到Hub-PE，进而发布给所有Spoke站点。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/21.png"></p>
+<h3 id="方式三部署-路由发布过程"><a href="#方式三部署-路由发布过程" class="headerlink" title="方式三部署 - 路由发布过程"></a>方式三部署 - 路由发布过程</h3><p>•以选用OSPF作为IGP协议为例，Spoke-CE与Spoke-PE之间通过OSPF（进程100）邻居关系交互路由信息。</p>
+<p>•Hub-PE与Hub-CE之间建立两条EBGP连接，分别用来发布和接收私网路由，Hub-PE与Hub-CE的配置与方式一相同。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/22.png"></p>
+<blockquote>
+<p>•以路由从Spoke-CE1发布到Spoke-CE2为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过OSPF100将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表，并通过EBGP发布给Hub-CE。</p>
+<p>4.Hub-CE通过EBGP连接学习到该路由，并通过另一个EBGP连接将该路由发布给Hub-PE的VPN实例（VPN_out）。</p>
+<p>5.Hub-PE发布携带VPN_out的Export Target属性的路由给Spoke-PE2。</p>
+<p>6.Spoke-PE2通过OSPF100将该路由发布给Spoke-CE2。</p>
+</blockquote>
+<h3 id="为什么没有方式四？"><a href="#为什么没有方式四？" class="headerlink" title="为什么没有方式四？"></a>为什么没有方式四？</h3><p>•<strong>无法</strong>通过Hub-CE与Hub-PE使用IGP，Spoke-PE与Spoke-CE使用EBGP来部署Hub&amp;Spoke组网的MPLS VPN</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/23.png"></p>
+<blockquote>
+<p>•以从Spoke-CE1向Spoke-CE2发布路由（目的地址为192.168.1.0/24）为例，大体过程如下：</p>
+<p>1.Spoke-CE1通过EBGP将路由发布给Spoke-PE1。</p>
+<p>2.Spoke-PE1通过IBGP将路由发布给Hub-PE。</p>
+<p>3.Hub-PE通过BGP-VPN实例（VPN_in）的Import Target属性将该路由引入VPN_in路由表；并通过OSPF100多实例发布给Hub-CE。</p>
+<p>4.Hub-CE通过OSPF100学习到该路由；并通过OSPF200将路由发布给Hub-PE。</p>
+<p>5.Hub-PE的BGP-VPN实例（VPN_out）引入OSPF200多实例路由，并将携带VPN_out的Export Target属性的路由发布给所有Spoke-PE。</p>
+<p>6.Spoke-PE2的VPN实例根据Import Target属性引入该路由；Spoke-PE2通过EBGP发布给本地Spoke-CE2。</p>
+<p>•Hub-PE的BGP-VPN实例（VPN_out）通过Export Target属性将路由发布给Spoke-PE2的同时，也会将该路由发布给Spoke-PE1。此时，这条路由是Hub-PE通过IGP（OSPF200多实例）引入的，由于IGP路由不携带AS-PATH属性，AS_Path为空；而原来从Spoke-CE1来的192.168.1.0/24路由，其AS_Path不为空，所以从Hub-PE返回的路由会优于从Spoke-CE1来的路由。这样会引起路由振荡，其过程如下：</p>
+<p>1.Spoke-CE1发来的路由因为AS_Path变成非最佳路由</p>
+<p>2.Spoke-PE1发布Update撤销路由的报文给Hub-PE来撤销192.168.1.0/24路由</p>
+<p>3.Hub-PE（通过撤销相应的OSPF LSA）撤销发给Hub-CE的路由</p>
+<p>4.Hub-CE（原理同上）撤销发给Hub-PE的路由</p>
+<p>5.Hub-PE发布Update撤销路由撤销发给Spoke-PE1的路由</p>
+<p>•于是在Spoke-PE1上从Spoke-CE1来的路由又变成最佳路由。Spoke-PE1又通过IBGP将路由发布给Hub-PE。Hub-PE又会返回该路由，从Spoke-CE1来的路由又变成非最佳路由。如此反复。</p>
+</blockquote>
+<h1 id="3-OSPF-VPN拓展"><a href="#3-OSPF-VPN拓展" class="headerlink" title="3.OSPF VPN拓展"></a>3.OSPF VPN拓展</h1><h2 id="OSPF与BGP互操作"><a href="#OSPF与BGP互操作" class="headerlink" title="OSPF与BGP互操作"></a>OSPF与BGP互操作</h2><h3 id="MPLS-VPN中的OSPF-BGP"><a href="#MPLS-VPN中的OSPF-BGP" class="headerlink" title="MPLS VPN中的OSPF/BGP"></a>MPLS VPN中的OSPF/BGP</h3><p>•当PE-CE间部署OSPF交互路由信息时，若在PE上使用标准BGP/OSPF过程（简称为BGP/OSPF互操作）互来传递路由信息，则远端PE在将BGP引入VPN实例的OSPF进程时，会直接产生Type5 LSA，不同站点都会将其他站点的路由视为自治系统外部路由（AS_external）。</p>
+<p>•为了解决标准BGP/OSPF的互操作导致的OSPF路由信息丢失的问题，BGP和OSPF都做了相应的拓展。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/24.png"></p>
+<blockquote>
+<p>•在实际应用中，如果两个要互通的Site都在相同的AS内，那么每个Site都应该将另一个Site的路由看成区域间路由，而不是AS外部路由。</p>
+</blockquote>
+<h3 id="BGP扩展团体属性"><a href="#BGP扩展团体属性" class="headerlink" title="BGP扩展团体属性"></a>BGP扩展团体属性</h3><p>•为了保留OSPF的路由信息，BGP新增了部分可携带OSPF路由信息的团体属性：</p>
+<ul>
+<li><p>Domain ID：域标识符用来标识和区分不同的域。</p>
+</li>
+<li><p>Route Type：包含被引入到BGP的OSPF路由的 Area-ID 以及Route Type</p>
+<ul>
+<li>Area-ID：PE 的VPN实例的OSPF进程与CE建立邻接关系的区域号</li>
+<li>Route Type：被引入的 OSPF 路由的类型<ul>
+<li>1 或 2：表示路由的类型为区域内部路由， 也就是 PE 根据 Type-1 及 Type-2 LSA 所计算出来的路由。</li>
+<li>3：表示路由的类型为区域间路由。</li>
+<li>5：表示路由的类型为 OSPF 外部路由，也就是 PE 通过 Type-5 LSA 计算得出的路由。当 Route-Type 字段的值为 5 时， Area-ID 字段的值需为 0.0.0.0。</li>
+<li>7：表示路由的类型为 NSSA 路由，也就是 PE 通过 Type-7 LSA 计算得出的路由。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Domain-ID"><a href="#Domain-ID" class="headerlink" title="Domain ID"></a>Domain ID</h3><p>•在PE上将OSPF引入BGP时，PE将根据本地的配置为BGP路由增加域ID属性，域ID作为BGP的扩展团体属性传播。</p>
+<p>•在PE将BGP路由引入OSPF时，若BGP路由携带的Domain ID与本地相同，则认为两个站点属于同一个OSPF路由域。若不相同，则认为不在同一个路由域。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/27.png"></p>
+<blockquote>
+<p>•Domain ID需要在绑定到VRF的OSPF进程视图下使用命令<strong>domain-id</strong>配置。</p>
+<ul>
+<li><p>缺省情况下，Domain ID的值为0（NULL）。如果不同OSPF域都使用NULL作为Domain ID，将无法区分OSPF域，因此它们之间的路由将被当作区域内路由。</p>
+</li>
+<li><p>如果一个OSPF域配置了非0（即非NULL）的Domain ID，NULL不再是该OSPF域的Domain ID。</p>
+</li>
+</ul>
+<p>•建议与同一个VPN相关的所有OSPF实例都使用相同的Domain ID，或者都使用缺省的Domain ID。</p>
+</blockquote>
+<h3 id="Domain-ID与Route-Type"><a href="#Domain-ID与Route-Type" class="headerlink" title="Domain ID与Route Type"></a>Domain ID与Route Type</h3><p>根据BGP路由中的Domain ID与Route Type属性，PE将产生不同类型的OSPF LSA类型发布到VRF的OSPF进程中</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/28.png"></p>
+<h2 id="OSPF防环"><a href="#OSPF防环" class="headerlink" title="OSPF防环"></a>OSPF防环</h2><h3 id="Type3路由防环-案例"><a href="#Type3路由防环-案例" class="headerlink" title="Type3路由防环 - 案例"></a>Type3路由防环 - 案例</h3><p>•如图是Type3 LSA路由产生环路的一个例子：</p>
+<p>​    ▫其中站点1和站点2都属于VPN1。</p>
+<p>​    ▫站点1通过OSPF Area0接入骨干网的PE1；</p>
+<p>​    ▫站点2通过OSPF Area0分别接入骨干网的PE2和PE3（双归属负载分担场景）。</p>
+<blockquote>
+<p>•环路产生过程如下：</p>
+<p>1.Site1的CE1通过Type3 LSA发布到192.168.1.0/24的路由给PE1。</p>
+<p>2.PE1向BGP引入OSPF VPN1进程，通过MP-IBGP将该路由发布给PE2和PE3。</p>
+<p>3.由于PE2上配置了BGP到OSPF的路由引入，故PE2将产生Type3 LSA给CE2，CE2将来自PE2的Type3 LSA发布给PE3。</p>
+<p>4.此时PE3收到两条到达192.168.1.0/24的路由：一条是PE1发布的，另一条是PE2上路由引入产生的。由于缺省情况下，IGP（OSPF）路由优先级高于IBGP路由，PE3将选择OSPF路由。</p>
+<p>5.PE3将优选的学自OSPF通过MP-IBGP发布给PE1。</p>
+<p>▫此时，PE1上存在两条到达目的地192.168.1.0/24网段的路由，一条通过OSPF学习自CE1，另一条通过MP-IBGP学习自PE3。可能会导致以下问题：</p>
+<ul>
+<li>PE1撤销192.168.1.0/24这条路由，但由于PE1与PE2之间的链路阻塞，BGP Update（撤销报文）无法及时发送给PE2，导致PE3发给PE1的路由依然存在（正常情况下会随着PE1发送给PE2的Update报文被撤销），PE1上到达目的地192.168.1.0/24的下一跳为PE3。此时路由环路产生。</li>
+<li>若PE1上MP-IBGP的路由优先级高于OSPF，则PE1会优选PE3通告的BGP路由，此时PE1需要撤销发给PE2的BGP路由，导致PE3撤销发布给PE1的路由，PE1上的OSPF再次被优选。如此反复，形成路由震荡。</li>
+</ul>
+</blockquote>
+<h3 id="Type3路由防环-DN位"><a href="#Type3路由防环-DN位" class="headerlink" title="Type3路由防环 - DN位"></a>Type3路由防环 - DN位</h3><p>•为了防止3类LSA环路，OSPF多实例进程使用LSA Options域中一个原先未使用的比特作为标志位，称为DN位。使用DN位可以防止Type3 LSA环路。</p>
+<p>•PE路由器的OSPF实例进程在进行SPF计算时，忽略DN置位的Type3 LSA。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/29.png"></p>
+<h3 id="Type5-7路由防环-案例"><a href="#Type5-7路由防环-案例" class="headerlink" title="Type5/7路由防环 - 案例"></a>Type5/7路由防环 - 案例</h3><p>•如图是Type5 LSA路由产生环路的一个例子：</p>
+<p>​    ▫其中站点1和站点2都属于VPN1。</p>
+<p>​    ▫站点1通过EBGP接入骨干网的PE1；</p>
+<p>​    ▫站点2通过OSPF分别接入骨干网的PE2和PE3。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/30.png"></p>
+<blockquote>
+<p>•环路产生过程如下：</p>
+<p>1.CE1通过EBGP发布到192.168.1.0/24的路由给PE1，AS_Path为65001。</p>
+<p>2.PE1通过MP-IBGP将该路由发布给PE2和PE3。</p>
+<p>3.PE2在OSPF VPN1实例进程中引入BGP路由，发布到192.168.1.0/24的Type5 LSA给CE2；</p>
+<p>4.CE2将该Type5 LSA发布给PE3。</p>
+<p>5.PE3将优选择OSPF路由（OSPF优先级高于IBGP），并通过MP-IBGP发布Update消息给PE1。</p>
+<p>6.PE1收到PE3发送的MP-IBGP Update消息。由于其中的路由是PE3的BGP引入的IGP（OSPF）路由，其AS_Path为空，因此PE3发布的MP-IBGP路由优先级比从CE1发布的EBGP路由优先级高，PE1将优选用PE3发布的路由。</p>
+<p>7.此时形成一条路由环路：PE3—&gt;CE2—&gt;PE2—&gt;PE1—&gt;PE3。</p>
+<p>•由于PE1不再优选CE1学来的路由，故PE1会撤销发给PE2的路由，PE2中的OSPF VPN实例进程进程中也要对应撤销引入的BGP路由，继而CE2、PE3都相继撤销该OSPF路由。PE3向PE1发布的BGP路由也被撤销，在PE1上，从CE1学来的路由又变成最优路由。这样，形成了路由振荡。</p>
+<p>•Type7 LSA环路的产生和消除的过程与Type5类似，此处不再赘述。</p>
+</blockquote>
+<h3 id="Type5-7路由防环-VPN-Route-Tag"><a href="#Type5-7路由防环-VPN-Route-Tag" class="headerlink" title="Type5/7路由防环 - VPN Route Tag"></a>Type5/7路由防环 - VPN Route Tag</h3><p>•可以使用VPN Route Tag（VPN路由标记）来防止此5类或7类路由环路。</p>
+<p>•PE在根据收到的BGP的私网路由生成5/7类LSA时，携带VPN路由标记。当PE发现LSA的VPN路由标记和本地配置的一样，就会忽略这条LSA，因此可以避免上述环路。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/31.png"></p>
+<blockquote>
+<p>•VPN路由标记不在BGP的扩展团体属性中传递，只是本地概念，只在收到BGP路由并且产生OSPF LSA的PE设备上有意义。</p>
+<p>•缺省情况下，VPN的路由标记是根据BGP的AS号计算得到的。如果没有配置BGP，则默认值为0。</p>
+<p>•可以通过指令<strong>route-tag</strong>配置VPN的路由标记。</p>
+</blockquote>
+<h2 id="OSPF-sham-link"><a href="#OSPF-sham-link" class="headerlink" title="OSPF sham link"></a>OSPF sham link</h2><h3 id="Sham-link的应用场景"><a href="#Sham-link的应用场景" class="headerlink" title="Sham link的应用场景"></a>Sham link的应用场景</h3><p>•通常情况下，BGP对等体之间通过BGP扩展团体属性在MPLS VPN骨干网上承载路由信息。另一端PE上运行的OSPF可利用这些信息来生成PE到CE的Type 3 LSA，这些路由是区域间路由（Inter_Area route）。</p>
+<p>•若在CE1和CE2之间增加一条后门（Backdoor）链路，并且直接运行OSPF交互路由。通过后门链路学习到的路由类型为区域内路由（Intra_Area route）。</p>
+<p>•由于区域内路由优于区域间路由，故后门链路会被优选，若想实现后门链路作为备份链路，可采用sham link实现。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/32.png"></p>
+<h3 id="Sham-link的工作机制"><a href="#Sham-link的工作机制" class="headerlink" title="Sham link的工作机制"></a>Sham link的工作机制</h3><p>•Sham link在两台PE之间创建了一条区域内链路。当LSA在伪装链路中泛洪，所有的OSPF路由类型都不会改变，不会转换成LSA3或者LSA5的类型。</p>
+<p>•Sham link被看成是两个VPN实例之间的链路，链路的两端是PE上的端点地址，分别作为建立连接时的源和目的地址。伪连接的源地址和目的地址使用32位掩码的Loopback接口地址，该Loopback接口需要绑定到VPN实例中，并通过BGP发布。</p>
+<p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/33.png"></p>
+<blockquote>
+<p>•同一个OSPF进程的多条Sham link可以共用端点地址，但不同OSPF进程不能拥有两条端点地址完全相同的Sham link。</p>
+</blockquote>
+<h3 id="Sham-link的配置示例"><a href="#Sham-link的配置示例" class="headerlink" title="Sham link的配置示例"></a>Sham link的配置示例</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/34.png"></p>
+<blockquote>
+<p>•在配置Sham link时可以指定Sham link的路由开销。缺省值为1。</p>
+</blockquote>
+<h3 id="sham-link的配置验证"><a href="#sham-link的配置验证" class="headerlink" title="sham link的配置验证"></a>sham link的配置验证</h3><p><img src="/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/35.png"></p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（多选题）在MPLS VPN组网中，当PE向OSPF引入从其他PE学习来的VPN路由时，可能会产生以下哪几类LSA（    ）。</p>
+<p>A.Type 1 LSA</p>
+<p><strong>B.Type 3 LSA</strong></p>
+<p><strong>C.Type 5 LSA</strong></p>
+<p><strong>D.Type 7 LSA</strong></p>
+<p>2.（判断）CE通过BGP传递路由给PE时，可能会携带SoO属性。（    ）。</p>
+<p>A. 正确</p>
+<p><strong>B. 错误</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS VPN在针对不同类型的场景下有不同的组网方案，常见的有Intranet组网、Extranet组网以及Hub&amp;Spoke组网。此外，根据MPLS VPN骨干网是否跨域又可以分为跨域组网和单域组网。</p>
+<p>•PE-CE之间进行路由信息交互时，可以使用静态路由、OSPF、IS-IS或BGP中的任何一种。其中OSPF为MPLS VPN做了许多扩展特性，如：</p>
+<p>​    ▫Domain ID：用来区分VPN实例中引入的路由是否来自同一个OSPF域</p>
+<p>​    ▫DN位：用来防止因为3类LSA产生的路由环路</p>
+<p>​    ▫VPN Route Tag：用来方式因为5类或7类LSA产生的路由环路</p>
+<p>​    ▫sham link：用于特殊场景下的OSPF路由选路控制</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3789,260 +4165,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/" itemprop="url">IP-BFD原理与应用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:42:30+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/BFD.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着网络应用的广泛部署，网络发生故障极大可能导致业务异常。为了减小链路、设备故障对业务的影响，提高网络的可靠性，网络设备需要尽快检测到与相邻设备间的通信故障，以便及时采取措施，保证业务正常进行。</p>
-<p>•BFD（Bidirectional Forwarding Detection，双向转发检测）提供了一个通用的、标准化的、介质无关和协议无关的快速故障检测机制，用于快速检测、监控网络中链路或者IP路由的转发连通状态。</p>
-<p>•本章节主要介绍BFD工作原理以及常见的应用场景。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫阐明BFD的作用</p>
-<p>▫描述BFD工作原理</p>
-<p>▫实现BFD配置与应用</p>
-<h1 id="1-BFD概述"><a href="#1-BFD概述" class="headerlink" title="1.BFD概述"></a>1.BFD概述</h1><h2 id="网络故障检测遇到的问题"><a href="#网络故障检测遇到的问题" class="headerlink" title="网络故障检测遇到的问题"></a>网络故障检测遇到的问题</h2><p>•在无法通过硬件信号检测故障的系统中，应用通常采用上层协议本身的Hello报文机制检测网络故障。</p>
-<p>•常用路由协议的Hello报文机制检测时间较长，检测时间超过1秒钟。当应用在网络中传输的数据超过GB/s时，秒级的检测时间将会导致应用传输的数据大量丢失。</p>
-<p>•在三层网络中，静态路由本身没有故障检查机制。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/1.png"></p>
-<h2 id="BFD概述"><a href="#BFD概述" class="headerlink" title="BFD概述"></a>BFD概述</h2><p>•BFD提供了一个通用的、标准化的、介质无关的、协议无关的快速故障检测机制，有以下两大优点：</p>
-<p>​    ▫对相邻转发引擎之间的通道提供轻负荷、快速故障检测。</p>
-<p>​    ▫用单一的机制对任何介质、任何协议层进行实时检测。</p>
-<p>•BFD是一个简单的“Hello”协议。两个系统之间建立BFD会话通道，并周期性发送BFD检测报文，如果某个系统在规定的时间内没有收到对端的检测报文，则认为该通道的某个部分发生了故障。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/2.png"></p>
-<blockquote>
-<p>•由于同一个数据路径上只建立一个BFD会话，如果不同的应用使用的BFD参数不一致，则应该配置一个能满足所有应用要求的BFD参数。</p>
-</blockquote>
-<h1 id="2-BFD工作原理"><a href="#2-BFD工作原理" class="headerlink" title="2.BFD工作原理"></a>2.BFD工作原理</h1><h2 id="BFD报文结构"><a href="#BFD报文结构" class="headerlink" title="BFD报文结构"></a>BFD报文结构</h2><p>•BFD检测是通过维护在两个系统之间建立的BFD会话来实现的，系统通过发送BFD报文建立会话。</p>
-<p>•BFD控制报文根据场景不同封装不同，报文结构由强制部分和可选的认证字段组成。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/3.png"></p>
-<p>1.Sta：BFD本地状态。</p>
-<p>2.Detect Mult：检测超时倍数，用于检测方计算检测超时时间。</p>
-<p>3.My Discriminator：BFD会话连接本地标识符（Local Discriminator） 。发送系统产生的一个唯一的、非0鉴别值，用来区分一个系统的多个BFD会话。 </p>
-<p>4.Your Discriminator：BFD会话连接远端标识符（Remote Discriminator） 。从远端系统接收到的鉴别值，这个域直接返回接收到的“My Discriminator”，如果不知道这个值就返回0。 </p>
-<p>5.Desired Min TX Interval：本地支持的最小BFD报文发送间隔。 </p>
-<p>6.Required Min RX Interval：本地支持的最小BFD报文接收间隔。</p>
-<p>7.Required Min Echo RX Interval：本地支持的最小Echo报文接收间隔，单位为微秒（如果本地不支持Echo功能，则设置0）。</p>
-<blockquote>
-<p>•Ver：BFD协议版本号，目前为1。</p>
-<p>•Diag：诊断字，标明本地BFD系统最近一次会话状态发生变化的原因。</p>
-<p>•P：参数发生改变时，发送方在BFD报文中置该标志，接收方必须立即响应该报文。</p>
-<p>•F：响应P标志置位的回应报文中必须将F标志置位。</p>
-<p>•C：转发/控制分离标志，一旦置位，控制平面的变化不影响BFD检测。</p>
-<p>•A：认证标识，置1代表会话需要进行验证。</p>
-<p>•D：查询请求，置位代表发送方期望采用查询模式对链路进行监测。</p>
-<p>•M：为BFD将来支持点对多点扩展而设的预留位。</p>
-<p>•Length：报文长度，单位为字节。</p>
-</blockquote>
-<h2 id="BFD会话建立"><a href="#BFD会话建立" class="headerlink" title="BFD会话建立"></a>BFD会话建立</h2><p>BFD会话的建立有两种方式，即静态建立BFD会话和动态建立BFD会话。BFD通过控制报文中的本地标识符和远端标识符区分不同的会话。静态和动态创建BFD会话的主要区别在于Local Discriminator和Remote Discriminator的配置方式不同。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/4.png"></p>
-<blockquote>
-<p>•动态建立BFD会话时，系统对本地标识符和远端标识符的处理方式如下：</p>
-<ul>
-<li>动态分配本地标识符，当应用程序触发动态创建BFD会话时，系统分配属于动态会话标识符区域的值作为BFD会话的本地标识符。然后向对端发送Remote Discriminator的值为0的BFD控制报文，进行会话协商。</li>
-<li>自学习远端标识符，当BFD会话的一端收到Remote Discriminator的值为0的BFD控制报文时，判断该报文是否与本地BFD会话匹配，如果匹配，则学习接收到的BFD报文中Local Discriminator的值，获取远端标识符。</li>
-</ul>
-</blockquote>
-<h2 id="BFD会话状态"><a href="#BFD会话状态" class="headerlink" title="BFD会话状态"></a>BFD会话状态</h2><p>BFD会话有四种状态：Down、Init、Up和AdminDown。会话状态变化通过BFD报文的State字段传递，系统根据自己本地的会话状态和接收到的对端BFD报文驱动状态改变，如左下图所示。BFD状态机的建立和拆除都采用三次握手机制，如右下图所示，以确保两端系统都能知道状态的变化。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/5.png"></p>
-<blockquote>
-<p>•BFD会话过程中包含有三个状态：init和up两个用来建立会话，down用来断开会话。建立和断开会话都需要三次握手确保两端系统都感知到。另外还有一个特殊状态：管理down，使会话可以通过管理手段down，在状态机中管理down也是down状态。每个系统通过报文中的sta域发送本端状态，接收报文中的sta域了解对端状态，综合起来决定状态机的跳转。</p>
-<p>•Down状态说明会话down。一个会话会维持在down状态直到收到对端的报文并且该报文的sta字段标志着对端状态不是up。如果收到的是down包，状态机将从down状态跳转到init状态，如果收到的是init包，状态机将从down状态跳转到up状态，如果收到的是up包，状态机维持down状态。</p>
-<p>•Init状态说明与远端正在通信，并且本地会话期望进入up状态，但是远端还没回应。一个init状态的会话会维持init状态直到收到对端的init包或者up包，就会跳转到up状态，否则等到检测时间超时以后，便会跳转到down状态，意味着与远端的通信丢失。</p>
-<p>•Up状态说明BFD会话成功建立，并且正在确认链路的联通性，会话会一直保持在up状态直到链路故障或者管理down操作。如果收到远端的down包或者检测时间超时会话就会从up状态跳转到down状态。</p>
-<p>•管理down意味着会话是被管理操作down的，这会导致远端系统会话进入down状态，并且一直保持down状态直到本端退出管理down。管理down并不意味着转发路径的连通性问题。</p>
-</blockquote>
-<h2 id="BFD检测模式"><a href="#BFD检测模式" class="headerlink" title="BFD检测模式"></a>BFD检测模式</h2><p>BFD的检测机制：两个系统建立BFD会话，并沿它们之间的路径周期性发送BFD控制报文，如果一方在既定的时间内没有收到BFD控制报文，则认为路径上发生了故障。BFD的检测模式有异步模式和查询模式两种。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/6.png"></p>
-<blockquote>
-<p>•异步模式和查询模式的本质区别：检测的位置不同，异步模式下本端按一定的发送周期发送BFD控制报文，检测位置为远端，远端检测本端是否周期性发送BFD控制报文；查询模式下本端检测自身发送的BFD控制报文是否得到了回应。</p>
-</blockquote>
-<h2 id="BFD检测时间"><a href="#BFD检测时间" class="headerlink" title="BFD检测时间"></a>BFD检测时间</h2><p>BFD会话检测时长由TX（Desired Min TX Interval），RX（Required Min RX Interval），DM（Detect Multi）三个参数决定。BFD报文的实际发送时间间隔，实际接受时间间隔由BFD会话协商决定。</p>
-<p>▫本地BFD报文实际发送时间间隔＝MAX { 本地配置的发送时间间隔，对端配置的接收时间间隔 }</p>
-<p>▫本地BFD报文实际接收时间间隔＝MAX { 对端配置的发送时间间隔，本地配置的接收时间间隔 }</p>
-<p>▫本地BFD报文实际检测时间：</p>
-<ul>
-<li><p>异步模式：本地BFD报文实际检测时间＝本地BFD报文实际接收时间间隔×对端配置的BFD检测倍数</p>
-</li>
-<li><p>查询模式：本地BFD报文实际检测时间 = 本地BFD报文实际接收时间间隔×本端配置的BFD检测倍数</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/7.png"></p>
-<blockquote>
-<p>•BFD缺省时间参数</p>
-<ul>
-<li><p>BFD报文发送间隔默认1000毫秒，接受间隔默认1000毫秒，本地检测倍数3次。</p>
-</li>
-<li><p>BFD会话等待恢复时间0秒，会话延迟Up时间0秒。</p>
-</li>
-</ul>
-<p>•检测超时倍数，用于检测方计算检测超时时间。</p>
-<ul>
-<li><p>查询模式：采用本地检测倍数。</p>
-</li>
-<li><p>异步模式：采用对端检测倍数。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="BFD-Echo功能"><a href="#BFD-Echo功能" class="headerlink" title="BFD Echo功能"></a>BFD Echo功能</h2><p>•BFD Echo功能也称为BFD回声功能，是由本地发送BFD Echo报文，远端系统将报文环回的一种检测机制。</p>
-<p>•在两台直接相连的设备中，其中一台设备支持BFD功能（R1）；另一台设备不支持BFD功能（R2），只支持基本的网络层转发。为了能够快速的检测这两台设备之间的故障，可以在支持BFD功能的设备上创建单臂回声功能的BFD会话。支持BFD功能的设备主动发起回声请求功能，不支持BFD功能的设备接收到该报文后直接将其环回，从而实现转发链路的连通性检测功能。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/8.png"></p>
-<h1 id="3-BFD应用场景"><a href="#3-BFD应用场景" class="headerlink" title="3.BFD应用场景"></a>3.BFD应用场景</h1><h2 id="联动功能简介"><a href="#联动功能简介" class="headerlink" title="联动功能简介"></a>联动功能简介</h2><p>联动功能由检测模块、Track和应用模块三部分组成。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/9.png"></p>
-<blockquote>
-<p>•监测模块负责对链路状态、网络性能等进行监测，并将探测结果通知给Track模块 。</p>
-<p>•Track模块收到监测模块的探测结果后，及时改变Track项的状态，并通知应用模块。</p>
-<p>•应用模块根据Track项的状态，进行相应的处理，从而实现联动。</p>
-</blockquote>
-<h2 id="静态路由与BFD联动"><a href="#静态路由与BFD联动" class="headerlink" title="静态路由与BFD联动"></a>静态路由与BFD联动</h2><p>•静态路由自身没有检测机制，如果静态路由存在冗余路径，通过静态路由与BFD联动，当主用路径故障时，实现静态路由的快速切换 。</p>
-<p>•静态路由与BFD联动应用广泛，如下图中R1是园区网的出口路由器，R1通过两条链路分别连接ISP1和ISP2，正常情况下默认路由经过的链路为指向ISP1的链路，当通往ISP1的链路出现故障的时候，BFD会话能够快速感知，并通知路由器将流量切换到指向ISP2的链路。</p>
-<blockquote>
-<p>•静态路由自身没有检测机制，如果静态路由存在冗余路径，通过静态路由与BFD联动，当主用路径故障时，实现静态路由的快速切换 。</p>
-<p>•静态路由与BFD联动应用广泛，如下图中R1是园区网的出口路由器，R1通过两条链路分别连接ISP1和ISP2，正常情况下默认路由经过的链路为指向ISP1的链路，当通往ISP1的链路出现故障的时候，BFD会话能够快速感知，并通知路由器将流量切换到指向ISP2的链路。</p>
-</blockquote>
-<h2 id="OSPF与BFD联动-1"><a href="#OSPF与BFD联动-1" class="headerlink" title="OSPF与BFD联动 (1)"></a>OSPF与BFD联动 (1)</h2><p>•OSPF在未绑定BFD的情况下，链路故障检测时间由协议Hello机制决定，通常是秒级。通过绑定BFD，可以实现毫秒级故障检测。</p>
-<p>•BFD与OSPF联动就是将BFD和OSPF协议关联起来， BFD将链路故障的快速检测结果告知OSPF协议。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/11.png"></p>
-<h2 id="OSPF与BFD联动-2"><a href="#OSPF与BFD联动-2" class="headerlink" title="OSPF与BFD联动 (2)"></a>OSPF与BFD联动 (2)</h2><p>BFD会话建立后会周期性地快速发送BFD报文，如果在检测时间内没有收到BFD报文则认为该双向转发路径发生了故障，通知被服务的上层应用进行相应的处理。</p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/12.png"></p>
-<h1 id="4-BFD基本配置"><a href="#4-BFD基本配置" class="headerlink" title="4.BFD基本配置"></a>4.BFD基本配置</h1><h2 id="BFD配置命令介绍"><a href="#BFD配置命令介绍" class="headerlink" title="BFD配置命令介绍"></a>BFD配置命令介绍</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/13.png"></p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/14.png"></p>
-<blockquote>
-<p>•配置编辑完成后，用户可以执行<strong>commit</strong>提交配置，使新的配置数据在当前的系统运行配置中生效。</p>
-</blockquote>
-<h2 id="静态路由与BFD联动配置"><a href="#静态路由与BFD联动配置" class="headerlink" title="静态路由与BFD联动配置"></a>静态路由与BFD联动配置</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/15.png"></p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/16.png"></p>
-<h2 id="BFD会话配置验证"><a href="#BFD会话配置验证" class="headerlink" title="BFD会话配置验证"></a>BFD会话配置验证</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/17.png"></p>
-<h2 id="OSPF与BFD联动配置"><a href="#OSPF与BFD联动配置" class="headerlink" title="OSPF与BFD联动配置"></a>OSPF与BFD联动配置</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/18.png"></p>
-<p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/19.png"></p>
-<h2 id="BFD检测配置验证"><a href="#BFD检测配置验证" class="headerlink" title="BFD检测配置验证"></a>BFD检测配置验证</h2><p><img src="/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/20.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）BFD会话建立过程中有以下哪几种状态？</p>
-<p><strong>A.Down</strong></p>
-<p><strong>B.Init</strong></p>
-<p><strong>C.Up</strong></p>
-<p>D.Establish</p>
-<p>2.（多选题）BFD检测模式有哪些？</p>
-<p><strong>A.异步模式</strong></p>
-<p>B.同步模式</p>
-<p><strong>C.查询模式</strong></p>
-<p><strong>D.回声模式</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章详细介绍了BFD工作原理，内容包括会话建立的过程、检测模式、检测时间以及检测流程。</p>
-<p>•BFD会话建立中经过三个不同的状态，包括down、init和up，会话状态建立根据收到报文中的sta字段进行转换。BFD检测模式分为异步检测和查询模式，它们的主要区别不仅是发送检测报文的方式和检测的位置不同，同时检测时间与检测流程也不同。</p>
-<p>•BFD能够快速检测链路故障，但是只有被应用模块调用，例如OSPF、静态路由，才能够实现流量路径的快速切换，因此BFD在线网当中应用非常广泛。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4097,7 +4219,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4110,7 +4232,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
