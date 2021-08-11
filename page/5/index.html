@@ -241,6 +241,972 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/" itemprop="url">BGP基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T17:55:27+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/BGP.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•为方便管理规模不断扩大的网络，网络被分成了不同的AS（Autonomous System，自治系统）。早期，EGP（Exterior Gateway Protocol，外部网关协议）被用于实现在AS之间动态交换路由信息。但是EGP设计得比较简单，只发布网络可达的路由信息，而不对路由信息进行优选，同时也没有考虑环路避免等问题，很快就无法满足网络管理的要求。</p>
+<p>•BGP是为取代最初的EGP而设计的另一种外部网关协议。不同于最初的EGP，BGP能够进行路由优选、避免路由环路、更高效率的传递路由和维护大量的路由信息。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP基本概念</p>
+<p>▫描述BGP的对等体类型</p>
+<p>▫阐明BGP对等体建立过程</p>
+<p>▫阐明BGP状态机</p>
+<p>▫实现BGP基本配置</p>
+<h1 id="BGP概述"><a href="#BGP概述" class="headerlink" title="BGP概述"></a>BGP概述</h1><h2 id="AS"><a href="#AS" class="headerlink" title="AS"></a>AS</h2><p>OSPF、IS-IS等IGP路由协议在组织机构网络内部广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。</p>
+<p>AS指的是在同一个组织管理下，使用统一选路策略的设备集合。</p>
+<p>不同AS通过AS号区分，AS号存在16bit、32bit两种表示方式。IANA负责AS号的分发。</p>
+<p>当不同AS之间需要进行通信时，在AS之间应使用何种路由协议进行路由的传递？</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/1.png"></p>
+<blockquote>
+<p>•IANA（Internet Assigned Numbers Authority，因特网地址分配组织）：IAB（Internet Architecture Board，因特网体系委员会）的下设组织。IANA授权NIC（ Network Information Center，网络信息中心）和其他组织负责IP地址和域名分配，同时，IANA负责维护TCP/IP协议族所采用的协议标识符数据库，包括自治系统号。</p>
+<p>•在长度为16bit的AS号表示方式中：64512-65534为私有AS号，在长度为32bit的AS号表示方式中：4200000000-4294967294为私有AS号。</p>
+</blockquote>
+<h2 id="使用IGP传递路由"><a href="#使用IGP传递路由" class="headerlink" title="使用IGP传递路由"></a>使用IGP传递路由</h2><p>•AS之间需要直连链路，或通过VPN协议构造逻辑直连（例如GRE Tunnel）进行邻居建立。</p>
+<p>•AS之间可能是不同的机构、公司，相互之间无法完全信任，使用IGP可能存在暴露AS内部的网络信息的风险。</p>
+<p>•整个网络规模扩大，路由数量进一步增加，路由表规模变大，路由收敛变慢，设备性能消耗加大。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/2.png"></p>
+<blockquote>
+<p>•VPN（virtual private network，虚拟专用网）：使用虚拟专业网络技术可以从逻辑上建立一个直接连接的网络。</p>
+</blockquote>
+<h2 id="使用BGP传递路由"><a href="#使用BGP传递路由" class="headerlink" title="使用BGP传递路由"></a>使用BGP传递路由</h2><p>为此在AS之间专门使用BGP（Border Gateway Protocol，边界网关协议）协议进行路由传递，相较于传统的IGP协议：</p>
+<ul>
+<li><p>BGP基于TCP，只要能够建立TCP连接即可建立BGP。</p>
+</li>
+<li><p>只传递路由信息，不会暴露AS内的拓扑信息。</p>
+</li>
+<li><p>触发式更新，而不是进行周期性更新。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/3.png"></p>
+<h2 id="BGP发展历史"><a href="#BGP发展历史" class="headerlink" title="BGP发展历史"></a>BGP发展历史</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/4.png"></p>
+<blockquote>
+<p>•目前关于BGP-4最新的RFC是4271，相比较于RFC1771，对于一些细节进行了进一步说明，如事件、状态机以及BGP路由决策流程等。</p>
+</blockquote>
+<h2 id="BGP在企业中的应用"><a href="#BGP在企业中的应用" class="headerlink" title="BGP在企业中的应用"></a>BGP在企业中的应用</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/5.png"></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/6.png"></p>
+<h1 id="BGP的基本概念"><a href="#BGP的基本概念" class="headerlink" title="BGP的基本概念"></a>BGP的基本概念</h1><h2 id="BGP概述-1"><a href="#BGP概述-1" class="headerlink" title="BGP概述"></a>BGP概述</h2><p>•BGP是一种实现自治系统AS之间的路由可达，并选择最佳路由的矢量性协议。早期发布的三个版本分别是BGP-1（RFC1105）、BGP-2（RFC1163）和BGP-3（RFC1267），1994年开始使用BGP-4（RFC1771），2006年之后单播IPv4网络使用的版本是BGP-4（RFC4271），其他网络（如IPv6等）使用的版本是MP-BGP（RFC4760）。 </p>
+<p>•BGP的特点：</p>
+<ul>
+<li>BGP使用TCP作为其传输层协议（端口号为179），使用触发式路由更新，而不是周期性路由更新。</li>
+<li>BGP能够承载大批量的路由信息，能够支撑大规模网络。</li>
+<li>BGP提供了丰富的路由策略，能够灵活的进行路由选路，并能指导对等体按策略发布路由。</li>
+<li>BGP能够支撑MPLS/VPN的应用，传递客户VPN路由。</li>
+<li>BGP提供了路由聚合和路由衰减功能用于防止路由振荡，通过这两项功能有效地提高了网络稳定性。</li>
+</ul>
+<h2 id="BGP特征-1"><a href="#BGP特征-1" class="headerlink" title="BGP特征 (1)"></a>BGP特征 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/7.png"></p>
+<p>•BGP使用TCP为传输层协议，TCP端口号179。路由器之间的BGP会话基于TCP连接而建立。</p>
+<p>•运行BGP的路由器被称为BGP发言者（BGP Speaker），或BGP路由器。</p>
+<p>•两个建立BGP会话的路由器互为对等体（Peer），BGP对等体之间交换BGP路由表。</p>
+<p>•BGP路由器只发送增量的BGP路由更新，或进行触发式更新（不会周期性更新）。</p>
+<p>•BGP能够承载大批量的路由前缀，可在大规模网络中应用。</p>
+<h2 id="BGP特征-2"><a href="#BGP特征-2" class="headerlink" title="BGP特征 (2)"></a>BGP特征 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/8.png"></p>
+<p>•BGP通常被称为路径矢量路由协议（Path-Vector Routing Protocol）。</p>
+<p>•每条BGP路由都携带多种路径属性（Path attribute），BGP可以通过这些路径属性控制路径选择，而不像IS-IS、OSPF只能通过Cost控制路径选择，因此在路径选择上，BGP具有丰富的可操作性，可以在不同场景下选择最合适的路径控制方式。</p>
+<h2 id="BGP对等体关系"><a href="#BGP对等体关系" class="headerlink" title="BGP对等体关系"></a>BGP对等体关系</h2><p>•与OSPF、IS-IS等协议不同，BGP的会话是基于TCP建立的。建立BGP对等体关系的两台路由器并不要求必须直连。</p>
+<p>•BGP存在两种对等体关系类型：EBGP及IBGP：</p>
+<ul>
+<li><p>EBGP（External BGP）：位于不同自治系统的BGP路由器之间的BGP对等体关系。两台路由器之间要建立EBGP对等体关系，必须满足两个条件：</p>
+<ul>
+<li>两个路由器所属AS不同（即AS号不同）。</li>
+<li>在配置EBGP时，Peer命令所指定的对等体IP地址要求路由可达，并且TCP连接能够正确建立。</li>
+</ul>
+</li>
+<li><p>IBGP（Internal BGP）：位于相同自治系统的BGP路由器之间的BGP邻接关系。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/9.png"></p>
+<h2 id="BGP对等体关系建立-1"><a href="#BGP对等体关系建立-1" class="headerlink" title="BGP对等体关系建立 (1)"></a>BGP对等体关系建立 (1)</h2><p>先启动BGP的一端先发起TCP连接，如左图所示，R1先启动BGP，R1使用随机端口号向R2的179端口发起TCP连接，完成TCP连接的建立。</p>
+<p>三次握手建立完成之后，R1、R2之间相互发送Open报文，携带参数用于对等体建立，参数协商正常之后双方相互发送Keepalive报文，收到对端发送的Keepalive报文之后对等体建立成功，同时双方定期发送Keepalive报文用于保持连接。</p>
+<p>其中Open报文中携带：</p>
+<ul>
+<li><p>My Autonomous System：自身AS号</p>
+</li>
+<li><p>Hold Time：用于协商后续Keepalive报文发送时间</p>
+</li>
+<li><p>BGP Identifier：自身Router ID</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/10.png"></p>
+<blockquote>
+<p>•BGP建立对等体的对等体都会发起TCP三次握手，所以会建立两个TCP连接，但是实际BGP只会保留其中一个TCP连接，从Open报文中获取对端BGP Identifier之后BGP对等体会比较本端的Router ID和对端的Router ID大小，如果本端Router ID小于对端Router ID，则会关闭本地建立的TCP连接，使用由对端主动发起创建的TCP连接进行后续的BGP报文交互。</p>
+</blockquote>
+<h2 id="BGP对等体关系建立-2"><a href="#BGP对等体关系建立-2" class="headerlink" title="BGP对等体关系建立 (2)"></a>BGP对等体关系建立 (2)</h2><p>BGP对等体关系建立之后，BGP路由器发送BGP Update（更新）报文通告路由到对等体。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/11.png"></p>
+<h2 id="TCP连接源地址"><a href="#TCP连接源地址" class="headerlink" title="TCP连接源地址"></a>TCP连接源地址</h2><p>缺省情况下，BGP使用报文出接口作为TCP连接的本地接口。</p>
+<p>在部署IBGP对等体关系时，建议使用Loopback地址作为更新源地址。Loopback接口非常稳定，而且可以借助AS内的IGP和冗余拓扑来保证可靠性。</p>
+<p>在部署EBGP对等体关系时，通常使用直连接口的IP地址作为源地址，如若使用Loopback接口建立EBGP对等体关系，则应注意EBGP多跳问题。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/12.png"></p>
+<h2 id="BGP报文类型-1"><a href="#BGP报文类型-1" class="headerlink" title="BGP报文类型 (1)"></a>BGP报文类型 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/13.png"></p>
+<p>BGP存在5种类型的报文，不同类型的报文拥有相同的头部（header）。</p>
+<blockquote>
+<p>•不同于常见的IGP协议，BGP使用TCP作为传输层协议，端口号179，这使得BGP支持在非直连的路由器之间建立对等体关系。</p>
+</blockquote>
+<h2 id="BGP报文类型-2"><a href="#BGP报文类型-2" class="headerlink" title="BGP报文类型 (2)"></a>BGP报文类型 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/14.png"></p>
+<h2 id="BGP报文格式-报文头格式"><a href="#BGP报文格式-报文头格式" class="headerlink" title="BGP报文格式 - 报文头格式"></a>BGP报文格式 - 报文头格式</h2><p>BGP五种报文都拥有相同的报文头，格式如左侧所示，主要字段解释如下：</p>
+<ul>
+<li>pMarker：16Byte，用于标明BGP报文边界，所有bit均为“1”。</li>
+<li>pLength：2Byte，BGP报文总长度（包括报文头在内），以Byte为单位。</li>
+<li>pType：1Byte，BGP报文的类型。其取值从1到5，分别表示Open、Update、Notification、Keepalive和Route-refresh 报文。</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/15.png"></p>
+<h2 id="BGP报文格式-Open"><a href="#BGP报文格式-Open" class="headerlink" title="BGP报文格式 - Open"></a>BGP报文格式 - Open</h2><p>Open报文是TCP连接建立之后发送的第一个报文，用于建立BGP对等体之间的连接关系，报文格式如左侧所示，主要字段解释如下：</p>
+<ul>
+<li><p>pVersion：BGP的版本号。对于BGP 4来说，其值为4。</p>
+</li>
+<li><p>pMy AS（autonomous system）：本地AS号。通过比较两端的AS号可以判断对端是否和本端处于相同AS。</p>
+</li>
+<li><p>pHold Time：保持时间。在建立对等体关系时两端要协商Hold Time，并保持一致。如果在这个时间内未收到对端发来的Keepalive报文或Update报文，则认为BGP连接中断。</p>
+</li>
+<li><p>pBGP Identifier：BGP标识符，以IP地址的形式表示，用来识别BGP路由器。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/16.png"></p>
+<blockquote>
+<p>•Opt Parm Len：Optional parameters的长度。</p>
+<p>•Optional parameters：宣告自身对于一些可选功能的支持，比如认证、多协议支持。</p>
+<p>•除了IPv4单播路由信息，BGP4+还支持多种网络层协议（如IPv6、组播），在协商时BGP对等体之间会通过Optional parameters字段协商对网络层协议的支持能力。</p>
+</blockquote>
+<h3 id="Open协商成功条件"><a href="#Open协商成功条件" class="headerlink" title="Open协商成功条件"></a>Open协商成功条件</h3><ol>
+<li>版本不一致</li>
+<li>tcp 179 被过滤</li>
+<li>IBGP AS相同 EBGP AS不相同</li>
+<li>EBGP检测多跳</li>
+<li>认证</li>
+<li>Router id 不能冲突</li>
+<li>peer 地址必须可达</li>
+</ol>
+<h2 id="BGP报文格式-Update"><a href="#BGP报文格式-Update" class="headerlink" title="BGP报文格式 - Update"></a>BGP报文格式 - Update</h2><p>•Update报文用于在对等体之间传递路由信息，可以用于发布、撤销路由。</p>
+<p>•一个Update报文可以通告具有相同路径属性的多条路由，这些路由保存在NLRI（Network Layer Reachable Information，网络层可达信息）中。同时Update还可以携带多条不可达路由，用于告知对方撤销路由，这些保存在Withdrawn Routes字段中。</p>
+<p>•报文格式如左侧所示，主要字段解释如下：</p>
+<ul>
+<li><p>Withdrawn routes：不可达路由的列表。</p>
+</li>
+<li><p>Path attributes：与NLRI相关的所有路径属性列表，每个路径属性由一个TLV（Type-Length-Value）三元组构成。</p>
+</li>
+<li><p>NLRI：可达路由的前缀和前缀长度二元组。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/17.png"></p>
+<blockquote>
+<p>•Unfeasible routes length：不可达路由字段的长度，以Byte为单位。如果为0则说明没有Withdrawn Routes 字段。</p>
+<p>•Withdrawn Routes Length：标明Withdrawn Routes部分的长度。其值为零时，表示没有撤销的路由。</p>
+<p>•Total path attribute length：路径属性字段的长度，以Byte为单位。如果为0则说明没有Path Attributes 字段。</p>
+</blockquote>
+<h2 id="BGP报文格式-Notification"><a href="#BGP报文格式-Notification" class="headerlink" title="BGP报文格式 - Notification"></a>BGP报文格式 - Notification</h2><p>当BGP检测到错误状态时（对等体关系建立时、建立之后都可能发生），就会向对等体发送Notification，告知对端错误原因。之后BGP连接将会立即中断。</p>
+<ul>
+<li><p>pError Code、Error subcode：差错码、差错子码，用于告知对端具体的错误类型。</p>
+</li>
+<li><p>pData：用于辅助描述详细的错误内容，长度并不固定。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/18.png"></p>
+<h2 id="BGP报文格式-Keepalive"><a href="#BGP报文格式-Keepalive" class="headerlink" title="BGP报文格式 - Keepalive"></a>BGP报文格式 - Keepalive</h2><p>•BGP路由器收到对端发送的Keepalive报文，将对等体状态置为已建立，同时后续定期发送keepalive报文用于保持连接。</p>
+<p>•Keepalive报文格式中只包含报文头，没有附加其他任何字段。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/19.png"></p>
+<h2 id="BGP报文格式-Route-refresh"><a href="#BGP报文格式-Route-refresh" class="headerlink" title="BGP报文格式 - Route-refresh"></a>BGP报文格式 - Route-refresh</h2><p>•Route-refresh报文用来要求对等体重新发送指定地址族的路由信息，一般为本端修改了相关路由策略之后让对方重新发送Update报文，本端执行新的路由策略重新计算BGP路由。</p>
+<p>•相关字段内容如下：</p>
+<ul>
+<li><p>pAFI：Address Family Identifier，地址族标识，如IPv4。</p>
+</li>
+<li><p>pRes.：保留，8个bit必须置0。</p>
+</li>
+<li><p>pSAFI：Subsequent Address Family Identifier，子地址族标识。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/20.png"></p>
+<blockquote>
+<p>•在Open报文协商时会协商是否支持Route-refresh，如果对等体支持Route-refresh能力，则可以通过<strong>refresh</strong> <strong>bgp</strong>命令手工对BGP连接进行软复位，BGP软复位可以在不中断BGP连接的情况下重新刷新BGP路由表，并应用新的策略。</p>
+<p>•对于不支持Route-Refresh能力的BGP对等体，可以配置<strong>keep-all-routes</strong>命令，保留该对等体的所有原始路由，这样不需要复位BGP连接即可完成路由表的刷新。</p>
+<p>•缺省情况下未开启<strong>keep-all-routes</strong>。</p>
+</blockquote>
+<h2 id="BGP状态机-1"><a href="#BGP状态机-1" class="headerlink" title="BGP状态机 (1)"></a>BGP状态机 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/21.png"></p>
+<h2 id="BGP状态机-2"><a href="#BGP状态机-2" class="headerlink" title="BGP状态机 (2)"></a>BGP状态机 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/22.png"></p>
+<blockquote>
+<p>•Idle状态是BGP初始状态。在Idle状态下，BGP拒绝对等体发送的连接请求。只有在收到本设备的Start事件后，BGP才开始尝试和其它BGP对等体进行TCP连接，并转至Connect状态。</p>
+<ul>
+<li>Start事件是由一个操作者配置一个BGP过程，或者重置一个已经存在的过程或者路由器软件重置BGP过程引起的。</li>
+<li>任何状态中收到Notification报文或TCP拆链通知等Error事件后，BGP都会转至Idle状态。</li>
+</ul>
+<p>•在Connect状态下，BGP启动连接重传定时器（Connect Retry），等待TCP完成连接。</p>
+<ul>
+<li>如果TCP连接成功，那么BGP向对等体发送Open报文，并转至OpenSent状态。</li>
+<li>如果TCP连接失败，那么BGP转至Active状态。</li>
+<li>如果连接重传定时器超时，BGP仍没有收到BGP对等体的响应，那么BGP继续尝试和其它BGP对等体进行TCP连接，停留在Connect状态。</li>
+</ul>
+<p>•在Active状态下，BGP总是在试图建立TCP连接。</p>
+<ul>
+<li>如果TCP连接成功，那么BGP向对等体发送Open报文，关闭连接重传定时器，并转至OpenSent状态。</li>
+<li>如果TCP连接失败，那么BGP停留在Active状态。</li>
+<li>如果连接重传定时器超时，BGP仍没有收到BGP对等体的响应，那么BGP转至Connect状态。</li>
+</ul>
+<p>•在OpenSent状态下，BGP等待对等体的Open报文，并对收到的Open报文中的AS号、版本号、认证码等进行检查。</p>
+<ul>
+<li><p>如果收到的Open报文正确，那么BGP发送Keepalive报文，并转至OpenConfirm状态。</p>
+</li>
+<li><p>如果发现收到的Open报文有错误，那么BGP发送Notification报文给对等体，并转至Idle状态。</p>
+</li>
+</ul>
+<p>•在OpenConfirm状态下，BGP等待Keepalive或Notification报文。如果收到Keepalive报文，则转至Established状态，如果收到Notification报文，则转至Idle状态。</p>
+<p>•在Established状态下，BGP可以和对等体交换Update、Keepalive、Route-refresh报文和Notification报文。</p>
+<ul>
+<li><p>如果收到正确的Update或Keepalive报文，那么BGP就认为对端处于正常运行状态，将保持BGP连接。</p>
+</li>
+<li><p>如果收到错误的Update或Keepalive报文，那么BGP发送Notification报文通知对端，并转至Idle状态。</p>
+</li>
+<li><p>Route-refresh报文不会改变BGP状态。</p>
+</li>
+<li><p>如果收到Notification报文，那么BGP转至Idle状态。</p>
+</li>
+<li><p>如果收到TCP拆链通知，那么BGP断开连接，转至Idle状态。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="BGP状态机详解-1"><a href="#BGP状态机详解-1" class="headerlink" title="BGP状态机详解 (1)"></a>BGP状态机详解 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/23.png"></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/24.png"></p>
+<h2 id="BGP状态机详解-2"><a href="#BGP状态机详解-2" class="headerlink" title="BGP状态机详解 (2)"></a>BGP状态机详解 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/25.png"></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/26.png"></p>
+<h2 id="BGP对等体表"><a href="#BGP对等体表" class="headerlink" title="BGP对等体表"></a>BGP对等体表</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/27.png"></p>
+<p>•在设备上通过<strong>display</strong> <strong>bgp</strong> <strong>peer</strong>命令查看BGP对等体表，其中主要参数含义：</p>
+<ul>
+<li><p>Peer：对等体地址</p>
+</li>
+<li><p>V：version，版本号</p>
+</li>
+<li><p>AS：对等体AS号</p>
+</li>
+<li><p>Up/Down：该对等体已经存在up或者down的时间</p>
+</li>
+<li><p>State：对等体状态，这里显示的为BGP状态机的状态</p>
+</li>
+<li><p>PrefRcv：prefix received，从该对等体收到的路由前缀数目</p>
+</li>
+</ul>
+<blockquote>
+<p>•BGP对等体表的作用为列出本设备的BGP对等体，以及对等体的状态等信息。</p>
+<p>•MsgRcvd 、MsgSent：从对等体收到的报文个数，向对等体发送的报文个数。</p>
+<p>•OutQ：out queue，对外发送报文队列中排队的个数，一般为0。</p>
+</blockquote>
+<h2 id="BGP路由表-1"><a href="#BGP路由表-1" class="headerlink" title="BGP路由表 (1)"></a>BGP路由表 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/28.png"></p>
+<p>•在设备上通过<strong>display bgp routing-table</strong>查看BGP路由表：</p>
+<ul>
+<li><p>Network：路由的目的网络地址以及网络掩码</p>
+</li>
+<li><p>NextHop：下一跳地址</p>
+</li>
+</ul>
+<p>•如果想要查看某条路由更加详细的信息，可以通过<strong>display</strong> <strong>bgp</strong> <strong>routing-table</strong> <em>ipv4-address { mask |</em> <em>mask-length}</em> 查看，该命令会将匹配的BGP路由信息详细展示。</p>
+<blockquote>
+<p>•列出本设备发现的所有BGP路由，如果到达同一个目的地存在多条路由，则将路由都进行罗列，但每个目的地只会优选一条路由。</p>
+</blockquote>
+<h2 id="BGP路由表-2"><a href="#BGP路由表-2" class="headerlink" title="BGP路由表 (2)"></a>BGP路由表 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/29.png"></p>
+<blockquote>
+<p>•通过<strong>display</strong> <strong>bgp</strong> <strong>routing-table</strong> <em>ipv4-address { mask | mask-length }</em> 可以显示指定IP地址/掩码长度的路由信息，在其中有关于该BGP路由的详细信息，如：路由始发者、下一跳地址、路由的路径属性等。</p>
+</blockquote>
+<h2 id="BGP路由的生成"><a href="#BGP路由的生成" class="headerlink" title="BGP路由的生成"></a>BGP路由的生成</h2><p>•不同于IGP路由协议，BGP自身并不会发现并计算产生路由，BGP将IGP路由表中的路由注入到BGP路由表中，并通过Update报文传递给BGP对等体。</p>
+<p>•BGP注入路由的方式有两种：</p>
+<ul>
+<li><p>Network</p>
+</li>
+<li><p>import-route</p>
+</li>
+</ul>
+<p>•与IGP协议相同，BGP支持根据已有的路由条目进行聚合，生成聚合路由。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/30.png"></p>
+<h2 id="Network注入路由-1"><a href="#Network注入路由-1" class="headerlink" title="Network注入路由 (1)"></a>Network注入路由 (1)</h2><p>通过Network方式注入路由：</p>
+<p><strong>1.AS200内的BGP路由器已经通过IGP协议OSPF学习到了两条路由：10.1.0.0/24和10.2.0.0/24，在BGP进程内通过network命令注入这两条路由，这两条路由将会出现在本地的BGP路由表中。</strong></p>
+<p><em>2.AS200内的BGP路由器通过Update报文将路由传递给AS300内的BGP路由器。</em></p>
+<p><em>3.AS300内的BGP路由器收到路由后，将这两条路由加入到本地的BGP路由表中。</em></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/31.png"></p>
+<blockquote>
+<p>•Network方式注入的路由必须是已经存在于IP路由表中的路由条目，否则不会被成功注入到BGP路由表中。</p>
+</blockquote>
+<h2 id="Network注入路由-2"><a href="#Network注入路由-2" class="headerlink" title="Network注入路由 (2)"></a>Network注入路由 (2)</h2><p>通过Network方式注入路由：</p>
+<p><em>1.AS200内的BGP路由器已经通过IGP协议OSPF学习到了两条路由：10.1.0.0/24和10.2.0.0/24，在BGP进程内通过network命令注入这两条路由，这两条路由将会出现在本地的BGP路由表中。</em></p>
+<p><strong>2.AS200内的BGP路由器通过Update报文将路由传递给AS300内的BGP路由器。</strong></p>
+<p><strong>3.AS300内的BGP路由器收到路由后，将这两条路由加入到本地的BGP路由表中。</strong></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/32.png"></p>
+<h2 id="import-route方式注入路由"><a href="#import-route方式注入路由" class="headerlink" title="import-route方式注入路由"></a>import-route方式注入路由</h2><p>•Network方式注入路由虽然是精确注入，但是只能一条条配置逐条注入IP路由表中的路由，如果注入的路由条目很多配置命令将会非常复杂，为此可以使用import-route方式，将：</p>
+<ol>
+<li><p>直连路由</p>
+</li>
+<li><p>静态路由</p>
+</li>
+<li><p>OSPF路由</p>
+</li>
+<li><p>IS-IS路由</p>
+</li>
+</ol>
+<p>等协议的路由注入到BGP路由表中。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/33.png"></p>
+<h2 id="BGP聚合路由"><a href="#BGP聚合路由" class="headerlink" title="BGP聚合路由"></a>BGP聚合路由</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/34.png"></p>
+<p>与众多IGP协议相同，BGP同样支持路由的手工聚合，在BGP配置视图中使用<strong>aggregate</strong>命令可以执行BGP路由手工聚合，在BGP已经学习到相应的明细路由情况下，设备会向BGP注入指定的聚合路由。</p>
+<blockquote>
+<p>•执行聚合之后，在本地的BGP路由表中除了原本的明细路由条目之外，还会多出一条聚合的路由条目。</p>
+<p>•如果在执行聚合时指定了<strong>detail-suppressed</strong>，则BGP只会向对等体通告聚合后的路由，而不通告聚合前的明细路由。</p>
+<p>•在聚合时配置了抑制明细路由的参数，R3上查看路由表，将只能看到BGP路由：10.1.0.0/22，无法看到聚合前的明细路由。</p>
+</blockquote>
+<h2 id="通告原则"><a href="#通告原则" class="headerlink" title="通告原则"></a>通告原则</h2><p>•BGP通过network、import-route、aggregate聚合方式生成BGP路由后，通过Update报文将BGP路由传递给对等体。</p>
+<p>•BGP通告遵循以下原则：</p>
+<ul>
+<li><p>只发布最优且有效路由。</p>
+</li>
+<li><p>从EBGP对等体获取的路由，会发布给所有对等体。</p>
+</li>
+<li><p>IBGP水平分割：从IBGP对等体获取的路由，不会发送给IBGP对等体。</p>
+</li>
+<li><p>BGP同步规则指的是：当一台路由器从自己的IBGP对等体学习到一条BGP路由时（这类路由被称为IBGP路由），它将不能使用该条路由或把这条路由通告给自己的EBGP对等体，除非它又从IGP协议（例如OSPF等，此处也包含静态路由）学习到这条路由，也就是要求IBGP路由与IGP路由同步。同步规则主要用于规避BGP路由黑洞问题。</p>
+</li>
+</ul>
+<h3 id="BGP路由通告原则一"><a href="#BGP路由通告原则一" class="headerlink" title="BGP路由通告原则一"></a>BGP路由通告原则一</h3><p>•第一条原则：只发布最优且有效（即下一跳地址可达）路由。</p>
+<p>•通过<strong>display</strong> <strong>bgp</strong> <strong>routing-table</strong>命令可以查看BGP路由表。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/35.png"></p>
+<p>•在BGP路由表中同时存在以下两个标志的路由为最优、有效：</p>
+<ul>
+<li><p>* : 代表有效</p>
+</li>
+<li><p>&gt; : 代表最优</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/36.png"></p>
+<h3 id="BGP路由通告原则二"><a href="#BGP路由通告原则二" class="headerlink" title="BGP路由通告原则二"></a>BGP路由通告原则二</h3><p>第二条原则：从EBGP对等体获取的路由，会发布给所有对等体。</p>
+<p>R2从EBGP对等体获取的BGP路由，会发布给所有EBGP、IBGP对等体。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/37.png"></p>
+<h3 id="BGP路由通告原则三-1"><a href="#BGP路由通告原则三-1" class="headerlink" title="BGP路由通告原则三 (1)"></a>BGP路由通告原则三 (1)</h3><p>•第三条原则：从IBGP对等体获取的BGP路由，不会再发送给其他IBGP对等体。</p>
+<p>•该条原则也被称为“IBGP水平分割”。</p>
+<p>•如图所示，如果IBGP对等体学习到的路由会继续传递给其他的IBGP对等体：</p>
+<ul>
+<li><p>R2将一条路由传递给了IBGP对等体R3</p>
+</li>
+<li><p>R3收到路由之后传递给IBGP对等体R1</p>
+</li>
+<li><p>R1继续传递给IBGP对等体R2</p>
+<p>路由环路形成。</p>
+</li>
+</ul>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/38.png"></p>
+<h3 id="BGP路由通告原则三-2"><a href="#BGP路由通告原则三-2" class="headerlink" title="BGP路由通告原则三 (2)"></a>BGP路由通告原则三 (2)</h3><p>•第三条原则可能会带来新的问题，如左侧所示，当BGP路由器R2将路由传递给BGP路由器R1时，由于第三条原则限制，R1无法将BGP路由传递给R3，R3将无法学习到路由。</p>
+<p>•为解决该问题可以采用AS内IBGP全互联的方式，即：R2、R3之间建立非直连的IBGP对等体关系，以此让BGP路由器R2将路由传递给BGP路由器 R3。</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/39.png"></p>
+<h3 id="BGP路由通告原则四-1"><a href="#BGP路由通告原则四-1" class="headerlink" title="BGP路由通告原则四 (1)"></a>BGP路由通告原则四 (1)</h3><p>•第四条原则：当一台路由器从自己的IBGP对等体学习到一条BGP路由时（这类路由被称为IBGP路由），它将不能使用该条路由或把这条路由通告给自己的EBGP对等体，除非它又从IGP协议（例如OSPF等，此处也包含静态路由）学习到这条路由，该条规则也被称为BGP同步原则。</p>
+<p>•如图所示：</p>
+<ol>
+<li><p>BGP路由器R4上存在一条路由10.0.4.0/24，R4将其传递给了R2。</p>
+</li>
+<li><p>R2将路由传递给非直连IBGP对等体R3。</p>
+</li>
+<li><p>R3将路由传递给R5。</p>
+</li>
+<li><p>之后R5向10.0.4.4发起访问。</p>
+</li>
+</ol>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/40.png"></p>
+<h3 id="BGP路由通告原则四-2"><a href="#BGP路由通告原则四-2" class="headerlink" title="BGP路由通告原则四 (2)"></a>BGP路由通告原则四 (2)</h3><p>•R5访问10.0.4.4：</p>
+<ol>
+<li><p>R5查找路由表，将报文发送给R3。</p>
+</li>
+<li><p>R3收到报文后查找路由表，匹配到一条BGP路由，其下一跳为R2，但是R2为非直连下一跳，需要进行路由迭代，通过IGP学习到的路由迭代出下一跳为R1。R3将报文发送给R1。</p>
+</li>
+<li><p>R1收到报文后查找路由表，因为R1并非BGP路由器，未与R2建立IBGP对等体关系，因此R1上并无BGP路由10.0.4.0/24，路由查找失败，R1将报文丢弃。</p>
+</li>
+</ol>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/41.png"></p>
+<blockquote>
+<p>•产生该问题根本原因为AS200域内未运行BGP的路由器并无从BGP学习到的路由条目，查找路由失败，导致R1丢弃报文。为此制定了BGP同步原则：</p>
+<p>当BGP的路由条目也存在于IGP路由表时才对外发送，以图中场景为例，当R3查看IGP路由表，OSPF路由表中并无路由10.0.4.0/24，因此并不会向R5发送该路由，自然也不会产生后续的访问失败问题。</p>
+<p>•解决该问题的方式有：</p>
+<ul>
+<li>将BGP路由重分发到IGP中，基本不会使用该方式。</li>
+<li>建立全互联的IBGP对等体关系，让全网所有路由器都拥有BGP路由。</li>
+</ul>
+</blockquote>
+<h1 id="BGP的基本配置"><a href="#BGP的基本配置" class="headerlink" title="BGP的基本配置"></a>BGP的基本配置</h1><h2 id="配置介绍"><a href="#配置介绍" class="headerlink" title="配置介绍"></a>配置介绍</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/42.png"></p>
+<blockquote>
+<p>•如果没有配置Router ID，则BGP会自动选取系统视图下的Router ID作为BGP协议的Router ID。系统视图下的Router ID选择规则，请参见命令router-id中的描述。</p>
+</blockquote>
+<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/43.png"></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/44.png"></p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/45.png"></p>
+<h2 id="配置案例-2"><a href="#配置案例-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p>在R3上查看BGP对等体状态：</p>
+<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/46.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）BGP使用的TCP目的端口号是多少？</p>
+<p><strong>179</strong></p>
+<p>2.（简答题）BGP对等体关系有哪几种？划分的依据是什么？</p>
+<p><strong>IBGP、EBGP对等体关系，对等体是否和自身处于一个AS内。</strong></p>
+<p>3.（多选题）BGP对等体关系建立、更新路由分别使用（  ）、（  ）报文。</p>
+<p>A.Route-refresh</p>
+<p><strong>B.Open</strong></p>
+<p>C.Notification</p>
+<p><strong>D.Update</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章节介绍了BGP基础知识，涵盖了：BGP产生的背景、AS的概念、BGP的特征等。</p>
+<p>•本章节中我们详细地学习了BGP的对等体关系建立过程以及BGP状态机，学习时将对等体关系建立过程与状态机的转换相结合有助于理解记忆。</p>
+<p>• 不同于IGP路由协议，BGP不能自己发现、计算路由条目，其路由条目由IGP协议路由表中的路由发布得到。</p>
+<p>•BGP在进行路由通告时遵循四条原则，这些原则对BGP路由传递进行了限制。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/IS-IS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/10/IS-IS/" itemprop="url">IS-IS</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T16:36:30+08:00">
+                2021-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/IS-IS/IS-IS.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。</p>
+<p>•随着TCP/IP协议的流行，为了提供对IP路由的支持，IETF在RFC1195中对IS-IS进行了扩充和修改，使它能够同时应用在TCP/IP和OSI（Open System Interconnect，开放式系统互联）环境中，我们将扩展后的IS-IS称为集成IS-IS。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IS-IS的基本概念</p>
+<p>▫描述IS-IS的工作原理</p>
+<p>▫描述IS-IS与OSPF的差异</p>
+<p>▫实现IS-IS的常用配置</p>
+<h1 id="IS-IS的基本概念"><a href="#IS-IS的基本概念" class="headerlink" title="IS-IS的基本概念"></a>IS-IS的基本概念</h1><h2 id="IS-IS概述"><a href="#IS-IS概述" class="headerlink" title="IS-IS概述"></a>IS-IS概述</h2><p>IS-IS是ISO定义的OSI协议栈中的CLNS（ConnectionLess Network Service，无连接网络服务）的一部分。</p>
+<p><img src="/2021/05/10/IS-IS/1.png"></p>
+<blockquote>
+<p>•IS-IS是一种链路状态路由协议，IS-IS与OSPF在许多方面非常相似，例如运行IS-IS协议的直连设备之间通过发送Hello报文发现彼此，然后建立邻接关系，并交互链路状态信息。</p>
+<p>•CLNS由以下三个部分组成：</p>
+<p>​    ▫CLNP：类似于TCP/IP中的IP协议。</p>
+<p>​    ▫IS-IS：类似于TCP/IP中的OSPF。</p>
+<p>​    ▫ES-IS：类似于TCP/IP中的ARP，ICMP等。</p>
+<p>•ES：End System，终端系统，类似于IP网络环境中的主机。</p>
+<p>•ES-IS：End System to Intermediate System，终端系统到中间系统。</p>
+<p>•IP网络环境中不涉及CLNP以及ES-IS，因此本课程不做详细介绍。</p>
+</blockquote>
+<h2 id="NSAP"><a href="#NSAP" class="headerlink" title="NSAP"></a>NSAP</h2><p>•NSAP（Network Service Access Point，网络服务访问点）是OSI协议栈中用于定位资源的地址，主要用于提供网络层和上层应用之间的接口。NSAP包括IDP及DSP，如下图所示：</p>
+<p><img src="/2021/05/10/IS-IS/2.png"></p>
+<p>•IDP（Initial Domian Part）相当于IP地址中的主网络号。它是由ISO规定，并由AFI（Authority and Format Identifier）与IDI（Initial Domain Identifier）两部分组成。AFI表示地址分配机构和地址格式，IDI用来标识域。</p>
+<p>•DSP（Domian Specific Part）相当于IP地址中的子网号和主机地址。它由High Order DSP、System ID和SEL三个部分组成。High Order DSP用来分割区域，System ID用来区分主机，SEL（NSAP Selector）用来指示服务类型。</p>
+<h2 id="NET"><a href="#NET" class="headerlink" title="NET"></a>NET</h2><p>•NET（Network Entity Title，网络实体名称）是OSI协议栈中设备的网络层信息，主要用于路由计算，由区域地址（Area ID）和System ID组成，可以看作是特殊的NSAP（SEL为00的NSAP）。</p>
+<p>•NET的长度与NSAP的相同，最长为20Byte，最短为8Byte。</p>
+<p>•在IP网络中运行IS-IS时，只需配置NET，根据NET地址设备可以获取到Area ID以及System ID。</p>
+<p><img src="/2021/05/10/IS-IS/3.png"></p>
+<blockquote>
+<p>•Area ID由IDP和DSP中的High Order DSP组成，既能够标识路由域，也能够标识路由域中的区域。因此，它们一起被称为区域地址，相当于OSPF中的区域编号。</p>
+<p>​    ▫一般情况下，一个路由器只需要配置一个区域地址，且同一区域中所有节点的区域地址都要相同。为了支持区域的平滑合并、分割及转换，缺省情况下，一个IS-IS进程下最多可配置3个区域地址。</p>
+<p>•System ID用来在区域内唯一标识主机或路由器。在设备的实现中，它的长度固定为6Byte。</p>
+</blockquote>
+<h2 id="NET的配置举例"><a href="#NET的配置举例" class="headerlink" title="NET的配置举例"></a>NET的配置举例</h2><p>•每台运行IS-IS的网络设备至少需拥有一个NET，当然，一台设备也可以同时配置多个NET，但是这些NET的System ID必须相同。</p>
+<p>•在华为的网络设备上，System ID的长度总是固定的6Byte。在一个IS-IS路由域中，设备的System ID必须唯一，为了便于管理，一般根据Router ID配置System ID。</p>
+<p><img src="/2021/05/10/IS-IS/4.png"></p>
+<h2 id="IS-IS和OSPF区域划分的区别"><a href="#IS-IS和OSPF区域划分的区别" class="headerlink" title="IS-IS和OSPF区域划分的区别"></a>IS-IS和OSPF区域划分的区别</h2><p>•IS-IS在自治系统内采用骨干区域与非骨干区域两级的分层结构：</p>
+<p>​    ▫Level-1路由器部署在非骨干区域。</p>
+<p>​    ▫Level-2路由器和Level-1-2路由器部署在骨干区域。</p>
+<p>•每一个非骨干区域都通过Level-1-2路由器与骨干区域相连。</p>
+<p>如图所示，IS-IS整个骨干区域不仅包括Area49.0002中的所有路由器，还包括其它区域的Level2和Level-1-2路由器。</p>
+<p><img src="/2021/05/10/IS-IS/5.png"></p>
+<blockquote>
+<p>•在学习OSPF过程中，我们已经体会到了多区域、层次化网络设计的好处。对于链路状态路由协议而言，运行了该协议的设备会向网络中通告链路状态信息，同时也收集网络中所泛洪的链路状态信息后加以存储，并最终以这些信息为基础进行计算，从而得到路由信息。如果不采用多区域部署的方式，那么随着网络的规模逐渐增大，网络中泛洪的链路状态信息势必会越来越多，所有设备都将承受更重的负担，路由计算机收敛将逐渐变得更加缓慢，这也使得网络的扩展性变差。</p>
+<p>•以上拓扑结构图可以体现IS-IS与OSPF的不同点：</p>
+<p>​    ▫在IS-IS中，每个路由器都只属于一个区域；而在OSPF中，一个路由器的不同接口可以属于不同的区域。</p>
+<p>​    ▫在IS-IS中，单个区域没有骨干与非骨干区域的概念；而在OSPF中，Area0被定义为骨干区域。</p>
+<p>​    ▫在IS-IS中，Level-1和Level-2级别的路由都采用SPF算法，分别生成最短路径树SPT（Shortest Path Tree）；而在OSPF中，只有在同一个区域内才使用SPF算法，区域之间的路由需要通过骨干区域来转发。</p>
+</blockquote>
+<h2 id="IS-IS路由器的分类-1"><a href="#IS-IS路由器的分类-1" class="headerlink" title="IS-IS路由器的分类 (1)"></a>IS-IS路由器的分类 (1)</h2><p><strong>Level-1路由器</strong></p>
+<p>▫Level-1路由器（例如图中的R1）是一种IS-IS区域内部路由器，它只与属于同一区域的Level-1和Level-1-2路由器形成邻接关系，这种邻接关系称为Level-1邻接关系。Level-1路由器无法与Level-2路由器建立邻接关系。</p>
+<p>▫Level-1路由器只负责维护Level-1的链路状态数据库LSDB，该LSDB只包含本区域的路由信息。值得一提的是，Level-1路由器必须通过Level-1-2路由器接入IS-IS骨干区域从而访问其他区域。</p>
+<p><img src="/2021/05/10/IS-IS/6.png"></p>
+<h2 id="IS-IS路由器的分类-2"><a href="#IS-IS路由器的分类-2" class="headerlink" title="IS-IS路由器的分类 (2)"></a>IS-IS路由器的分类 (2)</h2><p><strong>Level-2路由器</strong></p>
+<p>▫Level-2路由器（例如图中的R4、R5、R6、R7）是IS-IS骨干路由器，它可以与同一或者不同区域的Level-2路由器或者Level-1-2路由器形成邻接关系。Level-2路由器维护一个Level-2的LSDB，该LSDB包含整个IS-IS域的所有路由信息。</p>
+<p>▫所有Level-2级别（即形成Level-2邻接关系）的路由器组成路由域的骨干网，负责在不同区域间通信。路由域中Level-2级别的路由器必须是物理连续的，以保证骨干网的连续性。</p>
+<p><img src="/2021/05/10/IS-IS/7.png"></p>
+<h2 id="IS-IS路由器的分类-3"><a href="#IS-IS路由器的分类-3" class="headerlink" title="IS-IS路由器的分类 (3)"></a>IS-IS路由器的分类 (3)</h2><p><strong>Level-1-2路由器</strong></p>
+<p>▫Level-1-2路由器与OSPF中的ABR非常相似，它也是IS-IS骨干网络的组成部分。</p>
+<p>▫Level-1-2路由器维护两个LSDB，Level-1的LSDB用于区域内路由，Level-2的LSDB用于区域间路由。</p>
+<p>▫同时属于Level-1和Level-2的路由器称为Level-1-2路由器（例如图中的R2和R3），它可以与同一区域的Level-1和Level-1-2路由器形成Level-1邻接关系，也可以与其他区域的Level-2和Level-1-2路由器形成Level-2的邻接关系。</p>
+<p><img src="/2021/05/10/IS-IS/8.png"></p>
+<blockquote>
+<p>•在华为路由器上配置IS-IS时，缺省时，路由器全局Level为Level-1-2，当然，可以通过命令修改该设备的类型。</p>
+</blockquote>
+<h2 id="IS-IS支持的网络类型"><a href="#IS-IS支持的网络类型" class="headerlink" title="IS-IS支持的网络类型"></a>IS-IS支持的网络类型</h2><p>IS-IS会自动根据接口的数据链路层封装决定该接口的缺省网络类型， IS-IS支持两种类型的网络：</p>
+<p>▫广播（Broadcast）： 如Ethernet。</p>
+<p>▫点到点（P2P）： 如PPP、 HDLC等。</p>
+<p><img src="/2021/05/10/IS-IS/9.png"></p>
+<blockquote>
+<p>•对于NBMA网络，需对其配置子接口，并注意子接口类型应配置为P2P。</p>
+</blockquote>
+<h2 id="IS-IS开销值"><a href="#IS-IS开销值" class="headerlink" title="IS-IS开销值"></a>IS-IS开销值</h2><p>•IS-IS使用Cost（开销）作为路由度量值，Cost值越小，则路径越优。IS-IS链路的Cost与设备的接口有关，与OSPF类似，每一个激活了IS-IS的接口都会维护接口Cost。然而与OSPF不同的是，IS-IS接口的Cost在缺省情况下并不与接口带宽相关（在实际部署时，IS-IS也支持根据带宽调整Cost值），无论接口带宽多大，缺省时Cost为10。</p>
+<p>•一条IS-IS路径的Cost等于本路由器到达目标网段沿途的所有链路的Cost总和。</p>
+<p>•窄带 接口 1-63 全局 1-2的10次幂-1</p>
+<p>•宽带 接口带宽1-2的24次幂-1 全局1-2的32次幂-1</p>
+<p>•IS-IS有三种方式来确定接口的开销，按照优先级由高到低分别是：</p>
+<p>​    ▫接口开销：为单个接口设置开销。</p>
+<p>​    ▫全局开销：为所有接口设置开销。</p>
+<p>​    ▫自动计算开销：根据接口带宽自动计算开销。</p>
+<p><img src="/2021/05/10/IS-IS/10.png"></p>
+<blockquote>
+<p>•在早期的ISO10589中，使能IS-IS的接口下最大只能配置值为63的开销值，此时IS-IS的开销类型为narrow。但是在大型网络设计中，较小的度量范围不能满足实际需求。RFC3784中规定，使能IS-IS的接口开销值可以扩展到16777215，此时IS-IS的开销类型为wide。</p>
+<p>•缺省时，华为路由器采用的开销类型是narrow。</p>
+<p>•narrow类型下使用的TLV：</p>
+<p>​    ▫128号TLV（IP Internal Reachability TLV）：用来携带路由域    内的IS-IS路由信息。</p>
+<p>​    ▫130号TLV（IP External Reachability TLV）：用来携带路由域    外的IS-IS路由信息。</p>
+<p>​    ▫2号TLV(IS Neighbors TLV)：用来携带邻居信息。</p>
+<p>•wide类型下使用的TLV：</p>
+<p>​    ▫135号TLV(Extended IP Reachability TLV)：用来替换原有的IP     reachability TLV，携带IS-IS路由信息，它扩展了路由开销值的    范围，并可以携带sub TLV。</p>
+<p>​    ▫22号TLV（IS Extended Neighbors TLV）：用来携带邻居信息</p>
+</blockquote>
+<h2 id="IS-IS报文格式"><a href="#IS-IS报文格式" class="headerlink" title="IS-IS报文格式"></a>IS-IS报文格式</h2><p>•IS-IS报文是直接封装在数据链路层的帧结构中的。</p>
+<p>•PDU（Protocol Data Unit，协议数据单元）可以分为两个部分，报文头（IS-IS Header）和变长字段部分（Variable Length Fields ）。</p>
+<p>•其中IS-IS Header又可分为通用头部（PDU Common Header）和专用头部（PDU Specific Header）。对于所有PDU来说，通用报头都是相同的，但专用报头根据PDU类型不同而有所差别。</p>
+<p><img src="/2021/05/10/IS-IS/11.png"></p>
+<h2 id="IS-IS通用头部详解"><a href="#IS-IS通用头部详解" class="headerlink" title="IS-IS通用头部详解"></a>IS-IS通用头部详解</h2><p><strong>重要字段解释：</strong></p>
+<p>•Intradomain Routing Protocol Discriminator：域内路由选择协议鉴别符，固定为0x83。</p>
+<p>•Length Indicator：IS-IS头部的长度（包括通用头部和专用头部），以Byte为单位。</p>
+<p>•Version/Protocol ID Extension：版本/协议标识扩展，固定为0x01。</p>
+<p>•System ID Length：NSAP地址或NET中System ID区域的长度。值为0时，表示System ID区域的长度为6Byte。</p>
+<p>•R（Reserved）：保留，固定为0。</p>
+<p>•Version：固定为0x01。</p>
+<p>•Max.Areas：支持的最大区域个数。设置为1～254的整数，表示该IS-IS进程实际所允许的最大区域地址数；设置为0，表示该IS-IS进程最大只支持3个区域地址数。</p>
+<p><img src="/2021/05/10/IS-IS/12.png"></p>
+<h2 id="IS-IS报文类型概述"><a href="#IS-IS报文类型概述" class="headerlink" title="IS-IS报文类型概述"></a>IS-IS报文类型概述</h2><p>•IS-IS的PDU有4种类型：IIH(IS-IS Hello)，LSP（ Link State PDU，链路状态报文），CSNP（Complete Sequence Number PDU，全序列号报文），PSNP（Partial Sequence Number PDU，部分序列号报文）。</p>
+<p>•IIH：用于建立和维持邻接关系， 广播网络中的Level-1 IS-IS路由器使用Level-1 LAN IIH； 广播网络中的Level-2 IS-IS路由器使用Level-2 LAN IIH； 点到点网络中则使用P2P IIH。</p>
+<p>•LSP：用于交换链路状态信息。LSP分为两种，Level-1 LSP、Level-2 LSP。</p>
+<p>•SNP：通过描述全部或部分链路数据库中的LSP来同步各LSDB，从而维护LSDB的完整与同步。SNP包括CSNP和PSNP，进一步又可分为Level-1 CSNP、 Level-2 CSNP、 Level-1 PSNP和Level-2 PSNP。</p>
+<p><img src="/2021/05/10/IS-IS/13.png"></p>
+<h2 id="IS-IS常见的TLV"><a href="#IS-IS常见的TLV" class="headerlink" title="IS-IS常见的TLV"></a>IS-IS常见的TLV</h2><p>•TLV的含义是：类型（TYPE），长度（LENGTH），值（VALUE）。实际上是一个数据结构，这个结构包含了这三个字段。</p>
+<p>•使用TLV结构构建报文的好处是灵活性和扩展性好。采用TLV使得报文的整体结构固定，增加新特性只需要增加新TLV即可，不需要改变整个报文的整体结构。</p>
+<p><img src="/2021/05/10/IS-IS/14.png"></p>
+<blockquote>
+<p>•TLV也称为CLV（Code-Length-Value）。</p>
+</blockquote>
+<h1 id="IS-IS工作原理"><a href="#IS-IS工作原理" class="headerlink" title="IS-IS工作原理"></a>IS-IS工作原理</h1><h2 id="邻接关系建立"><a href="#邻接关系建立" class="headerlink" title="邻接关系建立"></a>邻接关系建立</h2><h3 id="IS-IS邻接关系建立原则"><a href="#IS-IS邻接关系建立原则" class="headerlink" title="IS-IS邻接关系建立原则"></a>IS-IS邻接关系建立原则</h3><p>•IS-IS按如下原则建立邻接关系：</p>
+<p>​    ▫只有同一层次的相邻路由器才有可能成为邻接。</p>
+<p>​    ▫对于Level-1路由器来说，Area ID必须一致。</p>
+<p>​    ▫链路两端IS-IS接口的网络类型必须一致。</p>
+<p>​    ▫链路两端IS-IS接口的地址必须处于同一网段（默认情况下）。</p>
+<p>•由于IS-IS是直接运行在数据链路层上的协议，并且最早设计是给CLNP使用的，IS-IS邻接关系的形成与IP地址无关。但在实际的部署中，在IP网络上运行IS-IS时，需要检查对方的IP地址的。如果接口配置了从IP，那么只要双方有某个IP（主IP或者从IP）在同一网段，就能建立邻接，不一定要主IP相同。</p>
+<blockquote>
+<p>•通过将以太网接口模拟成点到点接口，可以建立点到点链路邻接关系。</p>
+<p>•当链路两端IS-IS接口的地址不在同一网段时，如果配置接口对接收的Hello报文不作IP地址检查，也可以建立邻接关系。</p>
+<p>​    ▫对于点到点接口，可以配置接口忽略IP地址检查。</p>
+<p>​    ▫对于以太网接口，需要将以太网接口模拟成点到点接口，然后    才可以配置接口忽略IP地址检查。</p>
+<p>•一般情况下，一个接口只需配置一个主IP地址，但在有些特殊情况下需要配置从IP地址。比如，一台路由器通过一个接口连接了一个物理网络，但该物理网络的计算机分别属于2个不同的网络，为了使路由器与物理网络中的所有计算机通信，就需要在该接口上配置一个主IP地址和一个从IP地址。路由器的每个三层接口可以配置多个IP地址，其中一个为主IP地址，其余为从IP地址，每个三层接口最多可配置31个从IP地址。</p>
+</blockquote>
+<h3 id="IIH"><a href="#IIH" class="headerlink" title="IIH"></a>IIH</h3><p>IIH报文用于建立和维持邻接关系，广播网络中的Level-1 IS-IS路由器使用Level-1 LAN IIH；广播网络中的Level-2 IS-IS路由器使用Level-2 LAN IIH；点到点网络中则使用P2P IIH。</p>
+<p><strong>Reserved/Circuit</strong> <strong>Type</strong>：表示路由器的类型（01表示L1，10表示L2，11表示L1/L2）。 </p>
+<p>Source ID ：发出Hello报文的路由器的System ID。 </p>
+<p><strong>Holding Time</strong> ： 保持时间。在此时间内如果没有收到邻接发来的Hello报文，则中止已建立的邻接关系。 </p>
+<p><strong>Priority</strong> <strong>：</strong>选举DIS的优先级，取值范围为0～127。数值越大，优先级越高。该字段只在广播网中的Hello消息(LAN IIH消息)携带；点到点网络的Hello消息(P2P IIH消息)没有此字段，也没有此字段之前的R保留位。 </p>
+<p><strong>LAN ID</strong> <strong>：</strong> 包括DIS的System ID和伪节点ID。该字段只在广播网中的Hello消息(LAN IIH消息)携带；点到点网络的Hello消息(P2P IIH消息)没有此字段。 </p>
+<p><strong>Local Circuit ID</strong> ：本地链路ID。该字段只在点到点网络的Hello消息(P2P IIH消息)携带；广播网中的Hello消息(LAN IIH消息)没有此字段。 </p>
+<p><img src="/2021/05/10/IS-IS/15.png"></p>
+<h3 id="广播网络中的邻接关系建立过程"><a href="#广播网络中的邻接关系建立过程" class="headerlink" title="广播网络中的邻接关系建立过程"></a>广播网络中的邻接关系建立过程</h3><p>两台运行IS-IS的路由器在交互协议报文实现路由功能之前必须首先建立邻接关系。在不同类型的网络上，IS-IS的邻接建立方式并不相同。在广播网络中，使用三次握手建立邻接关系。</p>
+<p>R1及R2通过千兆以太接口互联，这两台直连的Level-1路由器建立邻接关系的过程如下：</p>
+<ol>
+<li><p>在Down状态下，R1组播发送Level-1 LAN IIH，此报文中邻接列表为空。</p>
+</li>
+<li><p>R2收到此报文后，将邻接状态标识为Initial。然后，R2再向R1回复Level-1 LAN IIH ，此报文中标识R1为R2的邻接。</p>
+</li>
+<li><p>R1收到此报文后，将自己与R2的邻接状态标识为Up。然后R1再向R2发送一个标识R2为R1邻接的Level-1 LAN IIH 。</p>
+</li>
+<li><p>R2收到此报文后，将自己与R1的邻接状态标识为Up。这样，两个路由器成功建立了邻接关系。</p>
+</li>
+<li><p>广播网络中需要选举DIS，在邻接关系建立后，路由器会等待两个Hello报文间隔，再进行DIS的选举。</p>
+</li>
+</ol>
+<p><img src="/2021/05/10/IS-IS/16.png"></p>
+<blockquote>
+<p>•Level-1 IIH和Level-2 IIH发送的组播地址分别为01-80-C2-00-00-14、01-80-C2-00-00-15。</p>
+<p>•Down：邻接关系的初始状态。</p>
+<p>•Initial：收到IIH，但是报文中的邻接列表未包含路由器自身的System ID。</p>
+<p>•UP：收到IIS，且邻接列表中包含路由器自身的System ID。</p>
+</blockquote>
+<h3 id="DIS与伪节点"><a href="#DIS与伪节点" class="headerlink" title="DIS与伪节点"></a>DIS与伪节点</h3><p>•在广播网络中，IS-IS需要在所有的路由器中选举一个路由器作为DIS（Designated Intermediate System）。</p>
+<p>•DIS用来创建和更新伪节点（Pseudonodes），并负责生成伪节点的LSP，用来描述这个网络上有哪些网络设备。伪节点是用来模拟广播网络的一个虚拟节点，并非真实的路由器。在IS-IS中，伪节点用DIS的System ID和Circuit ID（非0值）标识。</p>
+<p><img src="/2021/05/10/IS-IS/17.png"></p>
+<h3 id="IS-IS中的DIS与OSPF中的DR"><a href="#IS-IS中的DIS与OSPF中的DR" class="headerlink" title="IS-IS中的DIS与OSPF中的DR"></a>IS-IS中的DIS与OSPF中的DR</h3><p>•Level-1和Level-2的DIS是分别选举的，用户可以为不同级别的DIS选举设置不同的优先级。</p>
+<p>•DIS的选举规则如下：</p>
+<p>​    ▫DIS优先级数值最大的被选为DIS。</p>
+<p>​    ▫如果优先级数值最大的路由器有多台，则其中MAC地址最大的路由    器会成为DIS。</p>
+<p>•DIS发送Hello PDU的时间间隔是普通路由器的1/3，这样可以确保DIS出现故障时能够被更快速地被发现。</p>
+<p>•IS-IS中DIS与OSPF协议中DR（Designated Router）的区别：</p>
+<p>​    ▫在IS-IS广播网中，优先级为0的路由器也参与DIS的选举，在OSPF中优先级为0的路由器则不参与DR的选举。</p>
+<p>​    ▫在IS-IS广播网中，当有新的路由器加入，并符合成为DIS的条件时，这个路由器会被选中成为新的DIS，原有的伪节点被删除。此更改会引起一组新的LSP泛洪。而在OSPF中，当一台新路由器加入后，即使它的DR优先级值最大，也不会立即成为该网段中的DR。</p>
+<p>​    ▫在IS-IS广播网中，同一网段上的同一级别的路由器之间都会形成邻接关系，包括所有的非DIS路由器之间也会形成邻接关系。而在OSPF中，路由器只与DR和BDR建立邻接关系。</p>
+<h3 id="点到点网络中的邻接关系建立过程"><a href="#点到点网络中的邻接关系建立过程" class="headerlink" title="点到点网络中的邻接关系建立过程"></a>点到点网络中的邻接关系建立过程</h3><p>•点到点网络中，邻接关系的建立使用两次握手方式：只要路由器收到对端发来的Hello报文，就单方面宣布邻接为Up状态，建立邻接关系。</p>
+<p>•两次握手机制存在明显的缺陷，华为设备在点到点网络中使用IS-IS时，默认使用三次握手建立邻接关系。此方式通过三次发送P2P IIH最终建立起邻接关系。</p>
+<p><img src="/2021/05/10/IS-IS/18.png"></p>
+<h2 id="链路状态数据库同步"><a href="#链路状态数据库同步" class="headerlink" title="链路状态数据库同步"></a>链路状态数据库同步</h2><h3 id="LSP"><a href="#LSP" class="headerlink" title="LSP"></a>LSP</h3><p>•IS-IS链路状态报文LSP用于交换链路状态信息。LSP分为两种：Level–1 LSP和Level–2 LSP。Level–1 LSP由Level-1路由器传送，Level–2 LSP由Level-2路由器传送，Level-1-2路由器则可传送以上两种LSP。</p>
+<p>•两类LSP有相同的报文格式。</p>
+<p><strong>Remaining Lifetime</strong> : LSP的生存时间，以秒为单位。 1200-0s递减。</p>
+<p><strong>LSP ID</strong>:由三部分组成，System ID、伪节点ID和LSP分片后的编号。 </p>
+<p><strong>Sequence Number</strong>: LSP的序列号。在路由器启动时所发送的第一个LSP报文中的序列号为1，以后当需要生成新的LSP时，新LSP的序列号在前一个LSP序列号的基础上加1。更高的序列号意味着更新的LSP。</p>
+<p><strong>Checksum</strong>： LSP的校验和。 </p>
+<p><strong>ATT（Attachment）</strong>：由Level-1-2路由器产生，用来指明始发路由器是否与其它区域相连。虽然此标志位也存在于Level-1和Level-2的LSP中，但实际上此字段只和Level-1-2路由器始发的L1 LSP有关。接受到ATT置位的LSP的路由器生成一条到发送该ATT置位的路由，若路径开销相同，则负载分担。</p>
+<p>ATT置位的条件</p>
+<ul>
+<li><p>有L1的邻接关系</p>
+</li>
+<li><p>有和自己处于不同区域的L2的邻接关系路由器</p>
+</li>
+<li><p>活跃的数据库</p>
+<p>L1/L2可以计算完全的路由信息（cost计算方法不一样就不可以）</p>
+</li>
+</ul>
+<p><strong>OL（LSDB Overload，1bit）</strong>：过载标志位。设置了过载标志位的LSP虽然还会在网络中扩散，但是在计算通过超载路由器的路由时不会被采用。即对路由器设置过载位后，其它路由器在进行SPF计算时不会考虑这台路由器。当路由器内存不足时，系统自动在发送的LSP报文中设置过载标志位。 </p>
+<p>**IS Type(2bit)**：生成LSP的路由器的类型。用来指明是Level-1还是Level-2路由器（01表示Level-1，11表示Level-2）。 </p>
+<p><img src="/2021/05/10/IS-IS/19.png"></p>
+<h3 id="IS-IS的LSDB"><a href="#IS-IS的LSDB" class="headerlink" title="IS-IS的LSDB"></a>IS-IS的LSDB</h3><p><img src="/2021/05/10/IS-IS/20.png"></p>
+<blockquote>
+<p>•伪节点ID：当该参数不为零时，表示该LSP为伪节点生成。</p>
+<p>•分片号：当IS-IS要发布的链路状态协议数据报文PDU（Protocol Data Unit）中的信息量太大时，IS-IS路由器将会生成多个LSP分片，用来携带更多的IS-IS信息。分片号用来区分不同的LSP分片。</p>
+</blockquote>
+<h3 id="查看非伪节点的LSP"><a href="#查看非伪节点的LSP" class="headerlink" title="查看非伪节点的LSP"></a>查看非伪节点的LSP</h3><p><img src="/2021/05/10/IS-IS/21.png"></p>
+<blockquote>
+<p>•AREA ADDR：该LSP来源的区域号</p>
+<p>•INTF ADDR：该LSP中描述的接口地址</p>
+<p>•NBR ID：该LSP中描述的邻接信息</p>
+<p>•IP-Internal：该LSP中描述的网段信息</p>
+</blockquote>
+<h3 id="查看伪节点LSP"><a href="#查看伪节点LSP" class="headerlink" title="查看伪节点LSP"></a>查看伪节点LSP</h3><p><img src="/2021/05/10/IS-IS/22.png"></p>
+<h3 id="CSNP"><a href="#CSNP" class="headerlink" title="CSNP"></a>CSNP</h3><p>CSNP包含该设备LSDB中所有的LSP摘要，路由器通过交互 CSNP来判断是否需要同步LSDB。</p>
+<p>▫在广播网络上，CSNP由DIS定期发送（缺省的发送周期为10秒）。</p>
+<p>▫在点到点网络上，CSNP只在第一次建立邻接关系时发送。</p>
+<p><img src="/2021/05/10/IS-IS/23.png"></p>
+<h3 id="PSNP"><a href="#PSNP" class="headerlink" title="PSNP"></a>PSNP</h3><p>PSNP只包含部分LSP的摘要信息（与CSNP不同）：</p>
+<p>▫当发现LSDB不同步时，PSNP来请求邻居发送新的LSP。</p>
+<p>▫在点到的网络中，当收到LSP时，使用PSNP对收到的LSP进行确认。</p>
+<p><img src="/2021/05/10/IS-IS/24.png"></p>
+<h3 id="广播网络中LSP的同步过程"><a href="#广播网络中LSP的同步过程" class="headerlink" title="广播网络中LSP的同步过程"></a>广播网络中LSP的同步过程</h3><p>广播网络中新加入路由器与DIS同步LSDB数据库的过程：</p>
+<ol>
+<li><p>新加入的路由器R3首先发送IIH报文，与该广播域中的路由器建立邻接关系。建立邻接关系之后，R3等待LSP刷新定时器超时，然后将自己的LSP发往组播地址（Level-1：01-80-C2-00-00-14；Level-2：01-80-C2-00-00-15）。这样网络上所有的邻接都将收到该LSP。</p>
+</li>
+<li><p>该网段中的DIS会把收到R3的LSP加入到LSDB中，并等待CSNP报文定时器超时并发送CSNP报文。</p>
+</li>
+<li><p>R3收到DIS发来的CSNP报文，对比自己的LSDB数据库，然后向DIS发送PSNP报文请求自己没有的LSP。</p>
+</li>
+<li><p>DIS收到该PSNP报文请求后向R3发送对应的LSP进行LSDB的同步。 </p>
+</li>
+</ol>
+<p><img src="/2021/05/10/IS-IS/25.png"></p>
+<h3 id="点到点网络中LSP的同步过程"><a href="#点到点网络中LSP的同步过程" class="headerlink" title="点到点网络中LSP的同步过程"></a>点到点网络中LSP的同步过程</h3><p>点到点网络上LSDB数据库的同步过程：</p>
+<p>•R1先与R2建立邻接关系。</p>
+<p>•建立邻接关系之后，R1与R2会先发送CSNP给对端设备。如果对端的LSDB与CSNP没有同步，则发送PSNP请求索取相应的LSP。</p>
+<p>•假设R2向R1索取相应的LSP。</p>
+<ol>
+<li><p>R1发送R2请求的LSP的同时启动LSP重传定时器，并等待R2发送的PSNP作为收到LSP的确认。</p>
+</li>
+<li><p>如果在接口LSP重传定时器超时后，R1没有收到R2发送的PSNP报文作为应答。</p>
+</li>
+<li><p>则R1重新发送该LSP。</p>
+</li>
+<li><p>R2收到LSP后，发送PSNP进行确认。</p>
+</li>
+</ol>
+<p><img src="/2021/05/10/IS-IS/26.png"></p>
+<h3 id="LSP的处理机制"><a href="#LSP的处理机制" class="headerlink" title="LSP的处理机制"></a>LSP的处理机制</h3><p>IS-IS通过交互LSP实现链路状态数据库同步，路由器收到LSP后，按照以下原则处理：</p>
+<p>•若收到的LSP比本地LSP的更优，或者本地没有收到的LSP：</p>
+<p>​    ▫在广播网络中：将其加入数据库，并组播发送新的LSP。</p>
+<p>​    ▫在点到点网络中：将其加入数据库，并发送PSNP报文来确认收到此    LSP，之后将这新的LSP发送给除了发送该LSP的邻居以外的邻居。</p>
+<p>•若收到的LSP和本地LSP无法比较出优劣，则不处理该LSP。</p>
+<p><img src="/2021/05/10/IS-IS/27.png"></p>
+<blockquote>
+<p>•LSP产生的原因，IS-IS路由域内的所有路由器都会产生LSP，以下事件会触发一个新的LSP：</p>
+<p>​    ▫邻接Up或Down</p>
+<p>​    ▫IS-IS相关接口Up或Down</p>
+<p>​    ▫引入的IP路由发生变化</p>
+<p>​    ▫区域间的IP路由发生变化</p>
+<p>​    ▫接口被赋了新的metric值</p>
+<p>​    ▫周期性更新（刷新间隔15min）</p>
+</blockquote>
+<h2 id="路由计算"><a href="#路由计算" class="headerlink" title="路由计算"></a>路由计算</h2><h3 id="Level-1路由器的路由计算"><a href="#Level-1路由器的路由计算" class="headerlink" title="Level-1路由器的路由计算"></a>Level-1路由器的路由计算</h3><p>•R1是Level-1路由器，只维护Level-1 LSDB，该LSDB中包含同属一个区域的R2及R3以及R1自己产生的Level-1 LSP。</p>
+<p>•R1根据LSDB中的Level-1 LSP计算出Area 49.0001内的拓扑，以及到达区域内各个网段的路由信息。</p>
+<p>•R2及R3作为Area 49.0001内的Level-1-2路由器，会在它们向该区域下发的Level-1 LSP中设置ATT标志位，用于向区域内的Level-1路由器宣布可以通过自己到达其他区域。 R1作为Level-1路由器，会根据该ATT标志位，计算出指向R2或R3的默认路由。</p>
+<p><img src="/2021/05/10/IS-IS/28.png"></p>
+<h3 id="Level-1路由器的次优路径的问题"><a href="#Level-1路由器的次优路径的问题" class="headerlink" title="Level-1路由器的次优路径的问题"></a>Level-1路由器的次优路径的问题</h3><p>缺省时， R1只能通过指向R2或R3的默认路由到达区域外部，但是R1距离R2和R3路由器的Cost值相等，那么当R1发送数据包到192.168.20.0/24时，就有可能选择路径2，导致出现次优路径。</p>
+<p><img src="/2021/05/10/IS-IS/29.png"></p>
+<h3 id="路由渗透"><a href="#路由渗透" class="headerlink" title="路由渗透"></a>路由渗透</h3><p>•缺省情况下，Level-1-2路由器不会将到达其他区域的路由通告本Level-1区域中。</p>
+<p>•通过路由渗透，可以将区域间路由通过Leve-1-2路由器传递到Level-1区域，此时Leve-1路由器可以学习到其他区域的详细路由，从而计算出最优路径。</p>
+<p><img src="/2021/05/10/IS-IS/31.png"></p>
+<h3 id="Level-1-2路由器的路由计算"><a href="#Level-1-2路由器的路由计算" class="headerlink" title="Level-1-2路由器的路由计算"></a>Level-1-2路由器的路由计算</h3><p>•R2及R3都维护Level-1 LSDB，它们能够通过这些LSDB中的LSP计算出Area 49.0001的路由。</p>
+<p>•R2及R3都维护Level-2 LSDB，它们能够通过这些LSDB中的LSP计算出Area 49.0002的路由。</p>
+<p>•R2及R3将到达Area 49.0001的路由以Level-2 LSP的形式发送到Area 49.0002。</p>
+<p><img src="/2021/05/10/IS-IS/32.png"></p>
+<h3 id="Level-2路由器的路由计算"><a href="#Level-2路由器的路由计算" class="headerlink" title="Level-2路由器的路由计算"></a>Level-2路由器的路由计算</h3><p>R4及R5作为Level-2路由器，只会维护Level-2 LSDB，它们能够根据该LSDB计算出到达全网各个网段的路由。</p>
+<p><img src="/2021/05/10/IS-IS/33.png"></p>
+<h1 id="IS-IS的基本配置"><a href="#IS-IS的基本配置" class="headerlink" title="IS-IS的基本配置"></a>IS-IS的基本配置</h1><h2 id="IS-IS协议的基本配置-1"><a href="#IS-IS协议的基本配置-1" class="headerlink" title="IS-IS协议的基本配置 (1)"></a>IS-IS协议的基本配置 (1)</h2><p><img src="/2021/05/10/IS-IS/34.png"></p>
+<h2 id="IS-IS协议的基本配置-2"><a href="#IS-IS协议的基本配置-2" class="headerlink" title="IS-IS协议的基本配置 (2)"></a>IS-IS协议的基本配置 (2)</h2><p><img src="/2021/05/10/IS-IS/35.png"></p>
+<h2 id="IS-IS协议的基本配置-3"><a href="#IS-IS协议的基本配置-3" class="headerlink" title="IS-IS协议的基本配置 (3)"></a>IS-IS协议的基本配置 (3)</h2><p><img src="/2021/05/10/IS-IS/36.png"></p>
+<h2 id="案例：IS-IS配置"><a href="#案例：IS-IS配置" class="headerlink" title="案例：IS-IS配置"></a>案例：IS-IS配置</h2><p><img src="/2021/05/10/IS-IS/37.png"></p>
+<p><strong>组网需求</strong></p>
+<p>如图所示，现网中有5台路由器。用户希望在这5台路由器实现网络互联，并且因为R1性能相对较低，所以还要使这台路由器处理相对较少的数据信息。同时用户希望R1可以选择最优路径访问192.168.10.0/24和192.168.20.0/24网段。</p>
+<p><strong>配置思路</strong></p>
+<p>在各路由器上配置IS-IS基本功能，实现网络互联。其中，配置R1为Level-1路由器，可以使这台路由器维护相对少量的数据信息。同时，配置R2和R3为Level-1/2路由器与R4和R5这两台Level-2路由器互联。</p>
+<h3 id="案例：R1、R2及R3的配置"><a href="#案例：R1、R2及R3的配置" class="headerlink" title="案例：R1、R2及R3的配置"></a>案例：R1、R2及R3的配置</h3><p><img src="/2021/05/10/IS-IS/38.png"></p>
+<h3 id="案例：R4和R5的配置"><a href="#案例：R4和R5的配置" class="headerlink" title="案例：R4和R5的配置"></a>案例：R4和R5的配置</h3><p><img src="/2021/05/10/IS-IS/39.png"></p>
+<h3 id="案例：配置验证-查看设备的IS-IS邻接表"><a href="#案例：配置验证-查看设备的IS-IS邻接表" class="headerlink" title="案例：配置验证 (查看设备的IS-IS邻接表)"></a>案例：配置验证 (查看设备的IS-IS邻接表)</h3><p><img src="/2021/05/10/IS-IS/40.png"></p>
+<blockquote>
+<p>•System Id字段：描述邻接的系统ID</p>
+<p>•Interface字段：描述通过该路由器哪个端口与邻接建立邻接关系</p>
+<p>•Type：描述与该邻接的邻接关系类型</p>
+<p>•PRI：描述该邻接对应端口的DIS优先级</p>
+</blockquote>
+<h3 id="案例：配置验证-查看设备的IS-IS路由表-1"><a href="#案例：配置验证-查看设备的IS-IS路由表-1" class="headerlink" title="案例：配置验证 (查看设备的IS-IS路由表) (1)"></a>案例：配置验证 (查看设备的IS-IS路由表) (1)</h3><p><img src="/2021/05/10/IS-IS/41.png"></p>
+<h3 id="案例：配置验证-查看设备的IS-IS路由表-2"><a href="#案例：配置验证-查看设备的IS-IS路由表-2" class="headerlink" title="案例：配置验证 (查看设备的IS-IS路由表) (2)"></a>案例：配置验证 (查看设备的IS-IS路由表) (2)</h3><p><img src="/2021/05/10/IS-IS/42.png"></p>
+<h2 id="路由渗透配置"><a href="#路由渗透配置" class="headerlink" title="路由渗透配置"></a>路由渗透配置</h2><p><img src="/2021/05/10/IS-IS/43.png"></p>
+<h2 id="路由渗透验证"><a href="#路由渗透验证" class="headerlink" title="路由渗透验证"></a>路由渗透验证</h2><p>通过查看R1的路由表，我们可以看到新增了两条明细路由192.168.10.0/24以及192.168.20.0/24，两条路由的开销值均为30，当有数据包经由R1到达这两个网段时，不会产生次优路径。</p>
+<p><img src="/2021/05/10/IS-IS/44.png"></p>
+<h2 id="IS-IS认证的分类"><a href="#IS-IS认证的分类" class="headerlink" title="IS-IS认证的分类"></a>IS-IS认证的分类</h2><p>•IS-IS认证是基于网络安全性的要求而实现的一种认证手段，通过在IS-IS报文中增加认证字段对报文进行认证。当本地路由器接收到远端路由器发送过来的IS-IS报文，如果发现认证密码不匹配，则将收到的报文进行丢弃，达到自我保护的目的。</p>
+<p>•根据报文的种类，认证可以分为以下三类：</p>
+<p>▫接口认证：在接口视图下配置，对Level-1和Level-2的Hello报文进行认证。</p>
+<p>▫区域认证：在IS-IS进程视图下配置，对Level-1的CSNP、PSNP和LSP报文进行认证。</p>
+<p>▫路由域认证：在IS-IS进程视图下配置，对Level-2的CSNP、PSNP和LSP报文进行认证。</p>
+<p>•根据报文的认证方式，可以分为以下四类：</p>
+<p>▫简单认证：将配置的密码直接加入报文中，这种加密方式安全性较其他两种方式低。</p>
+<p>▫MD5认证：通过将配置的密码进行MD5算法加密之后再加入报文中，提高密码的安全性。</p>
+<p>▫Keychian认证：通过配置随时间变化的密码链表来进一步提升网络的安全性。</p>
+<p>▫HMAC-SHA256认证：通过将配置的密码进行HMAC-SHA256算法加密之后再加入报文中，提高密码的安全性。</p>
+<h2 id="IS-IS认证详解"><a href="#IS-IS认证详解" class="headerlink" title="IS-IS认证详解"></a>IS-IS认证详解</h2><p><strong>接口认证</strong></p>
+<p>▫Hello报文使用的认证密码保存在接口下，发送带认证TLV的认证报文，互相连接的路由器接口必须配置相同的口令。</p>
+<p><strong>区域认证</strong></p>
+<p>▫区域内的每一台L1路由器都必须使用相同的认证模式和具有共同的钥匙串。</p>
+<p><strong>路由域认证</strong></p>
+<p>▫IS-IS域内的每一台L2和L1/L2类型的路由器都必须使用相同模式的认证，并使用共同的钥匙串。</p>
+<p>▫对于区域和路由域认证，可以设置为SNP和LSP分开认证。</p>
+<ul>
+<li>本地发送的LSP报文和SNP报文都携带认证TLV，对收到的LSP报文和SNP报文都进行认证检查。</li>
+<li>本地发送的LSP报文携带认证TLV，对收到的LSP报文进行认证检查；发送的SNP报文携带认证TLV，但不对收到的SNP报文进行检查。</li>
+<li>本地发送的LSP报文携带认证TLV，对收到的LSP报文进行认证检查；发送的SNP报文不携带认证TLV，也不对收到的SNP报文进行认证检查。</li>
+<li>本地发送的LSP报文和SNP报文都携带认证TLV，对收到的LSP报文和SNP报文都不进行认证检查。</li>
+</ul>
+<h2 id="IS-IS认证的配置-1"><a href="#IS-IS认证的配置-1" class="headerlink" title="IS-IS认证的配置 (1)"></a>IS-IS认证的配置 (1)</h2><p><img src="/2021/05/10/IS-IS/45.png"></p>
+<h2 id="IS-IS认证的配置-2"><a href="#IS-IS认证的配置-2" class="headerlink" title="IS-IS认证的配置 (2)"></a>IS-IS认证的配置 (2)</h2><p><img src="/2021/05/10/IS-IS/46.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）关于OSPF与IS-IS，说法正确的有？ (   )</p>
+<p><strong>A.OSPF及IS-IS都是链路状态路由协议。</strong></p>
+<p><strong>B.OSPF仅仅支持IP网络，而集成IS-IS支持CLNP及IP网络。</strong></p>
+<p><strong>C.OSPF使用区域号0标识骨干区域。</strong></p>
+<p><strong>D.IS-IS骨干区域由Level-2及Level-1-2路由器组成。</strong></p>
+<p>2.（多选题）关于Level-1路由器说法正确的有？(   )</p>
+<p><strong>A.Level-1路由器只能和相同区域的IS-IS路由器建立邻接关系。</strong></p>
+<p>B.Level-1路由器可以和同区域的Level-2路由器建立邻接关系。</p>
+<p><strong>C.缺省情况下，Level-1路由器只能通过缺省路由到达区域外部。</strong></p>
+<p><strong>D.Level-1路由器的LSDB中只存在Level-1 LSP。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本课程介绍了IS-IS的基本概念。每一台运行IS-IS的路由器都至少有一个NET地址。IS-IS采用分层架构，所有Level-2和Level-1-2路由器共同构成了骨干区域，同一区域的Level-1路由器构成了普通区域。IS-IS协议有四种报文类型，分别是IIH、CSNP、PSNP、LSP。</p>
+<p>•Level-1路由器只维护区域内的LSDB，Level-1路由通过离自己最近的Level-1-2路由器到达区域外部，为了避免次优路径，可以在Level-1-2路由器上部署路由渗透的特性。</p>
+<p>•IS-IS支持三种认证类型，分别是接口认证、区域认证、路由域认证。</p>
+<p>•IS-IS协议与OSPF协议都是链路路由状态协议，两者都需要维护LSDB，随着网络规模的不断扩大，巨大的LSDB会导致路由器整体性能下降，因此对于这两种路由协议而言，面对更大规模的组网时，需要进行多区域的网络设计。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/09/OSPF%E7%89%B9%E6%AE%8A%E5%8C%BA%E5%9F%9F%E5%8F%8A%E5%85%B6%E5%AE%83%E7%89%B9%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3357,355 +4323,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/" itemprop="url">认识网络设备</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-05T20:01:18+08:00">
-                2021-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="网络设备框架介绍"><a href="#网络设备框架介绍" class="headerlink" title="网络设备框架介绍"></a>网络设备框架介绍</h1><h2 id="网络设备"><a href="#网络设备" class="headerlink" title="网络设备"></a>网络设备</h2><ul>
-<li><p>网络基础设施由交换机、路由器、防火墙等构成，这些设备日复一日地接收、发送数据，从一个接口收到的数据如何经过设备内部转发到另外一个接口？</p>
-</li>
-<li><p>设备有哪些组件构成？这些组件如何协同工作？。</p>
-</li>
-</ul>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/1.png"></p>
-<h2 id="框式设备硬件模块"><a href="#框式设备硬件模块" class="headerlink" title="框式设备硬件模块"></a>框式设备硬件模块</h2><p>为方便理解网络设备内部的各个功能模块，以S12700E-8为例讲解典型网络设备的构架：</p>
-<p>▫主控板(MPU，Main Processing Unit)：负责整个系统的控制平面。</p>
-<p>▫交换网板(SFU，Switch Fabric Unit)：负责整个系统的数据平面。数据平面提供高速无阻塞数据通道，实现各个业务模块之间的业务交换功能。</p>
-<p>▫接口板(LPU，Line Processing Unit)：线路处理单元是物理设备上用于提供数据转发功能的模块，提供不同速率的光口、电口。</p>
-<p>▫交换网板、接口板上都有自己的管理芯片，与主控板共同组成整个设备的控制管理平面。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/2.png"></p>
-<h3 id="主控板"><a href="#主控板" class="headerlink" title="主控板"></a><strong>主控板</strong></h3><p>主控板提供了整个系统的控制平面和管理平面。</p>
-<p>▫ 控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。</p>
-<p>▫ 管理平面完成系统的运行状态监控、环境监控、日志和告警信息处理、系统加载、系统升级等功能。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/3.png"></p>
-<h3 id="交换网板"><a href="#交换网板" class="headerlink" title="交换网板"></a><strong>交换网板</strong></h3><p>交换网板提供整个系统的数据平面。接口板、主控板之间通过交换网板完成通信。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/4.png"></p>
-<h3 id="接口板"><a href="#接口板" class="headerlink" title="接口板"></a><strong>接口板</strong></h3><p>接口板提供了不同类型（光口、电口），不同速率的接入接口，通过分布式数据平面对数据进行转发。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/5.png"></p>
-<h2 id="盒式设备"><a href="#盒式设备" class="headerlink" title="盒式设备"></a><strong>盒式设备</strong></h2><p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/6.png"></p>
-<p>不同于框式设备，盒式设备的各个业务模块并不是独立的硬件模块，而是集成在一个框内。</p>
-<h2 id="模块连接逻辑图"><a href="#模块连接逻辑图" class="headerlink" title="模块连接逻辑图"></a>模块连接逻辑图</h2><p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/7.png"></p>
-<p>•框式设备各个模块分为不同的单板，单板之间通过框式设备内部的连接进行通信。</p>
-<p>•盒式设备内部集成了这些模块，各个模块之间同样也是通过内部连接进行通信。</p>
-<p>•接口板和接口板之间通过交换网板连接了起来，接口板之间的通信统一经由交换网板进行转发。</p>
-<h2 id="网络设备逻辑构架"><a href="#网络设备逻辑构架" class="headerlink" title="网络设备逻辑构架"></a><strong>网络设备逻辑构架</strong></h2><p>网络设备从逻辑上可以分为以下三个平面：数据平面、控制管理平面和监控平面。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/8.png"> </p>
-<p>以交换机为例，设备可以分为以下的三个平面（参考RFC7426中对网络设备平面划分）：</p>
-<ul>
-<li><p>交换机转发平面：转发平面提供高速无阻塞数据通道，实现各个业务模块之间的业务交换功能。交换机的基本任务是处理和转发交换机各不同端口上各种类型的数据。L2/L3/ACL/QoS/组播/安全防护等各种具体的数据处理转发过程，都属于交换机转发平面的任务范畴。</p>
-</li>
-<li><p>交换机控制平面：控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。交换机的控制平面用于控制和管理所有网络协议的运行。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
-</li>
-<li><p>交换机管理平面：管理平面完成系统的运行状态监控、环境监控、日志和告警信息处理、系统加载、系统升级等功能。交换机的管理平面是提供给网络管理人员使用TELNET、WEB、SSH、SNMP、RMON等方式来管理设备，并支持、理解和执行管理人员对于网络设备各种网络协议的设置命令。管理平面必须预先设置好控制平面中各种协议的相关参数，并支持在必要时刻对控制平面的运行进行干预。</p>
-</li>
-</ul>
-<p>在华为产品具体的实现上，部分系列产品将功能组合区分为数据平面、管理平面和监控平面。</p>
-<h3 id="控制平面"><a href="#控制平面" class="headerlink" title="控制平面"></a><strong>控制平面</strong></h3><p>•设备的控制平面由主控板以及接口板的管理单元组成。</p>
-<p>•控制管理平面完成系统的控制管理功能，是整个系统的中枢神经系统。控制平面完成系统的协议处理、业务处理、路由运算、转发控制、业务调度、流量统计、系统安全等功能。交换机的控制平面用于控制和管理所有网络协议的运行。控制平面提供了数据平面数据处理转发前所必须的各种网络信息和转发查询表项。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/9.png"></p>
-<h3 id="转发平面"><a href="#转发平面" class="headerlink" title="转发平面"></a><strong>转发平面</strong></h3><p>•设备的转发平面由交换网板以及接口板组成。</p>
-<p>•LPU上存在FPE（转发引擎），其本质也是一个交换芯片，完成本接口板端口之间的交换。</p>
-<p>•数据平面完成数据报文的高速处理和内部无阻塞交换。包括报文的封装与解封装、IPv4/IPv6/MPLS转发处理、QoS与调度处理、内部高速交换以及各种统计。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/10.png"></p>
-<h3 id="监控平面"><a href="#监控平面" class="headerlink" title="监控平面"></a><strong>监控平面</strong></h3><p>•监控平面由主控板、接口板的监控单元构成，部分框式设备还会存在单独的集中监控板(CMU)。</p>
-<p>•监控平面独立完成系统的环境监控，包括电压检测、系统上下电控制、温度监测与风扇控制等，以保证系统的安全稳定运行，在出现单元故障的情况下及时隔离故障，保障系统其它部分的正常运行。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/11.png"></p>
-<h1 id="网络设备对报文的处理流程"><a href="#网络设备对报文的处理流程" class="headerlink" title="网络设备对报文的处理流程"></a><strong>网络设备对报文的处理流程</strong></h1><h2 id="报文转发上行、下行"><a href="#报文转发上行、下行" class="headerlink" title="报文转发上行、下行"></a><strong>报文转发上行、下行</strong></h2><p>以交换网板为中心，可将报文在设备的行程一分为二，前半程称为“上行”，下半程称为“下行”。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/12.png"></p>
-<blockquote>
-<p>•设备处理报文分类：一种是业务报文、一种是协议报文。</p>
-<p>•对于业务报文设备只会进行转发，从一个接口进入之后依据转发表项从另外一个接口发送出去。</p>
-<p>•协议报文（如ARP、OSPF、BGP等协议的报文）设备在收到之后会交由控制层面进行处理，如ARP报文交由控制层面处理、判断之后决定是否回应，是否学习ARP报文中的源MAC、源IP。</p>
-</blockquote>
-<h2 id="业务报文转发处理流程"><a href="#业务报文转发处理流程" class="headerlink" title="业务报文转发处理流程"></a><strong>业务报文转发处理流程</strong></h2><p>业务报文从接口进入上行接口板处理之后，通过框式交换机内部总线交由交换网板，交换网板交由下行接口板处理之后从接口发出去。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/13.png"></p>
-<blockquote>
-<p>•PFE（Packet Forwarding Engine）：包转发引擎。</p>
-<p>•业务报文：服务、应用在交互过程中涉及的报文。</p>
-<p>•切片：把报文送往交换网板之前，进行切片处理，也就是把报文按一定粒度进行切片，切成固定长度。</p>
-<p>•重组：将交换网板发送过来的已经切片的报文进行重新组合。</p>
-</blockquote>
-<h3 id="确定报文出口-1"><a href="#确定报文出口-1" class="headerlink" title="确定报文出口 (1)"></a><strong>确定报文出口</strong> <strong>(1)</strong></h3><p>•当报文从接口板进入时，设备需要依据转发表项（IP路由表、MAC地址表等）确定报文的出接口（对于框式设备需要确定下行接口板）。</p>
-<p>•报文到达交换网板时已经明确了出接口、下行接口板，因此表项查询需要在上行接口板的处理过程中完成。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/14.png"></p>
-<h3 id="确定报文出口-2"><a href="#确定报文出口-2" class="headerlink" title="确定报文出口 (2)"></a><strong>确定报文出口</strong> <strong>(2)</strong></h3><p>•转发表项存放在主控板上，报文进入接口板之后，接口板从主控板处查询表项。</p>
-<p>•每次转发都需要与主控板进行通信，转发效率低，报文时延增加，对高速率接口板而言转发速率严重下跌。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/15.png"></p>
-<h3 id="确定报文出口-3"><a href="#确定报文出口-3" class="headerlink" title="确定报文出口 (3)"></a><strong>确定报文出口</strong> <strong>(3)</strong></h3><p>•转发表项存放在接口板上，报文进入接口板之后直接在接口板完成报文查询，报文转发效率高。</p>
-<p>•所有接口板上都要存储转发表项，控制平面资源占用率高。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/16.png"></p>
-<blockquote>
-<p>二层转发查询MAC地址表，三层转发查询三层路由表。</p>
-</blockquote>
-<h3 id="转发信息"><a href="#转发信息" class="headerlink" title="转发信息"></a><strong>转发信息</strong></h3><p>•高端设备业务报文不经过主控板CPU处理，由接口板提供转发信息查询。</p>
-<p>•接口板上存在的转发信息并非存在于主控板上的转发表项（IP路由表、MAC地址表…）。主控板生成转发表项之后，生成对应的转发信息下发在接口板。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/17.png"></p>
-<h3 id="硬件转发"><a href="#硬件转发" class="headerlink" title="硬件转发"></a><strong>硬件转发</strong></h3><p>•接口板执行转发的部件为包转发引擎PFE（Packet Forwarding Engine），通常为NP或者ASIC芯片，报文直接由接口板独立完成转发，无需主控板参与。</p>
-<p>•高端框式设备把转发层面和控制层面分配在不同的组件，控制层面组件（主控板）负责运行转发相关协议、维护转发表项，转发平面组件（接口板）依据控制层面下发的转发信息能够独立完成转发工作，互不影响，控制层面组件高负载时并不会影响转发平面的正常工作，这种工作机制被称为转控分离。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/18.png"></p>
-<h2 id="协议报文转发处理流程"><a href="#协议报文转发处理流程" class="headerlink" title="协议报文转发处理流程"></a><strong>协议报文转发处理流程</strong></h2><p>设备收到的协议报文，如路由协议：OSPF、IS-IS、BGP报文，ARP报文，STP报文，对设备的ICMP请求报文等，需要交由设备的控制平面处理，即上送主控板由主控板的CPU进行处理。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/19.png"></p>
-<blockquote>
-<p>•主控板CPU收到协议报文之后进行相应的处理之后如果需要回应报文，则主控板会构造协议报文进行回应，如收到发往自身的ARP Request、ICMP Echo Request报文，主控板处理之后构造ARP Reply、ICMP Echo Reply进行回应。</p>
-<p>•主控板CPU处理能力有限，如果过多的协议报文上送主控板CPU处理，会造成其繁忙，无法及时对协议报文进行响应，为此设备默认限制了各种类型的协议报文上送主控板CPU的速率。</p>
-</blockquote>
-<h3 id="设备自身发送协议报文处理流程"><a href="#设备自身发送协议报文处理流程" class="headerlink" title="设备自身发送协议报文处理流程"></a><strong>设备自身发送协议报文处理流程</strong></h3><p>设备自身发送的协议报文，如路由协议报文: OSPF、IS-IS、BGP报文，ARP报文，STP报文，ICMP报文等，由主控板CPU构造之后交由接口板对外发送。</p>
-<p><img src="/2021/05/05/%E8%AE%A4%E8%AF%86%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87/20.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）框式设备中负责运行路由协议，生成、维护路由表的模块是？</p>
-<p>A.接口板</p>
-<p>B.交换网板</p>
-<p><strong>C.主控板</strong></p>
-<p>D.SPU</p>
-<p>2.（简答题）高端框式设备转发业务报文时是否会向主控板查询转发表项？</p>
-<p><strong>不需要，高端框式设备将转发信息下发到接口板，接口板直接转发报文，无需向主控板查询转发表项。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
-<li><p>每台网络设备存在独立的控制平面、转发平面、监控平面，控制平面负责系统的协议处理、路由运算、业务调度等，而转发平面负责转发数据，实现各个业务模块之间的报文交互。监控平面负责系统的环境监控，以保证系统的安全稳定运行。</p>
-</li>
-<li><p>高端框式设备各个平面以不同的板卡形式存在，接口板、交换网板实现转发平面的功能，主控板实现控制平面的功能，监控板实现监控平面的功能。</p>
-</li>
-<li><p>高端框式设备采用“硬转发”，报文的转发由接口板直接完成，无需控制平面参与，报文转发效率极高。</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/03/%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/03/%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5/" itemprop="url">路由策略</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-03T20:32:10+08:00">
-                2021-05-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/kaoa000/article/details/55097156/">https://blog.csdn.net/kaoa000/article/details/55097156/</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/6/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -3755,7 +4377,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3768,7 +4390,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

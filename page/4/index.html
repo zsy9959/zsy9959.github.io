@@ -241,6 +241,923 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-PIM原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T12:21:24+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•组播网络由组播源，组播组成员与组播路由器组成。</p>
+<ul>
+<li><p>组播源的主要作用是发送组播数据。</p>
+</li>
+<li><p>组播组成员的主要作用是接收组播数据，因此需要通过IGMP让组播网络感知组成员位置与加组信息。</p>
+</li>
+<li><p>组播路由器的主要作用是<strong>将数据从组播源发送到组播组成员</strong>。组播数据转发需要<strong>依赖组播分发树</strong>，因此组播路由器需要通过协议来<strong>构建组播分发树</strong>。</p>
+</li>
+</ul>
+<p>•PIM（Protocol Independent Multicast，协议无关组播）协议的主要作用就是<strong>构建组播分发树</strong>。</p>
+<p>•本章主要讲解PIM协议的基本概念，PIM-DM模式的工作原理与PIM-SM模式的工作原理。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述PIM的基本概念</p>
+<p>▫描述PIM-DM的基本工作原理</p>
+<p>▫实现PIM-DM的基本配置</p>
+<p>▫描述PIM-SM的基本工作原理</p>
+<p>▫实现PIM-SM的基本配置</p>
+<h1 id="1-PIM基础介绍"><a href="#1-PIM基础介绍" class="headerlink" title="1.PIM基础介绍"></a>1.PIM基础介绍</h1><h2 id="组播网络基本架构回顾"><a href="#组播网络基本架构回顾" class="headerlink" title="组播网络基本架构回顾"></a>组播网络基本架构回顾</h2><p>•组播网络大体可以分为三个部分：</p>
+<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
+<p>▫组播转发网络：<strong>形成无环的组播转发路径</strong>，该转发路径也被称为<strong>组播分发树（Multicast Distribution Tree）</strong>。</p>
+<p>▫成员端网络：通过<strong>IGMP</strong>协议，让组播网络<strong>感知组播组成员</strong>位置与加入的组播组。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<blockquote>
+<p>•成员端网络通过IGMP协议可以让组播网络感知组播组成员位置与加入的组播组。</p>
+<p>•组播转发网络形成组播分发树，需要组播路由协议的支持。</p>
+<p>•通过组播路由协议有多种，最常用的是PIM协议，也就是本节课的重点。</p>
+</blockquote>
+<h2 id="组播数据转发流程回顾"><a href="#组播数据转发流程回顾" class="headerlink" title="组播数据转发流程回顾"></a>组播数据转发流程回顾</h2><p>•组播数据转发基本流程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•《IGMP原理与配置》课程介绍了组播网络如何感知组播组成员的位置和所加组播组。</p>
+<p>•本课程将主要介绍如何形成组播分发树。</p>
+</blockquote>
+<h2 id="组播协议介绍回顾"><a href="#组播协议介绍回顾" class="headerlink" title="组播协议介绍回顾"></a>组播协议介绍回顾</h2><p>•组播网络需要基于多种组播协议才能建立转发路径：</p>
+<p>▫工作在成员端网络的主要是IGMP（Internet Group Management Protocol，因特网组管理协议）协议，用于告知组播网络，组成员的位置与所加组播组。</p>
+<p>▫工作在组播转发网络的协议主要是PIM，MSDP，MBGP。</p>
+<p>▪<strong>PIM</strong>（Protocol Independent Multicast，协议无关组播）协议主要作用是<strong>生成AS域内的组播分发树</strong>。</p>
+<p>▪MSDP（Multicast Source Discovery Protocol，组播源发现协议）主要作用是帮助生成AS域间的组播分发树。</p>
+<p>▪MBGP（Multicast BGP，组播BGP）主要作用是帮助跨域组播流进行RPF校验。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<blockquote>
+<p>•本课程主要介绍PIM协议的工作原理。</p>
+</blockquote>
+<h2 id="PIM协议介绍"><a href="#PIM协议介绍" class="headerlink" title="PIM协议介绍"></a>PIM协议介绍</h2><p>•PIM称为协议无关组播。协议无关指的是与单播路由协议无关，即PIM不需要维护专门的单播路由信息。作为组播路由解决方案，它直接利用单播路由表的路由信息，对组播报文执行RPF检查，检查通过后创建组播路由表项，从而转发组播报文。</p>
+<p>•目前在实际网络中，PIM主要有两种模式：</p>
+<p>▫<strong>PIM-DM（PIM-Dense Mode，PIM密集模式）。</strong></p>
+<p>▫<strong>PIM-SM（PIM-Sparse Mode，PIM稀疏模式）</strong> ，PIM-SM模式根据组播服务模型又可以分为：</p>
+<p>▪<strong>PIM-SM（ASM）</strong>：为任意源组播建立组播分发树。</p>
+<p>▪<strong>PIM-SM（SSM）</strong>：为指定源组播建立组播分发树。</p>
+<blockquote>
+<p>•PIM（Protocol Independent Multicast）协议无关组播，目前常用版本是PIMv2，PIM报文直接封装在IP报文中，协议号为103，PIMv2组播地址为224.0.0.13。</p>
+<p>•在PIM组播域中，以组播组为单位建立从组播源到组成员的点到多点的组播转发路径。由于组播转发路径呈现树型结构，也称为组播分发树（MDT，Multicast Distribution Tree）。</p>
+<p>•组播分发树的特点：</p>
+<p>▫无论网络中的组成员有多少，每条链路上相同的组播数据最多只有一份。被传递的组播数据在距离组播源尽可能远的分叉路口才开始复制和分发。</p>
+</blockquote>
+<h2 id="PIM-DM与PIM-SM使用场景"><a href="#PIM-DM与PIM-SM使用场景" class="headerlink" title="PIM-DM与PIM-SM使用场景"></a>PIM-DM与PIM-SM使用场景</h2><p>•PIM形成组播分发树主要有两种模式，即PIM-DM模式与PIM-SM模式，这两种模式分别用在不同的场景下：</p>
+<p>▫<strong>PIM-DM模式</strong>主要用在<strong>组成员较少且相对密集的组播网络中</strong>，该模式建立组播分发树的基本思路是“扩散-剪枝”，即将组播流量全网扩散，然后剪枝没有组成员的路径，最终形成组播分发树。</p>
+<p>▫<strong>PIM-SM模式</strong>主要用在<strong>组成员较多且相对稀疏的组播网络中</strong>，该模式建立组播分发树的基本思路是先收集组成员信息，然后再形成组播分发树。使用PIM-SM模式不需要全网泛洪组播，对现网的影响较小，因此<strong>现网多使用PIM-SM模式</strong>。</p>
+<h2 id="组播分发树的分类"><a href="#组播分发树的分类" class="headerlink" title="组播分发树的分类"></a>组播分发树的分类</h2><p>•通过PIM形成的组播分发树主要分为以下两种：</p>
+<p>▫以组播源为根，组播组成员为叶子的组播分发树称为<strong>SPT</strong>（Shortest Path Tree），<strong>在PIM-DM与PIM-SM中均有使用</strong>。</p>
+<p>▫以RP（Rendezvous Point）为根，组播组成员为叶子的组播分发树称为<strong>RPT</strong>（RP Tree），<strong>在PIM-SM中使用</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•SPT又被称为源树，SPT在PIM-DM模式与PIM-SM模式的组播网络中均有使用。</p>
+<p>•RPT又被称为共享树，RPT主要在PIM-SM模式的组播网络中被使用。</p>
+<p>•RP的作用将在《PIM-SM》章节讲解。</p>
+</blockquote>
+<h2 id="PIM路由表项"><a href="#PIM路由表项" class="headerlink" title="PIM路由表项"></a>PIM路由表项</h2><p>•PIM路由表项即通过PIM协议建立的组播协议路由表项。</p>
+<p>•PIM网络中存在两种路由表项：</p>
+<p>▫（S，G）路由表项主要用于在PIM网络中<strong>建立SPT</strong>。对于PIM-DM网络和PIM-SM网络适用。</p>
+<p>▫（*，G）路由表项主要用于在PIM网络中<strong>建立RPT</strong>。对于PIM-SM网络适用。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<blockquote>
+<p>•S表示组播源，G表示组播组，*表示任意。</p>
+<p>•PIM路由器上可能同时存在两种路由表项。当收到源地址为S，组地址为G的组播报文，且RPF检查通过的情况下，按照如下的规则转发：</p>
+<ul>
+<li><p>如果存在（S，G）路由表项，则由（S，G）路由表项指导报文转发。</p>
+</li>
+<li><p>如果不存在（S，G）路由表项，只存在（<em>，G）路由表项，则先依照（</em>，G）路由表项创建（S，G）路由表项，再由（S，G）路由表项指导报文转发。</p>
+</li>
+</ul>
+<p>▫Flag值：PIM路由表象的标志。</p>
+<p>D：以PIM-DM模式转发；<br> S：以PIM-SM模式转发；<br> P：该条目已经被Prune；<br> C：DST直连，指该RT为收到IGMP report的路由器；<br>  J：（仅用于PIM-SM）RPT-〉SPT，指通过本RT的multicast已从RPT转为SPT进行转发。当该条目用于（*，G）里面，代表SPT-Threshold已经超过预定值（Cisco默认1min0字节），下一个包将引发建立SPT；当条目用于（S，G）里面，表示SPT-Threshold已经低于预定值，将删除SPT重新使用RPT；<br> T：SPT，使用SPT进行转发；<br> L：RT本身就是组播成员；<br> F： Register flag 。</p>
+</blockquote>
+<h2 id="PIM路由表项与组播路由表项"><a href="#PIM路由表项与组播路由表项" class="headerlink" title="PIM路由表项与组播路由表项"></a>PIM路由表项与组播路由表项</h2><p>•在不同的组播路由器上，组播路由表项会基于不同的表项汇总形成。</p>
+<p>▫最后一跳路由器的组播路由表项主要基于PIM路由表项，IGMP组表项和IGMP路由表项汇总形成。</p>
+<p>▫其余组播路由器的组播路由表项主要<strong>基于PIM路由表项形成</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<h1 id="2-PIM-DM介绍"><a href="#2-PIM-DM介绍" class="headerlink" title="2.PIM-DM介绍"></a>2.PIM-DM介绍</h1><h2 id="PIM-DM工作原理"><a href="#PIM-DM工作原理" class="headerlink" title="PIM-DM工作原理"></a>PIM-DM工作原理</h2><h3 id="PIM-DM基本概念"><a href="#PIM-DM基本概念" class="headerlink" title="PIM-DM基本概念"></a>PIM-DM基本概念</h3><p>•PIM-DM主要用在组成员较少且相对密集的网络中，通过“<strong>扩散-剪枝</strong>”的方式形成组播转发树（SPT）。</p>
+<p>•PIM-DM在形成SPT的过程中，除了扩散（Flooding），剪枝（Prune）机制外，还会涉及邻居发现（Neighbor Discovery），嫁接（Graft），断言（Assert）和状态刷新（State Refresh）机制。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<h3 id="PIM-DM协议报文"><a href="#PIM-DM协议报文" class="headerlink" title="PIM-DM协议报文"></a>PIM-DM协议报文</h3><p>•PIM协议报文直接采用IP封装，<strong>目的地址224.0.0.13，IP协议号103</strong>。</p>
+<p>•PIM-DM与PIM-SM使用的协议报文类型有所不同。</p>
+<p>•PIM-DM使用报文主要是以下几类：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h3 id="邻居发现"><a href="#邻居发现" class="headerlink" title="邻居发现"></a>邻居发现</h3><p>•<strong>组播转发路径只能在PIM邻居之间建立</strong>，因此邻居发现是形成组播分发树的先决条件。</p>
+<p>•邻居发现主要通过PIM Hello包完成。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<blockquote>
+<p>•Hello报文中携带多项PIM协议报文参数，主要用于PIM邻居之间PIM协议报文的控制。具体如下：</p>
+<p>▫DR_Priority：表示各路由器接口竞选DR的优先级，优先级越高越容易获胜。</p>
+<p>▫Holdtime：表示保持邻居为可达状态的超时时间。如果在超时时间内没有收到PIM邻居发送的Hello报文，路由器则认为邻居不可达。</p>
+<p>▫LAN_Delay：表示共享网段内传输Prune报文的延迟时间。</p>
+<p>▫Neighbor-Tracking：表示邻居跟踪功能。</p>
+<p>▫Override-Interval：表示Hello报文中携带的否决剪枝的时间间隔。</p>
+</blockquote>
+<h3 id="首次形成组播分发树"><a href="#首次形成组播分发树" class="headerlink" title="首次形成组播分发树"></a>首次形成组播分发树</h3><p>•PIM-DM模式首次形成组播分发树主要依赖扩散机制、剪枝机制、断言机制与DR选举机制。</p>
+<ul>
+<li><p>扩散机制：组播数据包向所有的PIM邻居泛洪，同时组播路由器产生组播路由表项。</p>
+</li>
+<li><p>断言机制：当组播转发过程中存在多路访问网络，则需要选举出一个组播转发路由器，避免重复组播报文。</p>
+</li>
+<li><p>剪枝机制：如果组播路由器下没有组成员，则将源到该组播路由器的组播转发路径剪枝。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<h3 id="扩散机制"><a href="#扩散机制" class="headerlink" title="扩散机制"></a>扩散机制</h3><p>•组播源发送的组播报文会在全网内扩散。当PIM路由器接收到组播报文，先进行<strong>RPF检查</strong>，通过后会在该路由器上<strong>创建（S，G）表项</strong>，之后会向所有PIM邻居发送。</p>
+<p>•PIM-DM形成的（S，G）表项有老化时间（默认210s），如果老化时间超时前没有收到新的组播报文，则删除（S，G）表项。</p>
+<p>•扩散具体过程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•扩散机制会周期性（默认180s）全网扩散组播数据，周期性扩散的主要目的是探测是否有新成员加组，但是由于全网扩散组播数据会浪费大量带宽，所以现在的组播网络一般使用“状态刷新机制”加上“嫁接机制”来实现周期性全网扩散感知新成员加组的目的。</p>
+</blockquote>
+<h3 id="断言机制"><a href="#断言机制" class="headerlink" title="断言机制"></a>断言机制</h3><p>•当一个网段内有多个相连的PIM路由器向该网段转发组播报文时，需要通过断言机制（Assert）来保证<strong>只有一个PIM路由器向该网段转发组播报文</strong>。</p>
+<p>•通过断言机制的选举规则将决定组播路由器的转发行为：</p>
+<p>▫获胜一方的下游接口称为<strong>Assert Winner</strong>，将负责后续对该网段组播报文的<strong>转发</strong>。</p>
+<p>▫落败一方的下游接口称为<strong>Assert Loser</strong>，后续<strong>不会</strong>对该网段<strong>转发</strong>组播报文，PIM路由器也会将其从（S，G）表项<strong>下游接口列表中删除</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•断言机制由组播数据触发。</p>
+</blockquote>
+<h3 id="断言机制选举规则"><a href="#断言机制选举规则" class="headerlink" title="断言机制选举规则"></a>断言机制选举规则</h3><p>•PIM路由器在<strong>接收到</strong>邻居路由器发送的<strong>相同组播报文</strong>后，会向该网段<strong>发送断言（Assert）报文</strong>，进行Assert选举。Assert报文内会携带到组播源的单播路由前缀，路由优先级与开销。选举规则如下：</p>
+<p>▫单播路由协议优先级较高者获胜。</p>
+<p>▫如果优先级相同，则到组播源的开销较小者获胜。</p>
+<p>▫如果以上都相同，则下游接口IP地址最大者获胜。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<blockquote>
+<p>•Assert选举失败的设备会抑制转发，并将这种抑制转发的状态保持一段时间，这段时间就被称为Assert保持时间，默认180s。</p>
+<p>•Assert保持时间超时后，竞选失败的设备会恢复转发从而触发新一轮竞选。</p>
+</blockquote>
+<h3 id="剪枝机制"><a href="#剪枝机制" class="headerlink" title="剪枝机制"></a>剪枝机制</h3><p>•对于没有组成员连接的组播路由器，组播网络无需再将组播流量继续放往该设备。通过剪枝机制，组播网络可以将此类路径剪枝。</p>
+<p>•剪枝机制工作原理如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•路由器为被裁剪的下游接口启动一个剪枝定时器（默认210s），定时器超时后接口恢复转发。组播报文重新在全网范围内扩散，新加入的组成员可以接收到组播报文。随后，下游不存在组成员的叶子路由器将向上发起剪枝操作。通过这种周期性的扩散-剪枝，PIM-DM周期性的刷新SPT。</p>
+<p>•当下游接口被剪枝后：</p>
+<ul>
+<li><p>如果下游叶子路由器有组成员加入，并且希望在下次“扩散-剪枝”前就恢复组播报文转发，则执行嫁接动作。</p>
+</li>
+<li><p>如果下游叶子路由器一直没有组成员加入，希望该接口保持抑制转发状态，则执行状态刷新动作。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="维护组播分发树"><a href="#维护组播分发树" class="headerlink" title="维护组播分发树"></a>维护组播分发树</h3><p>•组播分发树形成后不会一直存在，也不会一直不变。</p>
+<p>•在PIM邻居关系稳定，组成员没有变化的情况下，维护组播分发树一般有两种方式：</p>
+<p>​    ▫持续发送组播报文，保证组播路由表项能一直存在。</p>
+<p>​    ▫发送状态刷新报文，保证组播路由表项的下行接口状态不发生变化。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<h3 id="状态刷新机制"><a href="#状态刷新机制" class="headerlink" title="状态刷新机制"></a>状态刷新机制</h3><p>•在PIM-DM网络中，为了避免被裁剪的接口因为“剪枝定时器”超时而恢复转发，离组播源最近的第一跳路由器会周期性地触发State Refresh报文在全网内扩散。</p>
+<p>•收到State Refresh报文的PIM路由器会刷新剪枝定时器的状态。被裁剪接口的下游叶子路由器如果一直没有组成员加入，该接口将一直处于抑制转发状态。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<h3 id="新成员加组"><a href="#新成员加组" class="headerlink" title="新成员加组"></a>新成员加组</h3><p>•当有新成员加入组播组后，组播网络需要<strong>更新组播分发树</strong>，才能将组播数据发往组成员。PIM-DM模式在使用“扩散-剪枝”的方式建立组播分发树后，通过<strong>状态刷新机制</strong>，使<strong>下行接口一旦被抑制就无法自动恢复</strong>。</p>
+<p>•因此需要一些机制来更新组播分发树，一般PIM-DM模式更新组播分发树的方法有两种：</p>
+<p>▫等待组播路由表超时后，全网重新泛洪。该方法不可控，在现网中无法实现</p>
+<p>▫使用嫁接（Graft）机制，当新成员加组后，<strong>主动反向建立组播分发路径</strong>。现网中一般使用嫁接机制来实现新成员加组。</p>
+<h3 id="嫁接机制"><a href="#嫁接机制" class="headerlink" title="嫁接机制"></a>嫁接机制</h3><p>•PIM-DM通过嫁接机制，使有新组成员加入的网段快速得到组播报文。</p>
+<p>•叶子路由器通过IGMP了解到与其相连的用户网段上，组播组G有新的组成员加入。随后叶子路由器会<strong>基于本地的组播路由表</strong>向上游发送Graft报文，请求上游路由器<strong>恢复相应出接口</strong>转发，将其添加在（S，G）表项下游接口列表中。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<h2 id="PIM-DM基本配置"><a href="#PIM-DM基本配置" class="headerlink" title="PIM-DM基本配置"></a>PIM-DM基本配置</h2><h3 id="PIM-DM的基本配置"><a href="#PIM-DM的基本配置" class="headerlink" title="PIM-DM的基本配置"></a>PIM-DM的基本配置</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<h3 id="PIM-DM基础实验"><a href="#PIM-DM基础实验" class="headerlink" title="PIM-DM基础实验"></a>PIM-DM基础实验</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<h4 id="查看参数"><a href="#查看参数" class="headerlink" title="查看参数"></a>查看参数</h4><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"> </p>
+<h1 id="3-PM-SM介绍"><a href="#3-PM-SM介绍" class="headerlink" title="3.PM-SM介绍"></a>3.PM-SM介绍</h1><h2 id="PIM-SM-ASM-工作原理"><a href="#PIM-SM-ASM-工作原理" class="headerlink" title="PIM-SM(ASM)工作原理"></a>PIM-SM(ASM)工作原理</h2><h3 id="PIM-DM的局限性"><a href="#PIM-DM的局限性" class="headerlink" title="PIM-DM的局限性"></a>PIM-DM的局限性</h3><p>•中大型组播网络中由于网络较大，如果依然使用PIM-DM会遇到组多问题：</p>
+<p>▫使用“扩散-剪枝”方式需要全网扩散组播报文，对于<strong>网络有一定冲击</strong>。</p>
+<p>▫所有组播路由器<strong>均需要维护组播路由表</strong>，即使该组播路由器无需转发组播数据。</p>
+<p>▫对于组成员较为稀疏的组播网络，使用“扩散-剪枝”形成组播分发树的<strong>效率不高</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<h3 id="PIM-SM-ASM-介绍"><a href="#PIM-SM-ASM-介绍" class="headerlink" title="PIM-SM(ASM)介绍"></a>PIM-SM(ASM)介绍</h3><p>•PIM-DM模型使用“扩散-剪枝”形成组播分发树的原因是：组播网络中大部分组播路由器无法得知组成员的位置。</p>
+<p>•PIM-SM（ASM）模型形成组播分发树的方法是：</p>
+<p>▫将组成员的位置事先告知某台组播路由器（Rendezvous Point，RP），形成<strong>RPT（RP Tree）</strong>。</p>
+<p>▫组播源在发送组播数据时，组播网络先将组播数据<strong>发送至RP</strong>，然后由RP再将组播数据转发给组成员。</p>
+<p>▫对于部分次优的组播转发路径，PIM-SM（ASM）能<strong>自动优化为最优路径（SPT）</strong>。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<blockquote>
+<p>•通过PIM-SM（ASM）模式形成组播分发树有如下好处：</p>
+<p>​    ▫只有组播转发路劲上的组播路由器需要维护组播路由表。</p>
+<p>​    ▫通过RP可以让所有组播路由器获知组成员的位置。</p>
+<p>​    ▫避免“扩散-剪枝”机制，提高组播分发树的形成效率。</p>
+</blockquote>
+<h3 id="PIM-SM-ASM-协议报文"><a href="#PIM-SM-ASM-协议报文" class="headerlink" title="PIM-SM(ASM)协议报文"></a>PIM-SM(ASM)协议报文</h3><p>•PIM协议报文直接采用IP封装，目的地址224.0.0.13，IP协议号103。</p>
+<p>•PIM-SM使用报文主要是以下几类：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<h3 id="RP介绍"><a href="#RP介绍" class="headerlink" title="RP介绍"></a>RP介绍</h3><p>•汇聚点RP（Rendezvous Point）为网络中一台重要的PIM路由器，用于处理源端DR注册信息及组成员加入请求，网络中的<strong>所有PIM路由器都必须知道RP的地址</strong>，类似于一个供求信息的汇聚中心。</p>
+<p>•目前可以通过以下方式配置RP：</p>
+<p>▫<strong>静态RP</strong>：在网络中的所有PIM路由器上配置相同的RP地址，静态指定RP的位置。</p>
+<p>▫<strong>动态RP</strong>：通过选举机制在多个C-RP（Candidate-RP，候选RP）之间选举出RP。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<blockquote>
+<p>•静态RP或者是动态RP在设置时均可以指定该RP为哪些组播组提供服务。</p>
+</blockquote>
+<h3 id="动态选举RP"><a href="#动态选举RP" class="headerlink" title="动态选举RP"></a>动态选举RP</h3><p>•动态选举RP会涉及两类角色C-BSR（Candidate-Bootstrap Router）与C-RP（Candidate-RP）：</p>
+<p>▫C-BSR通过竞选能选举出一个唯一的BSR。</p>
+<p>▫BSR的作用是收集C-RP的信息并形成RP-Set信息，BSR通过PIM报文将RP-Set信息扩散给所有PIM路由器。</p>
+<p>▫PIM路由器收到RP-Set消息后，根据RP选举规则选举出合适的RP。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<blockquote>
+<p>•BSR竞选规则如下：</p>
+<p>​    ▫优先级较高者获胜（优先级数值越大优先级越高）。</p>
+<p>​    ▫如果优先级相同，IP地址较大者获胜。</p>
+<p>•RP竞选规则如下：</p>
+<p>​    ▫与用户加入的组地址匹配的C-RP服务的组范围掩码最长者获胜。</p>
+<p>​    ▫如果以上比较结果相同，则C-RP优先级较高者获胜（优先级数值    越小优先级越高）。</p>
+<p>​    ▫如果以上比较结果都相同，则执行Hash函数，计算结果较大者获    胜。</p>
+<p>​    ▫如果以上比较结果都相同，则C-RP的IP地址较大者获胜。</p>
+</blockquote>
+<h3 id="首次形成组播分发树-1"><a href="#首次形成组播分发树-1" class="headerlink" title="首次形成组播分发树"></a>首次形成组播分发树</h3><p>•PIM-SM（ASM）模式首次形成组播分发树主要依赖RPT构建机制，组播源注册机制与DR选举机制。</p>
+<p>▫RPT构建机制：组播叶子路由器主动建立到RP的组播分发树（RPT）</p>
+<p>▫组播源注册机制：通过该机制形成组播源到RP的组播分发树（SPT）</p>
+<p>▫DR选举机制：DR负责源端或组成员端组播报文的收发，避免重复组播报文，同时成员端DR还负责发送Join加组消息。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<blockquote>
+<p>•DR选举机制与PIM-DM中的DR选举机制一致，不再赘述。</p>
+</blockquote>
+<h3 id="RPT构建"><a href="#RPT构建" class="headerlink" title="RPT构建"></a>RPT构建</h3><p>•RPT（RP Tree）是一棵<strong>以RP为根</strong>，以存在组成员关系的<strong>PIM路由器为叶子</strong>的组播分发树。</p>
+<p>•当网络中出现组成员（形成IGMP表项）时，组成员端DR向RP发送Join报文，在通向RP的路径上逐跳创建<strong>（*，*G）表项</strong>，生成一棵以RP为根的RPT。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
+<h3 id="组播源注册机制-–-形成SPT"><a href="#组播源注册机制-–-形成SPT" class="headerlink" title="组播源注册机制 – 形成SPT"></a>组播源注册机制 – 形成SPT</h3><p>•PIM-SM（ASM）模型中，源端DR到RP的组播分发树无法使用Join报文创建，因此需要<strong>组播源注册机制</strong>帮助形成源端DR到RP的组播分发树（SPT）。</p>
+<p>•形成SPT需要基于Register报文与Join报文，具体过程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
+<blockquote>
+<p>•组播源与源端DR之间没有IGMP协议，无法通过IGMP生成PIM（*，G）表项，进而无法发送Join消息形成组播分发树。</p>
+</blockquote>
+<h3 id="组播源注册机制-–-转发组播数据"><a href="#组播源注册机制-–-转发组播数据" class="headerlink" title="组播源注册机制 – 转发组播数据"></a>组播源注册机制 – 转发组播数据</h3><p>•组播源信息注册到RP后，就形成了组播源到RP的SPT，但源端DR此时仍然会将组播数据包封装入Register报文，该方式会造成一些问题：</p>
+<ul>
+<li><p>源端DR最初发送的是单播Register报文，但是该方式会<strong>加重源端DR与RP的工作量</strong>。</p>
+</li>
+<li><p>源端DR形成到RP的SPT后，<strong>会同时发送单播Register报文</strong>和<strong>组播报文</strong>，造成重复组播包的问题。</p>
+</li>
+</ul>
+<p>•SPT建立后，RP使用Register-Stop报文通知源端DR后续报文可以以组播报文形式发送。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
+<h3 id="源-末端网络中的重复组播报文"><a href="#源-末端网络中的重复组播报文" class="headerlink" title="源/末端网络中的重复组播报文"></a>源/末端网络中的重复组播报文</h3><p>•在<strong>源端网络或者成员端网络中</strong>，有可能有多台组播路由器转发组播流量，从而造成<strong>重复组播报文</strong>的问题。</p>
+<p>•PIM DR（Designated Router）是源端网络或者成员端网络的<strong>唯一组播转发者</strong>，由于不存在别的组播转发路由器就避免了重复组播报文的问题。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
+<h3 id="PIM-DR选举"><a href="#PIM-DR选举" class="headerlink" title="PIM DR选举"></a>PIM DR选举</h3><p>•PIM DR的选举：</p>
+<ul>
+<li><p>在PIM-SM（ASM）中各路由器通过比较<strong>Hello</strong>消息上携带的<strong>优先级</strong>和<strong>IP地址</strong>，为多路访问网络选举指定路由器DR。</p>
+</li>
+<li><p><strong>接口DR优先级高</strong>的路由器将成为该MA网络的DR，在优先级相同的情况下，<strong>接口IP地址大</strong>的路由器将成为DR。</p>
+</li>
+<li><p>当DR出现故障后，邻居路由器之间会重新选举DR。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
+<blockquote>
+<p>•DR优先级默认为1，数值越大越优。</p>
+<p>•对于成员端网络，如果有多台组播路由器，则组播路由器的下行接口需要同时开启IGMP与PIM。</p>
+<p>•DR还可充当IGMPv1的查询器。</p>
+</blockquote>
+<h3 id="RPT次优路径问题"><a href="#RPT次优路径问题" class="headerlink" title="RPT次优路径问题"></a>RPT次优路径问题</h3><p>•在PIM-SM网络中，一个组播组只对应一个RP。因此组播数据最初都会发往RP，由RP进行转发，这会导致两个问题：</p>
+<p>​    ▫过大的组播流量会对RP形成巨大的负担。</p>
+<p>​    ▫组播转发路径有可能是次优路径。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
+<h3 id="SPT切换机制"><a href="#SPT切换机制" class="headerlink" title="SPT切换机制"></a>SPT切换机制</h3><p>•当数据发送至RP后，RP会沿RPT将数据发送给成员端DR。为了解决RPT潜在的次优路径问题，<strong>成员端DR</strong>会基于组播数据包中的源IP，反向建立从成员端DR到源的SPT。</p>
+<p>•具体过程如下：</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
+<blockquote>
+<p>•设备沿最短路径发送Join消息，该最短路径基于RPF选举规则决定。设备将Join消息从RPF选举得出的上行接口发出。</p>
+<p>•多路访问网络在SPT切换的过程中可能会存在重复报文，需要利用断言机制快速选定下行接口。</p>
+<p>•SPT切换的触发条件</p>
+</blockquote>
+<h3 id="维护组播分发树-1"><a href="#维护组播分发树-1" class="headerlink" title="维护组播分发树"></a>维护组播分发树</h3><p>•当组播分发树（<strong>SPT或RPT</strong>）稳定后，成员端DR会周期性发送Join/Prune报文，用于维护组播分发树。</p>
+<p>•如果组播在一段时间后（默认210s）没有流量则SPT树会消失，成员端DR恢复到RP的RPT树。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
+<h2 id="PIM-SM-SSM-工作原理"><a href="#PIM-SM-SSM-工作原理" class="headerlink" title="PIM-SM(SSM)工作原理"></a>PIM-SM(SSM)工作原理</h2><h3 id="SSM概念回顾"><a href="#SSM概念回顾" class="headerlink" title="SSM概念回顾"></a>SSM概念回顾</h3><p>•SSM模型针对特定源和组的绑定数据流提供服务，接收者主机在加入组播组时，可以<strong>指定只接收</strong>哪些源的数据或<strong>指定拒绝接收</strong>来自哪些源的数据。加入组播组以后，主机<strong>只会收到指定源</strong>发送到该组的数据。</p>
+<p>•<strong>SSM模型对组地址不再要求全网唯一</strong>，<strong>只需要每个组播源保持唯一</strong>。这里的“唯一”指的是同一个源上不同的组播应用必须使用不同的SSM地址来区分。不同的源之间可以使用相同的组地址，因为SSM模型中针对每一个（源，组）信息都会生成表项。这样一方面节省了组播组地址，另一方面也不会造成网络拥塞。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
+<h3 id="PIM-SM-SSM-基本概述"><a href="#PIM-SM-SSM-基本概述" class="headerlink" title="PIM-SM(SSM)基本概述"></a>PIM-SM(SSM)基本概述</h3><p>•由于SSM提前定义了组播的源地址，所以PIM-SM（SSM）可以在成员端DR上基于组播源地址直接反向建立SPT。</p>
+<p>•PIM-SM（SSM）<strong>无需维护RP</strong>、<strong>无需构建RPT</strong>、<strong>无需注册组播源</strong>，可以直接在组播源与组成员之间建立SPT。</p>
+<p>•在PIM-SM（SSM）模型中，关键机制包括邻居发现、DR竞选、构建SPT。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
+<blockquote>
+<p>•PIM-SM（SSM）无需Assert机制</p>
+</blockquote>
+<h3 id="组播分发树形成与维护"><a href="#组播分发树形成与维护" class="headerlink" title="组播分发树形成与维护"></a>组播分发树形成与维护</h3><p>•PIM-SM（SSM）模型构建组播分发树的形成主要依赖IGMPv3报文与Join报文。</p>
+<p>•PIM-SM（SSM）模型形成的<strong>组播分发树会一直存在</strong>，不会因为没有组播流量而消失。</p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/39.png"></p>
+<blockquote>
+<p>•DR与邻居发现机制与PIM-DM模式一样，此处不再赘述。</p>
+</blockquote>
+<h3 id="PIM模型比较"><a href="#PIM模型比较" class="headerlink" title="PIM模型比较"></a>PIM模型比较</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/40.png"></p>
+<h2 id="PIM-SM基本配置"><a href="#PIM-SM基本配置" class="headerlink" title="PIM-SM基本配置"></a>PIM-SM基本配置</h2><h3 id="PIM-SM的基本配置"><a href="#PIM-SM的基本配置" class="headerlink" title="PIM-SM的基本配置"></a>PIM-SM的基本配置</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/41.png"></p>
+<h3 id="PIM-SM基础实验"><a href="#PIM-SM基础实验" class="headerlink" title="PIM-SM基础实验"></a>PIM-SM基础实验</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/42.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/43.png"></p>
+<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/44.png"></p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（单选题）PIM组播报文的目的IP地址是？</p>
+<p>A.224.0.0.2</p>
+<p>B.224.0.0.1</p>
+<p>C.224.0.0.5</p>
+<p><strong>D.224.0.0.13</strong></p>
+<p>2.（多选题）组播防止重复报文的机制有？</p>
+<p><strong>A.RPF机制</strong></p>
+<p><strong>B.Assert选举机制</strong></p>
+<p><strong>C.DR选举机制</strong></p>
+<p>D.IGMP查询者选举机制</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•PIM模型有两种：</p>
+<ul>
+<li><p>PIM-DM主要使用在网络规模较小，用户集中的组播网络中。</p>
+</li>
+<li><p>PIM-SM主要使用在网络规模较大，用户较为分散的组播网络中。PIM-SM基于组播模型又可以分为PIM-SM（ASM）于PIM-SM（SSM）模型，PIM-SM（SSM）模型主要为SSM组播服务。</p>
+</li>
+</ul>
+<p>•PIM-DM使用“扩散-剪枝”的方式形成组播分发树，在形成分发树时使用Assert选举于DR选举机制防止环路产生，在组播转发时使用PRF机制防止环路产生。</p>
+<p>•PIM-SM（ASM）将组成员加组信息发送给RP，形成RPT，组播源再发送组播报文时先将组播报文发送至RP，然后由RP再将组播数据发送至组成员，形成SPT+RPT的组播分发树。为了防止RPT次优路径的问题，PIM-SM（ASM）会发起SPT切换的机制，优化组播分发树。</p>
+<p>•PIM-SM（SSM）主要为SSM组播模型服务，由于SSM组播模型预先知道组播源的地址，因此可以直接反向建立组播分发树。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-IGMP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T11:52:35+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•组播通信中，组播网络需要将组播数据发送给特定的组播组成员，因此组播网络需要知道组成员的位置与组成员所加的组播组。</p>
+<p>•通过<strong>IGMP（Internet Group Management Protocol，因特网组管理协议）</strong>，组成员可以将加组消息发送给组播网络，从而让组播网络<strong>感知</strong>到<strong>组成员的位置</strong>和<strong>所加组播组</strong>。</p>
+<p>•本课程主要讲解IGMP的作用和基本原理，包括IGMPv1、IGMPv2和IGMPv3三个版本的原理与区别，和IGMP Snooping的工作机制、IGMP SSM Mapping工作机制、IGMP代理的工作机制。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IGMP的基本原理和配置</p>
+<p>▫描述IGMP不同版本间的区别</p>
+<p>▫描述IGMP Snooping的基本原理</p>
+<p>▫描述IGMP SSM Mapping的基本原理</p>
+<p>▫描述IGMP代理的基本原理</p>
+<h1 id="1-IGMP介绍"><a href="#1-IGMP介绍" class="headerlink" title="1.IGMP介绍"></a>1.IGMP介绍</h1><h2 id="IGMP简介"><a href="#IGMP简介" class="headerlink" title="IGMP简介"></a>IGMP简介</h2><h3 id="组播网络的转发困境"><a href="#组播网络的转发困境" class="headerlink" title="组播网络的转发困境"></a>组播网络的转发困境</h3><p>•IP组播通信的特点是报文从一个源发出，被转发到一组特定的组播组成员。在组播通信模型中，组播源不关注接收者的位置信息，组播数据转发需要依赖组播网络才能将数据发送至组播组成员。</p>
+<p>•组播数据在进行传递时，组播网络为了将组播数据转发至组播组成员，需要知道<strong>组播组成员的位置</strong>与<strong>所加组播组</strong>。</p>
+<p>•组播网络<strong>如何感知组播组成员？</strong></p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h3 id="感知组播组成员"><a href="#感知组播组成员" class="headerlink" title="感知组播组成员"></a>感知组播组成员</h3><p>•组播网络感知组播组成员有两种方法：</p>
+<p>▫手工静态配置：在组播路由器上静态指定连接组播组成员的接口，静态配置组成员加组信息。</p>
+<p>▪手工静态方式灵活性差，配置工作量大，但相对比较稳定，对于新上线的组成员能够快速建立组播转发通路。</p>
+<p>▫动态感知：通过<strong>IGMP</strong>协议通知组播网络，组播网络根据IGMP消息感知组播组成员所在接口，以及组成员加组信息。</p>
+<p>▪动态感知方式较为灵活，且配置简单，<strong>现网一般使用动态感知方式</strong>。</p>
+<p>•当组播网络获得组成员位置与加组信息后，可以基于这些信息转发组播报文。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•组播网络转发报文时需要依赖组播分发树，该分发树的形成将在《PIM原理与配置》课程讲解。</p>
+</blockquote>
+<h3 id="IGMP协议的概述"><a href="#IGMP协议的概述" class="headerlink" title="IGMP协议的概述"></a>IGMP协议的概述</h3><p>•IGMP是TCP/IP协议族中负责IPv4组播成员管理的协议，用来在接收者主机和与其直接相邻的组播路由器之间<strong>建立</strong>和<strong>维护组播组成员关系</strong>。</p>
+<p>•IGMP通过在组播组成员和组播路由器之间交互IGMP报文实现组成员管理功能，IGMP报文封装在IP报文中。</p>
+<p>•到目前位置，IGMP有三个版本：</p>
+<p>▫IGMPv1</p>
+<p>▫IGMPv2</p>
+<p>▫IGMPv3</p>
+<p>•组播路由器与组成员间交互报文后会生成<strong>IGMP路由表项</strong>与<strong>IGMP组表项</strong>。</p>
+<p>•IGMP路由表项与IGMP组表项将帮助设备生成组播路由表项。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<h3 id="IGMP组表项与路由表项"><a href="#IGMP组表项与路由表项" class="headerlink" title="IGMP组表项与路由表项"></a>IGMP组表项与路由表项</h3><p>•IGMP协议会生成IGMP路由表项与IGMP组表项，组播路由表项需要基于IGMP路由表项与IGMP组表项的信息生成。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<h3 id="IGMP表项与组播路由表项"><a href="#IGMP表项与组播路由表项" class="headerlink" title="IGMP表项与组播路由表项"></a>IGMP表项与组播路由表项</h3><p>•在<strong>最后一跳组播路由器（组播叶子路由器）</strong>上，组播路由表可以基于IGMP路由表项，IGMP组表项与组播协议路由表（PIM路由表）汇总后形成。</p>
+<p>•IGMP路由表项与IGMP组表项能为组播协议路由表提供<strong>组播组地址信息</strong>与<strong>出接口信息</strong>。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<h2 id="IGMP工作原理"><a href="#IGMP工作原理" class="headerlink" title="IGMP工作原理"></a>IGMP工作原理</h2><h3 id="IGMPv1基本概念"><a href="#IGMPv1基本概念" class="headerlink" title="IGMPv1基本概念"></a>IGMPv1基本概念</h3><p>•IGMPv1主要基于查询和响应机制完成组播组管理。</p>
+<p>•查询和响应机制由两种报文实现：</p>
+<ul>
+<li><p><strong>普遍组查询报文（General Query</strong>）：查询器向共享网络上所有主机和路由器发送的查询报文，用于查询<strong>哪些组播组存在成员。</strong></p>
+</li>
+<li><p><strong>成员关系报告报文（Report）</strong>：主机向查询器发送的报告报文，用于<strong>申请加入某个组播组</strong>或者<strong>应答查询报文</strong>。</p>
+</li>
+</ul>
+<p>•由于IGMP报文是组播报文，因此一个多路访问网络里只需要<strong>一个组播路由器发送查询报文即可</strong>，该组播路由器被称为<strong>IGMP查询器（Querier）</strong>。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<h3 id="IGMPv1报文格式"><a href="#IGMPv1报文格式" class="headerlink" title="IGMPv1报文格式"></a>IGMPv1报文格式</h3><p>•IGMPv1普遍组查询报文与成员关系报告报文均为组播报文，<strong>目的地址为224.0.0.1</strong>。</p>
+<p>•IGMPv1普遍组查询报文与成员关系报告报文格式类似，其中最主要的是Version，Type，Group Address这三个字段：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h3 id="IGMPv1组成员加组机制"><a href="#IGMPv1组成员加组机制" class="headerlink" title="IGMPv1组成员加组机制"></a>IGMPv1组成员加组机制</h3><p>•通过普遍组查询报文与成员关系报告报文，IGMP查询器可以了解到该网段内哪些组播组存在成员。</p>
+<p>•IGMPv1组成员加组基本流程如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<blockquote>
+<p>IGMPv1普遍组查询和响应过程如下：</p>
+<p>▫IGMP查询器发送目的地址为224.0.0.1（表示同一网段内所有主机和路由器）的普遍组查询报文；收到该查询报文的组成员启动定时器。普遍组查询报文是周期性发送的，发送周期可以通过命令配置，缺省情况下每隔60秒发送一次。组成员1和组成员2是组播组G1的成员，则在本地启动定时器Timer-G1。缺省情况下，定时器的范围为0～10秒之间的随机值。</p>
+<p>▫第一个定时器超时的组成员发送针对该组的报告报文。</p>
+<p>▫IGMP查询器接收到组播组成员1的报告报文后，了解到本网段内存在组播组G1的成员，则由生成IGMP组表项与（<em>，G1）IGMP路由表项，“</em>”代表任意组播源。网络中一旦有组播组G1的数据到达路由器，将向该网段转发。</p>
+<p>成员关系报告报文抑制机制：</p>
+<p>▫普遍组查询报文是周期性发送的，发送周期可以通过命令配置，缺省情况下每隔60秒发送一次。组成员1和组成员2是组播组G1的成员，则在本地启动定时器Timer-G1。缺省情况下，定时器的范围为0～10秒之间的随机值。</p>
+<p>▫假设组成员1上的Timer-G1首先超时，组成员1向该网段发送目的地址为G1的报告报文。也想加入组G1的组成员2收到此报告报文，则停止定时器Timer-G1，不再发送针对G1的报告报文。这样报告报文被抑制，可以减少网段上的流量。</p>
+</blockquote>
+<h3 id="IGMPv1查询器选举机制"><a href="#IGMPv1查询器选举机制" class="headerlink" title="IGMPv1查询器选举机制"></a>IGMPv1查询器选举机制</h3><p>•普遍组查询是组播报文，因此同一网段内只需要一台查询器即可查询所有组成员的加组信息。</p>
+<p>•IGMPv1<strong>没有基于IGMP的查询器选举机制</strong>，所以需要依赖组播路由协议（PIM）进行IGMP查询器选举。</p>
+<p>•IGMPv1将组播路由协议（PIM）选举出唯一的<strong>组播信息转发者（Assert Winner或DR）作为IGMPv1的查询器</strong>，负责该网段的组成员关系查询。</p>
+<p>•查询器和非查询器均能收到成员关系报告（目的地址224.0.0.1），因此均能形成IGMP路由表与IGMP组表项。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<blockquote>
+<p>•Assert Winner或DR用于转发组播流量。</p>
+<p>•关于Assert Winner或DR的具体作用，将在《PIM原理与配置》课程介绍。</p>
+</blockquote>
+<h3 id="IGMPv1组成员离组机制"><a href="#IGMPv1组成员离组机制" class="headerlink" title="IGMPv1组成员离组机制"></a>IGMPv1组成员离组机制</h3><p>•IGMPv1没有专门定义离开组消息，当组播组成员离开组播组时，将不会再对普遍组查询报文做出回应。</p>
+<p>•当网段内不存在特定组的组成员，IGMP查询器不会收到特定组成员的报告报文，则在一定时间（缺省值为130s）后，删除特定组所对应的组播转发表项。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•组成员离开机制：</p>
+<p>▫假设组成员2想要退出组播组G2</p>
+<ul>
+<li><p>组成员2收到IGMP查询器发送的普遍组查询报文时，不再发送针对G2的报告报文。由于网段内不存在组G2的其他成员，IGMP查询器不会收到G2组成员的报告报文，则在一定时间（缺省值为130秒）后，删除G2所对应的IGMP表项。</p>
+</li>
+<li><p>组成员1收到IGMP查询器发送的普遍组查询报文时，反馈针对G1的报告报文，IGMP查询器不删除G1相应IGMP表项</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="IGMPv2介绍"><a href="#IGMPv2介绍" class="headerlink" title="IGMPv2介绍"></a>IGMPv2介绍</h3><p>•IGMPv1在离组机制与查询器选举机制上有一定缺陷：</p>
+<p>​    ▫IGMPv1离组使用超时机制，组成员只能静默离组。在未超时的时间内，组播流量依然会被组播路由器转发。</p>
+<p>​    ▫IGMPv1查询器选举必须要依赖PIM协议，导致查询器选举不够灵活。</p>
+<p>•IGMPv2改善了IGMPv1的缺陷：</p>
+<p>​    ▫IGMPv2组成员加组机制与IGMPv1基本相同</p>
+<p>​    ▫IGMPv2增加了离开组机制</p>
+<p>​    ▫IGMPv2增加了查询器选举机制</p>
+<p>•IGMPv2能与IGMPv1兼容。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<h3 id="IGMPv2报文格式"><a href="#IGMPv2报文格式" class="headerlink" title="IGMPv2报文格式"></a>IGMPv2报文格式</h3><p>•为了改善组成员离开机制，IGMPv2新增了两种报文：</p>
+<p>▫<strong>成员离开报文（Leave）</strong>：成员离开组播组时主动向查询器发送的报文，用于宣告自己离开了某个组播组。成员离开报文目的地址为224.0.0.2。</p>
+<p>▫<strong>特定组查询报文（Group-Specific Query）</strong>：查询器向共享网段内指定组播组发送的查询报文，用于查询该组播组是否存在成员。特定组查询报文目的地址为所查询组播组的组地址。</p>
+<p>•IGMPv2对普遍组查询报文格式也做了改进，添加了最大响应时间（Max Response Time）字段。此字段取值可以通过命令配置，用于控制成员对于查询报文的响应速度。</p>
+<p>•IGMPv2报文格式如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<blockquote>
+<p>IGMPv2报文各字段说明：</p>
+<ul>
+<li><p>Type：</p>
+<p>▪报文类型。该字段有以下四种取值：</p>
+<p>▪0x11:表示查询报文。IGMPv2的查询报文包括普遍组查询报文和特定组查询报文两类。</p>
+<p>▪0x12:表示IGMPv1成员关系报告报文。</p>
+<p>▪0x16:表示IGMPv2成员关系报告报文。</p>
+<p>▪0x17:表示成员离开报文。</p>
+</li>
+<li><p>Max Response Time：表示主机响应查询返回报告的最大时间。</p>
+<p>▪对于普遍组查询，最大响应时间默认为10秒。</p>
+<p>▪对于特定组查询，最大响应时间默认为1秒。</p>
+</li>
+<li><p>Group Address：</p>
+<p>▪普遍组查询报文中，组地址设置为0。</p>
+<p>▪特定组查询报文中，组地址为需要查询的组地址。</p>
+<p>▪在成员关系报告或离开组的消息中，组地址为需要报告或离开的组地址。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="IGMPv2查询器选举机制"><a href="#IGMPv2查询器选举机制" class="headerlink" title="IGMPv2查询器选举机制"></a>IGMPv2查询器选举机制</h3><p>•IGMPv2组成员<strong>加组机制与IGMPv1一致</strong>，不再赘述。</p>
+<p>•IGMPv2查询器选举机制与IGMPv1有较大差异。IGMPv2使用<strong>独立的查询器选举机制</strong>，当共享网段上存在多个组播路由器时，IP地址最小的路由器成为查询器。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•非查询器上都会启动一个定时器（即其他查询器存在时间定时器Other Querier Present Timer）。在该定时器超时前，如果收到了来自查询器的查询报文，则重置该定时器；否则，就认为原查询器失效，并发起新的查询器选举过程。</p>
+</blockquote>
+<h3 id="IGMPv2组成员离开机制"><a href="#IGMPv2组成员离开机制" class="headerlink" title="IGMPv2组成员离开机制"></a>IGMPv2组成员离开机制</h3><p>•IGMPv2使用成员离开报文与特定组查询报文加速感知IGMPv2组成员离开。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•组播组成员向本地网段内的所有组播路由器（目的地址为224.0.0.2）发送针对组G1的离开报文。</p>
+<ul>
+<li><p>查询器收到离开报文，会发送针对组G1的特定组查询报文。发送间隔和发送次数可以通过命令配置，缺省情况下每隔1秒发送一次，共发送两次。同时查询器启动组成员关系定时器（Timer-Membership=发送间隔x发送次数）。</p>
+</li>
+<li><p>如果该网段内还存在组G1的其他成员，这些成员在收到查询器发送的特定组查询报文后，会立即发送针对组G1的报告报文。查询器收到针对组G1的报告报文后将继续维护该组成员关系。</p>
+</li>
+<li><p>如果该网段内不存在组G1的其他成员，查询器将不会收到针对组G1的报告报文。在Timer-Membership超时后，查询器将删除（*，G1）对应的IGMP组表项。当有组G1的组播数据到达查询器时，查询器将不会向下游转发。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="SSM模型带来的挑战"><a href="#SSM模型带来的挑战" class="headerlink" title="SSM模型带来的挑战"></a>SSM模型带来的挑战</h3><p>•出于安全考虑，组播组成员可以只选择接收从特定组播源发来的组播数据。组成员需要告知组播网络，接收来自哪些特定组播源的组播流量。</p>
+<p>•IGMPv1与IGMPv2的报文中均<strong>无法携带组播源的信息</strong>，因此<strong>无法配合SSM使用</strong>（可使用SSM Mapping功能解决这个问题）。</p>
+<p>•IGMPv3主要是为了配合SSM（Source-Specific Multicast）模型发展起来的，提供了在报文中携带组播源信息的能力，即主机可以对组播源进行选择。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<blockquote>
+<p>•SSM模型的组播地址范围：232.0.0.0~232.255.255.255</p>
+<p>•SSM Mapping功能将在IGMP特性章节介绍。</p>
+</blockquote>
+<h3 id="IGMPv3介绍"><a href="#IGMPv3介绍" class="headerlink" title="IGMPv3介绍"></a>IGMPv3介绍</h3><p>•IGMPv3大部分工作机制与IGMPv2类似：</p>
+<p>▫查询器选举机制一致：IP地址小的为查询器。</p>
+<p>▫使用普遍组查询报文查询组成员加组信息。</p>
+<p>▫使用特定组查询报文查询特定组播的成员存活情况。</p>
+<p>•IGMPv3需要支持上报组播源信息，与IGMPv2相比IGMPv3的变化如下：</p>
+<p>▫IGMPv3查询报文除了包含普遍组查询报文和特定组查询报文，还新增了特定源组查询报文（Group-and-Source-Specific Query）。</p>
+<p>▫IGMPv3成员关系报告报文不仅包含主机想要加入的组播组，而且包含主机想要接收来自哪些组播源的数据。</p>
+<p>▫由于同个组播组的不同成员可能希望接收来自不同源的组播，因此IGMPv3<strong>无需成员关系报告报文抑制机制。</strong></p>
+<p>▫IGMPv3<strong>没有定义专门的成员离开报文</strong>，成员离开通过特定类型的报告报文来传达。</p>
+<h3 id="IGMPv3报文格式-–-查询报文"><a href="#IGMPv3报文格式-–-查询报文" class="headerlink" title="IGMPv3报文格式 – 查询报文"></a>IGMPv3报文格式 – 查询报文</h3><p>•IGMPv3的查询报文共有三类：</p>
+<p>▫<strong>普遍组查询报文（General Query）</strong>。该报文作用与IGMPv1,IGMPv2中的普遍组查询报文作用一致。</p>
+<p>▫<strong>特定组查询报文（Group-Specific Query）</strong> 。该报文作用与IGMPv2中的特定组查询报文作用一致。</p>
+<p>▫<strong>特定源组查询报文（Group-and-Source-Specific Query）</strong>。该报文用于查询该组成员是否愿意接收特定源发送的数据。特定源组查询通过在报文中携带一个或多个组播源地址来达到这一目的。</p>
+<p>•IGMPv3查询报文格式如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<blockquote>
+<p>IGMPv3查询报文重要字段说明：</p>
+<p>▫Type：报文类型，取值为0x11。</p>
+<p>▫Max Response Code：最大响应时间。成员主机在收到IGMP查询器发送的普遍组查询报文后，需要在最大响应时间内做出回应。</p>
+<p>▫Group Address：组播组地址。在普遍组查询报文中，该字段设为0；在特定组查询报文和特定源组查询报文中，该字段为要查询的组播组地址。</p>
+<p>▫Number of Sources：报文中包含的组播源的数量。对于普遍组查询报文和特定组查询报文，该字段为0；对于特定源组查询报文，该字段非0。此参数的大小受到所在网络MTU大小的限制。</p>
+<p>▫Source Address：组播源地址，其数量受到Number of Sources字段值大小的限制。</p>
+</blockquote>
+<h3 id="IGMPv3报文格式-–-成员关系报告报文"><a href="#IGMPv3报文格式-–-成员关系报告报文" class="headerlink" title="IGMPv3报文格式 – 成员关系报告报文"></a>IGMPv3报文格式 – 成员关系报告报文</h3><p>•IGMPv3成员关系报告报文除了通告组成员的加组信息外，还能通告组成员希望接收的组播源信息。通告组播源主要有两种模式：</p>
+<p>▫INCLUDE：希望<strong>接收</strong>来自特定组播源的组播流量</p>
+<p>▫EXCLUDE：希望<strong>过滤</strong>来自特定组播源的组播流量</p>
+<p>•成员关系报告报文中的组播组信息和组播源信息的关系会记录在组记录（Group Record）字段，发送给IGMP查询器。IGMPv3成员关系报告报文的目的地址为224.0.0.22，报文格式如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<blockquote>
+<p>•在IGMPv3中一个成员关系报告报文可以携带多个组播组信息，而之前的版本一个成员关系报告只能携带一个组播组。这样在IGMPv3中报文数量大大减少。</p>
+<p>•IGMPv3成员关系报告报文重要字段说明：</p>
+<ul>
+<li><p>Type：报文类型，取值为0x22。</p>
+</li>
+<li><p>Number of Group Records：报文中包含的组记录的数量。</p>
+</li>
+<li><p>Group Record：组记录。</p>
+</li>
+</ul>
+<p>•Group Record重要字段说明：</p>
+<ul>
+<li>Record Type：组记录的类型。共分为三大类。<ul>
+<li>当前状态报告。用于对查询报文进行响应，通告自己目前的状态，共两种：一种是MODE_IS_INCLUDE，表示接收源地址列表包含的源发往该组的组播数据。如果指定源地址列表为空，该报文无效；另一种是MODE_IS_EXCLUDE，表示不接收源地址列表包含的源发往该组的组播数据。</li>
+<li>过滤模式改变报告。当组和源的关系在INCLUDE和EXCLUDE之间切换时，会通告过滤模式发生变化，共两种：一种是CHANGE_TO_INCLUDE_MODE，表示过滤模式由EXCLUDE转换到INCLUDE，接收源地址列表包含的新组播源发往该组播组的数据。如果指定源地址列表为空，主机将离开组播组；另一种是CHANGE_TO_EXCLUDE_MODE，表示过滤模式由INCLUDE转换到EXCLUDE，拒绝源地址列表包含的新组播源发往该组的组播数据。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="IGMPv3报文格式-–-成员关系报告报文-1"><a href="#IGMPv3报文格式-–-成员关系报告报文-1" class="headerlink" title="IGMPv3报文格式 – 成员关系报告报文"></a>IGMPv3报文格式 – 成员关系报告报文</h3><p>•IGMPv3成员关系报告报文除了通告组成员的加组信息外，还能通告组成员希望接收的组播源信息。通告组播源有两种模式：</p>
+<p>▫INCLUDE：希望接收来自特定组播源的组播流量</p>
+<p>▫EXCLUDE：希望过滤来自特定组播源的组播流量</p>
+<p>•组播组信息和组播源信息的关系会记录在组记录（Group Record）字段，发送给IGMP查询器。</p>
+<p>•IGMPv3成员关系报告报文格式如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<blockquote>
+<p>▪源列表改变报告。当指定源发生改变时，会通告源列表发生变化，共两种：一种是ALLOW_NEW_SOURCES，表示在现有的基础上，需要接收源地址列表包含的组播源发往该组播组的组播数据。如果当前对应关系为INCLUDE，则向现有源列表中添加这些组播源；如果当前对应关系为EXCLUDE，则从现有阻塞源列表中删除这些组播源；另一种是BLOCK_OLD_SOURCES，表示在现有的基础上，不再接收源地址列表包含的组播源发往该组播组的组播数据。如果当前对应关系为INCLUDE，则从现有源列表中删除这些组播源；如果当前对应关系为EXCLUDE，则向现有源列表中添加这些组播源。</p>
+<p>▫Number of Sources：本记录中包含的源地址数量。</p>
+<p>▫Multicast Address：组播组地址。</p>
+<p>▫Sources Address：组播源地址。</p>
+</blockquote>
+<h3 id="IGMPv3组成员加组机制"><a href="#IGMPv3组成员加组机制" class="headerlink" title="IGMPv3组成员加组机制"></a>IGMPv3组成员加组机制</h3><p>•IGMPv3组成员加组机制与IGMPv2类似，但有以下不同：</p>
+<p>▫IGMPv3的成员关系报告报文能够携带组播源信息。</p>
+<p>▫IGMPv3成员关系报告报文<strong>没有成员关系报告报文抑制机制</strong>。</p>
+<p>•IGMPv3组成员加组流程如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<h3 id="IGMPv3组成员离组机制"><a href="#IGMPv3组成员离组机制" class="headerlink" title="IGMPv3组成员离组机制"></a>IGMPv3组成员离组机制</h3><p>•IGMPv3没有专门的成员离开报文，成员离开需要借助组成员关系报告实现。</p>
+<p>•IGMP查询器在收到<strong>改变源组对应关系的成员关系报告</strong>后，会发送特定源组查询报文，确认是否还有组成员存在。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<blockquote>
+<p>•改变源组关系的成员关系报告报文很多，比如：</p>
+<ul>
+<li>设备原来接收来自S1的组播数据，那么通过发布（G1，EXCLUDE，S1）报文或（G1，CHANGE_TO_EXCLUDE_MODE，S1）报文都可以改变源组关系。</li>
+</ul>
+</blockquote>
+<h3 id="IGMP各版本间的差异"><a href="#IGMP各版本间的差异" class="headerlink" title="IGMP各版本间的差异"></a>IGMP各版本间的差异</h3><p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<h1 id="2-IGMP特性介绍"><a href="#2-IGMP特性介绍" class="headerlink" title="2.IGMP特性介绍"></a>2.IGMP特性介绍</h1><h2 id="IGMP-Snooping介绍"><a href="#IGMP-Snooping介绍" class="headerlink" title="IGMP Snooping介绍"></a>IGMP Snooping介绍</h2><h3 id="以太网的组播转发问题"><a href="#以太网的组播转发问题" class="headerlink" title="以太网的组播转发问题"></a>以太网的组播转发问题</h3><p>•当组播数据从最后一跳路由器发往组播组成员时，往往会经过交换机。由于组播数据的<strong>目的MAC地址是组播MAC地址</strong>，默认情况下交换机将泛洪此类数据帧，有可能导致不同组的组播流量会被别组的成员接收。</p>
+<p>•IGMP Snooping功能可以控制组播流量在以太网的泛洪范围，避免不同组的组播流量被别组成员接收。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<blockquote>
+<p>•当Router将组播报文转发至Switch以后，Switch负责将组播报文转发给组播用户。由于组播报文的目的地址为组播组地址，在二层设备上是学习不到这一类MAC表项的，因此组播报文就会在所有接口进行广播，和它在同一广播域内的组播成员和非组播成员都能收到组播报文。这样不但浪费了网络带宽，而且影响了网络信息安全。</p>
+<p>•IGMP Snooping有效地解决了这个问题。配置IGMP Snooping后，二层组播设备可以侦听和分析组播用户和上游路由器之间的IGMP报文，根据这些信息建立二层组播转发表项，控制组播数据报文转发。这样就防止了组播数据在二层网络中的广播。</p>
+</blockquote>
+<h3 id="IGMP-Snooping介绍-1"><a href="#IGMP-Snooping介绍-1" class="headerlink" title="IGMP Snooping介绍"></a>IGMP Snooping介绍</h3><p>•IGMP Snooping可以实现组播数据在数据链路层的转发和控制。</p>
+<p>•当主机和上游三层设备之间传递的IGMP协议报文通过二层组播设备时，IGMP Snooping分析报文携带的信息，根据这些信息建立和维护<strong>二层组播转发表</strong>，从而指导组播数据在数据链路层按需转发。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<blockquote>
+<p>•Router Port：路由器端口</p>
+</blockquote>
+<h3 id="IGMP-Snooping端口与转发表介绍"><a href="#IGMP-Snooping端口与转发表介绍" class="headerlink" title="IGMP Snooping端口与转发表介绍"></a>IGMP Snooping端口与转发表介绍</h3><p>•二层组播转发表项中存在两类接口：</p>
+<p>▫<strong>路由器端口（Router Port）</strong>：二层组播设备上朝向三层组播设备（DR或IGMP查询器）一侧的接口，二层组播设备从此接口接收组播数据报文。</p>
+<p>▫<strong>成员端口（Member Port）</strong>：又称组播组成员端口，表示二层组播设备上朝向组播组成员一侧的端口，二层组播设备往此接口发送组播数据报文。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<blockquote>
+<p>•路由器端口生成过程：</p>
+<ul>
+<li><p>由协议生成的路由器端口叫做动态路由器端口。收到源地址不为0.0.0.0的IGMP普遍组查询报文或PIM Hello报文（三层组播设备的PIM接口向外发送的用于发现并维持邻居关系的报文）的接口都将被视为动态路由器端口。</p>
+</li>
+<li><p>手工配置的路由器端口叫做静态路由器端口。</p>
+</li>
+</ul>
+<p>•成员端口生成过程：</p>
+<ul>
+<li><p>由协议生成的成员端口叫做动态成员端口。收到IGMP Report报文的接口，二层组播设备会将其标识为动态成员端口。</p>
+</li>
+<li><p>手工配置的成员端口叫做静态成员端口。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="IGMP-Snooping工作原理-–-形成转发表项"><a href="#IGMP-Snooping工作原理-–-形成转发表项" class="headerlink" title="IGMP Snooping工作原理 – 形成转发表项"></a>IGMP Snooping工作原理 – 形成转发表项</h3><p>•IGMP Snooping设备通过监听IGMP报文，形成二层组播转发表，并决定接口类型，具体过程如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<blockquote>
+<p>•路由器端口形成后会启动老化计时器（默认180s）,当路由器端口收到新的普遍组查询后刷新该计时器。</p>
+<p>•成员端口形成后会启动老化计时器（默认180s）,当成员端口收到新的成员关系报告报文后刷新该计时器。</p>
+<p>•IGMP Snooping不再使用成员关系报告报文抑制机制：</p>
+<ul>
+<li><p>由于IGMP Snooping需要监听IGMP报文才能决定端口角色，进而指导转发，所以所有组成员都需要发送IGMP组成员关系报告报文。</p>
+</li>
+<li><p>当IGMP Snooping设备收到成员关系报告报文后，只将成员关系报告报文从路由器接口发送出去，从而避免其余组成员收到成员关系报告报文，不触发成员关系报告报文抑制机制。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="IGMP-Snooping工作原理-–-维护转发表项"><a href="#IGMP-Snooping工作原理-–-维护转发表项" class="headerlink" title="IGMP Snooping工作原理 – 维护转发表项"></a>IGMP Snooping工作原理 – 维护转发表项</h3><p>•IGMP Snooping设备通过监听IGMP离开报文，IGMP成员关系报告报文决定特定端口是否还需要发送特定组播，具体过程如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<blockquote>
+<p>•收到IGMP离开报文后，成员端口的老化定时器 = 健壮系数（默认2） x 特定组查询间隔（默认1s）。</p>
+</blockquote>
+<h2 id="IGMP-SSM-Mapping介绍"><a href="#IGMP-SSM-Mapping介绍" class="headerlink" title="IGMP SSM Mapping介绍"></a>IGMP SSM Mapping介绍</h2><h3 id="IGMP-SSM-Mapping介绍-1"><a href="#IGMP-SSM-Mapping介绍-1" class="headerlink" title="IGMP SSM Mapping介绍"></a>IGMP SSM Mapping介绍</h3><p>•现网中存在部分只能运行IGMPv1与IGMPv2的老旧终端，在部署SSM模式的组播时，由于IGMPv1与IGMPv2报文中无法携带组播源信息，因此无法使用SSM模式的组播网络。</p>
+<p>•IGMP SSM Mapping通过静态的将组播源与组播组进行绑定，使得IGMPv1与IGMPv2的组成员也能接入SSM组播网络。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<h3 id="IGMP-SSM-Mapping工作原理"><a href="#IGMP-SSM-Mapping工作原理" class="headerlink" title="IGMP SSM Mapping工作原理"></a>IGMP SSM Mapping工作原理</h3><p>•在IGMP查询器上静态配置SSM地址的映射规则，将IGMPv1或IGMPv2成员关系报告中的<strong>组信息</strong>映射为<strong>源组信息</strong>。</p>
+<p>•IGMP SSM Mapping工作原理如下：</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
+<blockquote>
+<p>•配置了SSM Mapping规则后，当IGMP查询器收到来自成员主机的IGMPv1或IGMPv2报告报文时，首先检查该报文中所携带的组播组地址G，然后根据检查结果的不同分别进行处理。</p>
+<ul>
+<li>如果G在ASM（Any-Source Multicast）范围内，则只提供ASM服务。</li>
+<li>如果G在SSM组地址范围内（缺省情况下为232.0.0.0～232.255.255.255）：<ul>
+<li>如果路由器上没有G对应的SSM Mapping规则，则无法提供SSM服务，丢弃该报文。</li>
+<li>如果路由器上有G对应的SSM Mapping规则，则依据规则将报告报文中所包含的(*, G)信息映射为(G, INCLUDE, (S1, S2…))信息，提供SSM服务。</li>
+</ul>
+</li>
+</ul>
+<p>•IGMP SSM Mapping不处理IGMPv3的报告报文。为了保证同一网段运行任意版本IGMP的主机都能得到SSM服务，需要在与成员主机所在网段相连的组播路由器接口上运行IGMPv3。</p>
+</blockquote>
+<h2 id="IGMP代理介绍"><a href="#IGMP代理介绍" class="headerlink" title="IGMP代理介绍"></a>IGMP代理介绍</h2><h3 id="IGMP-Proxy介绍"><a href="#IGMP-Proxy介绍" class="headerlink" title="IGMP Proxy介绍"></a>IGMP Proxy介绍</h3><p>•现网中可能存在一台IGMP查询器需要管理大量组成员的情况，大量成员主机频繁加入/离开组播组时，会产生大量的IGMP成员关系报告/离开报文，从而给IGMP查询器带来较大的处理压力。</p>
+<p>•通过IGMP Proxy功能可<strong>减少</strong>IGMP查询器接收<strong>IGMP成员关系报告/离开报文的数量</strong>，减轻IGMP查询器压力。</p>
+<p>•IGMP Proxy通常被部署在IGMP查询器和成员主机之间的三层设备上。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
+<h3 id="IGMP-Proxy基本概念"><a href="#IGMP-Proxy基本概念" class="headerlink" title="IGMP Proxy基本概念"></a>IGMP Proxy基本概念</h3><p>•为了缓解IGMP查询器压力，IGMP Proxy设备将成员关系报告/离开报文汇聚后统一上送给IGMP查询器。</p>
+<p>•IGMP Proxy设备也可以代理IGMP查询器向成员主机发送查询报文，维护组成员关系，基于组成员关系进行组播转发。</p>
+<p>•为了实现以上功能，IGMP Proxy定义了两类接口：</p>
+<p>▫<strong>主机接口（Host Interface）</strong>：IGMP Proxy设备上配置IGMP Proxy功能的接口，该接口一般<strong>面向IGMP查询器</strong>。</p>
+<p>▫<strong>路由器接口（Router Interface）</strong>：IGMP Proxy设备上配置IGMP功能的接口，该接口一般<strong>面向组成员</strong>。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
+<h3 id="IGMP-Proxy工作机制-–-成员加组"><a href="#IGMP-Proxy工作机制-–-成员加组" class="headerlink" title="IGMP Proxy工作机制 – 成员加组"></a>IGMP Proxy工作机制 – 成员加组</h3><p>•IGMP Proxy减少成员关系报告报文的工作机制如下：</p>
+<p>▫路由器接口作为IGMP接口，对下呈现为IGMP查询器，发送查询报文，处理成员关系报告报文，形成IGMP表项，并将成员关系报告<strong>从主机接口发送给上游的IGMP查询器</strong>。</p>
+<p>▫当新用户<strong>加入同一个组播组</strong>时，IGMP Proxy设备<strong>不会再向IGMP查询器反馈成员关系报告报文</strong>，因此减少了成员关系报告报文数量。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
+<blockquote>
+<p>•IGMP代理设备收到某组播组的报告报文后，会在IGMP组表项中查找该组播组：</p>
+<ul>
+<li><p>如果没有找到相应的组播组，IGMP代理设备会向接入设备发送针对该组播组的报告报文，并在组播转发表中添加该组播组；</p>
+</li>
+<li><p>如果找到相应的组播组，IGMP代理设备就不需要向接入设备发送报告报文。</p>
+</li>
+</ul>
+<p>•IGMPv1/IGMPv2/IGMPv3成员加组机制不再赘述</p>
+</blockquote>
+<h3 id="IGMP-Proxy工作机制-–-成员离组"><a href="#IGMP-Proxy工作机制-–-成员离组" class="headerlink" title="IGMP Proxy工作机制 – 成员离组"></a>IGMP Proxy工作机制 – 成员离组</h3><p>•IGMP Proxy减少离组报文的工作机制如下：</p>
+<p>▫当组成员离开时，IGMP Proxy通过IGMP离组机制确定是否有特定组播组的组成员，当<strong>确定已经没有组成员</strong>后才<strong>发送离开报文</strong>给上游IGMP查询器。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
+<blockquote>
+<p>•IGMP代理设备收到某组播组G1的离开报文后，会向接收到该离开报文的接口发送一个特定组查询报文，检查该接口下是否还存在组播组G1的其他成员：</p>
+<ul>
+<li><p>如果没有其他成员，在组播转发表中将该接口删除，然后判断组播组G1是否还有其他接口。</p>
+<ul>
+<li>如果没有，IGMP代理设备再会向接入设备发送针对该组播组的离开报文；</li>
+<li>如果有，IGMP代理设备不向接入设备发送针对该组播组的离开报文；</li>
+</ul>
+</li>
+<li><p>如果有其他成员，IGMP代理设备会继续向该接口转发组播数据。</p>
+</li>
+</ul>
+<p>•IGMPv1/IGMPv2/IGMPv3成员离组机制不再赘述。</p>
+</blockquote>
+<h1 id="3-IGMP配置"><a href="#3-IGMP配置" class="headerlink" title="3.IGMP配置"></a>3.IGMP配置</h1><h2 id="IGMP协议的基本配置"><a href="#IGMP协议的基本配置" class="headerlink" title="IGMP协议的基本配置"></a>IGMP协议的基本配置</h2><p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
+<h2 id="IGMP基础实验"><a href="#IGMP基础实验" class="headerlink" title="IGMP基础实验"></a>IGMP基础实验</h2><p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
+<h3 id="IGMP配置验证"><a href="#IGMP配置验证" class="headerlink" title="IGMP配置验证"></a>IGMP配置验证</h3><p>在路由器RTA上查看查看接口的IGMP配置和运行信息。</p>
+<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）在IGMPv1中，当最后一个组播成员离开后该组后，组播路由器将在多长时间后删除所对应的组播转发表项？</p>
+<p><strong>60*2 + 10 = 130s。</strong></p>
+<p>2.（简答题）在IGMPv2中，特定组查询的目的IP是224.0.0.1吗？</p>
+<p><strong>否，特定组查询的目的IP是所查询组播组的组播IP地址。</strong></p>
+<p>3.（单选题）IGMP协议支持哪些版本？</p>
+<p>A. IGMPv1、IGMPv2</p>
+<p>B. IGMPv3</p>
+<p>C. IGMPv2、IGMPv3</p>
+<p><strong>D. IGMPv1、IGMPv2、IGMPv3</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•IGMP的主要作用是让组播网络感知组播组成员的位置和所加组播组，同时也能维护组成员的加组状态。</p>
+<p>•IGMP有三种版本：</p>
+<ul>
+<li>IGMPv1：有基本的加组机制，但是组成员离开机制较为落后，同时没有独立的IGMP查询器选举机制。</li>
+<li>IGMPv2：在IGMPv1的基础上改善了组成员离开机制，同时拥有了独立的IGMP查询器选举机制。</li>
+<li>IGMPv3：在IGMPv2的基础上增加了对SSM组播的支持能力，可以告知组播网络需要接收来自哪个组播源的组播数据。</li>
+</ul>
+<p>•IGMP有诸多特性帮助IGMP在网络中高效运行：</p>
+<ul>
+<li><p>IGMP Snooping：解决在以太网络中组播数据跨组播组泛洪的问题。</p>
+</li>
+<li><p>IGMP SSM Mapping：解决IGMPv1与IGMPv2组成员不能接入SSM组播网络的问题。</p>
+</li>
+<li><p>IGMP Proxy：解决大量组播组成员频繁上下线导致，IGMP查询器压力过大的问题。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IP%E7%BB%84%E6%92%AD%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2930,977 +3847,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/" itemprop="url">BGP基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T17:55:27+08:00">
-                2021-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/BGP.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•为方便管理规模不断扩大的网络，网络被分成了不同的AS（Autonomous System，自治系统）。早期，EGP（Exterior Gateway Protocol，外部网关协议）被用于实现在AS之间动态交换路由信息。但是EGP设计得比较简单，只发布网络可达的路由信息，而不对路由信息进行优选，同时也没有考虑环路避免等问题，很快就无法满足网络管理的要求。</p>
-<p>•BGP是为取代最初的EGP而设计的另一种外部网关协议。不同于最初的EGP，BGP能够进行路由优选、避免路由环路、更高效率的传递路由和维护大量的路由信息。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述BGP基本概念</p>
-<p>▫描述BGP的对等体类型</p>
-<p>▫阐明BGP对等体建立过程</p>
-<p>▫阐明BGP状态机</p>
-<p>▫实现BGP基本配置</p>
-<h1 id="BGP概述"><a href="#BGP概述" class="headerlink" title="BGP概述"></a>BGP概述</h1><h2 id="AS"><a href="#AS" class="headerlink" title="AS"></a>AS</h2><p>OSPF、IS-IS等IGP路由协议在组织机构网络内部广泛应用，随着网络规模扩大，网络中路由数量不断增长，IGP已无法管理大规模网络，AS的概念由此诞生。</p>
-<p>AS指的是在同一个组织管理下，使用统一选路策略的设备集合。</p>
-<p>不同AS通过AS号区分，AS号存在16bit、32bit两种表示方式。IANA负责AS号的分发。</p>
-<p>当不同AS之间需要进行通信时，在AS之间应使用何种路由协议进行路由的传递？</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/1.png"></p>
-<blockquote>
-<p>•IANA（Internet Assigned Numbers Authority，因特网地址分配组织）：IAB（Internet Architecture Board，因特网体系委员会）的下设组织。IANA授权NIC（ Network Information Center，网络信息中心）和其他组织负责IP地址和域名分配，同时，IANA负责维护TCP/IP协议族所采用的协议标识符数据库，包括自治系统号。</p>
-<p>•在长度为16bit的AS号表示方式中：64512-65534为私有AS号，在长度为32bit的AS号表示方式中：4200000000-4294967294为私有AS号。</p>
-</blockquote>
-<h2 id="使用IGP传递路由"><a href="#使用IGP传递路由" class="headerlink" title="使用IGP传递路由"></a>使用IGP传递路由</h2><p>•AS之间需要直连链路，或通过VPN协议构造逻辑直连（例如GRE Tunnel）进行邻居建立。</p>
-<p>•AS之间可能是不同的机构、公司，相互之间无法完全信任，使用IGP可能存在暴露AS内部的网络信息的风险。</p>
-<p>•整个网络规模扩大，路由数量进一步增加，路由表规模变大，路由收敛变慢，设备性能消耗加大。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/2.png"></p>
-<blockquote>
-<p>•VPN（virtual private network，虚拟专用网）：使用虚拟专业网络技术可以从逻辑上建立一个直接连接的网络。</p>
-</blockquote>
-<h2 id="使用BGP传递路由"><a href="#使用BGP传递路由" class="headerlink" title="使用BGP传递路由"></a>使用BGP传递路由</h2><p>为此在AS之间专门使用BGP（Border Gateway Protocol，边界网关协议）协议进行路由传递，相较于传统的IGP协议：</p>
-<ul>
-<li><p>BGP基于TCP，只要能够建立TCP连接即可建立BGP。</p>
-</li>
-<li><p>只传递路由信息，不会暴露AS内的拓扑信息。</p>
-</li>
-<li><p>触发式更新，而不是进行周期性更新。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/3.png"></p>
-<h2 id="BGP发展历史"><a href="#BGP发展历史" class="headerlink" title="BGP发展历史"></a>BGP发展历史</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/4.png"></p>
-<blockquote>
-<p>•目前关于BGP-4最新的RFC是4271，相比较于RFC1771，对于一些细节进行了进一步说明，如事件、状态机以及BGP路由决策流程等。</p>
-</blockquote>
-<h2 id="BGP在企业中的应用"><a href="#BGP在企业中的应用" class="headerlink" title="BGP在企业中的应用"></a>BGP在企业中的应用</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/5.png"></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/6.png"></p>
-<h1 id="BGP的基本概念"><a href="#BGP的基本概念" class="headerlink" title="BGP的基本概念"></a>BGP的基本概念</h1><h2 id="BGP概述-1"><a href="#BGP概述-1" class="headerlink" title="BGP概述"></a>BGP概述</h2><p>•BGP是一种实现自治系统AS之间的路由可达，并选择最佳路由的矢量性协议。早期发布的三个版本分别是BGP-1（RFC1105）、BGP-2（RFC1163）和BGP-3（RFC1267），1994年开始使用BGP-4（RFC1771），2006年之后单播IPv4网络使用的版本是BGP-4（RFC4271），其他网络（如IPv6等）使用的版本是MP-BGP（RFC4760）。 </p>
-<p>•BGP的特点：</p>
-<ul>
-<li>BGP使用TCP作为其传输层协议（端口号为179），使用触发式路由更新，而不是周期性路由更新。</li>
-<li>BGP能够承载大批量的路由信息，能够支撑大规模网络。</li>
-<li>BGP提供了丰富的路由策略，能够灵活的进行路由选路，并能指导对等体按策略发布路由。</li>
-<li>BGP能够支撑MPLS/VPN的应用，传递客户VPN路由。</li>
-<li>BGP提供了路由聚合和路由衰减功能用于防止路由振荡，通过这两项功能有效地提高了网络稳定性。</li>
-</ul>
-<h2 id="BGP特征-1"><a href="#BGP特征-1" class="headerlink" title="BGP特征 (1)"></a>BGP特征 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/7.png"></p>
-<p>•BGP使用TCP为传输层协议，TCP端口号179。路由器之间的BGP会话基于TCP连接而建立。</p>
-<p>•运行BGP的路由器被称为BGP发言者（BGP Speaker），或BGP路由器。</p>
-<p>•两个建立BGP会话的路由器互为对等体（Peer），BGP对等体之间交换BGP路由表。</p>
-<p>•BGP路由器只发送增量的BGP路由更新，或进行触发式更新（不会周期性更新）。</p>
-<p>•BGP能够承载大批量的路由前缀，可在大规模网络中应用。</p>
-<h2 id="BGP特征-2"><a href="#BGP特征-2" class="headerlink" title="BGP特征 (2)"></a>BGP特征 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/8.png"></p>
-<p>•BGP通常被称为路径矢量路由协议（Path-Vector Routing Protocol）。</p>
-<p>•每条BGP路由都携带多种路径属性（Path attribute），BGP可以通过这些路径属性控制路径选择，而不像IS-IS、OSPF只能通过Cost控制路径选择，因此在路径选择上，BGP具有丰富的可操作性，可以在不同场景下选择最合适的路径控制方式。</p>
-<h2 id="BGP对等体关系"><a href="#BGP对等体关系" class="headerlink" title="BGP对等体关系"></a>BGP对等体关系</h2><p>•与OSPF、IS-IS等协议不同，BGP的会话是基于TCP建立的。建立BGP对等体关系的两台路由器并不要求必须直连。</p>
-<p>•BGP存在两种对等体关系类型：EBGP及IBGP：</p>
-<ul>
-<li><p>EBGP（External BGP）：位于不同自治系统的BGP路由器之间的BGP对等体关系。两台路由器之间要建立EBGP对等体关系，必须满足两个条件：</p>
-<ul>
-<li>两个路由器所属AS不同（即AS号不同）。</li>
-<li>在配置EBGP时，Peer命令所指定的对等体IP地址要求路由可达，并且TCP连接能够正确建立。</li>
-</ul>
-</li>
-<li><p>IBGP（Internal BGP）：位于相同自治系统的BGP路由器之间的BGP邻接关系。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/9.png"></p>
-<h2 id="BGP对等体关系建立-1"><a href="#BGP对等体关系建立-1" class="headerlink" title="BGP对等体关系建立 (1)"></a>BGP对等体关系建立 (1)</h2><p>先启动BGP的一端先发起TCP连接，如左图所示，R1先启动BGP，R1使用随机端口号向R2的179端口发起TCP连接，完成TCP连接的建立。</p>
-<p>三次握手建立完成之后，R1、R2之间相互发送Open报文，携带参数用于对等体建立，参数协商正常之后双方相互发送Keepalive报文，收到对端发送的Keepalive报文之后对等体建立成功，同时双方定期发送Keepalive报文用于保持连接。</p>
-<p>其中Open报文中携带：</p>
-<ul>
-<li><p>My Autonomous System：自身AS号</p>
-</li>
-<li><p>Hold Time：用于协商后续Keepalive报文发送时间</p>
-</li>
-<li><p>BGP Identifier：自身Router ID</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/10.png"></p>
-<blockquote>
-<p>•BGP建立对等体的对等体都会发起TCP三次握手，所以会建立两个TCP连接，但是实际BGP只会保留其中一个TCP连接，从Open报文中获取对端BGP Identifier之后BGP对等体会比较本端的Router ID和对端的Router ID大小，如果本端Router ID小于对端Router ID，则会关闭本地建立的TCP连接，使用由对端主动发起创建的TCP连接进行后续的BGP报文交互。</p>
-</blockquote>
-<h2 id="BGP对等体关系建立-2"><a href="#BGP对等体关系建立-2" class="headerlink" title="BGP对等体关系建立 (2)"></a>BGP对等体关系建立 (2)</h2><p>BGP对等体关系建立之后，BGP路由器发送BGP Update（更新）报文通告路由到对等体。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/11.png"></p>
-<h2 id="TCP连接源地址"><a href="#TCP连接源地址" class="headerlink" title="TCP连接源地址"></a>TCP连接源地址</h2><p>缺省情况下，BGP使用报文出接口作为TCP连接的本地接口。</p>
-<p>在部署IBGP对等体关系时，建议使用Loopback地址作为更新源地址。Loopback接口非常稳定，而且可以借助AS内的IGP和冗余拓扑来保证可靠性。</p>
-<p>在部署EBGP对等体关系时，通常使用直连接口的IP地址作为源地址，如若使用Loopback接口建立EBGP对等体关系，则应注意EBGP多跳问题。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/12.png"></p>
-<h2 id="BGP报文类型-1"><a href="#BGP报文类型-1" class="headerlink" title="BGP报文类型 (1)"></a>BGP报文类型 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/13.png"></p>
-<p>BGP存在5种类型的报文，不同类型的报文拥有相同的头部（header）。</p>
-<blockquote>
-<p>•不同于常见的IGP协议，BGP使用TCP作为传输层协议，端口号179，这使得BGP支持在非直连的路由器之间建立对等体关系。</p>
-</blockquote>
-<h2 id="BGP报文类型-2"><a href="#BGP报文类型-2" class="headerlink" title="BGP报文类型 (2)"></a>BGP报文类型 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/14.png"></p>
-<h2 id="BGP报文格式-报文头格式"><a href="#BGP报文格式-报文头格式" class="headerlink" title="BGP报文格式 - 报文头格式"></a>BGP报文格式 - 报文头格式</h2><p>BGP五种报文都拥有相同的报文头，格式如左侧所示，主要字段解释如下：</p>
-<ul>
-<li>pMarker：16Byte，用于标明BGP报文边界，所有bit均为“1”。</li>
-<li>pLength：2Byte，BGP报文总长度（包括报文头在内），以Byte为单位。</li>
-<li>pType：1Byte，BGP报文的类型。其取值从1到5，分别表示Open、Update、Notification、Keepalive和Route-refresh 报文。</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/15.png"></p>
-<h2 id="BGP报文格式-Open"><a href="#BGP报文格式-Open" class="headerlink" title="BGP报文格式 - Open"></a>BGP报文格式 - Open</h2><p>Open报文是TCP连接建立之后发送的第一个报文，用于建立BGP对等体之间的连接关系，报文格式如左侧所示，主要字段解释如下：</p>
-<ul>
-<li><p>pVersion：BGP的版本号。对于BGP 4来说，其值为4。</p>
-</li>
-<li><p>pMy AS（autonomous system）：本地AS号。通过比较两端的AS号可以判断对端是否和本端处于相同AS。</p>
-</li>
-<li><p>pHold Time：保持时间。在建立对等体关系时两端要协商Hold Time，并保持一致。如果在这个时间内未收到对端发来的Keepalive报文或Update报文，则认为BGP连接中断。</p>
-</li>
-<li><p>pBGP Identifier：BGP标识符，以IP地址的形式表示，用来识别BGP路由器。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/16.png"></p>
-<blockquote>
-<p>•Opt Parm Len：Optional parameters的长度。</p>
-<p>•Optional parameters：宣告自身对于一些可选功能的支持，比如认证、多协议支持。</p>
-<p>•除了IPv4单播路由信息，BGP4+还支持多种网络层协议（如IPv6、组播），在协商时BGP对等体之间会通过Optional parameters字段协商对网络层协议的支持能力。</p>
-</blockquote>
-<h3 id="Open协商成功条件"><a href="#Open协商成功条件" class="headerlink" title="Open协商成功条件"></a>Open协商成功条件</h3><ol>
-<li>版本不一致</li>
-<li>tcp 179 被过滤</li>
-<li>IBGP AS相同 EBGP AS不相同</li>
-<li>EBGP检测多跳</li>
-<li>认证</li>
-<li>Router id 不能冲突</li>
-<li>peer 地址必须可达</li>
-</ol>
-<h2 id="BGP报文格式-Update"><a href="#BGP报文格式-Update" class="headerlink" title="BGP报文格式 - Update"></a>BGP报文格式 - Update</h2><p>•Update报文用于在对等体之间传递路由信息，可以用于发布、撤销路由。</p>
-<p>•一个Update报文可以通告具有相同路径属性的多条路由，这些路由保存在NLRI（Network Layer Reachable Information，网络层可达信息）中。同时Update还可以携带多条不可达路由，用于告知对方撤销路由，这些保存在Withdrawn Routes字段中。</p>
-<p>•报文格式如左侧所示，主要字段解释如下：</p>
-<ul>
-<li><p>Withdrawn routes：不可达路由的列表。</p>
-</li>
-<li><p>Path attributes：与NLRI相关的所有路径属性列表，每个路径属性由一个TLV（Type-Length-Value）三元组构成。</p>
-</li>
-<li><p>NLRI：可达路由的前缀和前缀长度二元组。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/17.png"></p>
-<blockquote>
-<p>•Unfeasible routes length：不可达路由字段的长度，以Byte为单位。如果为0则说明没有Withdrawn Routes 字段。</p>
-<p>•Withdrawn Routes Length：标明Withdrawn Routes部分的长度。其值为零时，表示没有撤销的路由。</p>
-<p>•Total path attribute length：路径属性字段的长度，以Byte为单位。如果为0则说明没有Path Attributes 字段。</p>
-</blockquote>
-<h2 id="BGP报文格式-Notification"><a href="#BGP报文格式-Notification" class="headerlink" title="BGP报文格式 - Notification"></a>BGP报文格式 - Notification</h2><p>当BGP检测到错误状态时（对等体关系建立时、建立之后都可能发生），就会向对等体发送Notification，告知对端错误原因。之后BGP连接将会立即中断。</p>
-<ul>
-<li><p>pError Code、Error subcode：差错码、差错子码，用于告知对端具体的错误类型。</p>
-</li>
-<li><p>pData：用于辅助描述详细的错误内容，长度并不固定。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/18.png"></p>
-<h2 id="BGP报文格式-Keepalive"><a href="#BGP报文格式-Keepalive" class="headerlink" title="BGP报文格式 - Keepalive"></a>BGP报文格式 - Keepalive</h2><p>•BGP路由器收到对端发送的Keepalive报文，将对等体状态置为已建立，同时后续定期发送keepalive报文用于保持连接。</p>
-<p>•Keepalive报文格式中只包含报文头，没有附加其他任何字段。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/19.png"></p>
-<h2 id="BGP报文格式-Route-refresh"><a href="#BGP报文格式-Route-refresh" class="headerlink" title="BGP报文格式 - Route-refresh"></a>BGP报文格式 - Route-refresh</h2><p>•Route-refresh报文用来要求对等体重新发送指定地址族的路由信息，一般为本端修改了相关路由策略之后让对方重新发送Update报文，本端执行新的路由策略重新计算BGP路由。</p>
-<p>•相关字段内容如下：</p>
-<ul>
-<li><p>pAFI：Address Family Identifier，地址族标识，如IPv4。</p>
-</li>
-<li><p>pRes.：保留，8个bit必须置0。</p>
-</li>
-<li><p>pSAFI：Subsequent Address Family Identifier，子地址族标识。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/20.png"></p>
-<blockquote>
-<p>•在Open报文协商时会协商是否支持Route-refresh，如果对等体支持Route-refresh能力，则可以通过<strong>refresh</strong> <strong>bgp</strong>命令手工对BGP连接进行软复位，BGP软复位可以在不中断BGP连接的情况下重新刷新BGP路由表，并应用新的策略。</p>
-<p>•对于不支持Route-Refresh能力的BGP对等体，可以配置<strong>keep-all-routes</strong>命令，保留该对等体的所有原始路由，这样不需要复位BGP连接即可完成路由表的刷新。</p>
-<p>•缺省情况下未开启<strong>keep-all-routes</strong>。</p>
-</blockquote>
-<h2 id="BGP状态机-1"><a href="#BGP状态机-1" class="headerlink" title="BGP状态机 (1)"></a>BGP状态机 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/21.png"></p>
-<h2 id="BGP状态机-2"><a href="#BGP状态机-2" class="headerlink" title="BGP状态机 (2)"></a>BGP状态机 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/22.png"></p>
-<blockquote>
-<p>•Idle状态是BGP初始状态。在Idle状态下，BGP拒绝对等体发送的连接请求。只有在收到本设备的Start事件后，BGP才开始尝试和其它BGP对等体进行TCP连接，并转至Connect状态。</p>
-<ul>
-<li>Start事件是由一个操作者配置一个BGP过程，或者重置一个已经存在的过程或者路由器软件重置BGP过程引起的。</li>
-<li>任何状态中收到Notification报文或TCP拆链通知等Error事件后，BGP都会转至Idle状态。</li>
-</ul>
-<p>•在Connect状态下，BGP启动连接重传定时器（Connect Retry），等待TCP完成连接。</p>
-<ul>
-<li>如果TCP连接成功，那么BGP向对等体发送Open报文，并转至OpenSent状态。</li>
-<li>如果TCP连接失败，那么BGP转至Active状态。</li>
-<li>如果连接重传定时器超时，BGP仍没有收到BGP对等体的响应，那么BGP继续尝试和其它BGP对等体进行TCP连接，停留在Connect状态。</li>
-</ul>
-<p>•在Active状态下，BGP总是在试图建立TCP连接。</p>
-<ul>
-<li>如果TCP连接成功，那么BGP向对等体发送Open报文，关闭连接重传定时器，并转至OpenSent状态。</li>
-<li>如果TCP连接失败，那么BGP停留在Active状态。</li>
-<li>如果连接重传定时器超时，BGP仍没有收到BGP对等体的响应，那么BGP转至Connect状态。</li>
-</ul>
-<p>•在OpenSent状态下，BGP等待对等体的Open报文，并对收到的Open报文中的AS号、版本号、认证码等进行检查。</p>
-<ul>
-<li><p>如果收到的Open报文正确，那么BGP发送Keepalive报文，并转至OpenConfirm状态。</p>
-</li>
-<li><p>如果发现收到的Open报文有错误，那么BGP发送Notification报文给对等体，并转至Idle状态。</p>
-</li>
-</ul>
-<p>•在OpenConfirm状态下，BGP等待Keepalive或Notification报文。如果收到Keepalive报文，则转至Established状态，如果收到Notification报文，则转至Idle状态。</p>
-<p>•在Established状态下，BGP可以和对等体交换Update、Keepalive、Route-refresh报文和Notification报文。</p>
-<ul>
-<li><p>如果收到正确的Update或Keepalive报文，那么BGP就认为对端处于正常运行状态，将保持BGP连接。</p>
-</li>
-<li><p>如果收到错误的Update或Keepalive报文，那么BGP发送Notification报文通知对端，并转至Idle状态。</p>
-</li>
-<li><p>Route-refresh报文不会改变BGP状态。</p>
-</li>
-<li><p>如果收到Notification报文，那么BGP转至Idle状态。</p>
-</li>
-<li><p>如果收到TCP拆链通知，那么BGP断开连接，转至Idle状态。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="BGP状态机详解-1"><a href="#BGP状态机详解-1" class="headerlink" title="BGP状态机详解 (1)"></a>BGP状态机详解 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/23.png"></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/24.png"></p>
-<h2 id="BGP状态机详解-2"><a href="#BGP状态机详解-2" class="headerlink" title="BGP状态机详解 (2)"></a>BGP状态机详解 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/25.png"></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/26.png"></p>
-<h2 id="BGP对等体表"><a href="#BGP对等体表" class="headerlink" title="BGP对等体表"></a>BGP对等体表</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/27.png"></p>
-<p>•在设备上通过<strong>display</strong> <strong>bgp</strong> <strong>peer</strong>命令查看BGP对等体表，其中主要参数含义：</p>
-<ul>
-<li><p>Peer：对等体地址</p>
-</li>
-<li><p>V：version，版本号</p>
-</li>
-<li><p>AS：对等体AS号</p>
-</li>
-<li><p>Up/Down：该对等体已经存在up或者down的时间</p>
-</li>
-<li><p>State：对等体状态，这里显示的为BGP状态机的状态</p>
-</li>
-<li><p>PrefRcv：prefix received，从该对等体收到的路由前缀数目</p>
-</li>
-</ul>
-<blockquote>
-<p>•BGP对等体表的作用为列出本设备的BGP对等体，以及对等体的状态等信息。</p>
-<p>•MsgRcvd 、MsgSent：从对等体收到的报文个数，向对等体发送的报文个数。</p>
-<p>•OutQ：out queue，对外发送报文队列中排队的个数，一般为0。</p>
-</blockquote>
-<h2 id="BGP路由表-1"><a href="#BGP路由表-1" class="headerlink" title="BGP路由表 (1)"></a>BGP路由表 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/28.png"></p>
-<p>•在设备上通过<strong>display bgp routing-table</strong>查看BGP路由表：</p>
-<ul>
-<li><p>Network：路由的目的网络地址以及网络掩码</p>
-</li>
-<li><p>NextHop：下一跳地址</p>
-</li>
-</ul>
-<p>•如果想要查看某条路由更加详细的信息，可以通过<strong>display</strong> <strong>bgp</strong> <strong>routing-table</strong> <em>ipv4-address { mask |</em> <em>mask-length}</em> 查看，该命令会将匹配的BGP路由信息详细展示。</p>
-<blockquote>
-<p>•列出本设备发现的所有BGP路由，如果到达同一个目的地存在多条路由，则将路由都进行罗列，但每个目的地只会优选一条路由。</p>
-</blockquote>
-<h2 id="BGP路由表-2"><a href="#BGP路由表-2" class="headerlink" title="BGP路由表 (2)"></a>BGP路由表 (2)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/29.png"></p>
-<blockquote>
-<p>•通过<strong>display</strong> <strong>bgp</strong> <strong>routing-table</strong> <em>ipv4-address { mask | mask-length }</em> 可以显示指定IP地址/掩码长度的路由信息，在其中有关于该BGP路由的详细信息，如：路由始发者、下一跳地址、路由的路径属性等。</p>
-</blockquote>
-<h2 id="BGP路由的生成"><a href="#BGP路由的生成" class="headerlink" title="BGP路由的生成"></a>BGP路由的生成</h2><p>•不同于IGP路由协议，BGP自身并不会发现并计算产生路由，BGP将IGP路由表中的路由注入到BGP路由表中，并通过Update报文传递给BGP对等体。</p>
-<p>•BGP注入路由的方式有两种：</p>
-<ul>
-<li><p>Network</p>
-</li>
-<li><p>import-route</p>
-</li>
-</ul>
-<p>•与IGP协议相同，BGP支持根据已有的路由条目进行聚合，生成聚合路由。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/30.png"></p>
-<h2 id="Network注入路由-1"><a href="#Network注入路由-1" class="headerlink" title="Network注入路由 (1)"></a>Network注入路由 (1)</h2><p>通过Network方式注入路由：</p>
-<p><strong>1.AS200内的BGP路由器已经通过IGP协议OSPF学习到了两条路由：10.1.0.0/24和10.2.0.0/24，在BGP进程内通过network命令注入这两条路由，这两条路由将会出现在本地的BGP路由表中。</strong></p>
-<p><em>2.AS200内的BGP路由器通过Update报文将路由传递给AS300内的BGP路由器。</em></p>
-<p><em>3.AS300内的BGP路由器收到路由后，将这两条路由加入到本地的BGP路由表中。</em></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/31.png"></p>
-<blockquote>
-<p>•Network方式注入的路由必须是已经存在于IP路由表中的路由条目，否则不会被成功注入到BGP路由表中。</p>
-</blockquote>
-<h2 id="Network注入路由-2"><a href="#Network注入路由-2" class="headerlink" title="Network注入路由 (2)"></a>Network注入路由 (2)</h2><p>通过Network方式注入路由：</p>
-<p><em>1.AS200内的BGP路由器已经通过IGP协议OSPF学习到了两条路由：10.1.0.0/24和10.2.0.0/24，在BGP进程内通过network命令注入这两条路由，这两条路由将会出现在本地的BGP路由表中。</em></p>
-<p><strong>2.AS200内的BGP路由器通过Update报文将路由传递给AS300内的BGP路由器。</strong></p>
-<p><strong>3.AS300内的BGP路由器收到路由后，将这两条路由加入到本地的BGP路由表中。</strong></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/32.png"></p>
-<h2 id="import-route方式注入路由"><a href="#import-route方式注入路由" class="headerlink" title="import-route方式注入路由"></a>import-route方式注入路由</h2><p>•Network方式注入路由虽然是精确注入，但是只能一条条配置逐条注入IP路由表中的路由，如果注入的路由条目很多配置命令将会非常复杂，为此可以使用import-route方式，将：</p>
-<ol>
-<li><p>直连路由</p>
-</li>
-<li><p>静态路由</p>
-</li>
-<li><p>OSPF路由</p>
-</li>
-<li><p>IS-IS路由</p>
-</li>
-</ol>
-<p>等协议的路由注入到BGP路由表中。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/33.png"></p>
-<h2 id="BGP聚合路由"><a href="#BGP聚合路由" class="headerlink" title="BGP聚合路由"></a>BGP聚合路由</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/34.png"></p>
-<p>与众多IGP协议相同，BGP同样支持路由的手工聚合，在BGP配置视图中使用<strong>aggregate</strong>命令可以执行BGP路由手工聚合，在BGP已经学习到相应的明细路由情况下，设备会向BGP注入指定的聚合路由。</p>
-<blockquote>
-<p>•执行聚合之后，在本地的BGP路由表中除了原本的明细路由条目之外，还会多出一条聚合的路由条目。</p>
-<p>•如果在执行聚合时指定了<strong>detail-suppressed</strong>，则BGP只会向对等体通告聚合后的路由，而不通告聚合前的明细路由。</p>
-<p>•在聚合时配置了抑制明细路由的参数，R3上查看路由表，将只能看到BGP路由：10.1.0.0/22，无法看到聚合前的明细路由。</p>
-</blockquote>
-<h2 id="通告原则"><a href="#通告原则" class="headerlink" title="通告原则"></a>通告原则</h2><p>•BGP通过network、import-route、aggregate聚合方式生成BGP路由后，通过Update报文将BGP路由传递给对等体。</p>
-<p>•BGP通告遵循以下原则：</p>
-<ul>
-<li><p>只发布最优且有效路由。</p>
-</li>
-<li><p>从EBGP对等体获取的路由，会发布给所有对等体。</p>
-</li>
-<li><p>IBGP水平分割：从IBGP对等体获取的路由，不会发送给IBGP对等体。</p>
-</li>
-<li><p>BGP同步规则指的是：当一台路由器从自己的IBGP对等体学习到一条BGP路由时（这类路由被称为IBGP路由），它将不能使用该条路由或把这条路由通告给自己的EBGP对等体，除非它又从IGP协议（例如OSPF等，此处也包含静态路由）学习到这条路由，也就是要求IBGP路由与IGP路由同步。同步规则主要用于规避BGP路由黑洞问题。</p>
-</li>
-</ul>
-<h3 id="BGP路由通告原则一"><a href="#BGP路由通告原则一" class="headerlink" title="BGP路由通告原则一"></a>BGP路由通告原则一</h3><p>•第一条原则：只发布最优且有效（即下一跳地址可达）路由。</p>
-<p>•通过<strong>display</strong> <strong>bgp</strong> <strong>routing-table</strong>命令可以查看BGP路由表。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/35.png"></p>
-<p>•在BGP路由表中同时存在以下两个标志的路由为最优、有效：</p>
-<ul>
-<li><p>* : 代表有效</p>
-</li>
-<li><p>&gt; : 代表最优</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/36.png"></p>
-<h3 id="BGP路由通告原则二"><a href="#BGP路由通告原则二" class="headerlink" title="BGP路由通告原则二"></a>BGP路由通告原则二</h3><p>第二条原则：从EBGP对等体获取的路由，会发布给所有对等体。</p>
-<p>R2从EBGP对等体获取的BGP路由，会发布给所有EBGP、IBGP对等体。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/37.png"></p>
-<h3 id="BGP路由通告原则三-1"><a href="#BGP路由通告原则三-1" class="headerlink" title="BGP路由通告原则三 (1)"></a>BGP路由通告原则三 (1)</h3><p>•第三条原则：从IBGP对等体获取的BGP路由，不会再发送给其他IBGP对等体。</p>
-<p>•该条原则也被称为“IBGP水平分割”。</p>
-<p>•如图所示，如果IBGP对等体学习到的路由会继续传递给其他的IBGP对等体：</p>
-<ul>
-<li><p>R2将一条路由传递给了IBGP对等体R3</p>
-</li>
-<li><p>R3收到路由之后传递给IBGP对等体R1</p>
-</li>
-<li><p>R1继续传递给IBGP对等体R2</p>
-<p>路由环路形成。</p>
-</li>
-</ul>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/38.png"></p>
-<h3 id="BGP路由通告原则三-2"><a href="#BGP路由通告原则三-2" class="headerlink" title="BGP路由通告原则三 (2)"></a>BGP路由通告原则三 (2)</h3><p>•第三条原则可能会带来新的问题，如左侧所示，当BGP路由器R2将路由传递给BGP路由器R1时，由于第三条原则限制，R1无法将BGP路由传递给R3，R3将无法学习到路由。</p>
-<p>•为解决该问题可以采用AS内IBGP全互联的方式，即：R2、R3之间建立非直连的IBGP对等体关系，以此让BGP路由器R2将路由传递给BGP路由器 R3。</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/39.png"></p>
-<h3 id="BGP路由通告原则四-1"><a href="#BGP路由通告原则四-1" class="headerlink" title="BGP路由通告原则四 (1)"></a>BGP路由通告原则四 (1)</h3><p>•第四条原则：当一台路由器从自己的IBGP对等体学习到一条BGP路由时（这类路由被称为IBGP路由），它将不能使用该条路由或把这条路由通告给自己的EBGP对等体，除非它又从IGP协议（例如OSPF等，此处也包含静态路由）学习到这条路由，该条规则也被称为BGP同步原则。</p>
-<p>•如图所示：</p>
-<ol>
-<li><p>BGP路由器R4上存在一条路由10.0.4.0/24，R4将其传递给了R2。</p>
-</li>
-<li><p>R2将路由传递给非直连IBGP对等体R3。</p>
-</li>
-<li><p>R3将路由传递给R5。</p>
-</li>
-<li><p>之后R5向10.0.4.4发起访问。</p>
-</li>
-</ol>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/40.png"></p>
-<h3 id="BGP路由通告原则四-2"><a href="#BGP路由通告原则四-2" class="headerlink" title="BGP路由通告原则四 (2)"></a>BGP路由通告原则四 (2)</h3><p>•R5访问10.0.4.4：</p>
-<ol>
-<li><p>R5查找路由表，将报文发送给R3。</p>
-</li>
-<li><p>R3收到报文后查找路由表，匹配到一条BGP路由，其下一跳为R2，但是R2为非直连下一跳，需要进行路由迭代，通过IGP学习到的路由迭代出下一跳为R1。R3将报文发送给R1。</p>
-</li>
-<li><p>R1收到报文后查找路由表，因为R1并非BGP路由器，未与R2建立IBGP对等体关系，因此R1上并无BGP路由10.0.4.0/24，路由查找失败，R1将报文丢弃。</p>
-</li>
-</ol>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/41.png"></p>
-<blockquote>
-<p>•产生该问题根本原因为AS200域内未运行BGP的路由器并无从BGP学习到的路由条目，查找路由失败，导致R1丢弃报文。为此制定了BGP同步原则：</p>
-<p>当BGP的路由条目也存在于IGP路由表时才对外发送，以图中场景为例，当R3查看IGP路由表，OSPF路由表中并无路由10.0.4.0/24，因此并不会向R5发送该路由，自然也不会产生后续的访问失败问题。</p>
-<p>•解决该问题的方式有：</p>
-<ul>
-<li>将BGP路由重分发到IGP中，基本不会使用该方式。</li>
-<li>建立全互联的IBGP对等体关系，让全网所有路由器都拥有BGP路由。</li>
-</ul>
-</blockquote>
-<h1 id="BGP的基本配置"><a href="#BGP的基本配置" class="headerlink" title="BGP的基本配置"></a>BGP的基本配置</h1><h2 id="配置介绍"><a href="#配置介绍" class="headerlink" title="配置介绍"></a>配置介绍</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/42.png"></p>
-<blockquote>
-<p>•如果没有配置Router ID，则BGP会自动选取系统视图下的Router ID作为BGP协议的Router ID。系统视图下的Router ID选择规则，请参见命令router-id中的描述。</p>
-</blockquote>
-<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/43.png"></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/44.png"></p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/45.png"></p>
-<h2 id="配置案例-2"><a href="#配置案例-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p>在R3上查看BGP对等体状态：</p>
-<p><img src="/2021/05/10/BGP%E5%9F%BA%E7%A1%80/46.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）BGP使用的TCP目的端口号是多少？</p>
-<p><strong>179</strong></p>
-<p>2.（简答题）BGP对等体关系有哪几种？划分的依据是什么？</p>
-<p><strong>IBGP、EBGP对等体关系，对等体是否和自身处于一个AS内。</strong></p>
-<p>3.（多选题）BGP对等体关系建立、更新路由分别使用（  ）、（  ）报文。</p>
-<p>A.Route-refresh</p>
-<p><strong>B.Open</strong></p>
-<p>C.Notification</p>
-<p><strong>D.Update</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章节介绍了BGP基础知识，涵盖了：BGP产生的背景、AS的概念、BGP的特征等。</p>
-<p>•本章节中我们详细地学习了BGP的对等体关系建立过程以及BGP状态机，学习时将对等体关系建立过程与状态机的转换相结合有助于理解记忆。</p>
-<p>• 不同于IGP路由协议，BGP不能自己发现、计算路由条目，其路由条目由IGP协议路由表中的路由发布得到。</p>
-<p>•BGP在进行路由通告时遵循四条原则，这些原则对BGP路由传递进行了限制。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/IS-IS/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/10/IS-IS/" itemprop="url">IS-IS</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-10T16:36:30+08:00">
-                2021-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/10/IS-IS/IS-IS.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•IS-IS（Intermediate System to Intermediate System，中间系统到中间系统）是ISO （International Organization for Standardization，国际标准化组织）为它的CLNP（ConnectionLessNetwork Protocol，无连接网络协议）设计的一种动态路由协议。</p>
-<p>•随着TCP/IP协议的流行，为了提供对IP路由的支持，IETF在RFC1195中对IS-IS进行了扩充和修改，使它能够同时应用在TCP/IP和OSI（Open System Interconnect，开放式系统互联）环境中，我们将扩展后的IS-IS称为集成IS-IS。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IS-IS的基本概念</p>
-<p>▫描述IS-IS的工作原理</p>
-<p>▫描述IS-IS与OSPF的差异</p>
-<p>▫实现IS-IS的常用配置</p>
-<h1 id="IS-IS的基本概念"><a href="#IS-IS的基本概念" class="headerlink" title="IS-IS的基本概念"></a>IS-IS的基本概念</h1><h2 id="IS-IS概述"><a href="#IS-IS概述" class="headerlink" title="IS-IS概述"></a>IS-IS概述</h2><p>IS-IS是ISO定义的OSI协议栈中的CLNS（ConnectionLess Network Service，无连接网络服务）的一部分。</p>
-<p><img src="/2021/05/10/IS-IS/1.png"></p>
-<blockquote>
-<p>•IS-IS是一种链路状态路由协议，IS-IS与OSPF在许多方面非常相似，例如运行IS-IS协议的直连设备之间通过发送Hello报文发现彼此，然后建立邻接关系，并交互链路状态信息。</p>
-<p>•CLNS由以下三个部分组成：</p>
-<p>​    ▫CLNP：类似于TCP/IP中的IP协议。</p>
-<p>​    ▫IS-IS：类似于TCP/IP中的OSPF。</p>
-<p>​    ▫ES-IS：类似于TCP/IP中的ARP，ICMP等。</p>
-<p>•ES：End System，终端系统，类似于IP网络环境中的主机。</p>
-<p>•ES-IS：End System to Intermediate System，终端系统到中间系统。</p>
-<p>•IP网络环境中不涉及CLNP以及ES-IS，因此本课程不做详细介绍。</p>
-</blockquote>
-<h2 id="NSAP"><a href="#NSAP" class="headerlink" title="NSAP"></a>NSAP</h2><p>•NSAP（Network Service Access Point，网络服务访问点）是OSI协议栈中用于定位资源的地址，主要用于提供网络层和上层应用之间的接口。NSAP包括IDP及DSP，如下图所示：</p>
-<p><img src="/2021/05/10/IS-IS/2.png"></p>
-<p>•IDP（Initial Domian Part）相当于IP地址中的主网络号。它是由ISO规定，并由AFI（Authority and Format Identifier）与IDI（Initial Domain Identifier）两部分组成。AFI表示地址分配机构和地址格式，IDI用来标识域。</p>
-<p>•DSP（Domian Specific Part）相当于IP地址中的子网号和主机地址。它由High Order DSP、System ID和SEL三个部分组成。High Order DSP用来分割区域，System ID用来区分主机，SEL（NSAP Selector）用来指示服务类型。</p>
-<h2 id="NET"><a href="#NET" class="headerlink" title="NET"></a>NET</h2><p>•NET（Network Entity Title，网络实体名称）是OSI协议栈中设备的网络层信息，主要用于路由计算，由区域地址（Area ID）和System ID组成，可以看作是特殊的NSAP（SEL为00的NSAP）。</p>
-<p>•NET的长度与NSAP的相同，最长为20Byte，最短为8Byte。</p>
-<p>•在IP网络中运行IS-IS时，只需配置NET，根据NET地址设备可以获取到Area ID以及System ID。</p>
-<p><img src="/2021/05/10/IS-IS/3.png"></p>
-<blockquote>
-<p>•Area ID由IDP和DSP中的High Order DSP组成，既能够标识路由域，也能够标识路由域中的区域。因此，它们一起被称为区域地址，相当于OSPF中的区域编号。</p>
-<p>​    ▫一般情况下，一个路由器只需要配置一个区域地址，且同一区域中所有节点的区域地址都要相同。为了支持区域的平滑合并、分割及转换，缺省情况下，一个IS-IS进程下最多可配置3个区域地址。</p>
-<p>•System ID用来在区域内唯一标识主机或路由器。在设备的实现中，它的长度固定为6Byte。</p>
-</blockquote>
-<h2 id="NET的配置举例"><a href="#NET的配置举例" class="headerlink" title="NET的配置举例"></a>NET的配置举例</h2><p>•每台运行IS-IS的网络设备至少需拥有一个NET，当然，一台设备也可以同时配置多个NET，但是这些NET的System ID必须相同。</p>
-<p>•在华为的网络设备上，System ID的长度总是固定的6Byte。在一个IS-IS路由域中，设备的System ID必须唯一，为了便于管理，一般根据Router ID配置System ID。</p>
-<p><img src="/2021/05/10/IS-IS/4.png"></p>
-<h2 id="IS-IS和OSPF区域划分的区别"><a href="#IS-IS和OSPF区域划分的区别" class="headerlink" title="IS-IS和OSPF区域划分的区别"></a>IS-IS和OSPF区域划分的区别</h2><p>•IS-IS在自治系统内采用骨干区域与非骨干区域两级的分层结构：</p>
-<p>​    ▫Level-1路由器部署在非骨干区域。</p>
-<p>​    ▫Level-2路由器和Level-1-2路由器部署在骨干区域。</p>
-<p>•每一个非骨干区域都通过Level-1-2路由器与骨干区域相连。</p>
-<p>如图所示，IS-IS整个骨干区域不仅包括Area49.0002中的所有路由器，还包括其它区域的Level2和Level-1-2路由器。</p>
-<p><img src="/2021/05/10/IS-IS/5.png"></p>
-<blockquote>
-<p>•在学习OSPF过程中，我们已经体会到了多区域、层次化网络设计的好处。对于链路状态路由协议而言，运行了该协议的设备会向网络中通告链路状态信息，同时也收集网络中所泛洪的链路状态信息后加以存储，并最终以这些信息为基础进行计算，从而得到路由信息。如果不采用多区域部署的方式，那么随着网络的规模逐渐增大，网络中泛洪的链路状态信息势必会越来越多，所有设备都将承受更重的负担，路由计算机收敛将逐渐变得更加缓慢，这也使得网络的扩展性变差。</p>
-<p>•以上拓扑结构图可以体现IS-IS与OSPF的不同点：</p>
-<p>​    ▫在IS-IS中，每个路由器都只属于一个区域；而在OSPF中，一个路由器的不同接口可以属于不同的区域。</p>
-<p>​    ▫在IS-IS中，单个区域没有骨干与非骨干区域的概念；而在OSPF中，Area0被定义为骨干区域。</p>
-<p>​    ▫在IS-IS中，Level-1和Level-2级别的路由都采用SPF算法，分别生成最短路径树SPT（Shortest Path Tree）；而在OSPF中，只有在同一个区域内才使用SPF算法，区域之间的路由需要通过骨干区域来转发。</p>
-</blockquote>
-<h2 id="IS-IS路由器的分类-1"><a href="#IS-IS路由器的分类-1" class="headerlink" title="IS-IS路由器的分类 (1)"></a>IS-IS路由器的分类 (1)</h2><p><strong>Level-1路由器</strong></p>
-<p>▫Level-1路由器（例如图中的R1）是一种IS-IS区域内部路由器，它只与属于同一区域的Level-1和Level-1-2路由器形成邻接关系，这种邻接关系称为Level-1邻接关系。Level-1路由器无法与Level-2路由器建立邻接关系。</p>
-<p>▫Level-1路由器只负责维护Level-1的链路状态数据库LSDB，该LSDB只包含本区域的路由信息。值得一提的是，Level-1路由器必须通过Level-1-2路由器接入IS-IS骨干区域从而访问其他区域。</p>
-<p><img src="/2021/05/10/IS-IS/6.png"></p>
-<h2 id="IS-IS路由器的分类-2"><a href="#IS-IS路由器的分类-2" class="headerlink" title="IS-IS路由器的分类 (2)"></a>IS-IS路由器的分类 (2)</h2><p><strong>Level-2路由器</strong></p>
-<p>▫Level-2路由器（例如图中的R4、R5、R6、R7）是IS-IS骨干路由器，它可以与同一或者不同区域的Level-2路由器或者Level-1-2路由器形成邻接关系。Level-2路由器维护一个Level-2的LSDB，该LSDB包含整个IS-IS域的所有路由信息。</p>
-<p>▫所有Level-2级别（即形成Level-2邻接关系）的路由器组成路由域的骨干网，负责在不同区域间通信。路由域中Level-2级别的路由器必须是物理连续的，以保证骨干网的连续性。</p>
-<p><img src="/2021/05/10/IS-IS/7.png"></p>
-<h2 id="IS-IS路由器的分类-3"><a href="#IS-IS路由器的分类-3" class="headerlink" title="IS-IS路由器的分类 (3)"></a>IS-IS路由器的分类 (3)</h2><p><strong>Level-1-2路由器</strong></p>
-<p>▫Level-1-2路由器与OSPF中的ABR非常相似，它也是IS-IS骨干网络的组成部分。</p>
-<p>▫Level-1-2路由器维护两个LSDB，Level-1的LSDB用于区域内路由，Level-2的LSDB用于区域间路由。</p>
-<p>▫同时属于Level-1和Level-2的路由器称为Level-1-2路由器（例如图中的R2和R3），它可以与同一区域的Level-1和Level-1-2路由器形成Level-1邻接关系，也可以与其他区域的Level-2和Level-1-2路由器形成Level-2的邻接关系。</p>
-<p><img src="/2021/05/10/IS-IS/8.png"></p>
-<blockquote>
-<p>•在华为路由器上配置IS-IS时，缺省时，路由器全局Level为Level-1-2，当然，可以通过命令修改该设备的类型。</p>
-</blockquote>
-<h2 id="IS-IS支持的网络类型"><a href="#IS-IS支持的网络类型" class="headerlink" title="IS-IS支持的网络类型"></a>IS-IS支持的网络类型</h2><p>IS-IS会自动根据接口的数据链路层封装决定该接口的缺省网络类型， IS-IS支持两种类型的网络：</p>
-<p>▫广播（Broadcast）： 如Ethernet。</p>
-<p>▫点到点（P2P）： 如PPP、 HDLC等。</p>
-<p><img src="/2021/05/10/IS-IS/9.png"></p>
-<blockquote>
-<p>•对于NBMA网络，需对其配置子接口，并注意子接口类型应配置为P2P。</p>
-</blockquote>
-<h2 id="IS-IS开销值"><a href="#IS-IS开销值" class="headerlink" title="IS-IS开销值"></a>IS-IS开销值</h2><p>•IS-IS使用Cost（开销）作为路由度量值，Cost值越小，则路径越优。IS-IS链路的Cost与设备的接口有关，与OSPF类似，每一个激活了IS-IS的接口都会维护接口Cost。然而与OSPF不同的是，IS-IS接口的Cost在缺省情况下并不与接口带宽相关（在实际部署时，IS-IS也支持根据带宽调整Cost值），无论接口带宽多大，缺省时Cost为10。</p>
-<p>•一条IS-IS路径的Cost等于本路由器到达目标网段沿途的所有链路的Cost总和。</p>
-<p>•窄带 接口 1-63 全局 1-2的10次幂-1</p>
-<p>•宽带 接口带宽1-2的24次幂-1 全局1-2的32次幂-1</p>
-<p>•IS-IS有三种方式来确定接口的开销，按照优先级由高到低分别是：</p>
-<p>​    ▫接口开销：为单个接口设置开销。</p>
-<p>​    ▫全局开销：为所有接口设置开销。</p>
-<p>​    ▫自动计算开销：根据接口带宽自动计算开销。</p>
-<p><img src="/2021/05/10/IS-IS/10.png"></p>
-<blockquote>
-<p>•在早期的ISO10589中，使能IS-IS的接口下最大只能配置值为63的开销值，此时IS-IS的开销类型为narrow。但是在大型网络设计中，较小的度量范围不能满足实际需求。RFC3784中规定，使能IS-IS的接口开销值可以扩展到16777215，此时IS-IS的开销类型为wide。</p>
-<p>•缺省时，华为路由器采用的开销类型是narrow。</p>
-<p>•narrow类型下使用的TLV：</p>
-<p>​    ▫128号TLV（IP Internal Reachability TLV）：用来携带路由域    内的IS-IS路由信息。</p>
-<p>​    ▫130号TLV（IP External Reachability TLV）：用来携带路由域    外的IS-IS路由信息。</p>
-<p>​    ▫2号TLV(IS Neighbors TLV)：用来携带邻居信息。</p>
-<p>•wide类型下使用的TLV：</p>
-<p>​    ▫135号TLV(Extended IP Reachability TLV)：用来替换原有的IP     reachability TLV，携带IS-IS路由信息，它扩展了路由开销值的    范围，并可以携带sub TLV。</p>
-<p>​    ▫22号TLV（IS Extended Neighbors TLV）：用来携带邻居信息</p>
-</blockquote>
-<h2 id="IS-IS报文格式"><a href="#IS-IS报文格式" class="headerlink" title="IS-IS报文格式"></a>IS-IS报文格式</h2><p>•IS-IS报文是直接封装在数据链路层的帧结构中的。</p>
-<p>•PDU（Protocol Data Unit，协议数据单元）可以分为两个部分，报文头（IS-IS Header）和变长字段部分（Variable Length Fields ）。</p>
-<p>•其中IS-IS Header又可分为通用头部（PDU Common Header）和专用头部（PDU Specific Header）。对于所有PDU来说，通用报头都是相同的，但专用报头根据PDU类型不同而有所差别。</p>
-<p><img src="/2021/05/10/IS-IS/11.png"></p>
-<h2 id="IS-IS通用头部详解"><a href="#IS-IS通用头部详解" class="headerlink" title="IS-IS通用头部详解"></a>IS-IS通用头部详解</h2><p><strong>重要字段解释：</strong></p>
-<p>•Intradomain Routing Protocol Discriminator：域内路由选择协议鉴别符，固定为0x83。</p>
-<p>•Length Indicator：IS-IS头部的长度（包括通用头部和专用头部），以Byte为单位。</p>
-<p>•Version/Protocol ID Extension：版本/协议标识扩展，固定为0x01。</p>
-<p>•System ID Length：NSAP地址或NET中System ID区域的长度。值为0时，表示System ID区域的长度为6Byte。</p>
-<p>•R（Reserved）：保留，固定为0。</p>
-<p>•Version：固定为0x01。</p>
-<p>•Max.Areas：支持的最大区域个数。设置为1～254的整数，表示该IS-IS进程实际所允许的最大区域地址数；设置为0，表示该IS-IS进程最大只支持3个区域地址数。</p>
-<p><img src="/2021/05/10/IS-IS/12.png"></p>
-<h2 id="IS-IS报文类型概述"><a href="#IS-IS报文类型概述" class="headerlink" title="IS-IS报文类型概述"></a>IS-IS报文类型概述</h2><p>•IS-IS的PDU有4种类型：IIH(IS-IS Hello)，LSP（ Link State PDU，链路状态报文），CSNP（Complete Sequence Number PDU，全序列号报文），PSNP（Partial Sequence Number PDU，部分序列号报文）。</p>
-<p>•IIH：用于建立和维持邻接关系， 广播网络中的Level-1 IS-IS路由器使用Level-1 LAN IIH； 广播网络中的Level-2 IS-IS路由器使用Level-2 LAN IIH； 点到点网络中则使用P2P IIH。</p>
-<p>•LSP：用于交换链路状态信息。LSP分为两种，Level-1 LSP、Level-2 LSP。</p>
-<p>•SNP：通过描述全部或部分链路数据库中的LSP来同步各LSDB，从而维护LSDB的完整与同步。SNP包括CSNP和PSNP，进一步又可分为Level-1 CSNP、 Level-2 CSNP、 Level-1 PSNP和Level-2 PSNP。</p>
-<p><img src="/2021/05/10/IS-IS/13.png"></p>
-<h2 id="IS-IS常见的TLV"><a href="#IS-IS常见的TLV" class="headerlink" title="IS-IS常见的TLV"></a>IS-IS常见的TLV</h2><p>•TLV的含义是：类型（TYPE），长度（LENGTH），值（VALUE）。实际上是一个数据结构，这个结构包含了这三个字段。</p>
-<p>•使用TLV结构构建报文的好处是灵活性和扩展性好。采用TLV使得报文的整体结构固定，增加新特性只需要增加新TLV即可，不需要改变整个报文的整体结构。</p>
-<p><img src="/2021/05/10/IS-IS/14.png"></p>
-<blockquote>
-<p>•TLV也称为CLV（Code-Length-Value）。</p>
-</blockquote>
-<h1 id="IS-IS工作原理"><a href="#IS-IS工作原理" class="headerlink" title="IS-IS工作原理"></a>IS-IS工作原理</h1><h2 id="邻接关系建立"><a href="#邻接关系建立" class="headerlink" title="邻接关系建立"></a>邻接关系建立</h2><h3 id="IS-IS邻接关系建立原则"><a href="#IS-IS邻接关系建立原则" class="headerlink" title="IS-IS邻接关系建立原则"></a>IS-IS邻接关系建立原则</h3><p>•IS-IS按如下原则建立邻接关系：</p>
-<p>​    ▫只有同一层次的相邻路由器才有可能成为邻接。</p>
-<p>​    ▫对于Level-1路由器来说，Area ID必须一致。</p>
-<p>​    ▫链路两端IS-IS接口的网络类型必须一致。</p>
-<p>​    ▫链路两端IS-IS接口的地址必须处于同一网段（默认情况下）。</p>
-<p>•由于IS-IS是直接运行在数据链路层上的协议，并且最早设计是给CLNP使用的，IS-IS邻接关系的形成与IP地址无关。但在实际的部署中，在IP网络上运行IS-IS时，需要检查对方的IP地址的。如果接口配置了从IP，那么只要双方有某个IP（主IP或者从IP）在同一网段，就能建立邻接，不一定要主IP相同。</p>
-<blockquote>
-<p>•通过将以太网接口模拟成点到点接口，可以建立点到点链路邻接关系。</p>
-<p>•当链路两端IS-IS接口的地址不在同一网段时，如果配置接口对接收的Hello报文不作IP地址检查，也可以建立邻接关系。</p>
-<p>​    ▫对于点到点接口，可以配置接口忽略IP地址检查。</p>
-<p>​    ▫对于以太网接口，需要将以太网接口模拟成点到点接口，然后    才可以配置接口忽略IP地址检查。</p>
-<p>•一般情况下，一个接口只需配置一个主IP地址，但在有些特殊情况下需要配置从IP地址。比如，一台路由器通过一个接口连接了一个物理网络，但该物理网络的计算机分别属于2个不同的网络，为了使路由器与物理网络中的所有计算机通信，就需要在该接口上配置一个主IP地址和一个从IP地址。路由器的每个三层接口可以配置多个IP地址，其中一个为主IP地址，其余为从IP地址，每个三层接口最多可配置31个从IP地址。</p>
-</blockquote>
-<h3 id="IIH"><a href="#IIH" class="headerlink" title="IIH"></a>IIH</h3><p>IIH报文用于建立和维持邻接关系，广播网络中的Level-1 IS-IS路由器使用Level-1 LAN IIH；广播网络中的Level-2 IS-IS路由器使用Level-2 LAN IIH；点到点网络中则使用P2P IIH。</p>
-<p><strong>Reserved/Circuit</strong> <strong>Type</strong>：表示路由器的类型（01表示L1，10表示L2，11表示L1/L2）。 </p>
-<p>Source ID ：发出Hello报文的路由器的System ID。 </p>
-<p><strong>Holding Time</strong> ： 保持时间。在此时间内如果没有收到邻接发来的Hello报文，则中止已建立的邻接关系。 </p>
-<p><strong>Priority</strong> <strong>：</strong>选举DIS的优先级，取值范围为0～127。数值越大，优先级越高。该字段只在广播网中的Hello消息(LAN IIH消息)携带；点到点网络的Hello消息(P2P IIH消息)没有此字段，也没有此字段之前的R保留位。 </p>
-<p><strong>LAN ID</strong> <strong>：</strong> 包括DIS的System ID和伪节点ID。该字段只在广播网中的Hello消息(LAN IIH消息)携带；点到点网络的Hello消息(P2P IIH消息)没有此字段。 </p>
-<p><strong>Local Circuit ID</strong> ：本地链路ID。该字段只在点到点网络的Hello消息(P2P IIH消息)携带；广播网中的Hello消息(LAN IIH消息)没有此字段。 </p>
-<p><img src="/2021/05/10/IS-IS/15.png"></p>
-<h3 id="广播网络中的邻接关系建立过程"><a href="#广播网络中的邻接关系建立过程" class="headerlink" title="广播网络中的邻接关系建立过程"></a>广播网络中的邻接关系建立过程</h3><p>两台运行IS-IS的路由器在交互协议报文实现路由功能之前必须首先建立邻接关系。在不同类型的网络上，IS-IS的邻接建立方式并不相同。在广播网络中，使用三次握手建立邻接关系。</p>
-<p>R1及R2通过千兆以太接口互联，这两台直连的Level-1路由器建立邻接关系的过程如下：</p>
-<ol>
-<li><p>在Down状态下，R1组播发送Level-1 LAN IIH，此报文中邻接列表为空。</p>
-</li>
-<li><p>R2收到此报文后，将邻接状态标识为Initial。然后，R2再向R1回复Level-1 LAN IIH ，此报文中标识R1为R2的邻接。</p>
-</li>
-<li><p>R1收到此报文后，将自己与R2的邻接状态标识为Up。然后R1再向R2发送一个标识R2为R1邻接的Level-1 LAN IIH 。</p>
-</li>
-<li><p>R2收到此报文后，将自己与R1的邻接状态标识为Up。这样，两个路由器成功建立了邻接关系。</p>
-</li>
-<li><p>广播网络中需要选举DIS，在邻接关系建立后，路由器会等待两个Hello报文间隔，再进行DIS的选举。</p>
-</li>
-</ol>
-<p><img src="/2021/05/10/IS-IS/16.png"></p>
-<blockquote>
-<p>•Level-1 IIH和Level-2 IIH发送的组播地址分别为01-80-C2-00-00-14、01-80-C2-00-00-15。</p>
-<p>•Down：邻接关系的初始状态。</p>
-<p>•Initial：收到IIH，但是报文中的邻接列表未包含路由器自身的System ID。</p>
-<p>•UP：收到IIS，且邻接列表中包含路由器自身的System ID。</p>
-</blockquote>
-<h3 id="DIS与伪节点"><a href="#DIS与伪节点" class="headerlink" title="DIS与伪节点"></a>DIS与伪节点</h3><p>•在广播网络中，IS-IS需要在所有的路由器中选举一个路由器作为DIS（Designated Intermediate System）。</p>
-<p>•DIS用来创建和更新伪节点（Pseudonodes），并负责生成伪节点的LSP，用来描述这个网络上有哪些网络设备。伪节点是用来模拟广播网络的一个虚拟节点，并非真实的路由器。在IS-IS中，伪节点用DIS的System ID和Circuit ID（非0值）标识。</p>
-<p><img src="/2021/05/10/IS-IS/17.png"></p>
-<h3 id="IS-IS中的DIS与OSPF中的DR"><a href="#IS-IS中的DIS与OSPF中的DR" class="headerlink" title="IS-IS中的DIS与OSPF中的DR"></a>IS-IS中的DIS与OSPF中的DR</h3><p>•Level-1和Level-2的DIS是分别选举的，用户可以为不同级别的DIS选举设置不同的优先级。</p>
-<p>•DIS的选举规则如下：</p>
-<p>​    ▫DIS优先级数值最大的被选为DIS。</p>
-<p>​    ▫如果优先级数值最大的路由器有多台，则其中MAC地址最大的路由    器会成为DIS。</p>
-<p>•DIS发送Hello PDU的时间间隔是普通路由器的1/3，这样可以确保DIS出现故障时能够被更快速地被发现。</p>
-<p>•IS-IS中DIS与OSPF协议中DR（Designated Router）的区别：</p>
-<p>​    ▫在IS-IS广播网中，优先级为0的路由器也参与DIS的选举，在OSPF中优先级为0的路由器则不参与DR的选举。</p>
-<p>​    ▫在IS-IS广播网中，当有新的路由器加入，并符合成为DIS的条件时，这个路由器会被选中成为新的DIS，原有的伪节点被删除。此更改会引起一组新的LSP泛洪。而在OSPF中，当一台新路由器加入后，即使它的DR优先级值最大，也不会立即成为该网段中的DR。</p>
-<p>​    ▫在IS-IS广播网中，同一网段上的同一级别的路由器之间都会形成邻接关系，包括所有的非DIS路由器之间也会形成邻接关系。而在OSPF中，路由器只与DR和BDR建立邻接关系。</p>
-<h3 id="点到点网络中的邻接关系建立过程"><a href="#点到点网络中的邻接关系建立过程" class="headerlink" title="点到点网络中的邻接关系建立过程"></a>点到点网络中的邻接关系建立过程</h3><p>•点到点网络中，邻接关系的建立使用两次握手方式：只要路由器收到对端发来的Hello报文，就单方面宣布邻接为Up状态，建立邻接关系。</p>
-<p>•两次握手机制存在明显的缺陷，华为设备在点到点网络中使用IS-IS时，默认使用三次握手建立邻接关系。此方式通过三次发送P2P IIH最终建立起邻接关系。</p>
-<p><img src="/2021/05/10/IS-IS/18.png"></p>
-<h2 id="链路状态数据库同步"><a href="#链路状态数据库同步" class="headerlink" title="链路状态数据库同步"></a>链路状态数据库同步</h2><h3 id="LSP"><a href="#LSP" class="headerlink" title="LSP"></a>LSP</h3><p>•IS-IS链路状态报文LSP用于交换链路状态信息。LSP分为两种：Level–1 LSP和Level–2 LSP。Level–1 LSP由Level-1路由器传送，Level–2 LSP由Level-2路由器传送，Level-1-2路由器则可传送以上两种LSP。</p>
-<p>•两类LSP有相同的报文格式。</p>
-<p><strong>Remaining Lifetime</strong> : LSP的生存时间，以秒为单位。 1200-0s递减。</p>
-<p><strong>LSP ID</strong>:由三部分组成，System ID、伪节点ID和LSP分片后的编号。 </p>
-<p><strong>Sequence Number</strong>: LSP的序列号。在路由器启动时所发送的第一个LSP报文中的序列号为1，以后当需要生成新的LSP时，新LSP的序列号在前一个LSP序列号的基础上加1。更高的序列号意味着更新的LSP。</p>
-<p><strong>Checksum</strong>： LSP的校验和。 </p>
-<p><strong>ATT（Attachment）</strong>：由Level-1-2路由器产生，用来指明始发路由器是否与其它区域相连。虽然此标志位也存在于Level-1和Level-2的LSP中，但实际上此字段只和Level-1-2路由器始发的L1 LSP有关。接受到ATT置位的LSP的路由器生成一条到发送该ATT置位的路由，若路径开销相同，则负载分担。</p>
-<p>ATT置位的条件</p>
-<ul>
-<li><p>有L1的邻接关系</p>
-</li>
-<li><p>有和自己处于不同区域的L2的邻接关系路由器</p>
-</li>
-<li><p>活跃的数据库</p>
-<p>L1/L2可以计算完全的路由信息（cost计算方法不一样就不可以）</p>
-</li>
-</ul>
-<p><strong>OL（LSDB Overload，1bit）</strong>：过载标志位。设置了过载标志位的LSP虽然还会在网络中扩散，但是在计算通过超载路由器的路由时不会被采用。即对路由器设置过载位后，其它路由器在进行SPF计算时不会考虑这台路由器。当路由器内存不足时，系统自动在发送的LSP报文中设置过载标志位。 </p>
-<p>**IS Type(2bit)**：生成LSP的路由器的类型。用来指明是Level-1还是Level-2路由器（01表示Level-1，11表示Level-2）。 </p>
-<p><img src="/2021/05/10/IS-IS/19.png"></p>
-<h3 id="IS-IS的LSDB"><a href="#IS-IS的LSDB" class="headerlink" title="IS-IS的LSDB"></a>IS-IS的LSDB</h3><p><img src="/2021/05/10/IS-IS/20.png"></p>
-<blockquote>
-<p>•伪节点ID：当该参数不为零时，表示该LSP为伪节点生成。</p>
-<p>•分片号：当IS-IS要发布的链路状态协议数据报文PDU（Protocol Data Unit）中的信息量太大时，IS-IS路由器将会生成多个LSP分片，用来携带更多的IS-IS信息。分片号用来区分不同的LSP分片。</p>
-</blockquote>
-<h3 id="查看非伪节点的LSP"><a href="#查看非伪节点的LSP" class="headerlink" title="查看非伪节点的LSP"></a>查看非伪节点的LSP</h3><p><img src="/2021/05/10/IS-IS/21.png"></p>
-<blockquote>
-<p>•AREA ADDR：该LSP来源的区域号</p>
-<p>•INTF ADDR：该LSP中描述的接口地址</p>
-<p>•NBR ID：该LSP中描述的邻接信息</p>
-<p>•IP-Internal：该LSP中描述的网段信息</p>
-</blockquote>
-<h3 id="查看伪节点LSP"><a href="#查看伪节点LSP" class="headerlink" title="查看伪节点LSP"></a>查看伪节点LSP</h3><p><img src="/2021/05/10/IS-IS/22.png"></p>
-<h3 id="CSNP"><a href="#CSNP" class="headerlink" title="CSNP"></a>CSNP</h3><p>CSNP包含该设备LSDB中所有的LSP摘要，路由器通过交互 CSNP来判断是否需要同步LSDB。</p>
-<p>▫在广播网络上，CSNP由DIS定期发送（缺省的发送周期为10秒）。</p>
-<p>▫在点到点网络上，CSNP只在第一次建立邻接关系时发送。</p>
-<p><img src="/2021/05/10/IS-IS/23.png"></p>
-<h3 id="PSNP"><a href="#PSNP" class="headerlink" title="PSNP"></a>PSNP</h3><p>PSNP只包含部分LSP的摘要信息（与CSNP不同）：</p>
-<p>▫当发现LSDB不同步时，PSNP来请求邻居发送新的LSP。</p>
-<p>▫在点到的网络中，当收到LSP时，使用PSNP对收到的LSP进行确认。</p>
-<p><img src="/2021/05/10/IS-IS/24.png"></p>
-<h3 id="广播网络中LSP的同步过程"><a href="#广播网络中LSP的同步过程" class="headerlink" title="广播网络中LSP的同步过程"></a>广播网络中LSP的同步过程</h3><p>广播网络中新加入路由器与DIS同步LSDB数据库的过程：</p>
-<ol>
-<li><p>新加入的路由器R3首先发送IIH报文，与该广播域中的路由器建立邻接关系。建立邻接关系之后，R3等待LSP刷新定时器超时，然后将自己的LSP发往组播地址（Level-1：01-80-C2-00-00-14；Level-2：01-80-C2-00-00-15）。这样网络上所有的邻接都将收到该LSP。</p>
-</li>
-<li><p>该网段中的DIS会把收到R3的LSP加入到LSDB中，并等待CSNP报文定时器超时并发送CSNP报文。</p>
-</li>
-<li><p>R3收到DIS发来的CSNP报文，对比自己的LSDB数据库，然后向DIS发送PSNP报文请求自己没有的LSP。</p>
-</li>
-<li><p>DIS收到该PSNP报文请求后向R3发送对应的LSP进行LSDB的同步。 </p>
-</li>
-</ol>
-<p><img src="/2021/05/10/IS-IS/25.png"></p>
-<h3 id="点到点网络中LSP的同步过程"><a href="#点到点网络中LSP的同步过程" class="headerlink" title="点到点网络中LSP的同步过程"></a>点到点网络中LSP的同步过程</h3><p>点到点网络上LSDB数据库的同步过程：</p>
-<p>•R1先与R2建立邻接关系。</p>
-<p>•建立邻接关系之后，R1与R2会先发送CSNP给对端设备。如果对端的LSDB与CSNP没有同步，则发送PSNP请求索取相应的LSP。</p>
-<p>•假设R2向R1索取相应的LSP。</p>
-<ol>
-<li><p>R1发送R2请求的LSP的同时启动LSP重传定时器，并等待R2发送的PSNP作为收到LSP的确认。</p>
-</li>
-<li><p>如果在接口LSP重传定时器超时后，R1没有收到R2发送的PSNP报文作为应答。</p>
-</li>
-<li><p>则R1重新发送该LSP。</p>
-</li>
-<li><p>R2收到LSP后，发送PSNP进行确认。</p>
-</li>
-</ol>
-<p><img src="/2021/05/10/IS-IS/26.png"></p>
-<h3 id="LSP的处理机制"><a href="#LSP的处理机制" class="headerlink" title="LSP的处理机制"></a>LSP的处理机制</h3><p>IS-IS通过交互LSP实现链路状态数据库同步，路由器收到LSP后，按照以下原则处理：</p>
-<p>•若收到的LSP比本地LSP的更优，或者本地没有收到的LSP：</p>
-<p>​    ▫在广播网络中：将其加入数据库，并组播发送新的LSP。</p>
-<p>​    ▫在点到点网络中：将其加入数据库，并发送PSNP报文来确认收到此    LSP，之后将这新的LSP发送给除了发送该LSP的邻居以外的邻居。</p>
-<p>•若收到的LSP和本地LSP无法比较出优劣，则不处理该LSP。</p>
-<p><img src="/2021/05/10/IS-IS/27.png"></p>
-<blockquote>
-<p>•LSP产生的原因，IS-IS路由域内的所有路由器都会产生LSP，以下事件会触发一个新的LSP：</p>
-<p>​    ▫邻接Up或Down</p>
-<p>​    ▫IS-IS相关接口Up或Down</p>
-<p>​    ▫引入的IP路由发生变化</p>
-<p>​    ▫区域间的IP路由发生变化</p>
-<p>​    ▫接口被赋了新的metric值</p>
-<p>​    ▫周期性更新（刷新间隔15min）</p>
-</blockquote>
-<h2 id="路由计算"><a href="#路由计算" class="headerlink" title="路由计算"></a>路由计算</h2><h3 id="Level-1路由器的路由计算"><a href="#Level-1路由器的路由计算" class="headerlink" title="Level-1路由器的路由计算"></a>Level-1路由器的路由计算</h3><p>•R1是Level-1路由器，只维护Level-1 LSDB，该LSDB中包含同属一个区域的R2及R3以及R1自己产生的Level-1 LSP。</p>
-<p>•R1根据LSDB中的Level-1 LSP计算出Area 49.0001内的拓扑，以及到达区域内各个网段的路由信息。</p>
-<p>•R2及R3作为Area 49.0001内的Level-1-2路由器，会在它们向该区域下发的Level-1 LSP中设置ATT标志位，用于向区域内的Level-1路由器宣布可以通过自己到达其他区域。 R1作为Level-1路由器，会根据该ATT标志位，计算出指向R2或R3的默认路由。</p>
-<p><img src="/2021/05/10/IS-IS/28.png"></p>
-<h3 id="Level-1路由器的次优路径的问题"><a href="#Level-1路由器的次优路径的问题" class="headerlink" title="Level-1路由器的次优路径的问题"></a>Level-1路由器的次优路径的问题</h3><p>缺省时， R1只能通过指向R2或R3的默认路由到达区域外部，但是R1距离R2和R3路由器的Cost值相等，那么当R1发送数据包到192.168.20.0/24时，就有可能选择路径2，导致出现次优路径。</p>
-<p><img src="/2021/05/10/IS-IS/29.png"></p>
-<h3 id="路由渗透"><a href="#路由渗透" class="headerlink" title="路由渗透"></a>路由渗透</h3><p>•缺省情况下，Level-1-2路由器不会将到达其他区域的路由通告本Level-1区域中。</p>
-<p>•通过路由渗透，可以将区域间路由通过Leve-1-2路由器传递到Level-1区域，此时Leve-1路由器可以学习到其他区域的详细路由，从而计算出最优路径。</p>
-<p><img src="/2021/05/10/IS-IS/31.png"></p>
-<h3 id="Level-1-2路由器的路由计算"><a href="#Level-1-2路由器的路由计算" class="headerlink" title="Level-1-2路由器的路由计算"></a>Level-1-2路由器的路由计算</h3><p>•R2及R3都维护Level-1 LSDB，它们能够通过这些LSDB中的LSP计算出Area 49.0001的路由。</p>
-<p>•R2及R3都维护Level-2 LSDB，它们能够通过这些LSDB中的LSP计算出Area 49.0002的路由。</p>
-<p>•R2及R3将到达Area 49.0001的路由以Level-2 LSP的形式发送到Area 49.0002。</p>
-<p><img src="/2021/05/10/IS-IS/32.png"></p>
-<h3 id="Level-2路由器的路由计算"><a href="#Level-2路由器的路由计算" class="headerlink" title="Level-2路由器的路由计算"></a>Level-2路由器的路由计算</h3><p>R4及R5作为Level-2路由器，只会维护Level-2 LSDB，它们能够根据该LSDB计算出到达全网各个网段的路由。</p>
-<p><img src="/2021/05/10/IS-IS/33.png"></p>
-<h1 id="IS-IS的基本配置"><a href="#IS-IS的基本配置" class="headerlink" title="IS-IS的基本配置"></a>IS-IS的基本配置</h1><h2 id="IS-IS协议的基本配置-1"><a href="#IS-IS协议的基本配置-1" class="headerlink" title="IS-IS协议的基本配置 (1)"></a>IS-IS协议的基本配置 (1)</h2><p><img src="/2021/05/10/IS-IS/34.png"></p>
-<h2 id="IS-IS协议的基本配置-2"><a href="#IS-IS协议的基本配置-2" class="headerlink" title="IS-IS协议的基本配置 (2)"></a>IS-IS协议的基本配置 (2)</h2><p><img src="/2021/05/10/IS-IS/35.png"></p>
-<h2 id="IS-IS协议的基本配置-3"><a href="#IS-IS协议的基本配置-3" class="headerlink" title="IS-IS协议的基本配置 (3)"></a>IS-IS协议的基本配置 (3)</h2><p><img src="/2021/05/10/IS-IS/36.png"></p>
-<h2 id="案例：IS-IS配置"><a href="#案例：IS-IS配置" class="headerlink" title="案例：IS-IS配置"></a>案例：IS-IS配置</h2><p><img src="/2021/05/10/IS-IS/37.png"></p>
-<p><strong>组网需求</strong></p>
-<p>如图所示，现网中有5台路由器。用户希望在这5台路由器实现网络互联，并且因为R1性能相对较低，所以还要使这台路由器处理相对较少的数据信息。同时用户希望R1可以选择最优路径访问192.168.10.0/24和192.168.20.0/24网段。</p>
-<p><strong>配置思路</strong></p>
-<p>在各路由器上配置IS-IS基本功能，实现网络互联。其中，配置R1为Level-1路由器，可以使这台路由器维护相对少量的数据信息。同时，配置R2和R3为Level-1/2路由器与R4和R5这两台Level-2路由器互联。</p>
-<h3 id="案例：R1、R2及R3的配置"><a href="#案例：R1、R2及R3的配置" class="headerlink" title="案例：R1、R2及R3的配置"></a>案例：R1、R2及R3的配置</h3><p><img src="/2021/05/10/IS-IS/38.png"></p>
-<h3 id="案例：R4和R5的配置"><a href="#案例：R4和R5的配置" class="headerlink" title="案例：R4和R5的配置"></a>案例：R4和R5的配置</h3><p><img src="/2021/05/10/IS-IS/39.png"></p>
-<h3 id="案例：配置验证-查看设备的IS-IS邻接表"><a href="#案例：配置验证-查看设备的IS-IS邻接表" class="headerlink" title="案例：配置验证 (查看设备的IS-IS邻接表)"></a>案例：配置验证 (查看设备的IS-IS邻接表)</h3><p><img src="/2021/05/10/IS-IS/40.png"></p>
-<blockquote>
-<p>•System Id字段：描述邻接的系统ID</p>
-<p>•Interface字段：描述通过该路由器哪个端口与邻接建立邻接关系</p>
-<p>•Type：描述与该邻接的邻接关系类型</p>
-<p>•PRI：描述该邻接对应端口的DIS优先级</p>
-</blockquote>
-<h3 id="案例：配置验证-查看设备的IS-IS路由表-1"><a href="#案例：配置验证-查看设备的IS-IS路由表-1" class="headerlink" title="案例：配置验证 (查看设备的IS-IS路由表) (1)"></a>案例：配置验证 (查看设备的IS-IS路由表) (1)</h3><p><img src="/2021/05/10/IS-IS/41.png"></p>
-<h3 id="案例：配置验证-查看设备的IS-IS路由表-2"><a href="#案例：配置验证-查看设备的IS-IS路由表-2" class="headerlink" title="案例：配置验证 (查看设备的IS-IS路由表) (2)"></a>案例：配置验证 (查看设备的IS-IS路由表) (2)</h3><p><img src="/2021/05/10/IS-IS/42.png"></p>
-<h2 id="路由渗透配置"><a href="#路由渗透配置" class="headerlink" title="路由渗透配置"></a>路由渗透配置</h2><p><img src="/2021/05/10/IS-IS/43.png"></p>
-<h2 id="路由渗透验证"><a href="#路由渗透验证" class="headerlink" title="路由渗透验证"></a>路由渗透验证</h2><p>通过查看R1的路由表，我们可以看到新增了两条明细路由192.168.10.0/24以及192.168.20.0/24，两条路由的开销值均为30，当有数据包经由R1到达这两个网段时，不会产生次优路径。</p>
-<p><img src="/2021/05/10/IS-IS/44.png"></p>
-<h2 id="IS-IS认证的分类"><a href="#IS-IS认证的分类" class="headerlink" title="IS-IS认证的分类"></a>IS-IS认证的分类</h2><p>•IS-IS认证是基于网络安全性的要求而实现的一种认证手段，通过在IS-IS报文中增加认证字段对报文进行认证。当本地路由器接收到远端路由器发送过来的IS-IS报文，如果发现认证密码不匹配，则将收到的报文进行丢弃，达到自我保护的目的。</p>
-<p>•根据报文的种类，认证可以分为以下三类：</p>
-<p>▫接口认证：在接口视图下配置，对Level-1和Level-2的Hello报文进行认证。</p>
-<p>▫区域认证：在IS-IS进程视图下配置，对Level-1的CSNP、PSNP和LSP报文进行认证。</p>
-<p>▫路由域认证：在IS-IS进程视图下配置，对Level-2的CSNP、PSNP和LSP报文进行认证。</p>
-<p>•根据报文的认证方式，可以分为以下四类：</p>
-<p>▫简单认证：将配置的密码直接加入报文中，这种加密方式安全性较其他两种方式低。</p>
-<p>▫MD5认证：通过将配置的密码进行MD5算法加密之后再加入报文中，提高密码的安全性。</p>
-<p>▫Keychian认证：通过配置随时间变化的密码链表来进一步提升网络的安全性。</p>
-<p>▫HMAC-SHA256认证：通过将配置的密码进行HMAC-SHA256算法加密之后再加入报文中，提高密码的安全性。</p>
-<h2 id="IS-IS认证详解"><a href="#IS-IS认证详解" class="headerlink" title="IS-IS认证详解"></a>IS-IS认证详解</h2><p><strong>接口认证</strong></p>
-<p>▫Hello报文使用的认证密码保存在接口下，发送带认证TLV的认证报文，互相连接的路由器接口必须配置相同的口令。</p>
-<p><strong>区域认证</strong></p>
-<p>▫区域内的每一台L1路由器都必须使用相同的认证模式和具有共同的钥匙串。</p>
-<p><strong>路由域认证</strong></p>
-<p>▫IS-IS域内的每一台L2和L1/L2类型的路由器都必须使用相同模式的认证，并使用共同的钥匙串。</p>
-<p>▫对于区域和路由域认证，可以设置为SNP和LSP分开认证。</p>
-<ul>
-<li>本地发送的LSP报文和SNP报文都携带认证TLV，对收到的LSP报文和SNP报文都进行认证检查。</li>
-<li>本地发送的LSP报文携带认证TLV，对收到的LSP报文进行认证检查；发送的SNP报文携带认证TLV，但不对收到的SNP报文进行检查。</li>
-<li>本地发送的LSP报文携带认证TLV，对收到的LSP报文进行认证检查；发送的SNP报文不携带认证TLV，也不对收到的SNP报文进行认证检查。</li>
-<li>本地发送的LSP报文和SNP报文都携带认证TLV，对收到的LSP报文和SNP报文都不进行认证检查。</li>
-</ul>
-<h2 id="IS-IS认证的配置-1"><a href="#IS-IS认证的配置-1" class="headerlink" title="IS-IS认证的配置 (1)"></a>IS-IS认证的配置 (1)</h2><p><img src="/2021/05/10/IS-IS/45.png"></p>
-<h2 id="IS-IS认证的配置-2"><a href="#IS-IS认证的配置-2" class="headerlink" title="IS-IS认证的配置 (2)"></a>IS-IS认证的配置 (2)</h2><p><img src="/2021/05/10/IS-IS/46.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）关于OSPF与IS-IS，说法正确的有？ (   )</p>
-<p><strong>A.OSPF及IS-IS都是链路状态路由协议。</strong></p>
-<p><strong>B.OSPF仅仅支持IP网络，而集成IS-IS支持CLNP及IP网络。</strong></p>
-<p><strong>C.OSPF使用区域号0标识骨干区域。</strong></p>
-<p><strong>D.IS-IS骨干区域由Level-2及Level-1-2路由器组成。</strong></p>
-<p>2.（多选题）关于Level-1路由器说法正确的有？(   )</p>
-<p><strong>A.Level-1路由器只能和相同区域的IS-IS路由器建立邻接关系。</strong></p>
-<p>B.Level-1路由器可以和同区域的Level-2路由器建立邻接关系。</p>
-<p><strong>C.缺省情况下，Level-1路由器只能通过缺省路由到达区域外部。</strong></p>
-<p><strong>D.Level-1路由器的LSDB中只存在Level-1 LSP。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本课程介绍了IS-IS的基本概念。每一台运行IS-IS的路由器都至少有一个NET地址。IS-IS采用分层架构，所有Level-2和Level-1-2路由器共同构成了骨干区域，同一区域的Level-1路由器构成了普通区域。IS-IS协议有四种报文类型，分别是IIH、CSNP、PSNP、LSP。</p>
-<p>•Level-1路由器只维护区域内的LSDB，Level-1路由通过离自己最近的Level-1-2路由器到达区域外部，为了避免次优路径，可以在Level-1-2路由器上部署路由渗透的特性。</p>
-<p>•IS-IS支持三种认证类型，分别是接口认证、区域认证、路由域认证。</p>
-<p>•IS-IS协议与OSPF协议都是链路路由状态协议，两者都需要维护LSDB，随着网络规模的不断扩大，巨大的LSDB会导致路由器整体性能下降，因此对于这两种路由协议而言，面对更大规模的组网时，需要进行多区域的网络设计。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -3950,7 +3901,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3963,7 +3914,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

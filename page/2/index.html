@@ -241,6 +241,1097 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/" itemprop="url">IPadv-IPv6路由</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T12:56:13+08:00">
+                2021-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/IPv6%E8%B7%AF%E7%94%B1.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着万物互联时代的到来，IPv4地址空间不足，IPv6取代IPv4势在必行。那么如何实现IPv6网络中各个节点之间的可达性呢？与IPv4网络相同，IPv6网络同样支持静态路由和动态路由协议。</p>
+<p>•IPv6静态路由与IPv4静态路由在配置方式上颇为相似。为了实现对IPv6网络的支持，IETF制定了OSPFv3，同时对IS-IS、BGP做了扩展。</p>
+<p>•本课程将介绍IPv6静态路由的概念及配置，还会介绍常见的IPv6动态路由协议，包括：OSPFv3，IS-IS（IPv6），以及BGP4+。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫实现IPv6静态路由的配置</p>
+<p>▫分析OSPFv3与OSPFv2的不同点</p>
+<p>▫实现OSPFv3的基本配置</p>
+<p>▫描述IS-IS对IPv6的扩展</p>
+<p>▫实现IS-IS（IPv6）的基本配置</p>
+<p>▫描述BGP对IPv6的扩展</p>
+<p>▫实现BGP4+的基本配置</p>
+<h1 id="1-IPv6静态路由"><a href="#1-IPv6静态路由" class="headerlink" title="1.IPv6静态路由"></a>1.IPv6静态路由</h1><h2 id="IPv6静态路由"><a href="#IPv6静态路由" class="headerlink" title="IPv6静态路由"></a>IPv6静态路由</h2><p>•IPv6静态路由与IPv4静态路由类似，也需要管理员手工配置，适合于一些结构比较简单的IPv6网络。</p>
+<p>•在创建IPv6静态路由时，可以同时指定出接口和下一跳，或者只指定出接口或只指定下一跳。</p>
+<p>​    ▫对于点到点接口：指定出接口。</p>
+<p>​    ▫对于广播类型接口：指定下一跳。</p>
+<p>•IPv6静态路由负载分担和备份：</p>
+<p>​    ▫在创建相同目的地址的多条IPv6静态路由时，如果指定相同优先级，则可实现负载分担，如果指定不同优先级，则可实现路由备份。</p>
+<blockquote>
+<p>•IPv6静态路由与IPv4静态路由之间的主要区别是目的地址和下一跳地址有所不同，IPv6静态路由使用的是IPv6地址，而IPv4静态路由使用IPv4地址。</p>
+</blockquote>
+<h2 id="IPv6静态路由的基础配置命令"><a href="#IPv6静态路由的基础配置命令" class="headerlink" title="IPv6静态路由的基础配置命令"></a>IPv6静态路由的基础配置命令</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/1.png"></p>
+<blockquote>
+<p>•[Huawei] <strong>ipv6</strong> <strong>route-static</strong> <em>dest-ipv6-address</em> <em>prefix-length</em> { <em>interface-type</em> <em>interface-number</em> [ <em>nexthop-ipv6-address</em> ] | <em>nexthop-ipv6-address</em> | <strong>vpn-instance</strong> <em>vpn-destination-name</em> <em>nexthop-ipv6-address</em> } [ <strong>preference</strong> <em>preference</em>]  [ <strong>permanent</strong> | <strong>inherit-cost</strong> ] [ <strong>description</strong> <em>text</em> ]</p>
+<ul>
+<li><strong>preference</strong> <em>preference</em>：指定路由优先级。整数形式，取值范围为1～255。缺省值是60。</li>
+<li><strong>permanent</strong>：指定IPv6静态路由永久发布。</li>
+<li><strong>inherit-cost</strong>：指定IPv6静态路由继承迭代路由的开销值。</li>
+<li><strong>description</strong> <em>text</em>：指定静态路由的描述信息。字符串形式，支持空格，长度范围是1～80。</li>
+</ul>
+<p>•[Huawei] <strong>ipv6</strong> <strong>route-static</strong> <strong>vpn-instance</strong> <em>vpn-instance-name</em> <em>dest-ipv6-address</em> <em>prefix-length</em> { [ <em>interface-type</em> <em>interface-number</em> [ <em>nexthop-ipv6-address</em> ] ] | <em>nexthop-ipv6-address</em> [ <strong>public</strong> ] | <strong>vpn**</strong>-instance** <em>vpn*</em>-destination-name* <em>nexthop-ipv6-address</em> } [ <strong>preference</strong> <em>preference</em> ] [ <strong>permanent</strong> | <strong>inherit-cost</strong> ] [ <strong>description</strong> <em>text</em> ]</p>
+<ul>
+<li><strong>public</strong>：指定<em>nexthop-ipv6-address</em>是公网地址，而不是源VPN中的地址。</li>
+</ul>
+</blockquote>
+<h2 id="IPv6静态路由配置举例"><a href="#IPv6静态路由配置举例" class="headerlink" title="IPv6静态路由配置举例"></a>IPv6静态路由配置举例</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/2.png"></p>
+<h1 id="2-OSPFv3原理与配置"><a href="#2-OSPFv3原理与配置" class="headerlink" title="2.OSPFv3原理与配置"></a>2.OSPFv3原理与配置</h1><h2 id="OSPFv3的基本工作原理"><a href="#OSPFv3的基本工作原理" class="headerlink" title="OSPFv3的基本工作原理"></a>OSPFv3的基本工作原理</h2><h3 id="OSPFv3概述"><a href="#OSPFv3概述" class="headerlink" title="OSPFv3概述"></a>OSPFv3概述</h3><p>•OSPF是IETF定义的一种基于链路状态的内部网关路由协议。目前针对IPv4协议使用的是OSPF Version 2（OSPFv2），针对IPv6协议使用OSPF Version 3（OSPFv3）。</p>
+<p>•OSPFv3的主要目的是开发一种独立于任何具体网络层的路由协议。为实现这一目的，OSPFv3的内部路由器信息被重新进行了设计。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/3.png"></p>
+<h3 id="OSPFv3与OSPFv2的相同点"><a href="#OSPFv3与OSPFv2的相同点" class="headerlink" title="OSPFv3与OSPFv2的相同点"></a>OSPFv3与OSPFv2的相同点</h3><p>OSPF的基本运行机制没有改变，包括：</p>
+<p>▫基本概念：</p>
+<p>​    ▪区域划分及路由器类型</p>
+<p>​    ▪路由计算影响参数：优先级、度量值</p>
+<p>​    ▪支持的网络类型：Broadcast（广播类型）、NBMA、P2P（点到点类型）、P2MP（点到多点类型）</p>
+<p>​    ▪报文类型：Hello报文、DD报文、LSR报文、LSU报文和LSAck报文</p>
+<p>▫工作原理：</p>
+<p>​    ▪邻居关系的建立及邻居状态的转换</p>
+<p>​    ▪DR与BDR的选举</p>
+<p>​    ▪LSA泛洪机制</p>
+<p>​    ▪路由计算过程</p>
+<blockquote>
+<p>•相同点还包括：对特殊区域、虚连接、多进程的支持等。</p>
+<p>•本课程对以上内容不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h3 id="OSPFv3拓扑和路由器类型"><a href="#OSPFv3拓扑和路由器类型" class="headerlink" title="OSPFv3拓扑和路由器类型"></a>OSPFv3拓扑和路由器类型</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/4.png"></p>
+<h3 id="OSPFv3的基本工作原理与OSPFv2相似"><a href="#OSPFv3的基本工作原理与OSPFv2相似" class="headerlink" title="OSPFv3的基本工作原理与OSPFv2相似"></a>OSPFv3的基本工作原理与OSPFv2相似</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/5.png"></p>
+<h3 id="OSPFv3与OSPFv2的不同点"><a href="#OSPFv3与OSPFv2的不同点" class="headerlink" title="OSPFv3与OSPFv2的不同点"></a>OSPFv3与OSPFv2的不同点</h3><p>•OSPFv3基于链路运行以及拓扑计算，而不再是网段。</p>
+<p>•OSPFv3支持一个链路上多个实例。</p>
+<p>•OSPFv3报文和LSA中去掉了IP地址的意义，且重构了报文格式和LSA格式。</p>
+<p>​    ▫OSPFv3报文和Router LSA/Network LSA中不包含IP地址。</p>
+<p>​    ▫OSPFv3的LSA中定义了LSA的泛洪范围。</p>
+<p>​    ▫OSPFv3中创建了新的LSA承载IPv6地址和前缀。</p>
+<p>​    ▫OSPFv3邻居不再由IP地址标识，只由Router ID标识。</p>
+<h3 id="唯一邻居标识：Router-ID"><a href="#唯一邻居标识：Router-ID" class="headerlink" title="唯一邻居标识：Router ID"></a>唯一邻居标识：Router ID</h3><p>OSPFv3通过Router ID来标识网络设备。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/6.png"></p>
+<blockquote>
+<p>•OSPFv2在Broadcast、NBMA、P2P和P2MP网络中是通过IPv4接口地址来标识邻居，而在虚连接网络中是通过Router ID来标识邻居。</p>
+</blockquote>
+<h3 id="OSPFv3基于链路运行"><a href="#OSPFv3基于链路运行" class="headerlink" title="OSPFv3基于链路运行"></a>OSPFv3基于链路运行</h3><p>OSPFv3是基于链路运行的，设备只要在同一链路，就可以建立邻居关系。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/7.png"></p>
+<blockquote>
+<p>•IPv6中重点强调了链路的概念，在IPv6中，一个链路上可以分配多个IP子网，也就是IPv6前缀。和IPv4不同的是，同一个链路上的两个节点即使不具有相同的IPv6前缀，也可以直接通过这个链路通信。这一点极大地改变了OSPF的行为。</p>
+<p>•在OSPFv3中我们更多的是使用“链路”和“前缀”这两个术语。但这两个概念是分离的，没有必然的对应关系，所以在讨论路由协议时，OSPFv2的术语“网络”和“子网”在这里应该用“链路”替换掉。</p>
+</blockquote>
+<h3 id="链路支持多实例"><a href="#链路支持多实例" class="headerlink" title="链路支持多实例"></a>链路支持多实例</h3><p>•一个OSPFv3物理接口可以和多个实例绑定，并用不同的实例标识（Instance ID）区分，即OSPFv3的单个链路支持运行多个OSPFv3实例。</p>
+<p>•这些运行在同一条物理链路上的多个OSPFv3实例，分别与链路对端设备建立邻居及发送报文，且互不干扰，这样可以充分共享同一链路资源。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/8.png"></p>
+<blockquote>
+<p>•多实例通过在OSPFv3报文头部增加一个Instance ID区别不同的实例来实现。一个分配了给定Instance ID的实例，将会丢弃那些与该Instance ID不匹配的OSPFv3报文。</p>
+</blockquote>
+<h3 id="OSPFv3对链路本地地址的使用"><a href="#OSPFv3对链路本地地址的使用" class="headerlink" title="OSPFv3对链路本地地址的使用"></a>OSPFv3对链路本地地址的使用</h3><p>•OSPFv3使用链路本地（FE80::/10）地址作为发送报文的源地址和路由的下一跳地址。</p>
+<ul>
+<li>使用链路本地地址来维持邻居关系，同步LSA数据库。</li>
+<li>在虚连接上，必须使用全球单播地址或者站点本地地址作为OSPFv3协议报文的源地址。</li>
+</ul>
+<p>•优势：</p>
+<ul>
+<li>不需要配置IPv6全球单播地址，就可以得到OSPFv3拓扑，实现拓扑与地址分离。</li>
+<li>OSPFv3报文不会被转发到始发链路范围之外，减少了报文不必要的泛洪，节省了带宽。</li>
+</ul>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/9.png"></p>
+<blockquote>
+<p>•IPv6使用链路本地（Link-Local）地址在同一链路上发现邻居及自动配置。运行IPv6的路由器不转发目的地址为链路本地地址的IPv6报文，此类报文只在同一链路有效。</p>
+<p>•OSPFv3是运行在IPv6上的路由协议，使用链路本地地址来发送OSPFv3报文。</p>
+<ul>
+<li><p>OSPFv3假定每个路由器在每个连接的链路上都已被分配链路本地地址，在除虚连接外的所有OSPFv3接口上使用接口关联的链路本地地址作为源地址发送OSPFv3报文。</p>
+</li>
+<li><p>路由器学习所有其他连接到该链路上的路由器的链路本地地址，并且使用这些地址作为下一跳进行报文转发。</p>
+</li>
+<li><p>注意：关于链路本地地址的描述仅出现在Link-LSA（链路LSA，OSPFv3新增LSA）中。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="OSPFv3报文"><a href="#OSPFv3报文" class="headerlink" title="OSPFv3报文"></a>OSPFv3报文</h3><p>•OSPFv3与OSPFv2有相同类型的报文：</p>
+<p>​    ▫Hello报文、DD报文、LSR报文、LSU报文和LSAck报文。</p>
+<p>•OSPFv3与OSPFv2使用相同的协议号89。</p>
+<p>​    ▫OSPFv2：IPv4报文头部中的协议号（Protocol）为89。</p>
+<p>​    ▫OSPFv3：IPv6报文头部中的下一报头号（Next Header）为89。</p>
+<p>•OSPFv3与OSPFv2类似，使用组播地址作为OSPF报文目的地址。</p>
+<p>​    ▫OSPFv2使用IPv4组播地址： </p>
+<p>​        ▪OSPF IGP Routers：224.0.0.5；OSPF IGP DR ：224.0.0.6。</p>
+<p>​    ▫OSPFv3使用IPv6组播地址：</p>
+<p>​        ▪OSPF IGP Routers：FF02::5；OSPF IGP DR：FF02::6。</p>
+<blockquote>
+<p>•OSPFv3报文作用：</p>
+<p>▫Hello报文：周期性发送，用来发现、建立和维持OSPFv3邻居关系。</p>
+<p>▫DD报文：描述了本地LSDB的摘要信息，用于两台设备进行数据库同步。</p>
+<p>▫LSR报文：用于向对方请求所需的LSA。设备只有在OSPFv3邻居双方成功交换DD报文后，才会向对方发出LSR报文。</p>
+<p>▫LSU报文：向对方发送其所需的LSA。</p>
+<p>▫LSAck报文：用来对收到的LSA进行确认。</p>
+</blockquote>
+<h3 id="OSPFv3报文头部"><a href="#OSPFv3报文头部" class="headerlink" title="OSPFv3报文头部"></a>OSPFv3报文头部</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/10.png"></p>
+<blockquote>
+<p>•Version：1Byte，版本，OSPF的版本号。对于OSPFv3来说，其值为3。 </p>
+<p>•Type：1Byte，类型，OSPFv3报文的类型，有下面几种类型：</p>
+<p>​    ▫1：Hello报文；</p>
+<p>​    ▫2：DD报文；</p>
+<p>​    ▫3：LSR报文；</p>
+<p>​    ▫4：LSU报文；</p>
+<p>​    ▫5：LSAck报文。</p>
+<p>•Packet length：2Byte，OSPFv3报文的总长度，包括报文头在内，单位为字节。</p>
+<p>•Router ID：4Byte，始发此报文的路由器的Router ID。</p>
+<p>•Area ID：4Byte，发送该报文的所属区域。</p>
+<p>•Checksum：2Byte，使用IPv6标准16位校验和。</p>
+<p>•0：1Byte，保留字段，必须填0。 </p>
+</blockquote>
+<h3 id="Hello报文"><a href="#Hello报文" class="headerlink" title="Hello报文"></a>Hello报文</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/11.png"></p>
+<blockquote>
+<p>•Rtr Pri：1Byte，Router Priority，DR优先级。默认为1。如果设置为0，则路由器不能参与DR或BDR的选举。 </p>
+<p>•Options：3Byte，可选项。</p>
+<ul>
+<li>AT：1bit，表示是否支持OSPFv3认证。若AT=1，则在OSPFv3报文后增加认证尾部字段，包含认证信息。</li>
+<li>DC：1bit，表示是否具有支持按需电路的能力。</li>
+<li>R：1bit，指明始发路由器是否是一台有效的路由器。</li>
+<li>NP：1bit，表示是否为NSSA区域。</li>
+<li>MC：1bit，表示是否支持转发组播数据报文。</li>
+<li>E：1bit，表示是否支持外部路由。</li>
+<li>V6：1bit，表示是否参与IPv6路由计算。如果该位为0，表示该路由器或链路不参与IPv6路由计算。</li>
+</ul>
+<p>•HelloInterval：2Byte，发送Hello报文的时间间隔。</p>
+<p>•RouterDeadInterval ：2Byte，失效时间。如果在此时间内未收到邻居发来的Hello报文，则认为邻居失效。</p>
+<p>•Designated Router ID：4Byte，DR的Router ID。</p>
+<p>•Backup Designated Router ID ：4Byte，BDR的Router ID。</p>
+<p>•Neighbor ID：4Byte，邻居，以Router ID标识。</p>
+<p>•说明：DD报文、LSR报文、LSU报文和LSAck报文格式与OSPFv2相比变化不大，本课程不再赘述。</p>
+</blockquote>
+<h3 id="OSPFv3的LSA头部"><a href="#OSPFv3的LSA头部" class="headerlink" title="OSPFv3的LSA头部"></a>OSPFv3的LSA头部</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/12.png"></p>
+<blockquote>
+<p>•LS Age：2Byte，LSA产生后所经过的时间，以秒为单位。无论LSA是在链路上传送，还是保存在LSDB中，其值都会在不停的增长。</p>
+<p>•LS Type：2Byte，LSA的类型。该字段的高3位标识LSA的通用属性，剩下的比特位标识LSA的特定功能。</p>
+<ul>
+<li><p>U位标识了对未知LSA的处理方法，即标识了不识别LSA功能代码的路由器应如何处理LSA。</p>
+<ul>
+<li>0：把此LSA当作具有链路本地泛洪范围来对待，从而只能泛洪到本地链路上。</li>
+<li>1：把此LSA当作类型已知的LSA来处理，也就是存储下来并泛洪出去。</li>
+</ul>
+</li>
+<li><p>S2/S1位标识了LSA的泛洪范围。</p>
+<ul>
+<li>S2 S1=0 0：链路本地范围内，即只在始发链路上泛洪。</li>
+<li>S2 S1=0 1：区域范围内，即泛洪到始发区域内的所有路由器。</li>
+<li>S2 S1=1 0：AS范围内，即泛洪到本AS的所有路由器。</li>
+<li>S2 S1=1 1：预留。</li>
+</ul>
+</li>
+</ul>
+<p>•Link State ID：4Byte，本地32位标识符，与IPv6地址无关，与LSA中的LS Type和Advertising Router一起在路由域中描述一个LSA。OSPFv3与OSPFv2相比，Link State ID不再包含地址信息。</p>
+<p>•Advertising Router：4Byte，产生此LSA的路由器的Router ID。</p>
+<p>•LS Sequence Number：4Byte，LSA的序列号。其他路由器根据这个值可以判断哪个LSA是最新的。</p>
+<p>•LS Checksum：2Byte，除了LS Age外其它各域的校验和。</p>
+<p>•Length：2Byte，LSA的总长度，包括LSA Header，以字节为单位。</p>
+</blockquote>
+<h3 id="OSPFv3的LSA类型"><a href="#OSPFv3的LSA类型" class="headerlink" title="OSPFv3的LSA类型"></a>OSPFv3的LSA类型</h3><p>•OSPFv3与OSPFv2相比，具有类似的LSA名称，但是功能略有区别。</p>
+<p>•OSPFv3新增了两类LSA，包括：链路LSA和区域内前缀LSA。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/13.png"></p>
+<blockquote>
+<p>•如表中所示，OSPFv3的LS Type字段，U位缺省为0；除Type5和Type8的LSA外，其余的LSA泛洪范围都是区域范围内（S2 S1=0 1）。</p>
+<ul>
+<li>链路本地范围。LSA仅在本地链路上泛洪，包括：Link-LSA。</li>
+<li>区域范围。LSA在单个OSPF区域内泛洪，包括：Router-LSA、Network-LSA、Inter-Area-Prefix-LSA、Inter-Area-Router-LSA、NSSA LSA和Intra-Area-Prefix-LSA。</li>
+<li>AS范围。LSA在整个路由域（自治系统）中扩散，包括：AS-External-LSA。</li>
+</ul>
+</blockquote>
+<h3 id="Type1：Router-LSA"><a href="#Type1：Router-LSA" class="headerlink" title="Type1：Router-LSA"></a>Type1：Router-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/14.png"></p>
+<blockquote>
+<p>•OSPFv3的Router-LSA字段解释：</p>
+<p>▫W：Wild-Card Receiver，值为1时，表示该路由器支持组播路由。</p>
+<p>▫V：Virtual Link，值为1时，表示产生此LSA的路由器是虚连接的一端。</p>
+<p>▫E：External，值为1时，表示产生此LSA的路由器是ASBR。</p>
+<p>▫B：Border，值为1时，表示产生此LSA的路由器是ABR。</p>
+<p>▫Options：3Byte，可选项。</p>
+<p>​    ▪DC：1bit，表示是否具有支持按需电路的能力。</p>
+<p>​    ▪R：1bit，指明始发路由器是否是一台有效的路由器。</p>
+<p>​    ▪NP：1bit，表示是否为NSSA区域。</p>
+<p>​    ▪MC：1bit，表示是否支持转发组播数据报文。</p>
+<p>​    ▪E：1bit，表示是否支持外部路由。</p>
+<p>​    ▪V6：1bit，表示是否参与IPv6路由计算。如果该位为0，表示该路由器或链路不参与IPv6路由计算。</p>
+<p>▫Link Type：1Byte，链路类型。</p>
+<p>​    ▪1：点到点连接到另一台路由器。</p>
+<p>​    ▪2：连接到一个传送网络（Transit Network）。</p>
+<p>​    ▪3：保留。</p>
+<p>​    ▪4：虚链路。</p>
+<p>▫Metric：2Byte，流量出接口的开销值。</p>
+</blockquote>
+<h3 id="Type2：Network-LSA"><a href="#Type2：Network-LSA" class="headerlink" title="Type2：Network-LSA"></a>Type2：Network-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/15.png"></p>
+<blockquote>
+<p>•OSPFv3的Network-LSA字段解释：</p>
+<p>​    ▫Options：与Router-LSA中的Options字段相同。</p>
+</blockquote>
+<h3 id="Type3：Inter-Area-Prefix-LSA"><a href="#Type3：Inter-Area-Prefix-LSA" class="headerlink" title="Type3：Inter-Area-Prefix-LSA"></a>Type3：Inter-Area-Prefix-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/16.png"></p>
+<blockquote>
+<p>•OSPFv3的Inter-Area-Prefix-LSA字段解释：</p>
+<ul>
+<li><p>Metric：3Byte，到目的地址的开销值。</p>
+</li>
+<li><p>PrefixOptions：由LSA公告的每个前缀都拥有一个自己的PrefixOptions字段。</p>
+<ul>
+<li>P位: 传播位。如果一个NSSA区域的前缀需要被ABR传播出去，就需要设置这一位。</li>
+<li>MC位: 组播位。如果设置为1，则这个前缀应该纳入组播计算中，否则不纳入组播计算。</li>
+<li>LA位: 本地地址位。如果设置为1，则这个前缀是路由器的一个接口地址。</li>
+<li>NU位: 非单播位。如果设置为1，则这个前缀不会纳入IPv6单播路由计算中。</li>
+</ul>
+</li>
+</ul>
+<p>•注意：缺省路由的前缀长度为0。ABR也能够始发一个区域间Type3的LSA向一个末梢区域通告一条缺省路由。</p>
+</blockquote>
+<h3 id="Type4：Inter-Area-Router-LSA"><a href="#Type4：Inter-Area-Router-LSA" class="headerlink" title="Type4：Inter-Area-Router-LSA"></a>Type4：Inter-Area-Router-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/17.png"></p>
+<blockquote>
+<p>•OSPFv3的Inter-Area-Router-LSA字段解释：</p>
+<p>​    ▫Options：Options字段描述的不是源路由器的能力，而是目的路由器所支持的能力，所以此字段值应该等于目的路由器的Router-LSA的Options字段值。</p>
+<p>​    ▫Metric：3Byte，到目的地址的开销值。</p>
+</blockquote>
+<h3 id="Type5：AS-External-LSA"><a href="#Type5：AS-External-LSA" class="headerlink" title="Type5：AS-External-LSA"></a>Type5：AS-External-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/18.png"></p>
+<blockquote>
+<p>•OSPFv3的AS-External-LSA字段解释：</p>
+<p>▫E：1bit，外部路由的Metric类型。</p>
+<ul>
+<li><p>如果设置为1，表示此为2类外部路由，其Metric不随着路由的传递而增长。</p>
+</li>
+<li><p>如果设置为0，表示此为1类外部路由，其Metric随着路由的传递而增长。</p>
+</li>
+</ul>
+<p>▫F：1bit，如果设置为1，则表示后面的Forwarding Address可选字段存在。</p>
+<p>▫T：1bit，如果设置为1，则表示后面的External Route Tag可选字段存在。</p>
+<p>▫Metric：3Byte，到目的地址的开销值。</p>
+<p>▫PrefixLength、PrefixOptions和Address Prefix为描述前缀的三元组，与Inter-Area-Prefix-LSA中该字段含义相同。</p>
+<p>▫Forwarding Address：4Byte，可选的128位IPv6地址，当前面的F位为1时存在。表示到达目的的数据应该转发到这个地址。</p>
+<p>▫External Route Tag：4Byte，可选的标记位。可以用于ASBR之间的通信。一个比较常见的例子是，在OSPF自治系统的两个边界路由器上进行路由引入时，通过对引入的路由进行标记，可以很方便地进行路由过滤。</p>
+<p>▫Referenced Link State ID：4Byte，若Referenced LS Type不为0，则该字段存在，表示引用链路状态ID。</p>
+</blockquote>
+<h3 id="新增Type8：Link-LSA"><a href="#新增Type8：Link-LSA" class="headerlink" title="新增Type8：Link-LSA"></a>新增Type8：Link-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/19.png"></p>
+<blockquote>
+<p>•OSPFv3的Link-LSA字段解释：</p>
+<ul>
+<li>Rtr Pri：1Byte，该路由器在该链路上的优先级(Router Priority)。</li>
+<li>Options：3Byte，提供给Network-LSA的Options。</li>
+<li>Number of Prefixes：4Byte，该LSA中携带的IPv6地址前缀个数。</li>
+<li>PrefixLength、PrefixOptions和Address Prefix为描述前缀的三元组，与Inter-Area-Prefix-LSA中该字段含义相同。</li>
+</ul>
+</blockquote>
+<h3 id="新增Type9：Intra-Area-Prefix-LSA"><a href="#新增Type9：Intra-Area-Prefix-LSA" class="headerlink" title="新增Type9：Intra-Area-Prefix-LSA"></a>新增Type9：Intra-Area-Prefix-LSA</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/20.png"></p>
+<blockquote>
+<p>OSPFv3的Intra-Area-Prefix-LSA字段解释：</p>
+<p>▫Number of Prefixes：4Byte，该LSA中携带的IPv6地址前缀个数。必要的话，可以通过多个Intra-Area-Prefix-LSA来携带前缀，这样可以控制LSA的长度。 </p>
+<p>▫Referenced LS type：4Byte，表明这个LSA是参考一个Router-LSA，还是一个Network-LSA。</p>
+<ul>
+<li><p>1：表示参考一个Router-LSA</p>
+</li>
+<li><p>2：表示参考一个Network-LSA。 </p>
+</li>
+</ul>
+<p>▫Referenced Link State ID：4Byte。</p>
+<ul>
+<li><p>设为0：当这个LSA是参考一个Router-LSA时。</p>
+</li>
+<li><p>设为该链路的DR的Interface ID：当这个LSA是参考一个Network-LSA时。 </p>
+</li>
+</ul>
+<p>▫Referenced Advertising Router：4Byte。</p>
+<ul>
+<li><p>设为这个路由器的Router ID：当这个LSA是参考一个Router-LSA时。</p>
+</li>
+<li><p>设为该链路的DR的Router ID：当这个LSA是参考一个Network-LSA时。 </p>
+</li>
+</ul>
+<p>▫PrefixLength、PrefixOptions和Address Prefix为描述前缀的三元组，与Inter-Area-Prefix-LSA中该字段含义相同。</p>
+<p>▫Metric：2Byte，前缀开销值。与Router-LSA的接口开销值相同单位。</p>
+<p>在OSPFv3中，当一条链路或它的前缀发生变化时，相连的路由器会发送一个Intra-Area-Prefix-LSA。但是，这条LSA不会触发SPF计算。</p>
+</blockquote>
+<h3 id="OSPFv3的LSA举例"><a href="#OSPFv3的LSA举例" class="headerlink" title="OSPFv3的LSA举例"></a>OSPFv3的LSA举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/21.png"></p>
+<blockquote>
+<p>•如图所示：R1、R2、R3和R4运行OSPFv3路由协议，且均部署在骨干区域。</p>
+<p>•网络稳定后，查看R2的LSDB，可以查看到该路由器的Router-LSA（Type1）、Network-LSA（Type2）、Link-LSA（Type8）和Intra-Area-Prefix-LSA（Type9）。</p>
+</blockquote>
+<h3 id="Link-LSA举例"><a href="#Link-LSA举例" class="headerlink" title="Link-LSA举例"></a>Link-LSA举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/22.png"></p>
+<blockquote>
+<p>•输出信息解释：</p>
+<p>▫LS age：LSA的老化时间。</p>
+<p>▫LS Type：LSA的类型。有如下类型：</p>
+<ul>
+<li>Router-LSA、Network-LSA、Inter-Area-Prefix-LSA、Inter-Area-Router-LSA、AS-external-LSA、NSSA-LSA、Link-LSA、Intra-Area-Prefix-LSA</li>
+</ul>
+<p>▫Link State ID：LSA报文头中的链路状态ID。</p>
+<p>▫Originating Router：产生LSA的路由器。</p>
+<p>▫LS Seq Number：LSA序列号（来自LSA报头）。</p>
+<p>▫Checksum：LSA的校验和。</p>
+<p>▫Length：LSA的长度。</p>
+<p>▫Priority：该Link对应接口的优先级。</p>
+<p>▫Options：该Link的Option值。</p>
+<p>▫Link-Local Address：链路本地地址。</p>
+<p>▫Number of Prefixes：该LSA中包含的IPv6前缀数目。</p>
+<p>▫Prefix：IPv6前缀。</p>
+<p>▫Prefix Options：前缀Option值。</p>
+</blockquote>
+<h3 id="Intra-Area-Prefix-LSA举例"><a href="#Intra-Area-Prefix-LSA举例" class="headerlink" title="Intra-Area-Prefix-LSA举例"></a>Intra-Area-Prefix-LSA举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/23.png"></p>
+<h2 id="OSPFv3的基本配置"><a href="#OSPFv3的基本配置" class="headerlink" title="OSPFv3的基本配置"></a>OSPFv3的基本配置</h2><h3 id="OSPFv3的基础配置命令-1"><a href="#OSPFv3的基础配置命令-1" class="headerlink" title="OSPFv3的基础配置命令 (1)"></a>OSPFv3的基础配置命令 (1)</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/24.png"></p>
+<blockquote>
+<p>•OSPFv3的配置命令与配置方式与OSPFv2类似，其他配置命令不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h3 id="OSPFv3的基础配置命令-2"><a href="#OSPFv3的基础配置命令-2" class="headerlink" title="OSPFv3的基础配置命令 (2)"></a>OSPFv3的基础配置命令 (2)</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/25.png"></p>
+<h3 id="检查OSPFv3基本功能的配置结果"><a href="#检查OSPFv3基本功能的配置结果" class="headerlink" title="检查OSPFv3基本功能的配置结果"></a>检查OSPFv3基本功能的配置结果</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/26.png"></p>
+<blockquote>
+<p>•[Huawei] <strong>display</strong> <strong>ospfv3</strong> [ <em>process-id</em> ] <strong>lsdb</strong> [ <strong>area</strong> <em>area-id</em> ] [ <strong>originate-router</strong> <em>advertising-router-id</em> | <strong>self-originate</strong> ] [ { <strong>router</strong> | <strong>network</strong> | <strong>inter-router</strong> [ <strong>asbr-router</strong> <em>asbr-router-id</em> ] | { <strong>inter-prefix</strong> | <strong>nssa</strong> } [ <em>ipv6-address</em> <em>prefix-length</em> ] | <strong>link</strong> | <strong>intra-prefix</strong> | <strong>grace</strong> } [ <em>link-state-id</em> ] ]</p>
+<ul>
+<li><p><em>process-id</em>：OSPFv3进程号。整数形式，取值范围是1～65535。</p>
+</li>
+<li><p><strong>area</strong> <em>area-id</em>：区域的标识。可以是十进制整数或IPv4地址格式。如果是十进制整数，取值范围是0～4294967295。如果是IPv4地址格式，取值是点分十进制。</p>
+</li>
+<li><p><strong>external</strong>：显示数据库中AS-external LSA的信息。</p>
+</li>
+<li><p><strong>inter-prefix</strong>：显示数据库中Inter-Area-Prefix LSA的信息。</p>
+</li>
+<li><p><strong>inter-router</strong>：显示数据库中Inter-Area-Router LSA的信息。</p>
+</li>
+<li><p><strong>intra-prefix</strong>：显示数据库中Intra-Area-Prefix LSA的信息。</p>
+</li>
+<li><p><strong>nssa</strong>：显示数据库中NSSA LSA的信息。</p>
+</li>
+<li><p><strong>link</strong>：显示数据库中Link-LSA的信息。</p>
+</li>
+<li><p><strong>network</strong>：显示数据库中Network-LSA的信息。</p>
+</li>
+<li><p><strong>router</strong>：显示数据库中Router-LSA的信息。</p>
+</li>
+<li><p><em>link-state-id</em>：链路状态ID。点分十进制格式。</p>
+</li>
+<li><p><strong>originate-router</strong> <em>advertising-router-id</em>：指定发布LSA的路由器的Router ID。点分十进制格式。</p>
+</li>
+<li><p><strong>asbr-router</strong> <em>asbr-router-id</em>：指定ASBR路由器的Router ID。点分十进制格式。</p>
+</li>
+<li><p><strong>self-originate</strong>：显示数据库中由本路由器发布的LSA信息。</p>
+</li>
+<li><p><em>ipv6-address prefix-length</em>：指定IPv6目的地址及前缀长度。</p>
+<ul>
+<li><em>ipv6-address</em>是32位16进制数，格式为X:X:X:X:X:X:X:X。</li>
+<li><em>prefix-length</em>是整数形式，取值范围是0～128。</li>
+</ul>
+</li>
+</ul>
+<p>•[Huawei] <strong>display</strong> <strong>ospfv3</strong> [ <em>process-id</em> ] <strong>routing</strong> [ <em>ipv6-address</em> <em>prefix-length</em> | <strong>abr-routes</strong> | <strong>asbr-routes</strong> | <strong>intra-routes</strong> | <strong>inter-routes</strong> | <strong>ase-routes</strong> | <strong>nssa-routes</strong> | [ <strong>statistics</strong> ] ]</p>
+<ul>
+<li><em>process-id</em>：OSPFv3进程号。整数形式，取值范围是1～65535。</li>
+<li><em>ipv6-address</em>：指定IPv6地址。32位16进制数，格式为X:X:X:X:X:X:X:X。</li>
+<li><em>prefix-length</em>：指定前缀长度。整数形式，取值范围是0～128。</li>
+<li><strong>abr-routes</strong>：显示OSPFv3中所有ABR的路由信息。</li>
+<li><strong>asbr-routes</strong>：显示OSPFv3中所有ASBR的路由信息。</li>
+<li><strong>intra-routes</strong>：显示OSPFv3中区域内路由的统计信息。</li>
+<li><strong>inter-routes</strong>：显示OSPFv3中区域间路由的统计信息。</li>
+<li><strong>ase-routes</strong>：显示OSPFv3中AS外部路由的统计信息。**</li>
+<li>nssa-routes<strong>：显示OSPFv3中NSSA区域路由的统计信息。</strong></li>
+<li>statistics：显示OSPFv3中所有路由表的统计信息。</li>
+</ul>
+</blockquote>
+<h3 id="OSPF双栈配置举例"><a href="#OSPF双栈配置举例" class="headerlink" title="OSPF双栈配置举例"></a>OSPF双栈配置举例</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/27.png"></p>
+<h3 id="部署IPv4网络"><a href="#部署IPv4网络" class="headerlink" title="部署IPv4网络"></a>部署IPv4网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/28.png"></p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/29.png"></p>
+<h3 id="部署IPv6网络"><a href="#部署IPv6网络" class="headerlink" title="部署IPv6网络"></a>部署IPv6网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/30.png"></p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/31.png"></p>
+<h3 id="查看OSPFv3网络的邻居信息"><a href="#查看OSPFv3网络的邻居信息" class="headerlink" title="查看OSPFv3网络的邻居信息"></a>查看OSPFv3网络的邻居信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/32.png"></p>
+<blockquote>
+<p>•可以通过<strong>display</strong> <strong>ospf peer</strong>查看OSPFv2的邻居信息。</p>
+<p>•对比OSPFv2和OSPFv3的邻居信息，发现选出的DR和BDR是一致的，说明DR选举方式相同。</p>
+</blockquote>
+<h3 id="查看OSPFv3网络的路由信息"><a href="#查看OSPFv3网络的路由信息" class="headerlink" title="查看OSPFv3网络的路由信息"></a>查看OSPFv3网络的路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/33.png"></p>
+<blockquote>
+<p>•可以通过<strong>display ospf routing</strong>查看OSPFv2的路由信息。</p>
+<p>•对比OSPFv2和OSPFv3的路由信息，发现到“同一”网段的路径一致，说明路由计算方式相同。</p>
+</blockquote>
+<h3 id="查看OSPFv3网络LSDB信息"><a href="#查看OSPFv3网络LSDB信息" class="headerlink" title="查看OSPFv3网络LSDB信息"></a>查看OSPFv3网络LSDB信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/34.png"></p>
+<blockquote>
+<p>•可以通过<strong>display ospf</strong> <strong>lsdb</strong>查看OSPFv2的LSDB信息，可以看到有Type1、Type2和Type3三种LSA。</p>
+</blockquote>
+<h1 id="3-IS-IS-IPv6-原理与配置"><a href="#3-IS-IS-IPv6-原理与配置" class="headerlink" title="3.IS-IS (IPv6)原理与配置"></a>3.IS-IS (IPv6)原理与配置</h1><h2 id="IS-IS-IPv6-概述"><a href="#IS-IS-IPv6-概述" class="headerlink" title="IS-IS (IPv6)概述"></a>IS-IS (IPv6)概述</h2><p>•IS-IS最初是为OSI网络设计的一种基于链路状态协议的动态路由协议。之后为了提供对IPv4的路由支持，扩展应用到IPv4网络，称为集成IS-IS。</p>
+<p>•IS-IS报文有以下几种类型：Hello PDU（Protocol Data Unit）、LSP和SNP。</p>
+<ul>
+<li>报文格式为：</li>
+</ul>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/35.png"></p>
+<ul>
+<li>IS-IS报文中的变长字段部分是多个TLV（Type-Length-Value）三元组，使用TLV结构构建报文使IS-IS更具灵活性和扩展性，增加新特性只需要增加新TLV即可。</li>
+</ul>
+<p>•为了支持IPv6路由的处理和计算，IS-IS新增了两个TLV（Type-Length-Value）和一个NLPID（Network Layer Protocol Identifier，网络层协议标识符）。</p>
+<h2 id="新增TLV"><a href="#新增TLV" class="headerlink" title="新增TLV"></a>新增TLV</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/36.png"></p>
+<blockquote>
+<p>•232号TLV（IPv6 Interface Address）字段解释：</p>
+<p>▫Type：8bit，TLV类型，此时值为232（0xE8）。</p>
+<p>▫Length：8bit，TLV的Value部分长度。</p>
+<p>▫Interface Address：128bit，IPv6地址。</p>
+<p>•236号TLV（IPv6 Reachability）字段解释：</p>
+<p>▫Type：8bit，TLV类型，此时值为236（0xEC）。</p>
+<p>▫Length：8bit，TLV的Value部分长度。</p>
+<p>▫Metric：32bit，度量值。</p>
+<p>▫U：1bit，Up/Down位，标识这个前缀是否是从高Level通告下来的。</p>
+<p>▫X：1bit，External Original位，标识这个前缀是否是从其他路由协议中引入的。</p>
+<p>▫S：1bit，Sub-TLV Present位，子TLV标识位（可选）。</p>
+<p>▫R：5bit，Reserve位，保留位。</p>
+<p>▫Prefix Length：8bit，前缀长度。</p>
+<p>▫Prefix：IPv6地址前缀。</p>
+<p>▫Sub-TLV Length：8bit，子TLV长度。若S位置1，则存在。</p>
+<p>▫Sub-TLV：子TLV。若S位置1，则存在。</p>
+</blockquote>
+<h2 id="129号TLV中新增NLPID"><a href="#129号TLV中新增NLPID" class="headerlink" title="129号TLV中新增NLPID"></a>129号TLV中新增NLPID</h2><p>•为了支持IPv6路由的处理和计算，IS-IS在129号TLV中新增了一个NLPID。</p>
+<p>•129号TLV（Protocol Supported）</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/37.png"></p>
+<p>如果IS-IS支持IPv6，那么向外发布IPv6路由时必须携带NLPID值。</p>
+<h2 id="IS-IS多拓扑技术背景"><a href="#IS-IS多拓扑技术背景" class="headerlink" title="IS-IS多拓扑技术背景"></a>IS-IS多拓扑技术背景</h2><p>缺省情况下，在运行IS-IS的网络环境中，IPv4和IPv6的混合拓扑被看成是一个集成的拓扑，IS-IS针对IPv4和IPv6经计算形成相同的最短路径树。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/38.png"></p>
+<blockquote>
+<p>•IS-IS单拓扑的不足之处：</p>
+<p>​    ▫网络部署不适合拓扑分离。</p>
+<p>​    ▫为维护相同的拓扑，所有接口都必须同时运行IS-IS（IPv4）和IS-IS（IPv6），部署不够灵活。</p>
+<p>​    ▫不能使用IPv4区域来连接不同的IPv6区域，即无法通过IPv4网络解决IPv6孤岛问题。</p>
+</blockquote>
+<h2 id="IS-IS多拓扑概述"><a href="#IS-IS多拓扑概述" class="headerlink" title="IS-IS多拓扑概述"></a>IS-IS多拓扑概述</h2><p>•IS-IS多拓扑（Multi-Topology，MT）特性是指在一个IS-IS自治域内运行多个独立的IP拓扑。例如IPv4拓扑和IPv6拓扑，而不是将它们视为一个集成的单一拓扑。这有利于IS-IS在路由计算中根据实际组网情况来单独考虑IPv4和IPv6网络。根据链路所支持的IP协议类型，不同拓扑运行各自的SPF计算，实现网络的相互屏蔽。</p>
+<p>•IS-IS多拓扑的实现过程</p>
+<p>​    ▫建立拓扑：通过报文交互建立邻居，从而建立多拓扑。</p>
+<p>​    ▫SPF计算：在不同的拓扑上分别进行SPF计算。</p>
+<h2 id="IS-IS多拓扑原理"><a href="#IS-IS多拓扑原理" class="headerlink" title="IS-IS多拓扑原理"></a>IS-IS多拓扑原理</h2><p>•IS-IS定义了新的TLV，该TLV中包含接口所属拓扑信息（MT信息）。MT信息的传播，使得网络按不同的拓扑分别进行SPF计算，最终实现拓扑分离。</p>
+<p>•229号多拓扑TLV：</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/39.png"></p>
+<blockquote>
+<p>•IS-IS为了支持多拓扑特性，定义了多种TLV，包括：多拓扑TLV、多拓扑中间系统TLV、多拓扑可达的IPv4前缀TLV和多拓扑可达的IPv6前缀TLV。其中本课程将对多拓扑TLV进行讲解，其他内容不详细展开。</p>
+<p>•多拓扑TLV：</p>
+<ul>
+<li><p>多拓扑TLV仅包含在IIH报文和LSP的0分片报文中。</p>
+</li>
+<li><p>预留的MT ID字段：</p>
+<ul>
+<li>MT ID=0，用于标准IPv4拓扑。</li>
+<li>MT ID=2，预留给IPv6拓扑。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="IS-IS-IPv6-的基础配置命令"><a href="#IS-IS-IPv6-的基础配置命令" class="headerlink" title="IS-IS (IPv6)的基础配置命令"></a>IS-IS (IPv6)的基础配置命令</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/40.png"></p>
+<blockquote>
+<p>•IS-IS（IPv6）的基础配置命令与配置方式与IS-IS（IPv4）一致，其他配置命令不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+<p>•[Huawei-isis-1] <strong>ipv6</strong> <strong>enable</strong> [ <strong>topology</strong> { <strong>ipv6</strong> | <strong>standard</strong> } ]</p>
+<ul>
+<li><strong>topology</strong>：用于指定网络的拓扑类型。</li>
+<li><strong>ipv6</strong>：指定拓扑类型为IPv6拓扑，即在IPv6拓扑上使能IS-IS进程的IPv6。网络中的链路可以配置成IPv4或IPv6，但SPF计算在各自的拓扑中单独进行。</li>
+<li><strong>standard</strong>：指定拓扑类型为标准模式，即在集成拓扑上使能IS-IS进程的IPv6。网络管理员必须保证网络中所有的链路支持一致的拓扑模式。缺省情况下，使能IPv6选择standard参数。</li>
+</ul>
+<p>•[ Huawei-GigabitEthernet0/0/1] <strong>isis</strong> <strong>ipv6</strong> <strong>cost</strong> { <em>cost</em> | <strong>maximum</strong> } [ <strong>level-1</strong> | <strong>level-2</strong> ]</p>
+<ul>
+<li><p><em>cost</em>：指定IPv6接口的链路开销值。整数形式，取值范围根据开销类型而定。</p>
+<ul>
+<li>当开销类型为narrow、narrow-compatible或compatible时，取值范围是1～63。</li>
+<li>当开销类型为wide或wide-compatible时，取值范围是1～16777214。</li>
+<li>缺省值为10。</li>
+</ul>
+</li>
+<li><p><strong>maximum</strong>：指定接口的链路开销值为16777215。</p>
+</li>
+<li><p><strong>level-1</strong>：指定配置level-1链路的开销值。如果不指定配置链路开销的接口级别，则同时为Level-1和Level-2级别的接口设置链路开销。</p>
+</li>
+<li><p><strong>level-2</strong>：指定配置level-2链路的开销值。如果不指定配置链路开销的接口级别，则同时为Level-1和Level-2级别的接口设置链路开销。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="检查IS-IS-IPv6-基本功能的配置结果"><a href="#检查IS-IS-IPv6-基本功能的配置结果" class="headerlink" title="检查IS-IS (IPv6)基本功能的配置结果"></a>检查IS-IS (IPv6)基本功能的配置结果</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/41.png"></p>
+<h2 id="IS-IS双栈配置举例"><a href="#IS-IS双栈配置举例" class="headerlink" title="IS-IS双栈配置举例"></a>IS-IS双栈配置举例</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/42.png"></p>
+<h3 id="部署IPv4网络-1"><a href="#部署IPv4网络-1" class="headerlink" title="部署IPv4网络"></a>部署IPv4网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/43.png"></p>
+<h3 id="部署IPv6网络-1"><a href="#部署IPv6网络-1" class="headerlink" title="部署IPv6网络"></a>部署IPv6网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/44.png"></p>
+<h3 id="查看IS-IS-IPv4-网络路由信息"><a href="#查看IS-IS-IPv4-网络路由信息" class="headerlink" title="查看IS-IS (IPv4)网络路由信息"></a>查看IS-IS (IPv4)网络路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/45.png"></p>
+<h3 id="查看IS-IS-IPv6-网络路由信息"><a href="#查看IS-IS-IPv6-网络路由信息" class="headerlink" title="查看IS-IS (IPv6)网络路由信息"></a>查看IS-IS (IPv6)网络路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/46.png"></p>
+<h1 id="4-BGP4-原理与配置"><a href="#4-BGP4-原理与配置" class="headerlink" title="4.BGP4+原理与配置"></a>4.BGP4+原理与配置</h1><h2 id="BGP4-概述"><a href="#BGP4-概述" class="headerlink" title="BGP4+概述"></a>BGP4+概述</h2><p>•传统的BGP-4只能管理IPv4单播路由信息，BGP多协议扩展（MultiProtocol BGP，MP-BGP）提供了对多种网络层协议的支持。目前的MP-BGP，使用扩展属性和地址族来实现对IPv6、组播和VPN相关内容的支持，BGP协议原有的报文机制和路由机制并没有改变。</p>
+<p>•其中，MP-BGP对IPv6单播网络的支持特性称为BGP4+。BGP4+为IPv6单播网络建立独立的拓扑结构，并将路由信息储存在独立的路由表中，保持单播IPv4网络和单播IPv6网络之间路由信息相互隔离。</p>
+<blockquote>
+<p>•为了实现对IPv6协议的支持，BGP需要将IPv6协议的信息反映到NLRI属性中。</p>
+</blockquote>
+<h2 id="MP-BGP支持的地址族"><a href="#MP-BGP支持的地址族" class="headerlink" title="MP-BGP支持的地址族"></a>MP-BGP支持的地址族</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/47.png"></p>
+<h2 id="BGP路径属性"><a href="#BGP路径属性" class="headerlink" title="BGP路径属性"></a>BGP路径属性</h2><p>•BGP的Update报文在对等体之间传递路由信息，可以用于发布和撤销路由。</p>
+<p>•Update报文格式：</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/48.png"></p>
+<p>•BGP4+中引入了两个NLRI属性，分别是：</p>
+<ul>
+<li><p>MP_REACH_NLRI：Multiprotocol Reachable NLRI，多协议可达NLRI。用于发布可达路由及下一跳信息。</p>
+</li>
+<li><p>MP_UNREACH_NLRI：Multiprotocol Unreachable NLRI，多协议不可达NLRI。用于撤销不可达路由。</p>
+</li>
+</ul>
+<blockquote>
+<p>•Update报文：</p>
+<ul>
+<li>一个Update报文可以通告具有相同路径属性的多条路由，这些路由保存在NLRI（Network Layer Reachable Information，网络层可达信息）中。同时Update还可以携带多条不可达路由，用于告知对方撤销路由，这些保存在Withdrawn Routes字段中。</li>
+</ul>
+</blockquote>
+<h2 id="NLRI属性"><a href="#NLRI属性" class="headerlink" title="NLRI属性"></a>NLRI属性</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/49.png"></p>
+<blockquote>
+<p>•MP_REACH_NLRI字段解释：</p>
+<ul>
+<li>地址族信息（Address Family Information）：由2Byte的地址族标识（Address Family Identifier，AFI）和1Byte的子地址族标识（Subsequent Address Family Identifier，SAFI）组成。</li>
+<li>下一跳长度（Length of Next Hop Network Address）：1Byte，表示下一跳地址的长度，通常情况下为16。</li>
+<li>下一跳地址（Network Address of Next Hop）：长度由上一个字段决定，一般情况下为全球单播地址。</li>
+<li>保留字段（Reserved）：1Byte，必须为0 。</li>
+<li>网络层可达信息（Network Layer Reachability Information）：表示含有匹配相同属性的路由信息。当此字段为0时，表示为缺省路由。</li>
+</ul>
+<p>•MP_UNREACH_NLRI字段解释：</p>
+<ul>
+<li>撤销路由（Withdrawn Routes）：表示撤销的路由条目。格式为&lt;掩码长度，路由前缀&gt; ，当此掩码长度为0时，表示为缺省路由。</li>
+</ul>
+</blockquote>
+<h2 id="BGP4-的基础配置命令"><a href="#BGP4-的基础配置命令" class="headerlink" title="BGP4+的基础配置命令"></a>BGP4+的基础配置命令</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/50.png"></p>
+<blockquote>
+<p>•BGP4+的基础配置命令与配置方式与BGP一致，其他配置命令不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+<p>•[Huawei-bgp] <strong>ipv6-family</strong> [ <strong>unicast</strong> | <strong>vpnv6</strong> | <strong>vpn-instance</strong> <em>vpn*</em>-instance-name* ]</p>
+<ul>
+<li><strong>unicast</strong>：进入IPv6单播地址族视图。</li>
+<li><strong>vpnv6</strong>：进入BGP-VPNv6地址族视图。</li>
+<li><strong>vpn-instance</strong> <em>vpn-instance-name</em>：将指定的VPN实例与IPv6地址族进行关联，进入BGP-VPN实例IPv6地址族视图。字符串形式，区分大小写，不支持空格，长度范围是1～31。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+</ul>
+<p>•[Huawei-bgp-af-ipv6] <strong>network</strong> <em>ipv6-address</em> <em>prefix-length</em> [ <strong>route-policy</strong> <em>route-policy-name</em> ]</p>
+<ul>
+<li><p><em>ipv6-address</em>：指定BGP发布的IPv6网络地址。32位16进制数，格式为X:X:X:X:X:X:X:X。</p>
+</li>
+<li><p><em>prefix-length</em>：指定BGP发布的IPv6网络地址的前缀长度。整数形式，取值范围是0～128。</p>
+</li>
+<li><p><strong>route-policy</strong> <em>route-policy-name</em>：指定发布路由应用的Route-Policy。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="检查BGP4-基本功能的配置结果"><a href="#检查BGP4-基本功能的配置结果" class="headerlink" title="检查BGP4+基本功能的配置结果"></a>检查BGP4+基本功能的配置结果</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/51.png"></p>
+<h2 id="BGP双栈配置举例"><a href="#BGP双栈配置举例" class="headerlink" title="BGP双栈配置举例"></a>BGP双栈配置举例</h2><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/52.png"></p>
+<h3 id="部署IPv4网络-2"><a href="#部署IPv4网络-2" class="headerlink" title="部署IPv4网络"></a>部署IPv4网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/53.png"></p>
+<h3 id="部署IPv6网络-2"><a href="#部署IPv6网络-2" class="headerlink" title="部署IPv6网络"></a>部署IPv6网络</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/54.png"></p>
+<h3 id="查看BGP对等体信息"><a href="#查看BGP对等体信息" class="headerlink" title="查看BGP对等体信息"></a>查看BGP对等体信息</h3><p>•通过<strong>display</strong> <strong>bgp</strong> <strong>[ipv6] peer</strong>，分别查看IPv4和IPv6网络中的BGP对等体信息。</p>
+<p>•发现除建立对等体的地址不同，其他信息基本一致。</p>
+<p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/55.png"></p>
+<h3 id="查看BGP4-路由信息"><a href="#查看BGP4-路由信息" class="headerlink" title="查看BGP4+路由信息"></a>查看BGP4+路由信息</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/56.png"></p>
+<h3 id="查看BGP4-中的NLRI属性"><a href="#查看BGP4-中的NLRI属性" class="headerlink" title="查看BGP4+中的NLRI属性"></a>查看BGP4+中的NLRI属性</h3><p><img src="/2021/06/30/IPadv-IPv6%E8%B7%AF%E7%94%B1/57.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下LSA，属于OSPFv3的有哪些？(   )</p>
+<p><strong>A.Router-LSA</strong></p>
+<p><strong>B.Network-LSA</strong></p>
+<p>C.Network-Summary-LSA</p>
+<p><strong>D.Link-LSA</strong></p>
+<p>2.（判断题）IS-IS支持IPv4网络和IPv6网络分别计算自己的最短路径树。(   )</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•通过IPv6静态路由能够满足网络互通要求，但随着网络的增大，就需要借助动态路由协议。因此要求动态路由协议能够支持IPv6，并能够携带IPv6地址进行路由通告。</p>
+<p>•IETF为了支持IPv6网络，对OSPFv2进行了增强与改进，创建了一个新的协议：OSPFv3。</p>
+<p>•IS-IS则是利用自己扩展性强的特点，通过新增TLV，实现对IPv6的支持。</p>
+<p>•同样的，BGP利用自己的扩展路径属性以及多协议地址族实现对IPv6的支持。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" itemprop="url">IPadv-BGP高级特性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T12:22:57+08:00">
+                2021-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在大型网络中通常会部署BGP，相比于IGP，BGP拥有更加灵活的路由控制能力。每一条BGP路由都可以携带多个路径属性，针对其属性也有特有的路由匹配工具，包括：AS_Path Filter和Community Filter。根据实际组网需求，可以实施路由策略，控制路由的接收和发布。</p>
+<p>•同时，为了提升网络性能，BGP提供了各种高级特性以及多种组网部署方案。</p>
+<p>•本课程将介绍BGP路由控制的原理与配置，介绍常用的BGP高级特性，包括：ORF、对等体组、安全特性，还会介绍BGP路由反射器的组网部署方式。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫在配置AS_Path Filter和Community Filter过程中使用正则表达式</p>
+<p>▫使用AS_Path Filter和Community Filter实现BGP路由控制</p>
+<p>▫应用BGP的ORF功能、对等体组功能</p>
+<p>▫实现BGP安全的基本配置</p>
+<p>▫描述BGP路由反射器的组网方式</p>
+<h1 id="1-BGP路由控制"><a href="#1-BGP路由控制" class="headerlink" title="1.BGP路由控制"></a>1.BGP路由控制</h1><h2 id="BGP路由控制概述"><a href="#BGP路由控制概述" class="headerlink" title="BGP路由控制概述"></a>BGP路由控制概述</h2><p>BGP路由控制包括控制路由的发布和接收。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/1.png"></p>
+<blockquote>
+<p>•如图所示：</p>
+<ul>
+<li>R1和R2在AS101中，建立IBGP邻居关系；R3和R4在AS102中，分别与R2建立EBGP邻居关系。</li>
+<li>R1有三个直连网段Net1、Net2和Net3，并将三个网段通告进BGP路由中。</li>
+<li>在R2可以通过BGP路由控制，过滤Net2的路由，则R2的BGP路由表中就没有Net2的路由条目。</li>
+<li>在R3和R4可以通过BGP路由控制，分别修改Net1和Net3的路由属性，控制路由优选，使AS102中设备访问Net1优选R3作为出口设备，访问Net3优选R4作为出口设备。</li>
+</ul>
+<p>•说明：ACL、IP Prefix List、Filter-Policy、Route-Policy和BGP路径属性等内容本课程不再赘述，详细内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>•正则表达式是按照一定的模板来匹配字符串的公式，由普通字符（例如字符a到z）和特殊字符组成。</p>
+<p>•普通字符：匹配的对象是普通字符本身。</p>
+<ul>
+<li><p>包括所有的大写和小写字母、数字、标点符号以及一些特殊符号。</p>
+</li>
+<li><p>例如：a匹配abc中的a，10匹配10.113.25.155中的10，@匹配<a href="mailto:&#120;&#120;&#x78;&#x40;&#x78;&#120;&#120;&#46;&#x63;&#x6f;&#x6d;">&#120;&#120;&#x78;&#x40;&#x78;&#120;&#120;&#46;&#x63;&#x6f;&#x6d;</a>中的@。</p>
+</li>
+</ul>
+<p>•特殊字符：配合普通字符匹配复杂或特殊的字符串组合。</p>
+<ul>
+<li>位于普通字符之前或之后用来限制或扩充普通字符的独立控制字符或占位符。</li>
+<li>用来描述它前面的字符的重复使用方式。</li>
+<li>限定一个完整的范围。</li>
+</ul>
+<blockquote>
+<p>•正则表达式一般具有以下功能：</p>
+<p>▫检查字符串中符合某个规则的子字符串，并可以获取该子字符串。</p>
+<p>▫根据匹配规则对字符串进行替换操作。</p>
+</blockquote>
+<h2 id="特殊字符举例-1"><a href="#特殊字符举例-1" class="headerlink" title="特殊字符举例 (1)"></a>特殊字符举例 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/2.png"></p>
+<blockquote>
+<p>•说明：圆括号()可以用来定义操作符的范围和优先度。例如，gr(a|e)y等价于gray|grey。</p>
+</blockquote>
+<h2 id="特殊字符举例-2"><a href="#特殊字符举例-2" class="headerlink" title="特殊字符举例 (2)"></a>特殊字符举例 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/3.png"></p>
+<blockquote>
+<p>•思考题：</p>
+<p>•类型1：</p>
+<p>▫**^a.$**：匹配一个以字符a开始，以任意单一字符结束的字符串，如a0，a!，ax等。</p>
+<p>▫**^100_**：匹配以100为起始的字符串，如：100、100 200、100 300 400等。</p>
+<p>▫**^100$**：只匹配100。</p>
+<p>▫**100$|400$**：匹配以100或400结束的字符串，如：100、1400、300 400等。</p>
+<p>▫**^(65000)$**：只匹配(65000)。</p>
+<p>•类型2：</p>
+<p>▫<strong>abc*d</strong>：匹配c字符0次或多次，如：abd、abcd、abccd、abcccd、abccccdef等。</p>
+<p>▫<strong>abc+d</strong>：匹配c字符1次或多次，如：abcd、abccd、abcccd、abccccdef等。</p>
+<p>▫<strong>abc?d</strong>：匹配c字符0次或1次，如：abd、abcd、abcdef等。</p>
+<p>▫<strong>a(bc)?d</strong>：匹配bc字符串0次或1次，如：ad、abcd、aaabcdef等。</p>
+<p>•类型3：</p>
+<p>▫**[abcd]**：匹配abcd中任意一个字符，即只要出现了a、b、c、d中的任意字符即可，如：ax、b！、abc、d0等。</p>
+<p>▫**[a-c 1-2]$**：匹配以字符a、b、c、1、2结束的字符串，如：a、a1、62、xb、7ac等。</p>
+<p>▫**[^act]$**：匹配不以字符a、c、t结束的字符串，如：ax、b！、d等。</p>
+<p>▫**[123].[7-9]**：匹配如：1 7、2x9、348等。</p>
+</blockquote>
+<h2 id="路由匹配工具：AS-Path-Filter"><a href="#路由匹配工具：AS-Path-Filter" class="headerlink" title="路由匹配工具：AS_Path Filter"></a>路由匹配工具：AS_Path Filter</h2><p>•AS_Path Filter是将BGP中的AS_Path属性作为匹配条件的过滤器，利用BGP路由携带的AS_Path列表对路由进行过滤。</p>
+<p>•在不希望接收某些AS的路由时，可以利用AS_Path Filter对携带这些AS号的路由进行过滤，从而实现拒绝某些路由。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/4.png"></p>
+<blockquote>
+<p>•AS_Path属性是BGP的公认必遵属性，所有的BGP路由都必须携带该属性。这个属性记录了BGP路由在传递过程中所经过的所有AS的号码。</p>
+<p>•AS_Path属性值可以是0个、1个或多个AS号码的集合。</p>
+</blockquote>
+<h2 id="使用正则表达式匹配AS-Path"><a href="#使用正则表达式匹配AS-Path" class="headerlink" title="使用正则表达式匹配AS_Path"></a>使用正则表达式匹配AS_Path</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/5.png"></p>
+<h2 id="AS-Path-Filter的基础配置命令"><a href="#AS-Path-Filter的基础配置命令" class="headerlink" title="AS_Path Filter的基础配置命令"></a>AS_Path Filter的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/6.png"></p>
+<blockquote>
+<p>•在同一个过滤器编号下，可以定义多条过滤规则（permit或deny模式）。在匹配过程中，这些规则之间是“或”的关系，即只要路由信息通过其中一项规则，就认为通过由该过滤器编号标识的这组AS_Path Filter。</p>
+<p>•命令：[Huawei] <strong>ip as-path-filter</strong> { <em>as-path-filter-number</em> | <em>as-path-filter-name</em> } { <strong>deny</strong> | <strong>permit</strong> } <em>regular-expression</em></p>
+<ul>
+<li><em>as-path-filter-number</em>：指定的AS路径过滤器号。整数形式，取值范围1~256。</li>
+<li><em>as-path-filter-name</em>：指定的AS路径过滤器名称。字符串形式，区分大小写，不支持空格，长度范围是1~51，且不能都是数字。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>deny</strong>：指定AS路径过滤器的匹配模式为拒绝。</li>
+<li><strong>permit</strong>：指定AS路径过滤器的匹配模式为允许。</li>
+<li><em>regular-expression</em>：指定AS路径正则表达式。字符串形式，支持空格，取值范围是1~255个字符。</li>
+</ul>
+<p>•AS路径过滤器的默认行为是deny，即路由如果没有在某一次过滤中被permit则最终不能通过该过滤器的过滤。如果一个过滤器中的所有过滤规则都是deny，则没有路由能通过该过滤器的过滤，这种情况下需要在多次（或一次）deny之后设置一次permit，允许其余所有路由通过过滤器的过滤。</p>
+</blockquote>
+<h2 id="AS-Path-Filter的配置举例-1"><a href="#AS-Path-Filter的配置举例-1" class="headerlink" title="AS_Path Filter的配置举例 (1)"></a>AS_Path Filter的配置举例 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/7.png"></p>
+<h2 id="AS-Path-Filter的配置举例-2"><a href="#AS-Path-Filter的配置举例-2" class="headerlink" title="AS_Path Filter的配置举例 (2)"></a>AS_Path Filter的配置举例 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/8.png"></p>
+<h2 id="查看AS-Path-Filter相关信息"><a href="#查看AS-Path-Filter相关信息" class="headerlink" title="查看AS_Path Filter相关信息"></a>查看AS_Path Filter相关信息</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/9.png"></p>
+<h2 id="路由匹配工具：Community-Filter"><a href="#路由匹配工具：Community-Filter" class="headerlink" title="路由匹配工具：Community Filter"></a>路由匹配工具：Community Filter</h2><p>•Community Filter与Community属性配合使用，可以在不便使用IP Prefix List和AS_Path Filter时，降低路由管理难度。</p>
+<p>•团体属性过滤器有两种类型：</p>
+<p>​    ▫基本Community Filter。匹配团体号或公认Community属性。</p>
+<p>​    ▫高级Community Filter。使用正则表达式匹配团体号。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/10.png"></p>
+<blockquote>
+<p>•Community属性为可选过渡属性，可以标识具有相同特征的路由，而不用考虑零散路由前缀和繁多的AS号。即可以将某些路由分配特定的Community属性值，之后就可以基于Community值而不是网络号/掩码来匹配路由并执行相应的路由策略。</p>
+</blockquote>
+<h2 id="Community属性"><a href="#Community属性" class="headerlink" title="Community属性"></a>Community属性</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/11.png"></p>
+<h2 id="设置Community的基础配置命令"><a href="#设置Community的基础配置命令" class="headerlink" title="设置Community的基础配置命令"></a>设置Community的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/12.png"></p>
+<blockquote>
+<p>•命令：[Huawei-route-policy] <strong>apply community</strong> { <em>community-number</em> | <em>aa:nn</em> | <strong>internet</strong> | <strong>no-advertise</strong> | <strong>no-export</strong> | <strong>no-export-subconfed</strong> } [ <strong>additive</strong> ]</p>
+<p>▫<em>community-number</em> | <em>aa:nn</em>：指定团体属性中的团体号。一条命令中最多可以配置32个团体号。整数形式，community-number的取值范围是0<del>4294967295，aa和nn的取值范围都是0</del>65535。</p>
+<p>▫<strong>internet</strong>：表示可以向任何对等体发送匹配的路由。缺省情况下，所有的路由都属于Internet团体。</p>
+<p>▫<strong>no-advertise</strong>：表示不向任何对等体发送匹配的路由。即收到具有此属性的路由后，不能发布给任何其他的BGP对等体。</p>
+<p>▫<strong>no-export</strong>：表示不向AS外发送匹配的路由，但发布给其它子自治系统。即收到具有此属性的路由后，不能发布到本地AS之外。</p>
+<p>▫<strong>no-export-subconfed</strong>：表示不向AS外发送匹配的路由，也不发布给其它子自治系统，即收到具有此属性的路由后，不能发布给任何其他的子自治系统。</p>
+<p>▫<strong>additive</strong>：表示追加路由的团体属性。</p>
+</blockquote>
+<h2 id="Community-Filter的基础配置命令-1"><a href="#Community-Filter的基础配置命令-1" class="headerlink" title="Community Filter的基础配置命令 (1)"></a>Community Filter的基础配置命令 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/13.png"></p>
+<blockquote>
+<p>•命令：[Huawei] <strong>ip community-filter</strong> { <strong>basic</strong> <em>comm-filter-name</em> | <em>basic-<strong>comm</strong>-filter-num</em> } { <strong>permit</strong> | <strong>deny</strong> } [ <em>community-number</em> | <em>aa:nn</em> | <strong>internet</strong> | <strong>no-export-subconfed</strong> | <strong>no-advertise</strong> | <strong>no-export</strong> ]</p>
+<p>▫<strong>basic</strong> <em>comm-filter-name</em>：指定基本团体属性过滤器名称。字符串形式，区分大小写，取值范围是1~51个字符，且不能都是数字。</p>
+<p>▫<em>basic-<strong>comm</strong>-filter-num</em>：指定基本团体属性过滤器号。整数形式，取值范围1~99。</p>
+<p>▫<strong>deny</strong>：指定团体属性过滤器的匹配模式为拒绝。</p>
+<p>▫<strong>permit</strong>：指定团体属性过滤器的匹配模式为允许。</p>
+<p>▫<em>community-number</em>：指定团体号。整数形式，取值范围0~4294967295。</p>
+<p>▫<em>aa:nn</em>：指定团体号。一条命令最多可以指定20个团体属性号。aa和nn都是整数形式，取值范围都是0~65535。</p>
+<p>▫<strong>internet</strong>：表示可以向任何对等体发送匹配的路由。</p>
+<p>▫<strong>no-export-subconfed</strong>：指定不向自治系统外部通告路由。如果使用了联盟，则不会向联盟中的其他子自治系统通告路由。</p>
+<p>▫<strong>no-advertise</strong>：指定不通告给其他对等体。</p>
+<p>▫<strong>no-export</strong>：指定不向自治系统外部通告路由。如果使用了联盟，则不向联盟外部通告路由，但会通告给联盟中的其他子自治系统。</p>
+<p>•命令：[Huawei] <strong>ip community-filter</strong> { <strong>advanced</strong> <em>comm*</em>-filter-name* | <em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em> } { <strong>permit</strong> | <strong>deny</strong> } <em>regular-expression</em></p>
+<p>▫<strong>advanced</strong> <em>comm*</em>-filter-name*：指定高级团体属性过滤器名称。字符串形式，区分大小写，取值范围是1~51个字符，且不能都是数字。</p>
+<p>▫<em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em>：指定高级团体属性过滤器号。整数形式，取值范围100~199。</p>
+<p>▫<em>regular-expression</em>：指定团体属性正则表达式。字符串形式，支持空格，区分大小写，取值范围是1~255。</p>
+</blockquote>
+<h2 id="Community-Filter的基础配置命令-2"><a href="#Community-Filter的基础配置命令-2" class="headerlink" title="Community Filter的基础配置命令 (2)"></a>Community Filter的基础配置命令 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/14.png"></p>
+<blockquote>
+<p>•命令：[Huawei-route-policy] <strong>if-match community-filter</strong> { <em>basic-<strong>comm</strong>-filter-num</em> [ <strong>whole-match</strong> ] | <em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em> }</p>
+<p>•命令：[Huawei-route-policy] <strong>if-match community-filter</strong> <em>comm-filter-name</em> [ <strong>whole-match</strong> ]</p>
+<ul>
+<li><em>basic-<strong>comm</strong>-filter-num</em>：指定基本团体属性过滤器号。整数形式，取值范围是1~99。</li>
+<li><em>adv*</em>-<strong>comm</strong>-filter-*<em>num</em>：指定高级团体属性过滤器号。整数形式，取值范围是100~199。</li>
+<li><em>comm-filter-name</em>：指定团体属性过滤器名称。字符串形式，区分大小写，不支持空格，长度范围是1~51，且不能都是数字。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>whole-match</strong>：表示完全匹配，即所有的团体都必须出现。仅对基本团体属性过滤器生效。</li>
+</ul>
+</blockquote>
+<h2 id="Community-Filter的配置举例"><a href="#Community-Filter的配置举例" class="headerlink" title="Community Filter的配置举例"></a>Community Filter的配置举例</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/15.png"></p>
+<h2 id="配置Community属性-1"><a href="#配置Community属性-1" class="headerlink" title="配置Community属性 (1)"></a>配置Community属性 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/16.png"></p>
+<blockquote>
+<p>•命令：[R1] <strong>route-policy</strong> Community <strong>permit node</strong> 20</p>
+<p>•通过配置该命令允许10.1.2.2/32路由被正常通告。</p>
+</blockquote>
+<h2 id="配置Community属性-2"><a href="#配置Community属性-2" class="headerlink" title="配置Community属性 (2)"></a>配置Community属性 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/17.png"></p>
+<h2 id="配置Community属性-3"><a href="#配置Community属性-3" class="headerlink" title="配置Community属性 (3)"></a>配置Community属性 (3)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/18.png"></p>
+<h2 id="配置Community-Filter-1"><a href="#配置Community-Filter-1" class="headerlink" title="配置Community Filter (1)"></a>配置Community Filter (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/19.png"></p>
+<h2 id="配置Community-Filter-2"><a href="#配置Community-Filter-2" class="headerlink" title="配置Community Filter (2)"></a>配置Community Filter (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/20.png"></p>
+<h2 id="配置Community-Filter-3"><a href="#配置Community-Filter-3" class="headerlink" title="配置Community Filter (3)"></a>配置Community Filter (3)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/21.png"></p>
+<h1 id="2-BGP特性介绍"><a href="#2-BGP特性介绍" class="headerlink" title="2.BGP特性介绍"></a>2.BGP特性介绍</h1><h2 id="邻居按需发布路由"><a href="#邻居按需发布路由" class="headerlink" title="邻居按需发布路由"></a>邻居按需发布路由</h2><p>•如果设备希望只接收自己需要的路由，但对端设备又无法针对每个与它连接的设备维护不同的出口策略。此时，可以通过配置BGP基于前缀的ORF（Outbound Route Filters，出口路由过滤器）来满足两端设备的需求。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/22.png"></p>
+<h2 id="ORF的基础配置命令"><a href="#ORF的基础配置命令" class="headerlink" title="ORF的基础配置命令"></a>ORF的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/23.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp-af-ipv4] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> } <strong>ip-prefix</strong> <em>ip-prefix-name</em> { <strong>import</strong> | <strong>export</strong> }</p>
+<p>​    ▫<strong>import</strong>：对由指定对等体（组）接收的路由应用过滤策略。</p>
+<p>​    ▫<strong>export</strong>：对向指定对等体（组）发送的路由应用过滤策略。</p>
+<p>•命令：[Huawei-bgp] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> } <strong>capability-advertise</strong> <strong>orf</strong> [ <strong>non-standard-compatible</strong> ] <strong>ip-prefix</strong> { <strong>both</strong> | <strong>receive</strong> | <strong>send</strong> } [ <strong>standard-match</strong> ]</p>
+<p>​    ▫<strong>non-standard-compatible</strong>：指定与非标准设备兼容。</p>
+<p>​    ▫<strong>both</strong>：表示允许发送和接收ORF报文。</p>
+<p>​    ▫<strong>receive</strong>：表示只允许接收ORF报文。</p>
+<p>​    ▫<strong>send</strong>：表示只允许发送ORF报文。</p>
+<p>​    ▫<strong>standard-match</strong>：指定按照RFC标准规定的前缀匹配规则来匹配路由。</p>
+</blockquote>
+<h2 id="ORF配置举例"><a href="#ORF配置举例" class="headerlink" title="ORF配置举例"></a>ORF配置举例</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/24.png"></p>
+<h2 id="查看ORF配置"><a href="#查看ORF配置" class="headerlink" title="查看ORF配置"></a>查看ORF配置</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/25.png"></p>
+<h2 id="BGP对等体组"><a href="#BGP对等体组" class="headerlink" title="BGP对等体组"></a>BGP对等体组</h2><p>•对等体组（Peer Group）是一些具有某些相同策略的对等体的集合。当一个对等体加入对等体组中时，该对等体将获得与所在对等体组相同的配置。当对等体组的配置改变时，组内成员的配置也相应改变。</p>
+<p>•在大型BGP网络中，对等体的数量会很多，其中很多对等体具有相同的策略，在配置时会重复使用一些命令，利用对等体组可以简化配置。</p>
+<blockquote>
+<p>•对等体组中的单个对等体也可以配置自己的发布路由与接收路由的策略。</p>
+</blockquote>
+<h2 id="BGP对等体组的基础配置命令"><a href="#BGP对等体组的基础配置命令" class="headerlink" title="BGP对等体组的基础配置命令"></a>BGP对等体组的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/26.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp] <strong>group</strong> <em>group-name</em> [ <strong>external</strong> | <strong>internal</strong> ]</p>
+<p>​    ▫<em>group-name</em>：指定对等体组的名称。字符串形式，区分大小写，不支持空格，长度范围是1~47。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+<p>​    ▫<strong>external</strong>：表示创建EBGP对等体组。</p>
+<p>​    ▫<strong>internal</strong>：表示创建IBGP对等体组。</p>
+</blockquote>
+<h2 id="BGP对等体组配置举例"><a href="#BGP对等体组配置举例" class="headerlink" title="BGP对等体组配置举例"></a>BGP对等体组配置举例</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/27.png"></p>
+<blockquote>
+<p>•如图所示：假设AS102内，通过静态路由或OSPF实现AS102内部网络可达，配置省略。</p>
+</blockquote>
+<h2 id="查看BGP对等体组配置"><a href="#查看BGP对等体组配置" class="headerlink" title="查看BGP对等体组配置"></a>查看BGP对等体组配置</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/28.png"></p>
+<h2 id="BGP安全性"><a href="#BGP安全性" class="headerlink" title="BGP安全性"></a>BGP安全性</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/29.png"></p>
+<h2 id="BGP认证"><a href="#BGP认证" class="headerlink" title="BGP认证"></a>BGP认证</h2><p>BGP认证分为MD5认证和Keychain认证，对BGP对等体关系进行认证可以预防非法BGP邻居建立。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/30.png"></p>
+<blockquote>
+<p>•BGP使用TCP作为传输协议，只要TCP数据包的源地址、目的地址、源端口、目的端口和TCP序号是正确的，BGP就会认为这个数据包有效，但数据包的大部分参数对于攻击者来说是不难获得的。为了保证BGP免受攻击，可以在BGP邻居之间使用MD5认证或者Keychain认证来降低被攻击的可能性。</p>
+<ul>
+<li><p>MD5算法配置简单，配置后生成单一密码，需要人为干预才可以更换密码。</p>
+</li>
+<li><p>Keychain具有一组密码，可以根据配置自动切换，但是配置过程较为复杂，适用于对安全性能要求比较高的网络。</p>
+</li>
+</ul>
+<p>•注意：BGP的MD5认证与BGP的Keychain认证互斥。</p>
+</blockquote>
+<h2 id="BGP的GTSM"><a href="#BGP的GTSM" class="headerlink" title="BGP的GTSM"></a>BGP的GTSM</h2><p>BGP的GTSM功能检测IP报文头中的TTL（Time-to-Live）值是否在一个预先设置好的特定范围内，并对不符合TTL值范围的报文进行丢弃，这样就避免了网络攻击者模拟“合法”BGP报文攻击设备。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/31.png"></p>
+<blockquote>
+<p>•如图所示：如果没有使能BGP的GTSM功能，设备收到大量非法BGP报文后，发现是发送给本机的报文，会直接上送控制层面处理。这时将会因为控制层面处理大量攻击报文，导致设备CPU占用率高，系统异常繁忙。</p>
+</blockquote>
+<h2 id="BGP认证的基础配置命令"><a href="#BGP认证的基础配置命令" class="headerlink" title="BGP认证的基础配置命令"></a>BGP认证的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/32.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> | <em>ipv6-address</em> } <strong>keychain</strong> <em>keychain-name</em></p>
+<p>▫<em>keychain-name</em>：指定Keychain名称。字符串形式，长度范围是1~47，不区分大小写。字符不包括问号和空格，但是当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+</blockquote>
+<h2 id="GTSM功能的基础配置命令"><a href="#GTSM功能的基础配置命令" class="headerlink" title="GTSM功能的基础配置命令"></a>GTSM功能的基础配置命令</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/33.png"></p>
+<blockquote>
+<p>•命令：[Huawei-bgp] <strong>peer</strong> { <em>group-name</em> | <em>ipv4-address</em> | <em>ipv6-address</em> } <strong>valid-ttl-hops</strong> [ <em>hops</em> ]</p>
+<ul>
+<li><em>hops</em>：指定需要检测的TTL跳数值。整数形式，取值范围是1~255，缺省值是255。如果配置为hops，则被检测的报文的TTL值有效范围为[255–hops+1, 255]</li>
+</ul>
+<p>•命令：[Huawei] <strong>gtsm</strong> <strong>default-action</strong> { <strong>drop</strong> | <strong>pass</strong> }</p>
+<ul>
+<li><p><strong>drop</strong>：未匹配GTSM策略的报文不能通过过滤，报文被丢弃。</p>
+</li>
+<li><p><strong>pass</strong>：未匹配GTSM策略的报文可以通过过滤。</p>
+</li>
+</ul>
+<p>•命令：[Huawei] <strong>gtsm</strong> <strong>log drop-packet</strong> <strong>all</strong></p>
+<ul>
+<li><strong>all</strong>：所有单板。</li>
+</ul>
+</blockquote>
+<h2 id="GTSM配置举例-1"><a href="#GTSM配置举例-1" class="headerlink" title="GTSM配置举例 (1)"></a>GTSM配置举例 (1)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/34.png"></p>
+<blockquote>
+<p>•如图所示：</p>
+<p>▫假设AS101内，通过静态路由或OSPF实现AS101内部网络可达，配置省略。</p>
+<p>▫R1通告Loopback0接口地址到BGP中。</p>
+</blockquote>
+<h2 id="GTSM配置举例-2"><a href="#GTSM配置举例-2" class="headerlink" title="GTSM配置举例 (2)"></a>GTSM配置举例 (2)</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/35.png"></p>
+<h2 id="查看GTSM配置"><a href="#查看GTSM配置" class="headerlink" title="查看GTSM配置"></a>查看GTSM配置</h2><p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/36.png"></p>
+<h1 id="3-BGP路由反射器组网方式"><a href="#3-BGP路由反射器组网方式" class="headerlink" title="3.BGP路由反射器组网方式"></a>3.BGP路由反射器组网方式</h1><h2 id="路由反射器"><a href="#路由反射器" class="headerlink" title="路由反射器"></a>路由反射器</h2><p>引入路由反射器，可以简化IBGP全互联的需求，也可以减轻网络和CPU的负担。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/37.png"></p>
+<blockquote>
+<p>•路由反射器相关角色：</p>
+<p>▫RR：允许把从IBGP对等体学到的路由反射到其他IBGP对等体的BGP设备，类似OSPF网络中的DR。</p>
+<p>▫Client：与RR形成反射邻居关系的IBGP设备。在AS内部客户机只需要与RR直连。</p>
+<p>▫Non-Client：既不是RR也不是客户机的IBGP设备。在AS内部非客户机与RR之间，以及所有的非客户机之间仍然必须建立全互联关系。</p>
+<p>▫Originator（始发者）：在AS内部始发路由的设备。Originator_ID属性用于防止集群内产生路由环路。</p>
+<p>▫Cluster（集群）：路由反射器及其客户机的集合。Cluster_List属性用于防止集群间产生路由环路。</p>
+<p>•将一台BGP路由器指定为RR的同时，还需要指定其Client。至于Client本身，无需做任何配置，它并不知晓网络中存在RR。</p>
+<p>•RR发布路由规则：</p>
+<ul>
+<li>从非客户机IBGP对等体学到的路由，发布给此RR的所有客户机。</li>
+<li>从客户机学到的路由，发布给此RR的所有非客户机和客户机。</li>
+<li>从EBGP对等体学到的路由，发布给所有的非客户机和客户机。</li>
+</ul>
+</blockquote>
+<h2 id="常见组网：备份RR组网"><a href="#常见组网：备份RR组网" class="headerlink" title="常见组网：备份RR组网"></a>常见组网：备份RR组网</h2><p>•为增加网络的可靠性，防止单点故障对网络造成影响，有时需要在一个集群中配置一个以上的RR。</p>
+<p>•转发路径上的路由器与所有RR均建立IBGP关系，任意一个RR均有完整的BGP路由。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/38.png"></p>
+<h2 id="常见组网：多集群RR组网-1"><a href="#常见组网：多集群RR组网-1" class="headerlink" title="常见组网：多集群RR组网 (1)"></a>常见组网：多集群RR组网 (1)</h2><p>•一个AS中可以存在多个集群，各个集群的RR之间建立IBGP对等体。</p>
+<p>•当RR所处的网络层相同时，可以将不同集群的RR全互联，形成同级RR。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/39.png"></p>
+<h2 id="常见组网：多集群RR组网-2"><a href="#常见组网：多集群RR组网-2" class="headerlink" title="常见组网：多集群RR组网 (2)"></a>常见组网：多集群RR组网 (2)</h2><p>•一个AS中可以存在多个集群，各个集群的RR之间建立IBGP对等体。</p>
+<p>•当RR所处的网络层不同时，可以将较低网络层次的RR配成客户机，形成分级RR。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/40.png"></p>
+<blockquote>
+<p>•分级RR与单级RR的路由发布规则相同。</p>
+<p>•分级RR设计需要考虑两个因素：</p>
+<ul>
+<li>顶层全互联的拓扑大小：如果IBGP全互联数量已经多到难以管理了，则可考虑引入RR分级部署。</li>
+<li>可替代路径的数量：该因素影响负载分担和资源消耗。越多的层次越会减少负载分担链路的数量，但需要的路由器资源更少。</li>
+</ul>
+</blockquote>
+<h2 id="单集群问题"><a href="#单集群问题" class="headerlink" title="单集群问题"></a>单集群问题</h2><p>为了在基于RR的架构中提供所期望的冗余，正确的集群划分是非常重要的。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/41.png"></p>
+<h2 id="多集群设计"><a href="#多集群设计" class="headerlink" title="多集群设计"></a>多集群设计</h2><p>多集群设计不仅提供了针对链路失效的物理冗余，同时提供了针对客户机与RR之间的IBGP会话失效的逻辑冗余。</p>
+<p><img src="/2021/06/30/IPadv-BGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/42.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）命令**“ip as-path-filter 1 permit ^(100|200)$**”中匹配到的AS_Path是什么？(   )</p>
+<p>A.AS_Path 100</p>
+<p>B.AS_Path 200</p>
+<p>C.AS_Path 100 200</p>
+<p><strong>D.AS_Path 100 或 AS_Path 200</strong></p>
+<p>2.（判断题）BGP的GTSM功能，可以预防非法BGP邻居建立。(   )</p>
+<p>A.正确</p>
+<p><strong>B.错误</strong></p>
+<p>3.（判断题）BGP的备份RR组网中，主备RR收到对方反射的路由会丢弃，避免路由环路。(   )</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•AS_Path Filter和Community Filter都是BGP专有的路由匹配工具，可以使用这两种工具匹配AS_Path属性或Community属性来匹配BGP路由，再与路由策略相结合，从而实现BGP的路由控制。</p>
+<p>•BGP还支持各种高级特性，包括：通过ORF功能实现邻居按需发布路由，通过对等体组简化配置，通过BGP安全特性预防非法邻居建立以及非法BGP报文攻击。</p>
+<p>•BGP通过RR打破了IBGP水平分割规则，简化了IBGP全互联的需求，也减轻了网络和CPU的负担。常见的RR组网方式包括：备份RR组网和多集群RR组网。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSVPN%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%BA%94%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3604,572 +4695,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-DHCP原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T21:07:42+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/DHCP.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着网络规模的不断扩大，网络复杂度不断提升，网络中的终端设备例如主机、手机、平板等，位置经常变化。终端设备访问网络时需要配置IP地址、网关地址、DNS服务器地址等。采用手工方式为终端配置这些参数非常低效且不够灵活。</p>
-<p>•IETF于1993年发布了DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）。DHCP实现了网络参数配置的自动化，降低客户端的配置和维护成本。</p>
-<p>•本课程介绍DHCP工作原理、应用场景和简单配置。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述DHCP工作原理</p>
-<p>▫描述DHCP地址分配规则</p>
-<p>▫区分DHCP与DHCP Relay的应用场景</p>
-<p>▫实现DHCP的基本配置</p>
-<h1 id="1-DHCP产生背景"><a href="#1-DHCP产生背景" class="headerlink" title="1.DHCP产生背景"></a>1.DHCP产生背景</h1><h2 id="手工配置网络参数存在的问题"><a href="#手工配置网络参数存在的问题" class="headerlink" title="手工配置网络参数存在的问题"></a>手工配置网络参数存在的问题</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<blockquote>
-<p>•手工配置主机IP地址、网络掩码、网关地址、DNS服务器地址等网络参数时，需要经过地址规划、地址分配、地址配置、地址维护等复杂的操作流程。这使地址分配灵活性差，IP地址资源利用低，同时较大的工作量导致配置容易出错，对人员素质要求较高。</p>
-</blockquote>
-<h2 id="DHCP的基本概念"><a href="#DHCP的基本概念" class="headerlink" title="DHCP的基本概念"></a>DHCP的基本概念</h2><p>•DHCP是一种用于集中对用户IP地址进行动态管理和配置的协议。</p>
-<p>•DHCP采用C/S(Client/Server，客户端/服务器)通信模式，协议报文基于UDP的方式进行交互，采用67（DHCP服务器）和68（DHCP客户端）两个端口号：</p>
-<p>​    ▫正常工作时由客户端向服务器提出配置申请。</p>
-<p>​    ▫服务器返回为客户端分配的IP地址等相应的配置信息。</p>
-<p>•DHCP相对于手工配置有如下优点：</p>
-<p>​    ▫效率高</p>
-<p>​    ▫灵活性强</p>
-<p>​    易于管理</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<blockquote>
-<p>•网络终端设备，例如主机、打印机、笔记本电脑、手机和AP，作为DHCP客户端，向DHCP服务器请求分配相关网络参数。DHCP服务器响应DHCP客户端请求进行动态分配。</p>
-</blockquote>
-<h1 id="2-DHCP工作原理与配置"><a href="#2-DHCP工作原理与配置" class="headerlink" title="2.DHCP工作原理与配置"></a>2.DHCP工作原理与配置</h1><h2 id="DHCP客户端首次接入网络的工作原理"><a href="#DHCP客户端首次接入网络的工作原理" class="headerlink" title="DHCP客户端首次接入网络的工作原理"></a>DHCP客户端首次接入网络的工作原理</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<ol>
-<li>发现阶段，即DHCP客户端发现DHCP服务器的阶段。</li>
-</ol>
-<ul>
-<li>DHCP客户端发送DHCP DISCOVER报文来发现DHCP服务器。DHCP DISCOVER报文中携带了客户端的MAC地址、需要请求的参数列表选项、广播标志位等信息。</li>
-</ul>
-<ol start="2">
-<li>提供阶段，即DHCP服务器提供网络配置信息的阶段。</li>
-</ol>
-<ul>
-<li>服务器接收到DHCP DISCOVER报文后，选择跟接收DHCP DISCOVER报文接口的IP地址处于同一网段的地址池，并且从中选择一个可用的IP地址，然后通过DHCP OFFER报文发送给DHCP客户端。</li>
-</ul>
-<ol start="3">
-<li>选择阶段，即DHCP客户端选择IP地址的阶段。</li>
-</ol>
-<ul>
-<li><p>如果有多个DHCP服务器向DHCP客户端回应DHCP OFFER报文，则DHCP客户端一般只接收第一个收到的DHCP OFFER报文，然后以广播方式发送DHCP REQUEST报文，该报文中包含客户端想选择的DHCP服务器标识符和客户端IP地址。</p>
-<p>4.确认阶段，即DHCP服务器确认所分配IP地址的阶段。</p>
-</li>
-<li><p>DHCP客户端收到DHCP ACK报文，会广播发送免费ARP报文，探测本网段是否有其他终端使用服务器分配的IP地址。</p>
-</li>
-</ul>
-<blockquote>
-<p>•在确认阶段，两种情况可能出现IP地址的冲突：</p>
-<ul>
-<li><p>DHCP服务器收到DHCP DISCOVER报文时，给客户端分配IP地址前会发送Ping探测，如果能Ping通则标识该地址不可用，并选择其他IP地址分配给客户端。</p>
-</li>
-<li><p>DHCP客户端获取IP地址成功后，会立即发送免费ARP报文，如果收到响应，则发送DHCP DECLINE报文通知DHCP服务器该IP地址冲突，DHCP服务器标识该地址不可用，客户端发送DHCP DISCOVER报文重新申请IP地址。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="DHCP报文格式"><a href="#DHCP报文格式" class="headerlink" title="DHCP报文格式"></a>DHCP报文格式</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<blockquote>
-<p>•Htype （hardware type）: 表示硬件地址的类型。</p>
-<p>•Hlen（hardware length）: 表示硬件地址的长度。</p>
-<p>•Hops（hops）: 表示当前DHCP报文经过的DHCP Relay数目。该字段由客户端设置为0，每经过一个DHCP Relay时，该字段加1。此字段的作用是限制DHCP报文所经过的DHCP Relay数目。</p>
-<p>•Xid：表示DHCP客户端选取的随机数，使DHCP服务器的回复与DHCP客户端的报文相关联。</p>
-<p>•Sname（server host name）: 表示客户端获取配置信息的服务器名字。此字段由DHCP服务器填写，是可选的。如果填写，必须是一个以0结尾的字符串。</p>
-<p>•File（file name）: 表示客户端启动DHCP相关配置的文件名。此字段由DHCP服务器填写，随着DHCP地址分配的同时下发至客户端。本字段是可选的，如果填写，必须是一个以0结尾的字符串。</p>
-</blockquote>
-<h2 id="Options预定义选项字段介绍"><a href="#Options预定义选项字段介绍" class="headerlink" title="Options预定义选项字段介绍"></a>Options预定义选项字段介绍</h2><p>•DHCP报文中Options字段为可变长度字段，最多为312Byte，此字段包含了DHCP报文类型，服务器分配给终端的配置信息，如网关IP地址，DNS服务器的IP地址，客户端可以使用IP地址的有效租期等信息。</p>
-<p>•Options字段由Type、Length和Value三部分组成。其中Type字段取值范围1~255。常见的Options如下表所示：</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<h2 id="DHCP的消息类型"><a href="#DHCP的消息类型" class="headerlink" title="DHCP的消息类型"></a>DHCP的消息类型</h2><p>DHCP报文通过Options选项中的Type=53来表示DHCP的报文类型。如下图所示，当Type=53，Length=1，Value取值从01到08分别表示不同的DHCP报文类型。</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<blockquote>
-<p>•1-DHCP DISCOVER：DHCP客户端首次登录网络时进行DHCP交互过程发送的第一个消息，用来寻找DHCP服务器。</p>
-<p>•2-DHCP OFFER：DHCP服务器用来响应DHCP DISCOVER消息，此消息携带了各种配置信息。 </p>
-<p>•3-DHCP REQUEST：DHCP客户端广播请求回应DHCP服务器OFFER消息；DHCP客户端重启广播确认之前的IP地址等配置信息；续租。</p>
-<p>•4-DHCP DECLINE：当客户端发现服务器分配给它的IP地址发生冲突时会通过发送此消息来通知服务器。</p>
-<p>•5-DHCP ACK：DHCP服务器对客户端的DHCP REQUEST消息的确认响应消息。</p>
-<p>•6-DHCP NAK：服务器对客户端的DHCP REQUEST消息的拒绝响应消息。</p>
-<p>•7-DHCP RELEASE：客户端可通过发送此消息主动释放服务器分配给它的IP地址。</p>
-<p>•8-DHCP INFORM：DHCP客户端获取IP地址后，如果需要向DHCP服务器获取更为详细的配置信息（网关地址、DNS服务器地址），则向DHCP服务器发送DHCP INFORM请求消息。</p>
-</blockquote>
-<h2 id="Options自定义选项字段介绍"><a href="#Options自定义选项字段介绍" class="headerlink" title="Options自定义选项字段介绍"></a>Options自定义选项字段介绍</h2><p>除了标准协议中规定的字段选项外，还有部分选项内容没有统一规定，统称为用户自定义选项，例如Option 82和Option 43。</p>
-<ul>
-<li>Option 82称为中继代理信息选项。<ul>
-<li>Option 82中可以包含最多255个Sub-Option，若定义了Option 82，至少要定义一个Sub-Option。</li>
-<li>DHCP中继或DHCP Snooping设备接收到DHCP客户端发送给DHCP服务器的请求报文后，在该报文中添加Option 82，并转发给DHCP服务器。管理员可以从Option 82中获得DHCP客户端的信息，例如DHCP客户端所连接交换机端口的VLAN ID、二层端口号、中继设备的MAC地址等。</li>
-</ul>
-</li>
-</ul>
-<p>▫Option 43称为厂商特定信息选项。</p>
-<ul>
-<li>DHCP服务器和DHCP客户端通过Option 43交换厂商特定的信息。当DHCP服务器接收到请求Option 43信息的DHCP请求报文（Option 55中带有Option 43参数）后，将在回复报文中携带Option 43，为DHCP客户端分配厂商指定的信息。</li>
-<li>在WLAN组网中，AP作为DHCP客户端，DHCP服务器可以为AP指定AC的IP地址，以方便AP与AC建立连接。</li>
-</ul>
-<blockquote>
-<p>目前option 82中常用的Sub-Option如下：</p>
-<p>▫Sub-Option 1：为代理电路id（即circuit id）子项。子选项通常在DHCP中继设备上配置，定义了在传输报文的时候要携带DHCP客户端所连接交换机端口的vlan-id及二层端口号。通常Sub-Option 1与Sub-Option 2子选项要共同使用来标识DHCP源端的信息。</p>
-<p>▫Sub-Option 2：代理远程id（即remote id）子项。该子选项也通常在DHCP中继设备上配置，定义了在传输报文的时候要携带中继设备的mac地址信息。</p>
-<p>▫和Sub-Option 5：为链路选择（link selection）子项，该选项中包含了DHCP中继添加的ip地址。这样DHCP server在分配ip地址给DHCP客户端的时候就可以分配与该地址同网段的ip地址。</p>
-</blockquote>
-<h2 id="Option-43应用举例"><a href="#Option-43应用举例" class="headerlink" title="Option 43应用举例"></a>Option 43应用举例</h2><p>•在WLAN三层组网中，当AP上线时，需要获取AC的IP地址，并与AC之间建立CAPWAP隧道。</p>
-<p>•AP的IP地址通过DHCP服务器分配，当AC的IP地址与AP不在同一个广播域，AP无法通过广播的方式获取AC的IP地址，则CAPWAP隧道无法建立成功。</p>
-<p>•AP通过DHCP报文中的Option 43选项字段获取AC的IP地址，当AP获取AC的IP地址后，可以进一步完成CAPWAP隧道的建立，从而实现AP上线。</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<h2 id="DHCP地址续租"><a href="#DHCP地址续租" class="headerlink" title="DHCP地址续租"></a>DHCP地址续租</h2><p>DHCP客户端根据IP地址的剩余租期的不同而产生不同形式的续租请求。</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<p>•当租期达到50%（T1）时，DHCP客户端会自动以单播的方式向DHCP服务器发送DHCP REQUEST报文，请求更新IP地址租期。如果收到DHCP服务器回应的DHCP ACK报文，则租期更新成功。</p>
-<p>•当租期达到87.5%（T2）时，如果仍未收到DHCP服务器的应答，DHCP客户端会自动以广播的方式向DHCP服务器发送DHCP REQUEST报文，请求更新IP地址租期。如果收到DHCP服务器回应的DHCP ACK报文，则租期更新成功。</p>
-<p>•如果租期时间到时都没有收到服务器的回应，客户端停止使用此IP地址，重新发送DHCP DISCOVER报文请求新的IP地址。</p>
-<blockquote>
-<p>•DHCP服务器给每个分配给客户端的IP地址定义一个使用期限，该使用期限被称为租期。在租期到期前，DHCP客户端如果仍需要使用该IP地址，可以请求延长租期；如果不需要，可以主动释放该IP地址。在没有其他空闲地址可用的情况下，DHCP服务器会把客户端主动释放的IP地址分配给其他客户端。</p>
-<p>•DHCP客户端无论在T1还是T2时刻发送DHCP REQUEST报文后，如果收到DHCP NAK报文，则重新发送DHCP DISCOVER报文请求新的IP地址。</p>
-<p>•客户端在租期时间到之前，如果用户不想使用分配的IP地址（例如客户端网络位置需要变更），会触发DHCP客户端向DHCP服务器发送DHCP RELEASE报文，通知DHCP服务器释放IP地址的租期。DHCP服务器会保留这个DHCP客户端的配置信息，将IP地址列为曾经分配过的IP地址中，以便后续重新分配给该客户端或其他客户端。客户端可以通过发送DHCP INFORM报文向服务器请求更新配置信息。</p>
-</blockquote>
-<h2 id="DHCP客户端重用曾经使用过的地址"><a href="#DHCP客户端重用曾经使用过的地址" class="headerlink" title="DHCP客户端重用曾经使用过的地址"></a>DHCP客户端重用曾经使用过的地址</h2><p>DHCP客户端非首次接入网络时，可以重用曾经使用过的地址。例如，网络中的主机作为DHCP客户端，在关机再开机的过程中，需要重新获取相关网络参数，则可以请求分配曾经使用过的IP地址。</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<p>1.选择阶段</p>
-<ul>
-<li>客户端广播发送包含前一次分配的IP地址的DHCP REQUEST报文，报文中的Option 50（请求的IP地址选项）字段填入曾经使用过的IP地址。</li>
-</ul>
-<p>2.确认阶段</p>
-<ul>
-<li>DHCP服务器收到DHCP REQUEST报文后，根据DHCP REQUEST报文中携带的MAC地址来查找有没有相应的租约记录。如果有则返回DHCP ACK报文，通知DHCP客户端可以继续使用这个IP地址，如果没有租约记录，则不响应。</li>
-</ul>
-<blockquote>
-<p>•是否支持重用曾经使用过的IP地址，因不同客户端而异。</p>
-</blockquote>
-<h2 id="DHCP分配IP地址顺序"><a href="#DHCP分配IP地址顺序" class="headerlink" title="DHCP分配IP地址顺序"></a>DHCP分配IP地址顺序</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<h2 id="DHCP配置命令介绍-1"><a href="#DHCP配置命令介绍-1" class="headerlink" title="DHCP配置命令介绍 (1)"></a>DHCP配置命令介绍 (1)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<blockquote>
-<p>•此处以ip pool的名字为HW举例说明。</p>
-<p>•缺省情况下，没有配置为指定DHCP Client分配固定IP地址。</p>
-</blockquote>
-<h2 id="DHCP配置命令介绍-2"><a href="#DHCP配置命令介绍-2" class="headerlink" title="DHCP配置命令介绍 (2)"></a>DHCP配置命令介绍 (2)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<blockquote>
-<p>•此处以接口GigabitEthernet0/0/1举例说明。</p>
-</blockquote>
-<h2 id="DHCP配置举例（1）"><a href="#DHCP配置举例（1）" class="headerlink" title="DHCP配置举例（1）"></a>DHCP配置举例（1）</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<h2 id="DHCP配置举例（2）"><a href="#DHCP配置举例（2）" class="headerlink" title="DHCP配置举例（2）"></a>DHCP配置举例（2）</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
-<h2 id="DHCP配置结果"><a href="#DHCP配置结果" class="headerlink" title="DHCP配置结果"></a>DHCP配置结果</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
-<h1 id="3-DHCP-Relay工作原理与配置"><a href="#3-DHCP-Relay工作原理与配置" class="headerlink" title="3.DHCP Relay工作原理与配置"></a>3.DHCP Relay工作原理与配置</h1><h2 id="什么是DHCP-Relay"><a href="#什么是DHCP-Relay" class="headerlink" title="什么是DHCP Relay"></a>什么是DHCP Relay</h2><p>•随着网络规模的不断扩大，网络设备不断增多，企业内不同的用户可能分布在不同的网段，一台DHCP服务器在正常情况下无法满足多个网段的地址分配需求。如果还需要通过DHCP服务器分配IP地址，则需要跨网段发送DHCP报文。</p>
-<p>•DHCP Relay即DHCP中继，它是为解决DHCP服务器和DHCP客户端不在同一个广播域而提出的，提供了对DHCP广播报文的中继转发功能，能够把DHCP客户端的广播报文“透明地”传送到其它广播域的DHCP服务器上，同样也能够把DHCP服务器端的应答报文“透明地”传送到其它广播域的DHCP客户端。</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
-<h2 id="DHCP-Relay报文格式"><a href="#DHCP-Relay报文格式" class="headerlink" title="DHCP Relay报文格式"></a>DHCP Relay报文格式</h2><p>DHCP Relay主要负责转发DHCP客户端与DHCP服务器之间的DHCP报文，所以DHCP Relay的报文格式只是把DHCP的报文部分字段做了相应的修改，报文格式没有发生变化，如下图所示：</p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<p>Hops：表示当前的DHCP报文经过的DHCP中继的数目。该字段由客户端或服务器设置为0，每经过一个DHCP中继时，该字段加1。</p>
-<p>Giaddr(gateway ip address)：表示第一个DHCP中继的IP地址。当客户端发出DHCP请求时，第一个DHCP中继在将DHCP请求报文转发给DHCP服务器时，会把自己的IP地址填入此字段。</p>
-<blockquote>
-<p>•Hops字段的作用是限制DHCP报文所经过的DHCP中继数目。服务器和客户端之间的DHCP中继数目不能超过16个，也就是Hops值不能大于16，否则DHCP报文将被丢弃。</p>
-<p>•Giaddr字段，DHCP服务器会根据此字段来判断出客户端所在的网段地址，从而选择合适的地址池，为客户端分配该网段的IP地址。服务器还会根据此地址将响应报文发送给此DHCP中继，再由DHCP中继将此报文转发给客户端。若在到达DHCP服务器前经过了多个DHCP中继，该字段作为客户端所在的网段的标记，填充了第一个DHCP中继的IP地址后不会再变更，只是每经过一个DHCP中继，hops字段的数值会加1。</p>
-</blockquote>
-<h2 id="DHCP-Relay工作原理"><a href="#DHCP-Relay工作原理" class="headerlink" title="DHCP Relay工作原理"></a>DHCP Relay工作原理</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<p>有中继场景时DHCP客户端首次接入网络的工作原理：</p>
-<p>1.发现阶段：DHCP中继接收到DHCP客户端广播发送的DHCP DISCOVER报文后，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</p>
-<p>2.提供阶段：DHCP服务器根据DHCP DISCOVER报文中的Giaddr字段选择地址池为客户端分配相关网络参数，DHCP中继收到DHCP OFFER报文后，以单播或组播方式发送给DHCP Client。</p>
-<p>3.选择阶段：中继接收到来自客户端的DHCP REQUEST报文的处理过程同“发现阶段”。</p>
-<p>4.确认阶段：中继接收到来自服务器的DHCP ACK报文的处理过程同“提供阶段”。</p>
-<blockquote>
-<p>1.DHCP中继收到DHCP DISCOVER报文后，处理规则为：</p>
-<ul>
-<li>检查DHCP报文中的Hops字段，如果大于16，则丢弃DHCP报文；否则，将Hops字段加1（表明经过一次DHCP中继），并继续下面的操作。</li>
-<li>检查DHCP报文中的Giaddr字段。如果是0，将Giaddr字段设置为接收DHCP DISCOVER报文的接口IP地址。如果不是0，则不修改该字段，继续下面的操作。</li>
-<li>将DHCP报文的目的IP地址改为DHCP服务器或下一跳中继的IP地址，源地址改为中继连接客户端的接口地址，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</li>
-</ul>
-<p>2.DHCP服务器接收到DHCP DISCOVER报文后，选择与报文中Giaddr字段为同一网段的地址池，并为客户端分配IP地址等参数，然后向Giaddr字段标识的DHCP中继单播发送DHCP OFFER报文，DHCP中继收到DHCP OFFER报文后，会进行如下处理：</p>
-<ul>
-<li><p>检查报文中的Giaddr字段，如果不是接口的地址，则丢弃该报文；否则，继续下面的操作。</p>
-</li>
-<li><p>DHCP中继检查报文的广播标志位。如果广播标志位为1，则将DHCP OFFER报文广播发送给DHCP客户端；否则将DHCP OFFER报文单播发送给DHCP客户端。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="DHCP-Relay配置命令介绍"><a href="#DHCP-Relay配置命令介绍" class="headerlink" title="DHCP Relay配置命令介绍"></a>DHCP Relay配置命令介绍</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
-<h2 id="DHCP-Relay配置举例-1"><a href="#DHCP-Relay配置举例-1" class="headerlink" title="DHCP Relay配置举例 (1)"></a>DHCP Relay配置举例 (1)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<blockquote>
-<p>•各个设备配置DHCP前需要在全局视图下通过DHCP enable命令开启DHCP功能。</p>
-</blockquote>
-<h2 id="DHCP-Relay配置举例-2"><a href="#DHCP-Relay配置举例-2" class="headerlink" title="DHCP Relay配置举例 (2)"></a>DHCP Relay配置举例 (2)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<h2 id="DHCP-Relay配置验证"><a href="#DHCP-Relay配置验证" class="headerlink" title="DHCP Relay配置验证"></a>DHCP Relay配置验证</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
-<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）DHCP客户端向DHCP Server进行续租时会发送哪种报文？</p>
-<p>A.DHCP DISCOVER</p>
-<p>B.DHCP OFFER</p>
-<p><strong>C.DHCP REQUEST</strong></p>
-<p>D.DHCP ACK</p>
-<p>2.（单选题）以下哪条命令可以开启路由器接口的DHCP中继功能？</p>
-<p>A.DHCP select server</p>
-<p>B.DHCP select global</p>
-<p>C.DHCP select interface</p>
-<p><strong>D.DHCP select relay</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章节主要讲解了DHCP报文的格式及关键字段的作用。通过报文交互介绍了DHCP服务器如何给DHCP客户端分配IP地址等网络参数的过程，同时阐述了地址续租与DHCP客户端重启之后如何获取IP地址的原理。</p>
-<p>•当DHCP客户端与DHCP服务器不在一个广播域的时候，通过DHCP Relay的中继功能，实现DHCP报文的跨网段传输，从而完成DHCP客户端与服务器之间的报文协商。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-VRRP原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:53:26+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•局域网中的用户终端通常采用配置一个默认网关的形式访问外部网络，如果默认网关设备发生故障，那么所有用户终端访问外部网络的流量将会中断。可以通过部署多个网关的方式来解决单点故障，但是需要解决多个网关之间的冲突问题。</p>
-<p>•VRRP（Virtual Router Redundancy Protocol，虚拟路由器冗余协议）既能够实现网关的备份，又能解决多个网关之间互相冲突的问题，从而提高网络可靠性。</p>
-<p>•本课程主要介绍VRRP的工作原理与基本配置，以及在网络中的典型应用。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫分析局域网单网关引发的问题</p>
-<p>▫阐述VRRP基本概念及工作原理</p>
-<p>▫描述VRRP主备切换过程</p>
-<p>▫实现VRRP基本配置</p>
-<h1 id="1-VRRP技术概述"><a href="#1-VRRP技术概述" class="headerlink" title="1.VRRP技术概述"></a>1.VRRP技术概述</h1><h2 id="单网关面临的问题"><a href="#单网关面临的问题" class="headerlink" title="单网关面临的问题"></a>单网关面临的问题</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<h2 id="VRRP概述"><a href="#VRRP概述" class="headerlink" title="VRRP概述"></a>VRRP概述</h2><p>通过把几台路由设备联合组成一台虚拟的“路由设备”，使用一定的机制保证当主机的下一跳路由设备出现故障时，及时将业务切换到备份路由设备，从而保持通讯的连续性和可靠性。</p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<blockquote>
-<p>•VRRP的运行结果是在局域网上提供一个虚拟路由器。</p>
-<p>•本例中：</p>
-<ul>
-<li><p>局域网中有两个路由器R1和R2，R1端口IP地址为192.168.1.251/24，R2端口IP地址为192.168.1.252/24。</p>
-</li>
-<li><p>配置R1和R2关联到同一个虚拟路由器，该虚拟路由器使用192.168.1.254做为端口IP地址。</p>
-</li>
-<li><p>所有的PC使用192.168.1.254做为默认网关。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="VRRP的基本概念-1"><a href="#VRRP的基本概念-1" class="headerlink" title="VRRP的基本概念 (1)"></a>VRRP的基本概念 (1)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<p>•<strong>VRRP路由器：</strong>运行VRRP协议的路由器，如R1和R2。VRRP是配置在路由器的接口上的，而且也是基于接口来工作的。</p>
-<p>•<strong>VRID：</strong>一个VRRP组（VRRP Group）由多台协同工作的路由器（的接口）组成，使用相同的VRID（Virtual Router Identifier，虚拟路由器标识符）进行标识。属于同一个VRRP组的路由器之间交互VRRP协议报文并产生一台虚拟“路由器”。一个VRRP组中只能出现一台Master路由器。 </p>
-<h2 id="VRRP的基本概念-2"><a href="#VRRP的基本概念-2" class="headerlink" title="VRRP的基本概念 (2)"></a>VRRP的基本概念 (2)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<p>•<strong>虚拟路由器：</strong>VRRP为每一个组抽象出一台虚拟“路由器”（Virtual Router），该路由器并非真实存在的物理设备，而是由VRRP虚拟出来的逻辑设备。一个VRRP组只会产生一台虚拟路由器。</p>
-<p>•<strong>虚拟IP地址及虚拟MAC地址：</strong>虚拟路由器拥有自己的IP地址以及MAC地址，其中IP地址由网络管理员在配置VRRP时指定，一台虚拟路由器可以有一个或多个IP地址，通常情况下用户使用该地址作为网关地址。而虚拟MAC地址的格式是“0000-5e00-01xx”，其中xx为VRID。</p>
-<h2 id="VRRP的基本概念-3"><a href="#VRRP的基本概念-3" class="headerlink" title="VRRP的基本概念 (3)"></a>VRRP的基本概念 (3)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<p>•<strong>Master路由器：</strong>“Master路由器”在一个VRRP组中承担报文转发任务。在每一个VRRP组中，只有Master路由器才会响应针对虚拟IP地址的ARP Request。Master路由器会以一定的时间间隔周期性地发送VRRP报文，以便通知同一个VRRP组中的Backup路由器关于自己的存活情况。</p>
-<p>•<strong>Backup路由器：</strong>也被称为备份路由器。Backup路由器将会实时侦听Master路由器发送出来的VRRP报文，它随时准备接替Master路由器的工作。</p>
-<p>•<strong>Priority：</strong>优先级值是选举Master路由器和Backup路由器的依据，优先级取值范围0-255，值越大越优先，值相等则比较接口IP地址大小，大者优先。</p>
-<h2 id="VRRP报文格式"><a href="#VRRP报文格式" class="headerlink" title="VRRP报文格式"></a>VRRP报文格式</h2><p>VRRP只有一种报文，即Advertisement报文，基于组播方式发送，因此只能在同一个广播域传递。 Advertisement报文的目的组播地址为224.0.0.18。</p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<blockquote>
-<p>VRRP报文字段含义如下：</p>
-<p>▫Ver：VRRP目前有两个版本，其中VRRPv2仅适用于IPv4网络，VRRPv3适用于IPv4和IPv6两种网络。</p>
-<p>▫Virtual Rtr ID：该报文所关联的虚拟路由器的标识。</p>
-<p>▫Priority：发送该报文的VRRP路由器的优先级。</p>
-<p>▫Count IP Addrs：该VRRP报文中所包含的虚拟IP地址的数量。</p>
-<p>▫Auth Type：VRRP支持三种认证类型：不认证、纯文本密码认证、MD5方式认证，对应值分别为0、1、2。</p>
-<p>▫Adver Int：发送VRRP通告消息的间隔。默认为1秒</p>
-<p>▫IP Address：所关联的虚拟路由器的虚拟IP地址，可以为多个。</p>
-<p>▫Authentication Data：验证所需要的密码信息。</p>
-</blockquote>
-<h2 id="VRRP定时器"><a href="#VRRP定时器" class="headerlink" title="VRRP定时器"></a>VRRP定时器</h2><p>在VRRP协议工作过程中，VRRP定义了两个定时器：</p>
-<p>▫ADVER_INTERVAL定时器：Master发送VRRP通告报文时间周期，缺省值为1秒。</p>
-<p>▫MASTER_DOWN定时器：Backup设备监听该定时器超时后，会变为Master状态。<br>     MASTER_DOWN定时器计算公式如下：</p>
-<ul>
-<li>MASTER_DOWN =（3* ADVER_INTERVAL）+ Skew_time（偏移时间）</li>
-<li>其中，Skew_Time=（256–Priority）/256</li>
-</ul>
-<h1 id="2-VRRP技术原理"><a href="#2-VRRP技术原理" class="headerlink" title="2.VRRP技术原理"></a>2.VRRP技术原理</h1><h2 id="VRRP状态机"><a href="#VRRP状态机" class="headerlink" title="VRRP状态机"></a>VRRP状态机</h2><p>VRRP协议状态机有三种状态：Initialize（初始状态）、Master（活动状态）、Backup（备份状态）。</p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<blockquote>
-<p>•一个Startup事件可以由系统在VRRP配置完成后自动触发，也可以是在已经配置VRRP的端口上，底层链路由不可用变为可用而触发。</p>
-</blockquote>
-<h2 id="VRRP协议状态"><a href="#VRRP协议状态" class="headerlink" title="VRRP协议状态"></a>VRRP协议状态</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<h2 id="VRRP主备选举-1"><a href="#VRRP主备选举-1" class="headerlink" title="VRRP主备选举 (1)"></a>VRRP主备选举 (1)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<blockquote>
-<p>•初始创建VRRP的设备工作在Initialize状态，收到接口Up的消息后，若此设备的优先级小于255，则会先切换至Backup状态，等待MASTER_DOWN定时器超时后再切换至Master状态。</p>
-<p>•如果优先级高的设备先启动，优先级低的设备后启动，则优先级高的设备先进入Master状态，优先级低的设备收到高优先级的VRRP通告报文，自己仍处于Backup状态。</p>
-<p>•如果优先级低的先启动，优先级高的后启动，则优先级低的先由Backup状态切换为Master状态，优先级高的设备收到优先级低的VRRP通告报文，重新进行选举，将优先级高的设备切换为Master状态。</p>
-</blockquote>
-<h2 id="VRRP主备选举-2"><a href="#VRRP主备选举-2" class="headerlink" title="VRRP主备选举 (2)"></a>VRRP主备选举 (2)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<blockquote>
-<p>•初始创建VRRP的设备工作在Initialize状态，收到接口Up的消息后，若此设备的优先级小于255，则会先切换至Backup状态，等待MASTER_DOWN定时器超时后再切换至Master状态。</p>
-<p>•如果优先级高的设备先启动，优先级低的设备后启动，则优先级高的设备先进入Master状态，优先级低的设备收到高优先级的VRRP通告报文，自己仍处于Backup状态。</p>
-<p>•如果优先级低的先启动，优先级高的后启动，则优先级低的先由Backup状态切换为Master状态，优先级高的设备收到优先级低的VRRP通告报文，重新进行选举，将优先级高的设备切换为Master状态。</p>
-</blockquote>
-<h2 id="VRRP主备选举-3"><a href="#VRRP主备选举-3" class="headerlink" title="VRRP主备选举 (3)"></a>VRRP主备选举 (3)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<blockquote>
-<p>•通常情况下，VRRP路由器的接口IP地址不会与虚拟路由器的IP地址重叠，也就是说我们会为虚拟路由器单独规划一个IP地址，而不会使用某台路由器的接口IP地址。当然也存在一个特殊的情况，例如在某些网络中IP地址资源比较紧缺，那么也有可能会将某台路由器的接口IP地址用于虚拟路由器，此时该路由器将无条件成为Master。</p>
-<p>•无法手动将VRRP接口优先级配置为255，当接口IP地址为IP地址拥有者时，优先级自动成为255。</p>
-</blockquote>
-<h2 id="VRRP主备切换"><a href="#VRRP主备切换" class="headerlink" title="VRRP主备切换"></a>VRRP主备切换</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
-<blockquote>
-<p>•当Master设备主动放弃Master地位（如Master设备退出备份组）时，会发送优先级为0的通告报文，用来使Backup设备快速切换成Master设备，而不用等到MASTER_DOWN定时器超时。这个切换的时间称为Skew_time。</p>
-<p>•当Master设备发生网络故障而不能发送通告报文的时候，Backup设备并不能立即知道其工作状况。等到MASTER_DOWN定时器超时后，才会认为Master设备无法正常工作，从而将状态切换为Master。</p>
-</blockquote>
-<h2 id="VRRP主备回切"><a href="#VRRP主备回切" class="headerlink" title="VRRP主备回切"></a>VRRP主备回切</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
-<blockquote>
-<p>•开启抢占模式的VRRP备份组，当主备进行切换时，总共时长为：3xAdver_Interval+Skew_time+Delay_time</p>
-<p>•在抢占模式下，当Master的设备状态不稳定或者网络质量差时，会导致VRRP备份组频繁切换，从而引发终端ARP表项频繁刷新，为缓解此问题，通常设置抢占延时定时器，通过MASTER_INTERVAL定时器超时时间加上延时时间，确定状态稳定后，再进行主备回切。</p>
-</blockquote>
-<h1 id="3-VRRP典型应用"><a href="#3-VRRP典型应用" class="headerlink" title="3.VRRP典型应用"></a>3.VRRP典型应用</h1><h2 id="VRRP负载分担"><a href="#VRRP负载分担" class="headerlink" title="VRRP负载分担"></a>VRRP负载分担</h2><p>通过创建多个虚拟路由器，每个物理路由器在不同的VRRP组中扮演不同的角色，不同虚拟路由器的Virtual IP作为不同的内网网关地址可以实现流量转发负载分担。</p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
-<h2 id="VRRP监视上行端口"><a href="#VRRP监视上行端口" class="headerlink" title="VRRP监视上行端口"></a>VRRP监视上行端口</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
-<blockquote>
-<p>•如果用户未配置VRRP监视上行端口，则当VRRP备份组中的Master设备R1的上行接口或者链路出现故障时，VRRP备份组无法感知，Master无法向外转发流量。但是由于主备不会发生切换，导致出现流量黑洞。</p>
-</blockquote>
-<h2 id="VRRP与BFD联动"><a href="#VRRP与BFD联动" class="headerlink" title="VRRP与BFD联动"></a>VRRP与BFD联动</h2><p>通过配置VRRP与BFD联动，当Backup设备通过BFD感知故障发生之后，不再等待Master_Down_Timer计时器超时而会在BFD检测周期结束后立即切换VRRP状态，此时可以实现毫秒级的主备切换。</p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<blockquote>
-<p>•当VRRP备份组之间的链路出现故障时，由于此时VRRP报文无法正常交互，Backup设备需要等待Master_Down_Timer计时器超时后才会切换为Master设备，在等待切换期间内，业务流量仍会发往Master设备，此时会造成业务流量丢失。</p>
-<p>•通过在Master设备和Backup设备之间建立BFD会话并与VRRP备份组进行绑定，由BFD机制快速检测VRRP备份组之间的通信故障，并在出现故障时及时通知VRRP备份组进行主备切换，从而大大减少应用中断时间。</p>
-<p>•在普通BFD联动中，VRRP备份组会根据BFD会话的状态进行优先级调整，并根据调整后的优先级判断是否进行主备切换。在实际应用中，通常Master设备配置延时抢占，而Backup设备配置立即抢占，当Backup设备检测到BFD会话状态出现DOWN后，通过增加自身优先级大于Master优先级实现快速切换，当故障排除，BFD会话状态出现UP时，新的Master通过减小自己的优先级，发送vrrp通告报文，经过延迟时间后再次切换为Backup。</p>
-</blockquote>
-<h2 id="VRRP与MSTP结合应用"><a href="#VRRP与MSTP结合应用" class="headerlink" title="VRRP与MSTP结合应用"></a>VRRP与MSTP结合应用</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<blockquote>
-<p>•MSTP是将一个或多个VLAN映射到一个生成树的实例，若干个VLAN共用一个生成树，MSTP可以实现负载均衡。</p>
-<p>•VRRP配置网关可以灵活根据网络拓扑变化而自动切换，提高网络可靠性。</p>
-<p>•VRRP+MSTP可以在实现负载分担的同时保证网络冗余备份。</p>
-</blockquote>
-<h1 id="4-VRRP基本配置"><a href="#4-VRRP基本配置" class="headerlink" title="4.VRRP基本配置"></a>4.VRRP基本配置</h1><h2 id="VRRP常用配置命令"><a href="#VRRP常用配置命令" class="headerlink" title="VRRP常用配置命令"></a>VRRP常用配置命令</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<h2 id="VRRP基础配置实例"><a href="#VRRP基础配置实例" class="headerlink" title="VRRP基础配置实例"></a>VRRP基础配置实例</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<h2 id="VRRP基础配置验证"><a href="#VRRP基础配置验证" class="headerlink" title="VRRP基础配置验证"></a>VRRP基础配置验证</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下关于VRRP报文中IP地址的设置正确的说法是(   )。</p>
-<p><strong>A.源IP地址为Master设备端口的IP地址</strong></p>
-<p>B.源IP地址为虚拟路由器的虚拟IP地址</p>
-<p>C.目的IP地址为广播IP地址</p>
-<p><strong>D.目的IP地址为组播IP地址</strong></p>
-<p>2.（多选题）以下关于VRRP协议中各定时器的说法正确的是(   )。</p>
-<p><strong>A.VRRP通告消息发送间隔默认为1秒，关联到同一虚拟路由器VRRP路由器上配置的VRRP消息通告间隔必须一致。</strong></p>
-<p>B.配置抢占延迟时间为4秒，表示如果4秒中之内没有收到Master发送的VRRP通告消息，则Slave应当成为新的Master。</p>
-<p>C.配置抢占延迟时间为4秒，配置VRRP消息通告间隔为2秒，表示如果6秒中之内没有收到Master发送的VRRP通告消息，则Slave应当成为新的Master。</p>
-<p><strong>D.在比较繁忙的网络中，应当适当的将抢占延迟设置为一个较大的值，以避免不必要的VRRP角色振荡。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VRRP作为一种非常重要的可靠性技术，常用于实现网关设备冗余，该协议既能提高网络可靠性，又可以实现网络负载分担。</p>
-<p>•VRRP主备选举、主备切换及主备回切都主要通过VRRP优先级来控制，为了确保网络稳定性，VRRP设计了抢占延时机制，减少网络震荡。</p>
-<p>•VRRP可监视上行接口状态，从而感知网络故障，联动VRRP实现网络可靠性。VRRP亦可绑定BFD会话实现快速收敛。此外，VRRP可与MSTP结合使用，在园区网络中，这是常见的组网方案。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <a class="extend prev" rel="prev" href="/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -4219,7 +4749,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4232,7 +4762,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -241,6 +241,567 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-DHCP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T21:07:42+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/DHCP.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着网络规模的不断扩大，网络复杂度不断提升，网络中的终端设备例如主机、手机、平板等，位置经常变化。终端设备访问网络时需要配置IP地址、网关地址、DNS服务器地址等。采用手工方式为终端配置这些参数非常低效且不够灵活。</p>
+<p>•IETF于1993年发布了DHCP（Dynamic Host Configuration Protocol，动态主机配置协议）。DHCP实现了网络参数配置的自动化，降低客户端的配置和维护成本。</p>
+<p>•本课程介绍DHCP工作原理、应用场景和简单配置。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述DHCP工作原理</p>
+<p>▫描述DHCP地址分配规则</p>
+<p>▫区分DHCP与DHCP Relay的应用场景</p>
+<p>▫实现DHCP的基本配置</p>
+<h1 id="1-DHCP产生背景"><a href="#1-DHCP产生背景" class="headerlink" title="1.DHCP产生背景"></a>1.DHCP产生背景</h1><h2 id="手工配置网络参数存在的问题"><a href="#手工配置网络参数存在的问题" class="headerlink" title="手工配置网络参数存在的问题"></a>手工配置网络参数存在的问题</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<blockquote>
+<p>•手工配置主机IP地址、网络掩码、网关地址、DNS服务器地址等网络参数时，需要经过地址规划、地址分配、地址配置、地址维护等复杂的操作流程。这使地址分配灵活性差，IP地址资源利用低，同时较大的工作量导致配置容易出错，对人员素质要求较高。</p>
+</blockquote>
+<h2 id="DHCP的基本概念"><a href="#DHCP的基本概念" class="headerlink" title="DHCP的基本概念"></a>DHCP的基本概念</h2><p>•DHCP是一种用于集中对用户IP地址进行动态管理和配置的协议。</p>
+<p>•DHCP采用C/S(Client/Server，客户端/服务器)通信模式，协议报文基于UDP的方式进行交互，采用67（DHCP服务器）和68（DHCP客户端）两个端口号：</p>
+<p>​    ▫正常工作时由客户端向服务器提出配置申请。</p>
+<p>​    ▫服务器返回为客户端分配的IP地址等相应的配置信息。</p>
+<p>•DHCP相对于手工配置有如下优点：</p>
+<p>​    ▫效率高</p>
+<p>​    ▫灵活性强</p>
+<p>​    易于管理</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•网络终端设备，例如主机、打印机、笔记本电脑、手机和AP，作为DHCP客户端，向DHCP服务器请求分配相关网络参数。DHCP服务器响应DHCP客户端请求进行动态分配。</p>
+</blockquote>
+<h1 id="2-DHCP工作原理与配置"><a href="#2-DHCP工作原理与配置" class="headerlink" title="2.DHCP工作原理与配置"></a>2.DHCP工作原理与配置</h1><h2 id="DHCP客户端首次接入网络的工作原理"><a href="#DHCP客户端首次接入网络的工作原理" class="headerlink" title="DHCP客户端首次接入网络的工作原理"></a>DHCP客户端首次接入网络的工作原理</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<ol>
+<li>发现阶段，即DHCP客户端发现DHCP服务器的阶段。</li>
+</ol>
+<ul>
+<li>DHCP客户端发送DHCP DISCOVER报文来发现DHCP服务器。DHCP DISCOVER报文中携带了客户端的MAC地址、需要请求的参数列表选项、广播标志位等信息。</li>
+</ul>
+<ol start="2">
+<li>提供阶段，即DHCP服务器提供网络配置信息的阶段。</li>
+</ol>
+<ul>
+<li>服务器接收到DHCP DISCOVER报文后，选择跟接收DHCP DISCOVER报文接口的IP地址处于同一网段的地址池，并且从中选择一个可用的IP地址，然后通过DHCP OFFER报文发送给DHCP客户端。</li>
+</ul>
+<ol start="3">
+<li>选择阶段，即DHCP客户端选择IP地址的阶段。</li>
+</ol>
+<ul>
+<li><p>如果有多个DHCP服务器向DHCP客户端回应DHCP OFFER报文，则DHCP客户端一般只接收第一个收到的DHCP OFFER报文，然后以广播方式发送DHCP REQUEST报文，该报文中包含客户端想选择的DHCP服务器标识符和客户端IP地址。</p>
+<p>4.确认阶段，即DHCP服务器确认所分配IP地址的阶段。</p>
+</li>
+<li><p>DHCP客户端收到DHCP ACK报文，会广播发送免费ARP报文，探测本网段是否有其他终端使用服务器分配的IP地址。</p>
+</li>
+</ul>
+<blockquote>
+<p>•在确认阶段，两种情况可能出现IP地址的冲突：</p>
+<ul>
+<li><p>DHCP服务器收到DHCP DISCOVER报文时，给客户端分配IP地址前会发送Ping探测，如果能Ping通则标识该地址不可用，并选择其他IP地址分配给客户端。</p>
+</li>
+<li><p>DHCP客户端获取IP地址成功后，会立即发送免费ARP报文，如果收到响应，则发送DHCP DECLINE报文通知DHCP服务器该IP地址冲突，DHCP服务器标识该地址不可用，客户端发送DHCP DISCOVER报文重新申请IP地址。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="DHCP报文格式"><a href="#DHCP报文格式" class="headerlink" title="DHCP报文格式"></a>DHCP报文格式</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<blockquote>
+<p>•Htype （hardware type）: 表示硬件地址的类型。</p>
+<p>•Hlen（hardware length）: 表示硬件地址的长度。</p>
+<p>•Hops（hops）: 表示当前DHCP报文经过的DHCP Relay数目。该字段由客户端设置为0，每经过一个DHCP Relay时，该字段加1。此字段的作用是限制DHCP报文所经过的DHCP Relay数目。</p>
+<p>•Xid：表示DHCP客户端选取的随机数，使DHCP服务器的回复与DHCP客户端的报文相关联。</p>
+<p>•Sname（server host name）: 表示客户端获取配置信息的服务器名字。此字段由DHCP服务器填写，是可选的。如果填写，必须是一个以0结尾的字符串。</p>
+<p>•File（file name）: 表示客户端启动DHCP相关配置的文件名。此字段由DHCP服务器填写，随着DHCP地址分配的同时下发至客户端。本字段是可选的，如果填写，必须是一个以0结尾的字符串。</p>
+</blockquote>
+<h2 id="Options预定义选项字段介绍"><a href="#Options预定义选项字段介绍" class="headerlink" title="Options预定义选项字段介绍"></a>Options预定义选项字段介绍</h2><p>•DHCP报文中Options字段为可变长度字段，最多为312Byte，此字段包含了DHCP报文类型，服务器分配给终端的配置信息，如网关IP地址，DNS服务器的IP地址，客户端可以使用IP地址的有效租期等信息。</p>
+<p>•Options字段由Type、Length和Value三部分组成。其中Type字段取值范围1~255。常见的Options如下表所示：</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<h2 id="DHCP的消息类型"><a href="#DHCP的消息类型" class="headerlink" title="DHCP的消息类型"></a>DHCP的消息类型</h2><p>DHCP报文通过Options选项中的Type=53来表示DHCP的报文类型。如下图所示，当Type=53，Length=1，Value取值从01到08分别表示不同的DHCP报文类型。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>•1-DHCP DISCOVER：DHCP客户端首次登录网络时进行DHCP交互过程发送的第一个消息，用来寻找DHCP服务器。</p>
+<p>•2-DHCP OFFER：DHCP服务器用来响应DHCP DISCOVER消息，此消息携带了各种配置信息。 </p>
+<p>•3-DHCP REQUEST：DHCP客户端广播请求回应DHCP服务器OFFER消息；DHCP客户端重启广播确认之前的IP地址等配置信息；续租。</p>
+<p>•4-DHCP DECLINE：当客户端发现服务器分配给它的IP地址发生冲突时会通过发送此消息来通知服务器。</p>
+<p>•5-DHCP ACK：DHCP服务器对客户端的DHCP REQUEST消息的确认响应消息。</p>
+<p>•6-DHCP NAK：服务器对客户端的DHCP REQUEST消息的拒绝响应消息。</p>
+<p>•7-DHCP RELEASE：客户端可通过发送此消息主动释放服务器分配给它的IP地址。</p>
+<p>•8-DHCP INFORM：DHCP客户端获取IP地址后，如果需要向DHCP服务器获取更为详细的配置信息（网关地址、DNS服务器地址），则向DHCP服务器发送DHCP INFORM请求消息。</p>
+</blockquote>
+<h2 id="Options自定义选项字段介绍"><a href="#Options自定义选项字段介绍" class="headerlink" title="Options自定义选项字段介绍"></a>Options自定义选项字段介绍</h2><p>除了标准协议中规定的字段选项外，还有部分选项内容没有统一规定，统称为用户自定义选项，例如Option 82和Option 43。</p>
+<ul>
+<li>Option 82称为中继代理信息选项。<ul>
+<li>Option 82中可以包含最多255个Sub-Option，若定义了Option 82，至少要定义一个Sub-Option。</li>
+<li>DHCP中继或DHCP Snooping设备接收到DHCP客户端发送给DHCP服务器的请求报文后，在该报文中添加Option 82，并转发给DHCP服务器。管理员可以从Option 82中获得DHCP客户端的信息，例如DHCP客户端所连接交换机端口的VLAN ID、二层端口号、中继设备的MAC地址等。</li>
+</ul>
+</li>
+</ul>
+<p>▫Option 43称为厂商特定信息选项。</p>
+<ul>
+<li>DHCP服务器和DHCP客户端通过Option 43交换厂商特定的信息。当DHCP服务器接收到请求Option 43信息的DHCP请求报文（Option 55中带有Option 43参数）后，将在回复报文中携带Option 43，为DHCP客户端分配厂商指定的信息。</li>
+<li>在WLAN组网中，AP作为DHCP客户端，DHCP服务器可以为AP指定AC的IP地址，以方便AP与AC建立连接。</li>
+</ul>
+<blockquote>
+<p>目前option 82中常用的Sub-Option如下：</p>
+<p>▫Sub-Option 1：为代理电路id（即circuit id）子项。子选项通常在DHCP中继设备上配置，定义了在传输报文的时候要携带DHCP客户端所连接交换机端口的vlan-id及二层端口号。通常Sub-Option 1与Sub-Option 2子选项要共同使用来标识DHCP源端的信息。</p>
+<p>▫Sub-Option 2：代理远程id（即remote id）子项。该子选项也通常在DHCP中继设备上配置，定义了在传输报文的时候要携带中继设备的mac地址信息。</p>
+<p>▫和Sub-Option 5：为链路选择（link selection）子项，该选项中包含了DHCP中继添加的ip地址。这样DHCP server在分配ip地址给DHCP客户端的时候就可以分配与该地址同网段的ip地址。</p>
+</blockquote>
+<h2 id="Option-43应用举例"><a href="#Option-43应用举例" class="headerlink" title="Option 43应用举例"></a>Option 43应用举例</h2><p>•在WLAN三层组网中，当AP上线时，需要获取AC的IP地址，并与AC之间建立CAPWAP隧道。</p>
+<p>•AP的IP地址通过DHCP服务器分配，当AC的IP地址与AP不在同一个广播域，AP无法通过广播的方式获取AC的IP地址，则CAPWAP隧道无法建立成功。</p>
+<p>•AP通过DHCP报文中的Option 43选项字段获取AC的IP地址，当AP获取AC的IP地址后，可以进一步完成CAPWAP隧道的建立，从而实现AP上线。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<h2 id="DHCP地址续租"><a href="#DHCP地址续租" class="headerlink" title="DHCP地址续租"></a>DHCP地址续租</h2><p>DHCP客户端根据IP地址的剩余租期的不同而产生不同形式的续租请求。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<p>•当租期达到50%（T1）时，DHCP客户端会自动以单播的方式向DHCP服务器发送DHCP REQUEST报文，请求更新IP地址租期。如果收到DHCP服务器回应的DHCP ACK报文，则租期更新成功。</p>
+<p>•当租期达到87.5%（T2）时，如果仍未收到DHCP服务器的应答，DHCP客户端会自动以广播的方式向DHCP服务器发送DHCP REQUEST报文，请求更新IP地址租期。如果收到DHCP服务器回应的DHCP ACK报文，则租期更新成功。</p>
+<p>•如果租期时间到时都没有收到服务器的回应，客户端停止使用此IP地址，重新发送DHCP DISCOVER报文请求新的IP地址。</p>
+<blockquote>
+<p>•DHCP服务器给每个分配给客户端的IP地址定义一个使用期限，该使用期限被称为租期。在租期到期前，DHCP客户端如果仍需要使用该IP地址，可以请求延长租期；如果不需要，可以主动释放该IP地址。在没有其他空闲地址可用的情况下，DHCP服务器会把客户端主动释放的IP地址分配给其他客户端。</p>
+<p>•DHCP客户端无论在T1还是T2时刻发送DHCP REQUEST报文后，如果收到DHCP NAK报文，则重新发送DHCP DISCOVER报文请求新的IP地址。</p>
+<p>•客户端在租期时间到之前，如果用户不想使用分配的IP地址（例如客户端网络位置需要变更），会触发DHCP客户端向DHCP服务器发送DHCP RELEASE报文，通知DHCP服务器释放IP地址的租期。DHCP服务器会保留这个DHCP客户端的配置信息，将IP地址列为曾经分配过的IP地址中，以便后续重新分配给该客户端或其他客户端。客户端可以通过发送DHCP INFORM报文向服务器请求更新配置信息。</p>
+</blockquote>
+<h2 id="DHCP客户端重用曾经使用过的地址"><a href="#DHCP客户端重用曾经使用过的地址" class="headerlink" title="DHCP客户端重用曾经使用过的地址"></a>DHCP客户端重用曾经使用过的地址</h2><p>DHCP客户端非首次接入网络时，可以重用曾经使用过的地址。例如，网络中的主机作为DHCP客户端，在关机再开机的过程中，需要重新获取相关网络参数，则可以请求分配曾经使用过的IP地址。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<p>1.选择阶段</p>
+<ul>
+<li>客户端广播发送包含前一次分配的IP地址的DHCP REQUEST报文，报文中的Option 50（请求的IP地址选项）字段填入曾经使用过的IP地址。</li>
+</ul>
+<p>2.确认阶段</p>
+<ul>
+<li>DHCP服务器收到DHCP REQUEST报文后，根据DHCP REQUEST报文中携带的MAC地址来查找有没有相应的租约记录。如果有则返回DHCP ACK报文，通知DHCP客户端可以继续使用这个IP地址，如果没有租约记录，则不响应。</li>
+</ul>
+<blockquote>
+<p>•是否支持重用曾经使用过的IP地址，因不同客户端而异。</p>
+</blockquote>
+<h2 id="DHCP分配IP地址顺序"><a href="#DHCP分配IP地址顺序" class="headerlink" title="DHCP分配IP地址顺序"></a>DHCP分配IP地址顺序</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<h2 id="DHCP配置命令介绍-1"><a href="#DHCP配置命令介绍-1" class="headerlink" title="DHCP配置命令介绍 (1)"></a>DHCP配置命令介绍 (1)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<blockquote>
+<p>•此处以ip pool的名字为HW举例说明。</p>
+<p>•缺省情况下，没有配置为指定DHCP Client分配固定IP地址。</p>
+</blockquote>
+<h2 id="DHCP配置命令介绍-2"><a href="#DHCP配置命令介绍-2" class="headerlink" title="DHCP配置命令介绍 (2)"></a>DHCP配置命令介绍 (2)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•此处以接口GigabitEthernet0/0/1举例说明。</p>
+</blockquote>
+<h2 id="DHCP配置举例（1）"><a href="#DHCP配置举例（1）" class="headerlink" title="DHCP配置举例（1）"></a>DHCP配置举例（1）</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<h2 id="DHCP配置举例（2）"><a href="#DHCP配置举例（2）" class="headerlink" title="DHCP配置举例（2）"></a>DHCP配置举例（2）</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<h2 id="DHCP配置结果"><a href="#DHCP配置结果" class="headerlink" title="DHCP配置结果"></a>DHCP配置结果</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<h1 id="3-DHCP-Relay工作原理与配置"><a href="#3-DHCP-Relay工作原理与配置" class="headerlink" title="3.DHCP Relay工作原理与配置"></a>3.DHCP Relay工作原理与配置</h1><h2 id="什么是DHCP-Relay"><a href="#什么是DHCP-Relay" class="headerlink" title="什么是DHCP Relay"></a>什么是DHCP Relay</h2><p>•随着网络规模的不断扩大，网络设备不断增多，企业内不同的用户可能分布在不同的网段，一台DHCP服务器在正常情况下无法满足多个网段的地址分配需求。如果还需要通过DHCP服务器分配IP地址，则需要跨网段发送DHCP报文。</p>
+<p>•DHCP Relay即DHCP中继，它是为解决DHCP服务器和DHCP客户端不在同一个广播域而提出的，提供了对DHCP广播报文的中继转发功能，能够把DHCP客户端的广播报文“透明地”传送到其它广播域的DHCP服务器上，同样也能够把DHCP服务器端的应答报文“透明地”传送到其它广播域的DHCP客户端。</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<h2 id="DHCP-Relay报文格式"><a href="#DHCP-Relay报文格式" class="headerlink" title="DHCP Relay报文格式"></a>DHCP Relay报文格式</h2><p>DHCP Relay主要负责转发DHCP客户端与DHCP服务器之间的DHCP报文，所以DHCP Relay的报文格式只是把DHCP的报文部分字段做了相应的修改，报文格式没有发生变化，如下图所示：</p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<p>Hops：表示当前的DHCP报文经过的DHCP中继的数目。该字段由客户端或服务器设置为0，每经过一个DHCP中继时，该字段加1。</p>
+<p>Giaddr(gateway ip address)：表示第一个DHCP中继的IP地址。当客户端发出DHCP请求时，第一个DHCP中继在将DHCP请求报文转发给DHCP服务器时，会把自己的IP地址填入此字段。</p>
+<blockquote>
+<p>•Hops字段的作用是限制DHCP报文所经过的DHCP中继数目。服务器和客户端之间的DHCP中继数目不能超过16个，也就是Hops值不能大于16，否则DHCP报文将被丢弃。</p>
+<p>•Giaddr字段，DHCP服务器会根据此字段来判断出客户端所在的网段地址，从而选择合适的地址池，为客户端分配该网段的IP地址。服务器还会根据此地址将响应报文发送给此DHCP中继，再由DHCP中继将此报文转发给客户端。若在到达DHCP服务器前经过了多个DHCP中继，该字段作为客户端所在的网段的标记，填充了第一个DHCP中继的IP地址后不会再变更，只是每经过一个DHCP中继，hops字段的数值会加1。</p>
+</blockquote>
+<h2 id="DHCP-Relay工作原理"><a href="#DHCP-Relay工作原理" class="headerlink" title="DHCP Relay工作原理"></a>DHCP Relay工作原理</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<p>有中继场景时DHCP客户端首次接入网络的工作原理：</p>
+<p>1.发现阶段：DHCP中继接收到DHCP客户端广播发送的DHCP DISCOVER报文后，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</p>
+<p>2.提供阶段：DHCP服务器根据DHCP DISCOVER报文中的Giaddr字段选择地址池为客户端分配相关网络参数，DHCP中继收到DHCP OFFER报文后，以单播或组播方式发送给DHCP Client。</p>
+<p>3.选择阶段：中继接收到来自客户端的DHCP REQUEST报文的处理过程同“发现阶段”。</p>
+<p>4.确认阶段：中继接收到来自服务器的DHCP ACK报文的处理过程同“提供阶段”。</p>
+<blockquote>
+<p>1.DHCP中继收到DHCP DISCOVER报文后，处理规则为：</p>
+<ul>
+<li>检查DHCP报文中的Hops字段，如果大于16，则丢弃DHCP报文；否则，将Hops字段加1（表明经过一次DHCP中继），并继续下面的操作。</li>
+<li>检查DHCP报文中的Giaddr字段。如果是0，将Giaddr字段设置为接收DHCP DISCOVER报文的接口IP地址。如果不是0，则不修改该字段，继续下面的操作。</li>
+<li>将DHCP报文的目的IP地址改为DHCP服务器或下一跳中继的IP地址，源地址改为中继连接客户端的接口地址，通过路由转发将DHCP报文单播发送到DHCP服务器或下一跳中继。</li>
+</ul>
+<p>2.DHCP服务器接收到DHCP DISCOVER报文后，选择与报文中Giaddr字段为同一网段的地址池，并为客户端分配IP地址等参数，然后向Giaddr字段标识的DHCP中继单播发送DHCP OFFER报文，DHCP中继收到DHCP OFFER报文后，会进行如下处理：</p>
+<ul>
+<li><p>检查报文中的Giaddr字段，如果不是接口的地址，则丢弃该报文；否则，继续下面的操作。</p>
+</li>
+<li><p>DHCP中继检查报文的广播标志位。如果广播标志位为1，则将DHCP OFFER报文广播发送给DHCP客户端；否则将DHCP OFFER报文单播发送给DHCP客户端。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="DHCP-Relay配置命令介绍"><a href="#DHCP-Relay配置命令介绍" class="headerlink" title="DHCP Relay配置命令介绍"></a>DHCP Relay配置命令介绍</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<h2 id="DHCP-Relay配置举例-1"><a href="#DHCP-Relay配置举例-1" class="headerlink" title="DHCP Relay配置举例 (1)"></a>DHCP Relay配置举例 (1)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<blockquote>
+<p>•各个设备配置DHCP前需要在全局视图下通过DHCP enable命令开启DHCP功能。</p>
+</blockquote>
+<h2 id="DHCP-Relay配置举例-2"><a href="#DHCP-Relay配置举例-2" class="headerlink" title="DHCP Relay配置举例 (2)"></a>DHCP Relay配置举例 (2)</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<h2 id="DHCP-Relay配置验证"><a href="#DHCP-Relay配置验证" class="headerlink" title="DHCP Relay配置验证"></a>DHCP Relay配置验证</h2><p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
+<p><img src="/2021/05/17/IP-DHCP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）DHCP客户端向DHCP Server进行续租时会发送哪种报文？</p>
+<p>A.DHCP DISCOVER</p>
+<p>B.DHCP OFFER</p>
+<p><strong>C.DHCP REQUEST</strong></p>
+<p>D.DHCP ACK</p>
+<p>2.（单选题）以下哪条命令可以开启路由器接口的DHCP中继功能？</p>
+<p>A.DHCP select server</p>
+<p>B.DHCP select global</p>
+<p>C.DHCP select interface</p>
+<p><strong>D.DHCP select relay</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章节主要讲解了DHCP报文的格式及关键字段的作用。通过报文交互介绍了DHCP服务器如何给DHCP客户端分配IP地址等网络参数的过程，同时阐述了地址续租与DHCP客户端重启之后如何获取IP地址的原理。</p>
+<p>•当DHCP客户端与DHCP服务器不在一个广播域的时候，通过DHCP Relay的中继功能，实现DHCP报文的跨网段传输，从而完成DHCP客户端与服务器之间的报文协商。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-VRRP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:53:26+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•局域网中的用户终端通常采用配置一个默认网关的形式访问外部网络，如果默认网关设备发生故障，那么所有用户终端访问外部网络的流量将会中断。可以通过部署多个网关的方式来解决单点故障，但是需要解决多个网关之间的冲突问题。</p>
+<p>•VRRP（Virtual Router Redundancy Protocol，虚拟路由器冗余协议）既能够实现网关的备份，又能解决多个网关之间互相冲突的问题，从而提高网络可靠性。</p>
+<p>•本课程主要介绍VRRP的工作原理与基本配置，以及在网络中的典型应用。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫分析局域网单网关引发的问题</p>
+<p>▫阐述VRRP基本概念及工作原理</p>
+<p>▫描述VRRP主备切换过程</p>
+<p>▫实现VRRP基本配置</p>
+<h1 id="1-VRRP技术概述"><a href="#1-VRRP技术概述" class="headerlink" title="1.VRRP技术概述"></a>1.VRRP技术概述</h1><h2 id="单网关面临的问题"><a href="#单网关面临的问题" class="headerlink" title="单网关面临的问题"></a>单网关面临的问题</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
+<h2 id="VRRP概述"><a href="#VRRP概述" class="headerlink" title="VRRP概述"></a>VRRP概述</h2><p>通过把几台路由设备联合组成一台虚拟的“路由设备”，使用一定的机制保证当主机的下一跳路由设备出现故障时，及时将业务切换到备份路由设备，从而保持通讯的连续性和可靠性。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
+<blockquote>
+<p>•VRRP的运行结果是在局域网上提供一个虚拟路由器。</p>
+<p>•本例中：</p>
+<ul>
+<li><p>局域网中有两个路由器R1和R2，R1端口IP地址为192.168.1.251/24，R2端口IP地址为192.168.1.252/24。</p>
+</li>
+<li><p>配置R1和R2关联到同一个虚拟路由器，该虚拟路由器使用192.168.1.254做为端口IP地址。</p>
+</li>
+<li><p>所有的PC使用192.168.1.254做为默认网关。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="VRRP的基本概念-1"><a href="#VRRP的基本概念-1" class="headerlink" title="VRRP的基本概念 (1)"></a>VRRP的基本概念 (1)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
+<p>•<strong>VRRP路由器：</strong>运行VRRP协议的路由器，如R1和R2。VRRP是配置在路由器的接口上的，而且也是基于接口来工作的。</p>
+<p>•<strong>VRID：</strong>一个VRRP组（VRRP Group）由多台协同工作的路由器（的接口）组成，使用相同的VRID（Virtual Router Identifier，虚拟路由器标识符）进行标识。属于同一个VRRP组的路由器之间交互VRRP协议报文并产生一台虚拟“路由器”。一个VRRP组中只能出现一台Master路由器。 </p>
+<h2 id="VRRP的基本概念-2"><a href="#VRRP的基本概念-2" class="headerlink" title="VRRP的基本概念 (2)"></a>VRRP的基本概念 (2)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
+<p>•<strong>虚拟路由器：</strong>VRRP为每一个组抽象出一台虚拟“路由器”（Virtual Router），该路由器并非真实存在的物理设备，而是由VRRP虚拟出来的逻辑设备。一个VRRP组只会产生一台虚拟路由器。</p>
+<p>•<strong>虚拟IP地址及虚拟MAC地址：</strong>虚拟路由器拥有自己的IP地址以及MAC地址，其中IP地址由网络管理员在配置VRRP时指定，一台虚拟路由器可以有一个或多个IP地址，通常情况下用户使用该地址作为网关地址。而虚拟MAC地址的格式是“0000-5e00-01xx”，其中xx为VRID。</p>
+<h2 id="VRRP的基本概念-3"><a href="#VRRP的基本概念-3" class="headerlink" title="VRRP的基本概念 (3)"></a>VRRP的基本概念 (3)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
+<p>•<strong>Master路由器：</strong>“Master路由器”在一个VRRP组中承担报文转发任务。在每一个VRRP组中，只有Master路由器才会响应针对虚拟IP地址的ARP Request。Master路由器会以一定的时间间隔周期性地发送VRRP报文，以便通知同一个VRRP组中的Backup路由器关于自己的存活情况。</p>
+<p>•<strong>Backup路由器：</strong>也被称为备份路由器。Backup路由器将会实时侦听Master路由器发送出来的VRRP报文，它随时准备接替Master路由器的工作。</p>
+<p>•<strong>Priority：</strong>优先级值是选举Master路由器和Backup路由器的依据，优先级取值范围0-255，值越大越优先，值相等则比较接口IP地址大小，大者优先。</p>
+<h2 id="VRRP报文格式"><a href="#VRRP报文格式" class="headerlink" title="VRRP报文格式"></a>VRRP报文格式</h2><p>VRRP只有一种报文，即Advertisement报文，基于组播方式发送，因此只能在同一个广播域传递。 Advertisement报文的目的组播地址为224.0.0.18。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
+<blockquote>
+<p>VRRP报文字段含义如下：</p>
+<p>▫Ver：VRRP目前有两个版本，其中VRRPv2仅适用于IPv4网络，VRRPv3适用于IPv4和IPv6两种网络。</p>
+<p>▫Virtual Rtr ID：该报文所关联的虚拟路由器的标识。</p>
+<p>▫Priority：发送该报文的VRRP路由器的优先级。</p>
+<p>▫Count IP Addrs：该VRRP报文中所包含的虚拟IP地址的数量。</p>
+<p>▫Auth Type：VRRP支持三种认证类型：不认证、纯文本密码认证、MD5方式认证，对应值分别为0、1、2。</p>
+<p>▫Adver Int：发送VRRP通告消息的间隔。默认为1秒</p>
+<p>▫IP Address：所关联的虚拟路由器的虚拟IP地址，可以为多个。</p>
+<p>▫Authentication Data：验证所需要的密码信息。</p>
+</blockquote>
+<h2 id="VRRP定时器"><a href="#VRRP定时器" class="headerlink" title="VRRP定时器"></a>VRRP定时器</h2><p>在VRRP协议工作过程中，VRRP定义了两个定时器：</p>
+<p>▫ADVER_INTERVAL定时器：Master发送VRRP通告报文时间周期，缺省值为1秒。</p>
+<p>▫MASTER_DOWN定时器：Backup设备监听该定时器超时后，会变为Master状态。<br>     MASTER_DOWN定时器计算公式如下：</p>
+<ul>
+<li>MASTER_DOWN =（3* ADVER_INTERVAL）+ Skew_time（偏移时间）</li>
+<li>其中，Skew_Time=（256–Priority）/256</li>
+</ul>
+<h1 id="2-VRRP技术原理"><a href="#2-VRRP技术原理" class="headerlink" title="2.VRRP技术原理"></a>2.VRRP技术原理</h1><h2 id="VRRP状态机"><a href="#VRRP状态机" class="headerlink" title="VRRP状态机"></a>VRRP状态机</h2><p>VRRP协议状态机有三种状态：Initialize（初始状态）、Master（活动状态）、Backup（备份状态）。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
+<blockquote>
+<p>•一个Startup事件可以由系统在VRRP配置完成后自动触发，也可以是在已经配置VRRP的端口上，底层链路由不可用变为可用而触发。</p>
+</blockquote>
+<h2 id="VRRP协议状态"><a href="#VRRP协议状态" class="headerlink" title="VRRP协议状态"></a>VRRP协议状态</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
+<h2 id="VRRP主备选举-1"><a href="#VRRP主备选举-1" class="headerlink" title="VRRP主备选举 (1)"></a>VRRP主备选举 (1)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
+<blockquote>
+<p>•初始创建VRRP的设备工作在Initialize状态，收到接口Up的消息后，若此设备的优先级小于255，则会先切换至Backup状态，等待MASTER_DOWN定时器超时后再切换至Master状态。</p>
+<p>•如果优先级高的设备先启动，优先级低的设备后启动，则优先级高的设备先进入Master状态，优先级低的设备收到高优先级的VRRP通告报文，自己仍处于Backup状态。</p>
+<p>•如果优先级低的先启动，优先级高的后启动，则优先级低的先由Backup状态切换为Master状态，优先级高的设备收到优先级低的VRRP通告报文，重新进行选举，将优先级高的设备切换为Master状态。</p>
+</blockquote>
+<h2 id="VRRP主备选举-2"><a href="#VRRP主备选举-2" class="headerlink" title="VRRP主备选举 (2)"></a>VRRP主备选举 (2)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
+<blockquote>
+<p>•初始创建VRRP的设备工作在Initialize状态，收到接口Up的消息后，若此设备的优先级小于255，则会先切换至Backup状态，等待MASTER_DOWN定时器超时后再切换至Master状态。</p>
+<p>•如果优先级高的设备先启动，优先级低的设备后启动，则优先级高的设备先进入Master状态，优先级低的设备收到高优先级的VRRP通告报文，自己仍处于Backup状态。</p>
+<p>•如果优先级低的先启动，优先级高的后启动，则优先级低的先由Backup状态切换为Master状态，优先级高的设备收到优先级低的VRRP通告报文，重新进行选举，将优先级高的设备切换为Master状态。</p>
+</blockquote>
+<h2 id="VRRP主备选举-3"><a href="#VRRP主备选举-3" class="headerlink" title="VRRP主备选举 (3)"></a>VRRP主备选举 (3)</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
+<blockquote>
+<p>•通常情况下，VRRP路由器的接口IP地址不会与虚拟路由器的IP地址重叠，也就是说我们会为虚拟路由器单独规划一个IP地址，而不会使用某台路由器的接口IP地址。当然也存在一个特殊的情况，例如在某些网络中IP地址资源比较紧缺，那么也有可能会将某台路由器的接口IP地址用于虚拟路由器，此时该路由器将无条件成为Master。</p>
+<p>•无法手动将VRRP接口优先级配置为255，当接口IP地址为IP地址拥有者时，优先级自动成为255。</p>
+</blockquote>
+<h2 id="VRRP主备切换"><a href="#VRRP主备切换" class="headerlink" title="VRRP主备切换"></a>VRRP主备切换</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
+<blockquote>
+<p>•当Master设备主动放弃Master地位（如Master设备退出备份组）时，会发送优先级为0的通告报文，用来使Backup设备快速切换成Master设备，而不用等到MASTER_DOWN定时器超时。这个切换的时间称为Skew_time。</p>
+<p>•当Master设备发生网络故障而不能发送通告报文的时候，Backup设备并不能立即知道其工作状况。等到MASTER_DOWN定时器超时后，才会认为Master设备无法正常工作，从而将状态切换为Master。</p>
+</blockquote>
+<h2 id="VRRP主备回切"><a href="#VRRP主备回切" class="headerlink" title="VRRP主备回切"></a>VRRP主备回切</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
+<blockquote>
+<p>•开启抢占模式的VRRP备份组，当主备进行切换时，总共时长为：3xAdver_Interval+Skew_time+Delay_time</p>
+<p>•在抢占模式下，当Master的设备状态不稳定或者网络质量差时，会导致VRRP备份组频繁切换，从而引发终端ARP表项频繁刷新，为缓解此问题，通常设置抢占延时定时器，通过MASTER_INTERVAL定时器超时时间加上延时时间，确定状态稳定后，再进行主备回切。</p>
+</blockquote>
+<h1 id="3-VRRP典型应用"><a href="#3-VRRP典型应用" class="headerlink" title="3.VRRP典型应用"></a>3.VRRP典型应用</h1><h2 id="VRRP负载分担"><a href="#VRRP负载分担" class="headerlink" title="VRRP负载分担"></a>VRRP负载分担</h2><p>通过创建多个虚拟路由器，每个物理路由器在不同的VRRP组中扮演不同的角色，不同虚拟路由器的Virtual IP作为不同的内网网关地址可以实现流量转发负载分担。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
+<h2 id="VRRP监视上行端口"><a href="#VRRP监视上行端口" class="headerlink" title="VRRP监视上行端口"></a>VRRP监视上行端口</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
+<blockquote>
+<p>•如果用户未配置VRRP监视上行端口，则当VRRP备份组中的Master设备R1的上行接口或者链路出现故障时，VRRP备份组无法感知，Master无法向外转发流量。但是由于主备不会发生切换，导致出现流量黑洞。</p>
+</blockquote>
+<h2 id="VRRP与BFD联动"><a href="#VRRP与BFD联动" class="headerlink" title="VRRP与BFD联动"></a>VRRP与BFD联动</h2><p>通过配置VRRP与BFD联动，当Backup设备通过BFD感知故障发生之后，不再等待Master_Down_Timer计时器超时而会在BFD检测周期结束后立即切换VRRP状态，此时可以实现毫秒级的主备切换。</p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
+<blockquote>
+<p>•当VRRP备份组之间的链路出现故障时，由于此时VRRP报文无法正常交互，Backup设备需要等待Master_Down_Timer计时器超时后才会切换为Master设备，在等待切换期间内，业务流量仍会发往Master设备，此时会造成业务流量丢失。</p>
+<p>•通过在Master设备和Backup设备之间建立BFD会话并与VRRP备份组进行绑定，由BFD机制快速检测VRRP备份组之间的通信故障，并在出现故障时及时通知VRRP备份组进行主备切换，从而大大减少应用中断时间。</p>
+<p>•在普通BFD联动中，VRRP备份组会根据BFD会话的状态进行优先级调整，并根据调整后的优先级判断是否进行主备切换。在实际应用中，通常Master设备配置延时抢占，而Backup设备配置立即抢占，当Backup设备检测到BFD会话状态出现DOWN后，通过增加自身优先级大于Master优先级实现快速切换，当故障排除，BFD会话状态出现UP时，新的Master通过减小自己的优先级，发送vrrp通告报文，经过延迟时间后再次切换为Backup。</p>
+</blockquote>
+<h2 id="VRRP与MSTP结合应用"><a href="#VRRP与MSTP结合应用" class="headerlink" title="VRRP与MSTP结合应用"></a>VRRP与MSTP结合应用</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
+<blockquote>
+<p>•MSTP是将一个或多个VLAN映射到一个生成树的实例，若干个VLAN共用一个生成树，MSTP可以实现负载均衡。</p>
+<p>•VRRP配置网关可以灵活根据网络拓扑变化而自动切换，提高网络可靠性。</p>
+<p>•VRRP+MSTP可以在实现负载分担的同时保证网络冗余备份。</p>
+</blockquote>
+<h1 id="4-VRRP基本配置"><a href="#4-VRRP基本配置" class="headerlink" title="4.VRRP基本配置"></a>4.VRRP基本配置</h1><h2 id="VRRP常用配置命令"><a href="#VRRP常用配置命令" class="headerlink" title="VRRP常用配置命令"></a>VRRP常用配置命令</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
+<h2 id="VRRP基础配置实例"><a href="#VRRP基础配置实例" class="headerlink" title="VRRP基础配置实例"></a>VRRP基础配置实例</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
+<p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
+<h2 id="VRRP基础配置验证"><a href="#VRRP基础配置验证" class="headerlink" title="VRRP基础配置验证"></a>VRRP基础配置验证</h2><p><img src="/2021/05/17/IP-VRRP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下关于VRRP报文中IP地址的设置正确的说法是(   )。</p>
+<p><strong>A.源IP地址为Master设备端口的IP地址</strong></p>
+<p>B.源IP地址为虚拟路由器的虚拟IP地址</p>
+<p>C.目的IP地址为广播IP地址</p>
+<p><strong>D.目的IP地址为组播IP地址</strong></p>
+<p>2.（多选题）以下关于VRRP协议中各定时器的说法正确的是(   )。</p>
+<p><strong>A.VRRP通告消息发送间隔默认为1秒，关联到同一虚拟路由器VRRP路由器上配置的VRRP消息通告间隔必须一致。</strong></p>
+<p>B.配置抢占延迟时间为4秒，表示如果4秒中之内没有收到Master发送的VRRP通告消息，则Slave应当成为新的Master。</p>
+<p>C.配置抢占延迟时间为4秒，配置VRRP消息通告间隔为2秒，表示如果6秒中之内没有收到Master发送的VRRP通告消息，则Slave应当成为新的Master。</p>
+<p><strong>D.在比较繁忙的网络中，应当适当的将抢占延迟设置为一个较大的值，以避免不必要的VRRP角色振荡。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VRRP作为一种非常重要的可靠性技术，常用于实现网关设备冗余，该协议既能提高网络可靠性，又可以实现网络负载分担。</p>
+<p>•VRRP主备选举、主备切换及主备回切都主要通过VRRP优先级来控制，为了确保网络稳定性，VRRP设计了抢占延时机制，减少网络震荡。</p>
+<p>•VRRP可监视上行接口状态，从而感知网络故障，联动VRRP实现网络可靠性。VRRP亦可绑定BFD会话实现快速收敛。此外，VRRP可与MSTP结合使用，在园区网络中，这是常见的组网方案。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-BFD%E5%8E%9F%E7%90%86%E4%B8%8E%E5%BA%94%E7%94%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2579,928 +3140,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-PIM原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T12:21:24+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•组播网络由组播源，组播组成员与组播路由器组成。</p>
-<ul>
-<li><p>组播源的主要作用是发送组播数据。</p>
-</li>
-<li><p>组播组成员的主要作用是接收组播数据，因此需要通过IGMP让组播网络感知组成员位置与加组信息。</p>
-</li>
-<li><p>组播路由器的主要作用是<strong>将数据从组播源发送到组播组成员</strong>。组播数据转发需要<strong>依赖组播分发树</strong>，因此组播路由器需要通过协议来<strong>构建组播分发树</strong>。</p>
-</li>
-</ul>
-<p>•PIM（Protocol Independent Multicast，协议无关组播）协议的主要作用就是<strong>构建组播分发树</strong>。</p>
-<p>•本章主要讲解PIM协议的基本概念，PIM-DM模式的工作原理与PIM-SM模式的工作原理。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述PIM的基本概念</p>
-<p>▫描述PIM-DM的基本工作原理</p>
-<p>▫实现PIM-DM的基本配置</p>
-<p>▫描述PIM-SM的基本工作原理</p>
-<p>▫实现PIM-SM的基本配置</p>
-<h1 id="1-PIM基础介绍"><a href="#1-PIM基础介绍" class="headerlink" title="1.PIM基础介绍"></a>1.PIM基础介绍</h1><h2 id="组播网络基本架构回顾"><a href="#组播网络基本架构回顾" class="headerlink" title="组播网络基本架构回顾"></a>组播网络基本架构回顾</h2><p>•组播网络大体可以分为三个部分：</p>
-<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
-<p>▫组播转发网络：<strong>形成无环的组播转发路径</strong>，该转发路径也被称为<strong>组播分发树（Multicast Distribution Tree）</strong>。</p>
-<p>▫成员端网络：通过<strong>IGMP</strong>协议，让组播网络<strong>感知组播组成员</strong>位置与加入的组播组。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<blockquote>
-<p>•成员端网络通过IGMP协议可以让组播网络感知组播组成员位置与加入的组播组。</p>
-<p>•组播转发网络形成组播分发树，需要组播路由协议的支持。</p>
-<p>•通过组播路由协议有多种，最常用的是PIM协议，也就是本节课的重点。</p>
-</blockquote>
-<h2 id="组播数据转发流程回顾"><a href="#组播数据转发流程回顾" class="headerlink" title="组播数据转发流程回顾"></a>组播数据转发流程回顾</h2><p>•组播数据转发基本流程如下：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<blockquote>
-<p>•《IGMP原理与配置》课程介绍了组播网络如何感知组播组成员的位置和所加组播组。</p>
-<p>•本课程将主要介绍如何形成组播分发树。</p>
-</blockquote>
-<h2 id="组播协议介绍回顾"><a href="#组播协议介绍回顾" class="headerlink" title="组播协议介绍回顾"></a>组播协议介绍回顾</h2><p>•组播网络需要基于多种组播协议才能建立转发路径：</p>
-<p>▫工作在成员端网络的主要是IGMP（Internet Group Management Protocol，因特网组管理协议）协议，用于告知组播网络，组成员的位置与所加组播组。</p>
-<p>▫工作在组播转发网络的协议主要是PIM，MSDP，MBGP。</p>
-<p>▪<strong>PIM</strong>（Protocol Independent Multicast，协议无关组播）协议主要作用是<strong>生成AS域内的组播分发树</strong>。</p>
-<p>▪MSDP（Multicast Source Discovery Protocol，组播源发现协议）主要作用是帮助生成AS域间的组播分发树。</p>
-<p>▪MBGP（Multicast BGP，组播BGP）主要作用是帮助跨域组播流进行RPF校验。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<blockquote>
-<p>•本课程主要介绍PIM协议的工作原理。</p>
-</blockquote>
-<h2 id="PIM协议介绍"><a href="#PIM协议介绍" class="headerlink" title="PIM协议介绍"></a>PIM协议介绍</h2><p>•PIM称为协议无关组播。协议无关指的是与单播路由协议无关，即PIM不需要维护专门的单播路由信息。作为组播路由解决方案，它直接利用单播路由表的路由信息，对组播报文执行RPF检查，检查通过后创建组播路由表项，从而转发组播报文。</p>
-<p>•目前在实际网络中，PIM主要有两种模式：</p>
-<p>▫<strong>PIM-DM（PIM-Dense Mode，PIM密集模式）。</strong></p>
-<p>▫<strong>PIM-SM（PIM-Sparse Mode，PIM稀疏模式）</strong> ，PIM-SM模式根据组播服务模型又可以分为：</p>
-<p>▪<strong>PIM-SM（ASM）</strong>：为任意源组播建立组播分发树。</p>
-<p>▪<strong>PIM-SM（SSM）</strong>：为指定源组播建立组播分发树。</p>
-<blockquote>
-<p>•PIM（Protocol Independent Multicast）协议无关组播，目前常用版本是PIMv2，PIM报文直接封装在IP报文中，协议号为103，PIMv2组播地址为224.0.0.13。</p>
-<p>•在PIM组播域中，以组播组为单位建立从组播源到组成员的点到多点的组播转发路径。由于组播转发路径呈现树型结构，也称为组播分发树（MDT，Multicast Distribution Tree）。</p>
-<p>•组播分发树的特点：</p>
-<p>▫无论网络中的组成员有多少，每条链路上相同的组播数据最多只有一份。被传递的组播数据在距离组播源尽可能远的分叉路口才开始复制和分发。</p>
-</blockquote>
-<h2 id="PIM-DM与PIM-SM使用场景"><a href="#PIM-DM与PIM-SM使用场景" class="headerlink" title="PIM-DM与PIM-SM使用场景"></a>PIM-DM与PIM-SM使用场景</h2><p>•PIM形成组播分发树主要有两种模式，即PIM-DM模式与PIM-SM模式，这两种模式分别用在不同的场景下：</p>
-<p>▫<strong>PIM-DM模式</strong>主要用在<strong>组成员较少且相对密集的组播网络中</strong>，该模式建立组播分发树的基本思路是“扩散-剪枝”，即将组播流量全网扩散，然后剪枝没有组成员的路径，最终形成组播分发树。</p>
-<p>▫<strong>PIM-SM模式</strong>主要用在<strong>组成员较多且相对稀疏的组播网络中</strong>，该模式建立组播分发树的基本思路是先收集组成员信息，然后再形成组播分发树。使用PIM-SM模式不需要全网泛洪组播，对现网的影响较小，因此<strong>现网多使用PIM-SM模式</strong>。</p>
-<h2 id="组播分发树的分类"><a href="#组播分发树的分类" class="headerlink" title="组播分发树的分类"></a>组播分发树的分类</h2><p>•通过PIM形成的组播分发树主要分为以下两种：</p>
-<p>▫以组播源为根，组播组成员为叶子的组播分发树称为<strong>SPT</strong>（Shortest Path Tree），<strong>在PIM-DM与PIM-SM中均有使用</strong>。</p>
-<p>▫以RP（Rendezvous Point）为根，组播组成员为叶子的组播分发树称为<strong>RPT</strong>（RP Tree），<strong>在PIM-SM中使用</strong>。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<blockquote>
-<p>•SPT又被称为源树，SPT在PIM-DM模式与PIM-SM模式的组播网络中均有使用。</p>
-<p>•RPT又被称为共享树，RPT主要在PIM-SM模式的组播网络中被使用。</p>
-<p>•RP的作用将在《PIM-SM》章节讲解。</p>
-</blockquote>
-<h2 id="PIM路由表项"><a href="#PIM路由表项" class="headerlink" title="PIM路由表项"></a>PIM路由表项</h2><p>•PIM路由表项即通过PIM协议建立的组播协议路由表项。</p>
-<p>•PIM网络中存在两种路由表项：</p>
-<p>▫（S，G）路由表项主要用于在PIM网络中<strong>建立SPT</strong>。对于PIM-DM网络和PIM-SM网络适用。</p>
-<p>▫（*，G）路由表项主要用于在PIM网络中<strong>建立RPT</strong>。对于PIM-SM网络适用。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<blockquote>
-<p>•S表示组播源，G表示组播组，*表示任意。</p>
-<p>•PIM路由器上可能同时存在两种路由表项。当收到源地址为S，组地址为G的组播报文，且RPF检查通过的情况下，按照如下的规则转发：</p>
-<ul>
-<li><p>如果存在（S，G）路由表项，则由（S，G）路由表项指导报文转发。</p>
-</li>
-<li><p>如果不存在（S，G）路由表项，只存在（<em>，G）路由表项，则先依照（</em>，G）路由表项创建（S，G）路由表项，再由（S，G）路由表项指导报文转发。</p>
-</li>
-</ul>
-<p>▫Flag值：PIM路由表象的标志。</p>
-<p>D：以PIM-DM模式转发；<br> S：以PIM-SM模式转发；<br> P：该条目已经被Prune；<br> C：DST直连，指该RT为收到IGMP report的路由器；<br>  J：（仅用于PIM-SM）RPT-〉SPT，指通过本RT的multicast已从RPT转为SPT进行转发。当该条目用于（*，G）里面，代表SPT-Threshold已经超过预定值（Cisco默认1min0字节），下一个包将引发建立SPT；当条目用于（S，G）里面，表示SPT-Threshold已经低于预定值，将删除SPT重新使用RPT；<br> T：SPT，使用SPT进行转发；<br> L：RT本身就是组播成员；<br> F： Register flag 。</p>
-</blockquote>
-<h2 id="PIM路由表项与组播路由表项"><a href="#PIM路由表项与组播路由表项" class="headerlink" title="PIM路由表项与组播路由表项"></a>PIM路由表项与组播路由表项</h2><p>•在不同的组播路由器上，组播路由表项会基于不同的表项汇总形成。</p>
-<p>▫最后一跳路由器的组播路由表项主要基于PIM路由表项，IGMP组表项和IGMP路由表项汇总形成。</p>
-<p>▫其余组播路由器的组播路由表项主要<strong>基于PIM路由表项形成</strong>。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<h1 id="2-PIM-DM介绍"><a href="#2-PIM-DM介绍" class="headerlink" title="2.PIM-DM介绍"></a>2.PIM-DM介绍</h1><h2 id="PIM-DM工作原理"><a href="#PIM-DM工作原理" class="headerlink" title="PIM-DM工作原理"></a>PIM-DM工作原理</h2><h3 id="PIM-DM基本概念"><a href="#PIM-DM基本概念" class="headerlink" title="PIM-DM基本概念"></a>PIM-DM基本概念</h3><p>•PIM-DM主要用在组成员较少且相对密集的网络中，通过“<strong>扩散-剪枝</strong>”的方式形成组播转发树（SPT）。</p>
-<p>•PIM-DM在形成SPT的过程中，除了扩散（Flooding），剪枝（Prune）机制外，还会涉及邻居发现（Neighbor Discovery），嫁接（Graft），断言（Assert）和状态刷新（State Refresh）机制。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<h3 id="PIM-DM协议报文"><a href="#PIM-DM协议报文" class="headerlink" title="PIM-DM协议报文"></a>PIM-DM协议报文</h3><p>•PIM协议报文直接采用IP封装，<strong>目的地址224.0.0.13，IP协议号103</strong>。</p>
-<p>•PIM-DM与PIM-SM使用的协议报文类型有所不同。</p>
-<p>•PIM-DM使用报文主要是以下几类：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<h3 id="邻居发现"><a href="#邻居发现" class="headerlink" title="邻居发现"></a>邻居发现</h3><p>•<strong>组播转发路径只能在PIM邻居之间建立</strong>，因此邻居发现是形成组播分发树的先决条件。</p>
-<p>•邻居发现主要通过PIM Hello包完成。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<blockquote>
-<p>•Hello报文中携带多项PIM协议报文参数，主要用于PIM邻居之间PIM协议报文的控制。具体如下：</p>
-<p>▫DR_Priority：表示各路由器接口竞选DR的优先级，优先级越高越容易获胜。</p>
-<p>▫Holdtime：表示保持邻居为可达状态的超时时间。如果在超时时间内没有收到PIM邻居发送的Hello报文，路由器则认为邻居不可达。</p>
-<p>▫LAN_Delay：表示共享网段内传输Prune报文的延迟时间。</p>
-<p>▫Neighbor-Tracking：表示邻居跟踪功能。</p>
-<p>▫Override-Interval：表示Hello报文中携带的否决剪枝的时间间隔。</p>
-</blockquote>
-<h3 id="首次形成组播分发树"><a href="#首次形成组播分发树" class="headerlink" title="首次形成组播分发树"></a>首次形成组播分发树</h3><p>•PIM-DM模式首次形成组播分发树主要依赖扩散机制、剪枝机制、断言机制与DR选举机制。</p>
-<ul>
-<li><p>扩散机制：组播数据包向所有的PIM邻居泛洪，同时组播路由器产生组播路由表项。</p>
-</li>
-<li><p>断言机制：当组播转发过程中存在多路访问网络，则需要选举出一个组播转发路由器，避免重复组播报文。</p>
-</li>
-<li><p>剪枝机制：如果组播路由器下没有组成员，则将源到该组播路由器的组播转发路径剪枝。</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<h3 id="扩散机制"><a href="#扩散机制" class="headerlink" title="扩散机制"></a>扩散机制</h3><p>•组播源发送的组播报文会在全网内扩散。当PIM路由器接收到组播报文，先进行<strong>RPF检查</strong>，通过后会在该路由器上<strong>创建（S，G）表项</strong>，之后会向所有PIM邻居发送。</p>
-<p>•PIM-DM形成的（S，G）表项有老化时间（默认210s），如果老化时间超时前没有收到新的组播报文，则删除（S，G）表项。</p>
-<p>•扩散具体过程如下：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<blockquote>
-<p>•扩散机制会周期性（默认180s）全网扩散组播数据，周期性扩散的主要目的是探测是否有新成员加组，但是由于全网扩散组播数据会浪费大量带宽，所以现在的组播网络一般使用“状态刷新机制”加上“嫁接机制”来实现周期性全网扩散感知新成员加组的目的。</p>
-</blockquote>
-<h3 id="断言机制"><a href="#断言机制" class="headerlink" title="断言机制"></a>断言机制</h3><p>•当一个网段内有多个相连的PIM路由器向该网段转发组播报文时，需要通过断言机制（Assert）来保证<strong>只有一个PIM路由器向该网段转发组播报文</strong>。</p>
-<p>•通过断言机制的选举规则将决定组播路由器的转发行为：</p>
-<p>▫获胜一方的下游接口称为<strong>Assert Winner</strong>，将负责后续对该网段组播报文的<strong>转发</strong>。</p>
-<p>▫落败一方的下游接口称为<strong>Assert Loser</strong>，后续<strong>不会</strong>对该网段<strong>转发</strong>组播报文，PIM路由器也会将其从（S，G）表项<strong>下游接口列表中删除</strong>。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<blockquote>
-<p>•断言机制由组播数据触发。</p>
-</blockquote>
-<h3 id="断言机制选举规则"><a href="#断言机制选举规则" class="headerlink" title="断言机制选举规则"></a>断言机制选举规则</h3><p>•PIM路由器在<strong>接收到</strong>邻居路由器发送的<strong>相同组播报文</strong>后，会向该网段<strong>发送断言（Assert）报文</strong>，进行Assert选举。Assert报文内会携带到组播源的单播路由前缀，路由优先级与开销。选举规则如下：</p>
-<p>▫单播路由协议优先级较高者获胜。</p>
-<p>▫如果优先级相同，则到组播源的开销较小者获胜。</p>
-<p>▫如果以上都相同，则下游接口IP地址最大者获胜。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<blockquote>
-<p>•Assert选举失败的设备会抑制转发，并将这种抑制转发的状态保持一段时间，这段时间就被称为Assert保持时间，默认180s。</p>
-<p>•Assert保持时间超时后，竞选失败的设备会恢复转发从而触发新一轮竞选。</p>
-</blockquote>
-<h3 id="剪枝机制"><a href="#剪枝机制" class="headerlink" title="剪枝机制"></a>剪枝机制</h3><p>•对于没有组成员连接的组播路由器，组播网络无需再将组播流量继续放往该设备。通过剪枝机制，组播网络可以将此类路径剪枝。</p>
-<p>•剪枝机制工作原理如下：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<blockquote>
-<p>•路由器为被裁剪的下游接口启动一个剪枝定时器（默认210s），定时器超时后接口恢复转发。组播报文重新在全网范围内扩散，新加入的组成员可以接收到组播报文。随后，下游不存在组成员的叶子路由器将向上发起剪枝操作。通过这种周期性的扩散-剪枝，PIM-DM周期性的刷新SPT。</p>
-<p>•当下游接口被剪枝后：</p>
-<ul>
-<li><p>如果下游叶子路由器有组成员加入，并且希望在下次“扩散-剪枝”前就恢复组播报文转发，则执行嫁接动作。</p>
-</li>
-<li><p>如果下游叶子路由器一直没有组成员加入，希望该接口保持抑制转发状态，则执行状态刷新动作。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="维护组播分发树"><a href="#维护组播分发树" class="headerlink" title="维护组播分发树"></a>维护组播分发树</h3><p>•组播分发树形成后不会一直存在，也不会一直不变。</p>
-<p>•在PIM邻居关系稳定，组成员没有变化的情况下，维护组播分发树一般有两种方式：</p>
-<p>​    ▫持续发送组播报文，保证组播路由表项能一直存在。</p>
-<p>​    ▫发送状态刷新报文，保证组播路由表项的下行接口状态不发生变化。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
-<h3 id="状态刷新机制"><a href="#状态刷新机制" class="headerlink" title="状态刷新机制"></a>状态刷新机制</h3><p>•在PIM-DM网络中，为了避免被裁剪的接口因为“剪枝定时器”超时而恢复转发，离组播源最近的第一跳路由器会周期性地触发State Refresh报文在全网内扩散。</p>
-<p>•收到State Refresh报文的PIM路由器会刷新剪枝定时器的状态。被裁剪接口的下游叶子路由器如果一直没有组成员加入，该接口将一直处于抑制转发状态。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
-<h3 id="新成员加组"><a href="#新成员加组" class="headerlink" title="新成员加组"></a>新成员加组</h3><p>•当有新成员加入组播组后，组播网络需要<strong>更新组播分发树</strong>，才能将组播数据发往组成员。PIM-DM模式在使用“扩散-剪枝”的方式建立组播分发树后，通过<strong>状态刷新机制</strong>，使<strong>下行接口一旦被抑制就无法自动恢复</strong>。</p>
-<p>•因此需要一些机制来更新组播分发树，一般PIM-DM模式更新组播分发树的方法有两种：</p>
-<p>▫等待组播路由表超时后，全网重新泛洪。该方法不可控，在现网中无法实现</p>
-<p>▫使用嫁接（Graft）机制，当新成员加组后，<strong>主动反向建立组播分发路径</strong>。现网中一般使用嫁接机制来实现新成员加组。</p>
-<h3 id="嫁接机制"><a href="#嫁接机制" class="headerlink" title="嫁接机制"></a>嫁接机制</h3><p>•PIM-DM通过嫁接机制，使有新组成员加入的网段快速得到组播报文。</p>
-<p>•叶子路由器通过IGMP了解到与其相连的用户网段上，组播组G有新的组成员加入。随后叶子路由器会<strong>基于本地的组播路由表</strong>向上游发送Graft报文，请求上游路由器<strong>恢复相应出接口</strong>转发，将其添加在（S，G）表项下游接口列表中。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
-<h2 id="PIM-DM基本配置"><a href="#PIM-DM基本配置" class="headerlink" title="PIM-DM基本配置"></a>PIM-DM基本配置</h2><h3 id="PIM-DM的基本配置"><a href="#PIM-DM的基本配置" class="headerlink" title="PIM-DM的基本配置"></a>PIM-DM的基本配置</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
-<h3 id="PIM-DM基础实验"><a href="#PIM-DM基础实验" class="headerlink" title="PIM-DM基础实验"></a>PIM-DM基础实验</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<h4 id="查看参数"><a href="#查看参数" class="headerlink" title="查看参数"></a>查看参数</h4><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"> </p>
-<h1 id="3-PM-SM介绍"><a href="#3-PM-SM介绍" class="headerlink" title="3.PM-SM介绍"></a>3.PM-SM介绍</h1><h2 id="PIM-SM-ASM-工作原理"><a href="#PIM-SM-ASM-工作原理" class="headerlink" title="PIM-SM(ASM)工作原理"></a>PIM-SM(ASM)工作原理</h2><h3 id="PIM-DM的局限性"><a href="#PIM-DM的局限性" class="headerlink" title="PIM-DM的局限性"></a>PIM-DM的局限性</h3><p>•中大型组播网络中由于网络较大，如果依然使用PIM-DM会遇到组多问题：</p>
-<p>▫使用“扩散-剪枝”方式需要全网扩散组播报文，对于<strong>网络有一定冲击</strong>。</p>
-<p>▫所有组播路由器<strong>均需要维护组播路由表</strong>，即使该组播路由器无需转发组播数据。</p>
-<p>▫对于组成员较为稀疏的组播网络，使用“扩散-剪枝”形成组播分发树的<strong>效率不高</strong>。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<h3 id="PIM-SM-ASM-介绍"><a href="#PIM-SM-ASM-介绍" class="headerlink" title="PIM-SM(ASM)介绍"></a>PIM-SM(ASM)介绍</h3><p>•PIM-DM模型使用“扩散-剪枝”形成组播分发树的原因是：组播网络中大部分组播路由器无法得知组成员的位置。</p>
-<p>•PIM-SM（ASM）模型形成组播分发树的方法是：</p>
-<p>▫将组成员的位置事先告知某台组播路由器（Rendezvous Point，RP），形成<strong>RPT（RP Tree）</strong>。</p>
-<p>▫组播源在发送组播数据时，组播网络先将组播数据<strong>发送至RP</strong>，然后由RP再将组播数据转发给组成员。</p>
-<p>▫对于部分次优的组播转发路径，PIM-SM（ASM）能<strong>自动优化为最优路径（SPT）</strong>。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<blockquote>
-<p>•通过PIM-SM（ASM）模式形成组播分发树有如下好处：</p>
-<p>​    ▫只有组播转发路劲上的组播路由器需要维护组播路由表。</p>
-<p>​    ▫通过RP可以让所有组播路由器获知组成员的位置。</p>
-<p>​    ▫避免“扩散-剪枝”机制，提高组播分发树的形成效率。</p>
-</blockquote>
-<h3 id="PIM-SM-ASM-协议报文"><a href="#PIM-SM-ASM-协议报文" class="headerlink" title="PIM-SM(ASM)协议报文"></a>PIM-SM(ASM)协议报文</h3><p>•PIM协议报文直接采用IP封装，目的地址224.0.0.13，IP协议号103。</p>
-<p>•PIM-SM使用报文主要是以下几类：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<h3 id="RP介绍"><a href="#RP介绍" class="headerlink" title="RP介绍"></a>RP介绍</h3><p>•汇聚点RP（Rendezvous Point）为网络中一台重要的PIM路由器，用于处理源端DR注册信息及组成员加入请求，网络中的<strong>所有PIM路由器都必须知道RP的地址</strong>，类似于一个供求信息的汇聚中心。</p>
-<p>•目前可以通过以下方式配置RP：</p>
-<p>▫<strong>静态RP</strong>：在网络中的所有PIM路由器上配置相同的RP地址，静态指定RP的位置。</p>
-<p>▫<strong>动态RP</strong>：通过选举机制在多个C-RP（Candidate-RP，候选RP）之间选举出RP。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<blockquote>
-<p>•静态RP或者是动态RP在设置时均可以指定该RP为哪些组播组提供服务。</p>
-</blockquote>
-<h3 id="动态选举RP"><a href="#动态选举RP" class="headerlink" title="动态选举RP"></a>动态选举RP</h3><p>•动态选举RP会涉及两类角色C-BSR（Candidate-Bootstrap Router）与C-RP（Candidate-RP）：</p>
-<p>▫C-BSR通过竞选能选举出一个唯一的BSR。</p>
-<p>▫BSR的作用是收集C-RP的信息并形成RP-Set信息，BSR通过PIM报文将RP-Set信息扩散给所有PIM路由器。</p>
-<p>▫PIM路由器收到RP-Set消息后，根据RP选举规则选举出合适的RP。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
-<blockquote>
-<p>•BSR竞选规则如下：</p>
-<p>​    ▫优先级较高者获胜（优先级数值越大优先级越高）。</p>
-<p>​    ▫如果优先级相同，IP地址较大者获胜。</p>
-<p>•RP竞选规则如下：</p>
-<p>​    ▫与用户加入的组地址匹配的C-RP服务的组范围掩码最长者获胜。</p>
-<p>​    ▫如果以上比较结果相同，则C-RP优先级较高者获胜（优先级数值    越小优先级越高）。</p>
-<p>​    ▫如果以上比较结果都相同，则执行Hash函数，计算结果较大者获    胜。</p>
-<p>​    ▫如果以上比较结果都相同，则C-RP的IP地址较大者获胜。</p>
-</blockquote>
-<h3 id="首次形成组播分发树-1"><a href="#首次形成组播分发树-1" class="headerlink" title="首次形成组播分发树"></a>首次形成组播分发树</h3><p>•PIM-SM（ASM）模式首次形成组播分发树主要依赖RPT构建机制，组播源注册机制与DR选举机制。</p>
-<p>▫RPT构建机制：组播叶子路由器主动建立到RP的组播分发树（RPT）</p>
-<p>▫组播源注册机制：通过该机制形成组播源到RP的组播分发树（SPT）</p>
-<p>▫DR选举机制：DR负责源端或组成员端组播报文的收发，避免重复组播报文，同时成员端DR还负责发送Join加组消息。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
-<blockquote>
-<p>•DR选举机制与PIM-DM中的DR选举机制一致，不再赘述。</p>
-</blockquote>
-<h3 id="RPT构建"><a href="#RPT构建" class="headerlink" title="RPT构建"></a>RPT构建</h3><p>•RPT（RP Tree）是一棵<strong>以RP为根</strong>，以存在组成员关系的<strong>PIM路由器为叶子</strong>的组播分发树。</p>
-<p>•当网络中出现组成员（形成IGMP表项）时，组成员端DR向RP发送Join报文，在通向RP的路径上逐跳创建<strong>（*，*G）表项</strong>，生成一棵以RP为根的RPT。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
-<h3 id="组播源注册机制-–-形成SPT"><a href="#组播源注册机制-–-形成SPT" class="headerlink" title="组播源注册机制 – 形成SPT"></a>组播源注册机制 – 形成SPT</h3><p>•PIM-SM（ASM）模型中，源端DR到RP的组播分发树无法使用Join报文创建，因此需要<strong>组播源注册机制</strong>帮助形成源端DR到RP的组播分发树（SPT）。</p>
-<p>•形成SPT需要基于Register报文与Join报文，具体过程如下：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
-<blockquote>
-<p>•组播源与源端DR之间没有IGMP协议，无法通过IGMP生成PIM（*，G）表项，进而无法发送Join消息形成组播分发树。</p>
-</blockquote>
-<h3 id="组播源注册机制-–-转发组播数据"><a href="#组播源注册机制-–-转发组播数据" class="headerlink" title="组播源注册机制 – 转发组播数据"></a>组播源注册机制 – 转发组播数据</h3><p>•组播源信息注册到RP后，就形成了组播源到RP的SPT，但源端DR此时仍然会将组播数据包封装入Register报文，该方式会造成一些问题：</p>
-<ul>
-<li><p>源端DR最初发送的是单播Register报文，但是该方式会<strong>加重源端DR与RP的工作量</strong>。</p>
-</li>
-<li><p>源端DR形成到RP的SPT后，<strong>会同时发送单播Register报文</strong>和<strong>组播报文</strong>，造成重复组播包的问题。</p>
-</li>
-</ul>
-<p>•SPT建立后，RP使用Register-Stop报文通知源端DR后续报文可以以组播报文形式发送。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
-<h3 id="源-末端网络中的重复组播报文"><a href="#源-末端网络中的重复组播报文" class="headerlink" title="源/末端网络中的重复组播报文"></a>源/末端网络中的重复组播报文</h3><p>•在<strong>源端网络或者成员端网络中</strong>，有可能有多台组播路由器转发组播流量，从而造成<strong>重复组播报文</strong>的问题。</p>
-<p>•PIM DR（Designated Router）是源端网络或者成员端网络的<strong>唯一组播转发者</strong>，由于不存在别的组播转发路由器就避免了重复组播报文的问题。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
-<h3 id="PIM-DR选举"><a href="#PIM-DR选举" class="headerlink" title="PIM DR选举"></a>PIM DR选举</h3><p>•PIM DR的选举：</p>
-<ul>
-<li><p>在PIM-SM（ASM）中各路由器通过比较<strong>Hello</strong>消息上携带的<strong>优先级</strong>和<strong>IP地址</strong>，为多路访问网络选举指定路由器DR。</p>
-</li>
-<li><p><strong>接口DR优先级高</strong>的路由器将成为该MA网络的DR，在优先级相同的情况下，<strong>接口IP地址大</strong>的路由器将成为DR。</p>
-</li>
-<li><p>当DR出现故障后，邻居路由器之间会重新选举DR。</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
-<blockquote>
-<p>•DR优先级默认为1，数值越大越优。</p>
-<p>•对于成员端网络，如果有多台组播路由器，则组播路由器的下行接口需要同时开启IGMP与PIM。</p>
-<p>•DR还可充当IGMPv1的查询器。</p>
-</blockquote>
-<h3 id="RPT次优路径问题"><a href="#RPT次优路径问题" class="headerlink" title="RPT次优路径问题"></a>RPT次优路径问题</h3><p>•在PIM-SM网络中，一个组播组只对应一个RP。因此组播数据最初都会发往RP，由RP进行转发，这会导致两个问题：</p>
-<p>​    ▫过大的组播流量会对RP形成巨大的负担。</p>
-<p>​    ▫组播转发路径有可能是次优路径。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
-<h3 id="SPT切换机制"><a href="#SPT切换机制" class="headerlink" title="SPT切换机制"></a>SPT切换机制</h3><p>•当数据发送至RP后，RP会沿RPT将数据发送给成员端DR。为了解决RPT潜在的次优路径问题，<strong>成员端DR</strong>会基于组播数据包中的源IP，反向建立从成员端DR到源的SPT。</p>
-<p>•具体过程如下：</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
-<blockquote>
-<p>•设备沿最短路径发送Join消息，该最短路径基于RPF选举规则决定。设备将Join消息从RPF选举得出的上行接口发出。</p>
-<p>•多路访问网络在SPT切换的过程中可能会存在重复报文，需要利用断言机制快速选定下行接口。</p>
-<p>•SPT切换的触发条件</p>
-</blockquote>
-<h3 id="维护组播分发树-1"><a href="#维护组播分发树-1" class="headerlink" title="维护组播分发树"></a>维护组播分发树</h3><p>•当组播分发树（<strong>SPT或RPT</strong>）稳定后，成员端DR会周期性发送Join/Prune报文，用于维护组播分发树。</p>
-<p>•如果组播在一段时间后（默认210s）没有流量则SPT树会消失，成员端DR恢复到RP的RPT树。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
-<h2 id="PIM-SM-SSM-工作原理"><a href="#PIM-SM-SSM-工作原理" class="headerlink" title="PIM-SM(SSM)工作原理"></a>PIM-SM(SSM)工作原理</h2><h3 id="SSM概念回顾"><a href="#SSM概念回顾" class="headerlink" title="SSM概念回顾"></a>SSM概念回顾</h3><p>•SSM模型针对特定源和组的绑定数据流提供服务，接收者主机在加入组播组时，可以<strong>指定只接收</strong>哪些源的数据或<strong>指定拒绝接收</strong>来自哪些源的数据。加入组播组以后，主机<strong>只会收到指定源</strong>发送到该组的数据。</p>
-<p>•<strong>SSM模型对组地址不再要求全网唯一</strong>，<strong>只需要每个组播源保持唯一</strong>。这里的“唯一”指的是同一个源上不同的组播应用必须使用不同的SSM地址来区分。不同的源之间可以使用相同的组地址，因为SSM模型中针对每一个（源，组）信息都会生成表项。这样一方面节省了组播组地址，另一方面也不会造成网络拥塞。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
-<h3 id="PIM-SM-SSM-基本概述"><a href="#PIM-SM-SSM-基本概述" class="headerlink" title="PIM-SM(SSM)基本概述"></a>PIM-SM(SSM)基本概述</h3><p>•由于SSM提前定义了组播的源地址，所以PIM-SM（SSM）可以在成员端DR上基于组播源地址直接反向建立SPT。</p>
-<p>•PIM-SM（SSM）<strong>无需维护RP</strong>、<strong>无需构建RPT</strong>、<strong>无需注册组播源</strong>，可以直接在组播源与组成员之间建立SPT。</p>
-<p>•在PIM-SM（SSM）模型中，关键机制包括邻居发现、DR竞选、构建SPT。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
-<blockquote>
-<p>•PIM-SM（SSM）无需Assert机制</p>
-</blockquote>
-<h3 id="组播分发树形成与维护"><a href="#组播分发树形成与维护" class="headerlink" title="组播分发树形成与维护"></a>组播分发树形成与维护</h3><p>•PIM-SM（SSM）模型构建组播分发树的形成主要依赖IGMPv3报文与Join报文。</p>
-<p>•PIM-SM（SSM）模型形成的<strong>组播分发树会一直存在</strong>，不会因为没有组播流量而消失。</p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/39.png"></p>
-<blockquote>
-<p>•DR与邻居发现机制与PIM-DM模式一样，此处不再赘述。</p>
-</blockquote>
-<h3 id="PIM模型比较"><a href="#PIM模型比较" class="headerlink" title="PIM模型比较"></a>PIM模型比较</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/40.png"></p>
-<h2 id="PIM-SM基本配置"><a href="#PIM-SM基本配置" class="headerlink" title="PIM-SM基本配置"></a>PIM-SM基本配置</h2><h3 id="PIM-SM的基本配置"><a href="#PIM-SM的基本配置" class="headerlink" title="PIM-SM的基本配置"></a>PIM-SM的基本配置</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/41.png"></p>
-<h3 id="PIM-SM基础实验"><a href="#PIM-SM基础实验" class="headerlink" title="PIM-SM基础实验"></a>PIM-SM基础实验</h3><p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/42.png"></p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/43.png"></p>
-<p><img src="/2021/05/17/IP-PIM%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/44.png"></p>
-<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>1.（单选题）PIM组播报文的目的IP地址是？</p>
-<p>A.224.0.0.2</p>
-<p>B.224.0.0.1</p>
-<p>C.224.0.0.5</p>
-<p><strong>D.224.0.0.13</strong></p>
-<p>2.（多选题）组播防止重复报文的机制有？</p>
-<p><strong>A.RPF机制</strong></p>
-<p><strong>B.Assert选举机制</strong></p>
-<p><strong>C.DR选举机制</strong></p>
-<p>D.IGMP查询者选举机制</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•PIM模型有两种：</p>
-<ul>
-<li><p>PIM-DM主要使用在网络规模较小，用户集中的组播网络中。</p>
-</li>
-<li><p>PIM-SM主要使用在网络规模较大，用户较为分散的组播网络中。PIM-SM基于组播模型又可以分为PIM-SM（ASM）于PIM-SM（SSM）模型，PIM-SM（SSM）模型主要为SSM组播服务。</p>
-</li>
-</ul>
-<p>•PIM-DM使用“扩散-剪枝”的方式形成组播分发树，在形成分发树时使用Assert选举于DR选举机制防止环路产生，在组播转发时使用PRF机制防止环路产生。</p>
-<p>•PIM-SM（ASM）将组成员加组信息发送给RP，形成RPT，组播源再发送组播报文时先将组播报文发送至RP，然后由RP再将组播数据发送至组成员，形成SPT+RPT的组播分发树。为了防止RPT次优路径的问题，PIM-SM（ASM）会发起SPT切换的机制，优化组播分发树。</p>
-<p>•PIM-SM（SSM）主要为SSM组播模型服务，由于SSM组播模型预先知道组播源的地址，因此可以直接反向建立组播分发树。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IP-IGMP原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T11:52:35+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•组播通信中，组播网络需要将组播数据发送给特定的组播组成员，因此组播网络需要知道组成员的位置与组成员所加的组播组。</p>
-<p>•通过<strong>IGMP（Internet Group Management Protocol，因特网组管理协议）</strong>，组成员可以将加组消息发送给组播网络，从而让组播网络<strong>感知</strong>到<strong>组成员的位置</strong>和<strong>所加组播组</strong>。</p>
-<p>•本课程主要讲解IGMP的作用和基本原理，包括IGMPv1、IGMPv2和IGMPv3三个版本的原理与区别，和IGMP Snooping的工作机制、IGMP SSM Mapping工作机制、IGMP代理的工作机制。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述IGMP的基本原理和配置</p>
-<p>▫描述IGMP不同版本间的区别</p>
-<p>▫描述IGMP Snooping的基本原理</p>
-<p>▫描述IGMP SSM Mapping的基本原理</p>
-<p>▫描述IGMP代理的基本原理</p>
-<h1 id="1-IGMP介绍"><a href="#1-IGMP介绍" class="headerlink" title="1.IGMP介绍"></a>1.IGMP介绍</h1><h2 id="IGMP简介"><a href="#IGMP简介" class="headerlink" title="IGMP简介"></a>IGMP简介</h2><h3 id="组播网络的转发困境"><a href="#组播网络的转发困境" class="headerlink" title="组播网络的转发困境"></a>组播网络的转发困境</h3><p>•IP组播通信的特点是报文从一个源发出，被转发到一组特定的组播组成员。在组播通信模型中，组播源不关注接收者的位置信息，组播数据转发需要依赖组播网络才能将数据发送至组播组成员。</p>
-<p>•组播数据在进行传递时，组播网络为了将组播数据转发至组播组成员，需要知道<strong>组播组成员的位置</strong>与<strong>所加组播组</strong>。</p>
-<p>•组播网络<strong>如何感知组播组成员？</strong></p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<h3 id="感知组播组成员"><a href="#感知组播组成员" class="headerlink" title="感知组播组成员"></a>感知组播组成员</h3><p>•组播网络感知组播组成员有两种方法：</p>
-<p>▫手工静态配置：在组播路由器上静态指定连接组播组成员的接口，静态配置组成员加组信息。</p>
-<p>▪手工静态方式灵活性差，配置工作量大，但相对比较稳定，对于新上线的组成员能够快速建立组播转发通路。</p>
-<p>▫动态感知：通过<strong>IGMP</strong>协议通知组播网络，组播网络根据IGMP消息感知组播组成员所在接口，以及组成员加组信息。</p>
-<p>▪动态感知方式较为灵活，且配置简单，<strong>现网一般使用动态感知方式</strong>。</p>
-<p>•当组播网络获得组成员位置与加组信息后，可以基于这些信息转发组播报文。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<blockquote>
-<p>•组播网络转发报文时需要依赖组播分发树，该分发树的形成将在《PIM原理与配置》课程讲解。</p>
-</blockquote>
-<h3 id="IGMP协议的概述"><a href="#IGMP协议的概述" class="headerlink" title="IGMP协议的概述"></a>IGMP协议的概述</h3><p>•IGMP是TCP/IP协议族中负责IPv4组播成员管理的协议，用来在接收者主机和与其直接相邻的组播路由器之间<strong>建立</strong>和<strong>维护组播组成员关系</strong>。</p>
-<p>•IGMP通过在组播组成员和组播路由器之间交互IGMP报文实现组成员管理功能，IGMP报文封装在IP报文中。</p>
-<p>•到目前位置，IGMP有三个版本：</p>
-<p>▫IGMPv1</p>
-<p>▫IGMPv2</p>
-<p>▫IGMPv3</p>
-<p>•组播路由器与组成员间交互报文后会生成<strong>IGMP路由表项</strong>与<strong>IGMP组表项</strong>。</p>
-<p>•IGMP路由表项与IGMP组表项将帮助设备生成组播路由表项。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<h3 id="IGMP组表项与路由表项"><a href="#IGMP组表项与路由表项" class="headerlink" title="IGMP组表项与路由表项"></a>IGMP组表项与路由表项</h3><p>•IGMP协议会生成IGMP路由表项与IGMP组表项，组播路由表项需要基于IGMP路由表项与IGMP组表项的信息生成。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<h3 id="IGMP表项与组播路由表项"><a href="#IGMP表项与组播路由表项" class="headerlink" title="IGMP表项与组播路由表项"></a>IGMP表项与组播路由表项</h3><p>•在<strong>最后一跳组播路由器（组播叶子路由器）</strong>上，组播路由表可以基于IGMP路由表项，IGMP组表项与组播协议路由表（PIM路由表）汇总后形成。</p>
-<p>•IGMP路由表项与IGMP组表项能为组播协议路由表提供<strong>组播组地址信息</strong>与<strong>出接口信息</strong>。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<h2 id="IGMP工作原理"><a href="#IGMP工作原理" class="headerlink" title="IGMP工作原理"></a>IGMP工作原理</h2><h3 id="IGMPv1基本概念"><a href="#IGMPv1基本概念" class="headerlink" title="IGMPv1基本概念"></a>IGMPv1基本概念</h3><p>•IGMPv1主要基于查询和响应机制完成组播组管理。</p>
-<p>•查询和响应机制由两种报文实现：</p>
-<ul>
-<li><p><strong>普遍组查询报文（General Query</strong>）：查询器向共享网络上所有主机和路由器发送的查询报文，用于查询<strong>哪些组播组存在成员。</strong></p>
-</li>
-<li><p><strong>成员关系报告报文（Report）</strong>：主机向查询器发送的报告报文，用于<strong>申请加入某个组播组</strong>或者<strong>应答查询报文</strong>。</p>
-</li>
-</ul>
-<p>•由于IGMP报文是组播报文，因此一个多路访问网络里只需要<strong>一个组播路由器发送查询报文即可</strong>，该组播路由器被称为<strong>IGMP查询器（Querier）</strong>。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<h3 id="IGMPv1报文格式"><a href="#IGMPv1报文格式" class="headerlink" title="IGMPv1报文格式"></a>IGMPv1报文格式</h3><p>•IGMPv1普遍组查询报文与成员关系报告报文均为组播报文，<strong>目的地址为224.0.0.1</strong>。</p>
-<p>•IGMPv1普遍组查询报文与成员关系报告报文格式类似，其中最主要的是Version，Type，Group Address这三个字段：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<h3 id="IGMPv1组成员加组机制"><a href="#IGMPv1组成员加组机制" class="headerlink" title="IGMPv1组成员加组机制"></a>IGMPv1组成员加组机制</h3><p>•通过普遍组查询报文与成员关系报告报文，IGMP查询器可以了解到该网段内哪些组播组存在成员。</p>
-<p>•IGMPv1组成员加组基本流程如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<blockquote>
-<p>IGMPv1普遍组查询和响应过程如下：</p>
-<p>▫IGMP查询器发送目的地址为224.0.0.1（表示同一网段内所有主机和路由器）的普遍组查询报文；收到该查询报文的组成员启动定时器。普遍组查询报文是周期性发送的，发送周期可以通过命令配置，缺省情况下每隔60秒发送一次。组成员1和组成员2是组播组G1的成员，则在本地启动定时器Timer-G1。缺省情况下，定时器的范围为0～10秒之间的随机值。</p>
-<p>▫第一个定时器超时的组成员发送针对该组的报告报文。</p>
-<p>▫IGMP查询器接收到组播组成员1的报告报文后，了解到本网段内存在组播组G1的成员，则由生成IGMP组表项与（<em>，G1）IGMP路由表项，“</em>”代表任意组播源。网络中一旦有组播组G1的数据到达路由器，将向该网段转发。</p>
-<p>成员关系报告报文抑制机制：</p>
-<p>▫普遍组查询报文是周期性发送的，发送周期可以通过命令配置，缺省情况下每隔60秒发送一次。组成员1和组成员2是组播组G1的成员，则在本地启动定时器Timer-G1。缺省情况下，定时器的范围为0～10秒之间的随机值。</p>
-<p>▫假设组成员1上的Timer-G1首先超时，组成员1向该网段发送目的地址为G1的报告报文。也想加入组G1的组成员2收到此报告报文，则停止定时器Timer-G1，不再发送针对G1的报告报文。这样报告报文被抑制，可以减少网段上的流量。</p>
-</blockquote>
-<h3 id="IGMPv1查询器选举机制"><a href="#IGMPv1查询器选举机制" class="headerlink" title="IGMPv1查询器选举机制"></a>IGMPv1查询器选举机制</h3><p>•普遍组查询是组播报文，因此同一网段内只需要一台查询器即可查询所有组成员的加组信息。</p>
-<p>•IGMPv1<strong>没有基于IGMP的查询器选举机制</strong>，所以需要依赖组播路由协议（PIM）进行IGMP查询器选举。</p>
-<p>•IGMPv1将组播路由协议（PIM）选举出唯一的<strong>组播信息转发者（Assert Winner或DR）作为IGMPv1的查询器</strong>，负责该网段的组成员关系查询。</p>
-<p>•查询器和非查询器均能收到成员关系报告（目的地址224.0.0.1），因此均能形成IGMP路由表与IGMP组表项。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<blockquote>
-<p>•Assert Winner或DR用于转发组播流量。</p>
-<p>•关于Assert Winner或DR的具体作用，将在《PIM原理与配置》课程介绍。</p>
-</blockquote>
-<h3 id="IGMPv1组成员离组机制"><a href="#IGMPv1组成员离组机制" class="headerlink" title="IGMPv1组成员离组机制"></a>IGMPv1组成员离组机制</h3><p>•IGMPv1没有专门定义离开组消息，当组播组成员离开组播组时，将不会再对普遍组查询报文做出回应。</p>
-<p>•当网段内不存在特定组的组成员，IGMP查询器不会收到特定组成员的报告报文，则在一定时间（缺省值为130s）后，删除特定组所对应的组播转发表项。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<blockquote>
-<p>•组成员离开机制：</p>
-<p>▫假设组成员2想要退出组播组G2</p>
-<ul>
-<li><p>组成员2收到IGMP查询器发送的普遍组查询报文时，不再发送针对G2的报告报文。由于网段内不存在组G2的其他成员，IGMP查询器不会收到G2组成员的报告报文，则在一定时间（缺省值为130秒）后，删除G2所对应的IGMP表项。</p>
-</li>
-<li><p>组成员1收到IGMP查询器发送的普遍组查询报文时，反馈针对G1的报告报文，IGMP查询器不删除G1相应IGMP表项</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="IGMPv2介绍"><a href="#IGMPv2介绍" class="headerlink" title="IGMPv2介绍"></a>IGMPv2介绍</h3><p>•IGMPv1在离组机制与查询器选举机制上有一定缺陷：</p>
-<p>​    ▫IGMPv1离组使用超时机制，组成员只能静默离组。在未超时的时间内，组播流量依然会被组播路由器转发。</p>
-<p>​    ▫IGMPv1查询器选举必须要依赖PIM协议，导致查询器选举不够灵活。</p>
-<p>•IGMPv2改善了IGMPv1的缺陷：</p>
-<p>​    ▫IGMPv2组成员加组机制与IGMPv1基本相同</p>
-<p>​    ▫IGMPv2增加了离开组机制</p>
-<p>​    ▫IGMPv2增加了查询器选举机制</p>
-<p>•IGMPv2能与IGMPv1兼容。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<h3 id="IGMPv2报文格式"><a href="#IGMPv2报文格式" class="headerlink" title="IGMPv2报文格式"></a>IGMPv2报文格式</h3><p>•为了改善组成员离开机制，IGMPv2新增了两种报文：</p>
-<p>▫<strong>成员离开报文（Leave）</strong>：成员离开组播组时主动向查询器发送的报文，用于宣告自己离开了某个组播组。成员离开报文目的地址为224.0.0.2。</p>
-<p>▫<strong>特定组查询报文（Group-Specific Query）</strong>：查询器向共享网段内指定组播组发送的查询报文，用于查询该组播组是否存在成员。特定组查询报文目的地址为所查询组播组的组地址。</p>
-<p>•IGMPv2对普遍组查询报文格式也做了改进，添加了最大响应时间（Max Response Time）字段。此字段取值可以通过命令配置，用于控制成员对于查询报文的响应速度。</p>
-<p>•IGMPv2报文格式如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<blockquote>
-<p>IGMPv2报文各字段说明：</p>
-<ul>
-<li><p>Type：</p>
-<p>▪报文类型。该字段有以下四种取值：</p>
-<p>▪0x11:表示查询报文。IGMPv2的查询报文包括普遍组查询报文和特定组查询报文两类。</p>
-<p>▪0x12:表示IGMPv1成员关系报告报文。</p>
-<p>▪0x16:表示IGMPv2成员关系报告报文。</p>
-<p>▪0x17:表示成员离开报文。</p>
-</li>
-<li><p>Max Response Time：表示主机响应查询返回报告的最大时间。</p>
-<p>▪对于普遍组查询，最大响应时间默认为10秒。</p>
-<p>▪对于特定组查询，最大响应时间默认为1秒。</p>
-</li>
-<li><p>Group Address：</p>
-<p>▪普遍组查询报文中，组地址设置为0。</p>
-<p>▪特定组查询报文中，组地址为需要查询的组地址。</p>
-<p>▪在成员关系报告或离开组的消息中，组地址为需要报告或离开的组地址。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="IGMPv2查询器选举机制"><a href="#IGMPv2查询器选举机制" class="headerlink" title="IGMPv2查询器选举机制"></a>IGMPv2查询器选举机制</h3><p>•IGMPv2组成员<strong>加组机制与IGMPv1一致</strong>，不再赘述。</p>
-<p>•IGMPv2查询器选举机制与IGMPv1有较大差异。IGMPv2使用<strong>独立的查询器选举机制</strong>，当共享网段上存在多个组播路由器时，IP地址最小的路由器成为查询器。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<blockquote>
-<p>•非查询器上都会启动一个定时器（即其他查询器存在时间定时器Other Querier Present Timer）。在该定时器超时前，如果收到了来自查询器的查询报文，则重置该定时器；否则，就认为原查询器失效，并发起新的查询器选举过程。</p>
-</blockquote>
-<h3 id="IGMPv2组成员离开机制"><a href="#IGMPv2组成员离开机制" class="headerlink" title="IGMPv2组成员离开机制"></a>IGMPv2组成员离开机制</h3><p>•IGMPv2使用成员离开报文与特定组查询报文加速感知IGMPv2组成员离开。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
-<blockquote>
-<p>•组播组成员向本地网段内的所有组播路由器（目的地址为224.0.0.2）发送针对组G1的离开报文。</p>
-<ul>
-<li><p>查询器收到离开报文，会发送针对组G1的特定组查询报文。发送间隔和发送次数可以通过命令配置，缺省情况下每隔1秒发送一次，共发送两次。同时查询器启动组成员关系定时器（Timer-Membership=发送间隔x发送次数）。</p>
-</li>
-<li><p>如果该网段内还存在组G1的其他成员，这些成员在收到查询器发送的特定组查询报文后，会立即发送针对组G1的报告报文。查询器收到针对组G1的报告报文后将继续维护该组成员关系。</p>
-</li>
-<li><p>如果该网段内不存在组G1的其他成员，查询器将不会收到针对组G1的报告报文。在Timer-Membership超时后，查询器将删除（*，G1）对应的IGMP组表项。当有组G1的组播数据到达查询器时，查询器将不会向下游转发。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="SSM模型带来的挑战"><a href="#SSM模型带来的挑战" class="headerlink" title="SSM模型带来的挑战"></a>SSM模型带来的挑战</h3><p>•出于安全考虑，组播组成员可以只选择接收从特定组播源发来的组播数据。组成员需要告知组播网络，接收来自哪些特定组播源的组播流量。</p>
-<p>•IGMPv1与IGMPv2的报文中均<strong>无法携带组播源的信息</strong>，因此<strong>无法配合SSM使用</strong>（可使用SSM Mapping功能解决这个问题）。</p>
-<p>•IGMPv3主要是为了配合SSM（Source-Specific Multicast）模型发展起来的，提供了在报文中携带组播源信息的能力，即主机可以对组播源进行选择。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
-<blockquote>
-<p>•SSM模型的组播地址范围：232.0.0.0~232.255.255.255</p>
-<p>•SSM Mapping功能将在IGMP特性章节介绍。</p>
-</blockquote>
-<h3 id="IGMPv3介绍"><a href="#IGMPv3介绍" class="headerlink" title="IGMPv3介绍"></a>IGMPv3介绍</h3><p>•IGMPv3大部分工作机制与IGMPv2类似：</p>
-<p>▫查询器选举机制一致：IP地址小的为查询器。</p>
-<p>▫使用普遍组查询报文查询组成员加组信息。</p>
-<p>▫使用特定组查询报文查询特定组播的成员存活情况。</p>
-<p>•IGMPv3需要支持上报组播源信息，与IGMPv2相比IGMPv3的变化如下：</p>
-<p>▫IGMPv3查询报文除了包含普遍组查询报文和特定组查询报文，还新增了特定源组查询报文（Group-and-Source-Specific Query）。</p>
-<p>▫IGMPv3成员关系报告报文不仅包含主机想要加入的组播组，而且包含主机想要接收来自哪些组播源的数据。</p>
-<p>▫由于同个组播组的不同成员可能希望接收来自不同源的组播，因此IGMPv3<strong>无需成员关系报告报文抑制机制。</strong></p>
-<p>▫IGMPv3<strong>没有定义专门的成员离开报文</strong>，成员离开通过特定类型的报告报文来传达。</p>
-<h3 id="IGMPv3报文格式-–-查询报文"><a href="#IGMPv3报文格式-–-查询报文" class="headerlink" title="IGMPv3报文格式 – 查询报文"></a>IGMPv3报文格式 – 查询报文</h3><p>•IGMPv3的查询报文共有三类：</p>
-<p>▫<strong>普遍组查询报文（General Query）</strong>。该报文作用与IGMPv1,IGMPv2中的普遍组查询报文作用一致。</p>
-<p>▫<strong>特定组查询报文（Group-Specific Query）</strong> 。该报文作用与IGMPv2中的特定组查询报文作用一致。</p>
-<p>▫<strong>特定源组查询报文（Group-and-Source-Specific Query）</strong>。该报文用于查询该组成员是否愿意接收特定源发送的数据。特定源组查询通过在报文中携带一个或多个组播源地址来达到这一目的。</p>
-<p>•IGMPv3查询报文格式如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
-<blockquote>
-<p>IGMPv3查询报文重要字段说明：</p>
-<p>▫Type：报文类型，取值为0x11。</p>
-<p>▫Max Response Code：最大响应时间。成员主机在收到IGMP查询器发送的普遍组查询报文后，需要在最大响应时间内做出回应。</p>
-<p>▫Group Address：组播组地址。在普遍组查询报文中，该字段设为0；在特定组查询报文和特定源组查询报文中，该字段为要查询的组播组地址。</p>
-<p>▫Number of Sources：报文中包含的组播源的数量。对于普遍组查询报文和特定组查询报文，该字段为0；对于特定源组查询报文，该字段非0。此参数的大小受到所在网络MTU大小的限制。</p>
-<p>▫Source Address：组播源地址，其数量受到Number of Sources字段值大小的限制。</p>
-</blockquote>
-<h3 id="IGMPv3报文格式-–-成员关系报告报文"><a href="#IGMPv3报文格式-–-成员关系报告报文" class="headerlink" title="IGMPv3报文格式 – 成员关系报告报文"></a>IGMPv3报文格式 – 成员关系报告报文</h3><p>•IGMPv3成员关系报告报文除了通告组成员的加组信息外，还能通告组成员希望接收的组播源信息。通告组播源主要有两种模式：</p>
-<p>▫INCLUDE：希望<strong>接收</strong>来自特定组播源的组播流量</p>
-<p>▫EXCLUDE：希望<strong>过滤</strong>来自特定组播源的组播流量</p>
-<p>•成员关系报告报文中的组播组信息和组播源信息的关系会记录在组记录（Group Record）字段，发送给IGMP查询器。IGMPv3成员关系报告报文的目的地址为224.0.0.22，报文格式如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
-<blockquote>
-<p>•在IGMPv3中一个成员关系报告报文可以携带多个组播组信息，而之前的版本一个成员关系报告只能携带一个组播组。这样在IGMPv3中报文数量大大减少。</p>
-<p>•IGMPv3成员关系报告报文重要字段说明：</p>
-<ul>
-<li><p>Type：报文类型，取值为0x22。</p>
-</li>
-<li><p>Number of Group Records：报文中包含的组记录的数量。</p>
-</li>
-<li><p>Group Record：组记录。</p>
-</li>
-</ul>
-<p>•Group Record重要字段说明：</p>
-<ul>
-<li>Record Type：组记录的类型。共分为三大类。<ul>
-<li>当前状态报告。用于对查询报文进行响应，通告自己目前的状态，共两种：一种是MODE_IS_INCLUDE，表示接收源地址列表包含的源发往该组的组播数据。如果指定源地址列表为空，该报文无效；另一种是MODE_IS_EXCLUDE，表示不接收源地址列表包含的源发往该组的组播数据。</li>
-<li>过滤模式改变报告。当组和源的关系在INCLUDE和EXCLUDE之间切换时，会通告过滤模式发生变化，共两种：一种是CHANGE_TO_INCLUDE_MODE，表示过滤模式由EXCLUDE转换到INCLUDE，接收源地址列表包含的新组播源发往该组播组的数据。如果指定源地址列表为空，主机将离开组播组；另一种是CHANGE_TO_EXCLUDE_MODE，表示过滤模式由INCLUDE转换到EXCLUDE，拒绝源地址列表包含的新组播源发往该组的组播数据。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<h3 id="IGMPv3报文格式-–-成员关系报告报文-1"><a href="#IGMPv3报文格式-–-成员关系报告报文-1" class="headerlink" title="IGMPv3报文格式 – 成员关系报告报文"></a>IGMPv3报文格式 – 成员关系报告报文</h3><p>•IGMPv3成员关系报告报文除了通告组成员的加组信息外，还能通告组成员希望接收的组播源信息。通告组播源有两种模式：</p>
-<p>▫INCLUDE：希望接收来自特定组播源的组播流量</p>
-<p>▫EXCLUDE：希望过滤来自特定组播源的组播流量</p>
-<p>•组播组信息和组播源信息的关系会记录在组记录（Group Record）字段，发送给IGMP查询器。</p>
-<p>•IGMPv3成员关系报告报文格式如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
-<blockquote>
-<p>▪源列表改变报告。当指定源发生改变时，会通告源列表发生变化，共两种：一种是ALLOW_NEW_SOURCES，表示在现有的基础上，需要接收源地址列表包含的组播源发往该组播组的组播数据。如果当前对应关系为INCLUDE，则向现有源列表中添加这些组播源；如果当前对应关系为EXCLUDE，则从现有阻塞源列表中删除这些组播源；另一种是BLOCK_OLD_SOURCES，表示在现有的基础上，不再接收源地址列表包含的组播源发往该组播组的组播数据。如果当前对应关系为INCLUDE，则从现有源列表中删除这些组播源；如果当前对应关系为EXCLUDE，则向现有源列表中添加这些组播源。</p>
-<p>▫Number of Sources：本记录中包含的源地址数量。</p>
-<p>▫Multicast Address：组播组地址。</p>
-<p>▫Sources Address：组播源地址。</p>
-</blockquote>
-<h3 id="IGMPv3组成员加组机制"><a href="#IGMPv3组成员加组机制" class="headerlink" title="IGMPv3组成员加组机制"></a>IGMPv3组成员加组机制</h3><p>•IGMPv3组成员加组机制与IGMPv2类似，但有以下不同：</p>
-<p>▫IGMPv3的成员关系报告报文能够携带组播源信息。</p>
-<p>▫IGMPv3成员关系报告报文<strong>没有成员关系报告报文抑制机制</strong>。</p>
-<p>•IGMPv3组成员加组流程如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<h3 id="IGMPv3组成员离组机制"><a href="#IGMPv3组成员离组机制" class="headerlink" title="IGMPv3组成员离组机制"></a>IGMPv3组成员离组机制</h3><p>•IGMPv3没有专门的成员离开报文，成员离开需要借助组成员关系报告实现。</p>
-<p>•IGMP查询器在收到<strong>改变源组对应关系的成员关系报告</strong>后，会发送特定源组查询报文，确认是否还有组成员存在。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<blockquote>
-<p>•改变源组关系的成员关系报告报文很多，比如：</p>
-<ul>
-<li>设备原来接收来自S1的组播数据，那么通过发布（G1，EXCLUDE，S1）报文或（G1，CHANGE_TO_EXCLUDE_MODE，S1）报文都可以改变源组关系。</li>
-</ul>
-</blockquote>
-<h3 id="IGMP各版本间的差异"><a href="#IGMP各版本间的差异" class="headerlink" title="IGMP各版本间的差异"></a>IGMP各版本间的差异</h3><p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
-<h1 id="2-IGMP特性介绍"><a href="#2-IGMP特性介绍" class="headerlink" title="2.IGMP特性介绍"></a>2.IGMP特性介绍</h1><h2 id="IGMP-Snooping介绍"><a href="#IGMP-Snooping介绍" class="headerlink" title="IGMP Snooping介绍"></a>IGMP Snooping介绍</h2><h3 id="以太网的组播转发问题"><a href="#以太网的组播转发问题" class="headerlink" title="以太网的组播转发问题"></a>以太网的组播转发问题</h3><p>•当组播数据从最后一跳路由器发往组播组成员时，往往会经过交换机。由于组播数据的<strong>目的MAC地址是组播MAC地址</strong>，默认情况下交换机将泛洪此类数据帧，有可能导致不同组的组播流量会被别组的成员接收。</p>
-<p>•IGMP Snooping功能可以控制组播流量在以太网的泛洪范围，避免不同组的组播流量被别组成员接收。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<blockquote>
-<p>•当Router将组播报文转发至Switch以后，Switch负责将组播报文转发给组播用户。由于组播报文的目的地址为组播组地址，在二层设备上是学习不到这一类MAC表项的，因此组播报文就会在所有接口进行广播，和它在同一广播域内的组播成员和非组播成员都能收到组播报文。这样不但浪费了网络带宽，而且影响了网络信息安全。</p>
-<p>•IGMP Snooping有效地解决了这个问题。配置IGMP Snooping后，二层组播设备可以侦听和分析组播用户和上游路由器之间的IGMP报文，根据这些信息建立二层组播转发表项，控制组播数据报文转发。这样就防止了组播数据在二层网络中的广播。</p>
-</blockquote>
-<h3 id="IGMP-Snooping介绍-1"><a href="#IGMP-Snooping介绍-1" class="headerlink" title="IGMP Snooping介绍"></a>IGMP Snooping介绍</h3><p>•IGMP Snooping可以实现组播数据在数据链路层的转发和控制。</p>
-<p>•当主机和上游三层设备之间传递的IGMP协议报文通过二层组播设备时，IGMP Snooping分析报文携带的信息，根据这些信息建立和维护<strong>二层组播转发表</strong>，从而指导组播数据在数据链路层按需转发。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<blockquote>
-<p>•Router Port：路由器端口</p>
-</blockquote>
-<h3 id="IGMP-Snooping端口与转发表介绍"><a href="#IGMP-Snooping端口与转发表介绍" class="headerlink" title="IGMP Snooping端口与转发表介绍"></a>IGMP Snooping端口与转发表介绍</h3><p>•二层组播转发表项中存在两类接口：</p>
-<p>▫<strong>路由器端口（Router Port）</strong>：二层组播设备上朝向三层组播设备（DR或IGMP查询器）一侧的接口，二层组播设备从此接口接收组播数据报文。</p>
-<p>▫<strong>成员端口（Member Port）</strong>：又称组播组成员端口，表示二层组播设备上朝向组播组成员一侧的端口，二层组播设备往此接口发送组播数据报文。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<blockquote>
-<p>•路由器端口生成过程：</p>
-<ul>
-<li><p>由协议生成的路由器端口叫做动态路由器端口。收到源地址不为0.0.0.0的IGMP普遍组查询报文或PIM Hello报文（三层组播设备的PIM接口向外发送的用于发现并维持邻居关系的报文）的接口都将被视为动态路由器端口。</p>
-</li>
-<li><p>手工配置的路由器端口叫做静态路由器端口。</p>
-</li>
-</ul>
-<p>•成员端口生成过程：</p>
-<ul>
-<li><p>由协议生成的成员端口叫做动态成员端口。收到IGMP Report报文的接口，二层组播设备会将其标识为动态成员端口。</p>
-</li>
-<li><p>手工配置的成员端口叫做静态成员端口。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="IGMP-Snooping工作原理-–-形成转发表项"><a href="#IGMP-Snooping工作原理-–-形成转发表项" class="headerlink" title="IGMP Snooping工作原理 – 形成转发表项"></a>IGMP Snooping工作原理 – 形成转发表项</h3><p>•IGMP Snooping设备通过监听IGMP报文，形成二层组播转发表，并决定接口类型，具体过程如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<blockquote>
-<p>•路由器端口形成后会启动老化计时器（默认180s）,当路由器端口收到新的普遍组查询后刷新该计时器。</p>
-<p>•成员端口形成后会启动老化计时器（默认180s）,当成员端口收到新的成员关系报告报文后刷新该计时器。</p>
-<p>•IGMP Snooping不再使用成员关系报告报文抑制机制：</p>
-<ul>
-<li><p>由于IGMP Snooping需要监听IGMP报文才能决定端口角色，进而指导转发，所以所有组成员都需要发送IGMP组成员关系报告报文。</p>
-</li>
-<li><p>当IGMP Snooping设备收到成员关系报告报文后，只将成员关系报告报文从路由器接口发送出去，从而避免其余组成员收到成员关系报告报文，不触发成员关系报告报文抑制机制。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="IGMP-Snooping工作原理-–-维护转发表项"><a href="#IGMP-Snooping工作原理-–-维护转发表项" class="headerlink" title="IGMP Snooping工作原理 – 维护转发表项"></a>IGMP Snooping工作原理 – 维护转发表项</h3><p>•IGMP Snooping设备通过监听IGMP离开报文，IGMP成员关系报告报文决定特定端口是否还需要发送特定组播，具体过程如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
-<blockquote>
-<p>•收到IGMP离开报文后，成员端口的老化定时器 = 健壮系数（默认2） x 特定组查询间隔（默认1s）。</p>
-</blockquote>
-<h2 id="IGMP-SSM-Mapping介绍"><a href="#IGMP-SSM-Mapping介绍" class="headerlink" title="IGMP SSM Mapping介绍"></a>IGMP SSM Mapping介绍</h2><h3 id="IGMP-SSM-Mapping介绍-1"><a href="#IGMP-SSM-Mapping介绍-1" class="headerlink" title="IGMP SSM Mapping介绍"></a>IGMP SSM Mapping介绍</h3><p>•现网中存在部分只能运行IGMPv1与IGMPv2的老旧终端，在部署SSM模式的组播时，由于IGMPv1与IGMPv2报文中无法携带组播源信息，因此无法使用SSM模式的组播网络。</p>
-<p>•IGMP SSM Mapping通过静态的将组播源与组播组进行绑定，使得IGMPv1与IGMPv2的组成员也能接入SSM组播网络。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
-<h3 id="IGMP-SSM-Mapping工作原理"><a href="#IGMP-SSM-Mapping工作原理" class="headerlink" title="IGMP SSM Mapping工作原理"></a>IGMP SSM Mapping工作原理</h3><p>•在IGMP查询器上静态配置SSM地址的映射规则，将IGMPv1或IGMPv2成员关系报告中的<strong>组信息</strong>映射为<strong>源组信息</strong>。</p>
-<p>•IGMP SSM Mapping工作原理如下：</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
-<blockquote>
-<p>•配置了SSM Mapping规则后，当IGMP查询器收到来自成员主机的IGMPv1或IGMPv2报告报文时，首先检查该报文中所携带的组播组地址G，然后根据检查结果的不同分别进行处理。</p>
-<ul>
-<li>如果G在ASM（Any-Source Multicast）范围内，则只提供ASM服务。</li>
-<li>如果G在SSM组地址范围内（缺省情况下为232.0.0.0～232.255.255.255）：<ul>
-<li>如果路由器上没有G对应的SSM Mapping规则，则无法提供SSM服务，丢弃该报文。</li>
-<li>如果路由器上有G对应的SSM Mapping规则，则依据规则将报告报文中所包含的(*, G)信息映射为(G, INCLUDE, (S1, S2…))信息，提供SSM服务。</li>
-</ul>
-</li>
-</ul>
-<p>•IGMP SSM Mapping不处理IGMPv3的报告报文。为了保证同一网段运行任意版本IGMP的主机都能得到SSM服务，需要在与成员主机所在网段相连的组播路由器接口上运行IGMPv3。</p>
-</blockquote>
-<h2 id="IGMP代理介绍"><a href="#IGMP代理介绍" class="headerlink" title="IGMP代理介绍"></a>IGMP代理介绍</h2><h3 id="IGMP-Proxy介绍"><a href="#IGMP-Proxy介绍" class="headerlink" title="IGMP Proxy介绍"></a>IGMP Proxy介绍</h3><p>•现网中可能存在一台IGMP查询器需要管理大量组成员的情况，大量成员主机频繁加入/离开组播组时，会产生大量的IGMP成员关系报告/离开报文，从而给IGMP查询器带来较大的处理压力。</p>
-<p>•通过IGMP Proxy功能可<strong>减少</strong>IGMP查询器接收<strong>IGMP成员关系报告/离开报文的数量</strong>，减轻IGMP查询器压力。</p>
-<p>•IGMP Proxy通常被部署在IGMP查询器和成员主机之间的三层设备上。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
-<h3 id="IGMP-Proxy基本概念"><a href="#IGMP-Proxy基本概念" class="headerlink" title="IGMP Proxy基本概念"></a>IGMP Proxy基本概念</h3><p>•为了缓解IGMP查询器压力，IGMP Proxy设备将成员关系报告/离开报文汇聚后统一上送给IGMP查询器。</p>
-<p>•IGMP Proxy设备也可以代理IGMP查询器向成员主机发送查询报文，维护组成员关系，基于组成员关系进行组播转发。</p>
-<p>•为了实现以上功能，IGMP Proxy定义了两类接口：</p>
-<p>▫<strong>主机接口（Host Interface）</strong>：IGMP Proxy设备上配置IGMP Proxy功能的接口，该接口一般<strong>面向IGMP查询器</strong>。</p>
-<p>▫<strong>路由器接口（Router Interface）</strong>：IGMP Proxy设备上配置IGMP功能的接口，该接口一般<strong>面向组成员</strong>。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
-<h3 id="IGMP-Proxy工作机制-–-成员加组"><a href="#IGMP-Proxy工作机制-–-成员加组" class="headerlink" title="IGMP Proxy工作机制 – 成员加组"></a>IGMP Proxy工作机制 – 成员加组</h3><p>•IGMP Proxy减少成员关系报告报文的工作机制如下：</p>
-<p>▫路由器接口作为IGMP接口，对下呈现为IGMP查询器，发送查询报文，处理成员关系报告报文，形成IGMP表项，并将成员关系报告<strong>从主机接口发送给上游的IGMP查询器</strong>。</p>
-<p>▫当新用户<strong>加入同一个组播组</strong>时，IGMP Proxy设备<strong>不会再向IGMP查询器反馈成员关系报告报文</strong>，因此减少了成员关系报告报文数量。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
-<blockquote>
-<p>•IGMP代理设备收到某组播组的报告报文后，会在IGMP组表项中查找该组播组：</p>
-<ul>
-<li><p>如果没有找到相应的组播组，IGMP代理设备会向接入设备发送针对该组播组的报告报文，并在组播转发表中添加该组播组；</p>
-</li>
-<li><p>如果找到相应的组播组，IGMP代理设备就不需要向接入设备发送报告报文。</p>
-</li>
-</ul>
-<p>•IGMPv1/IGMPv2/IGMPv3成员加组机制不再赘述</p>
-</blockquote>
-<h3 id="IGMP-Proxy工作机制-–-成员离组"><a href="#IGMP-Proxy工作机制-–-成员离组" class="headerlink" title="IGMP Proxy工作机制 – 成员离组"></a>IGMP Proxy工作机制 – 成员离组</h3><p>•IGMP Proxy减少离组报文的工作机制如下：</p>
-<p>▫当组成员离开时，IGMP Proxy通过IGMP离组机制确定是否有特定组播组的组成员，当<strong>确定已经没有组成员</strong>后才<strong>发送离开报文</strong>给上游IGMP查询器。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
-<blockquote>
-<p>•IGMP代理设备收到某组播组G1的离开报文后，会向接收到该离开报文的接口发送一个特定组查询报文，检查该接口下是否还存在组播组G1的其他成员：</p>
-<ul>
-<li><p>如果没有其他成员，在组播转发表中将该接口删除，然后判断组播组G1是否还有其他接口。</p>
-<ul>
-<li>如果没有，IGMP代理设备再会向接入设备发送针对该组播组的离开报文；</li>
-<li>如果有，IGMP代理设备不向接入设备发送针对该组播组的离开报文；</li>
-</ul>
-</li>
-<li><p>如果有其他成员，IGMP代理设备会继续向该接口转发组播数据。</p>
-</li>
-</ul>
-<p>•IGMPv1/IGMPv2/IGMPv3成员离组机制不再赘述。</p>
-</blockquote>
-<h1 id="3-IGMP配置"><a href="#3-IGMP配置" class="headerlink" title="3.IGMP配置"></a>3.IGMP配置</h1><h2 id="IGMP协议的基本配置"><a href="#IGMP协议的基本配置" class="headerlink" title="IGMP协议的基本配置"></a>IGMP协议的基本配置</h2><p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
-<h2 id="IGMP基础实验"><a href="#IGMP基础实验" class="headerlink" title="IGMP基础实验"></a>IGMP基础实验</h2><p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
-<h3 id="IGMP配置验证"><a href="#IGMP配置验证" class="headerlink" title="IGMP配置验证"></a>IGMP配置验证</h3><p>在路由器RTA上查看查看接口的IGMP配置和运行信息。</p>
-<p><img src="/2021/05/17/IP-IGMP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）在IGMPv1中，当最后一个组播成员离开后该组后，组播路由器将在多长时间后删除所对应的组播转发表项？</p>
-<p><strong>60*2 + 10 = 130s。</strong></p>
-<p>2.（简答题）在IGMPv2中，特定组查询的目的IP是224.0.0.1吗？</p>
-<p><strong>否，特定组查询的目的IP是所查询组播组的组播IP地址。</strong></p>
-<p>3.（单选题）IGMP协议支持哪些版本？</p>
-<p>A. IGMPv1、IGMPv2</p>
-<p>B. IGMPv3</p>
-<p>C. IGMPv2、IGMPv3</p>
-<p><strong>D. IGMPv1、IGMPv2、IGMPv3</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•IGMP的主要作用是让组播网络感知组播组成员的位置和所加组播组，同时也能维护组成员的加组状态。</p>
-<p>•IGMP有三种版本：</p>
-<ul>
-<li>IGMPv1：有基本的加组机制，但是组成员离开机制较为落后，同时没有独立的IGMP查询器选举机制。</li>
-<li>IGMPv2：在IGMPv1的基础上改善了组成员离开机制，同时拥有了独立的IGMP查询器选举机制。</li>
-<li>IGMPv3：在IGMPv2的基础上增加了对SSM组播的支持能力，可以告知组播网络需要接收来自哪个组播源的组播数据。</li>
-</ul>
-<p>•IGMP有诸多特性帮助IGMP在网络中高效运行：</p>
-<ul>
-<li><p>IGMP Snooping：解决在以太网络中组播数据跨组播组泛洪的问题。</p>
-</li>
-<li><p>IGMP SSM Mapping：解决IGMPv1与IGMPv2组成员不能接入SSM组播网络的问题。</p>
-</li>
-<li><p>IGMP Proxy：解决大量组播组成员频繁上下线导致，IGMP查询器压力过大的问题。</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
   </nav>
 
 
@@ -3550,7 +3194,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3563,7 +3207,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

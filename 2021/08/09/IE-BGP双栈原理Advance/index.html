@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-107-BGP双栈原理Advance," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在大规模的网络中，BGP路由表十分庞大，给设备造成了很大的负担，同时使发生路由振荡的几率也大大增加，影响网络的稳定性。 路由聚合是将多条路由合并的机制，它通过只向对等体发送聚合后的路由而不发送所有的具体路由的方法，减小路由表的规模。并且被聚合的路由如果发生路由振荡，也不再对网络造成影响，从而提高了网络的稳定性。 路由聚合是会使用Aggregator属性（可选过渡属性），该属性标识发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-BGP双栈原理Advance">
+<meta property="og:url" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="在大规模的网络中，BGP路由表十分庞大，给设备造成了很大的负担，同时使发生路由振荡的几率也大大增加，影响网络的稳定性。 路由聚合是将多条路由合并的机制，它通过只向对等体发送聚合后的路由而不发送所有的具体路由的方法，减小路由表的规模。并且被聚合的路由如果发生路由振荡，也不再对网络造成影响，从而提高了网络的稳定性。 路由聚合是会使用Aggregator属性（可选过渡属性），该属性标识发">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/1.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/2.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/3.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/4.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/5.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/6.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/7.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/8.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/9.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/10.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/11.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/12.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/13.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/14.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/15.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/16.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/17.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/18.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/19.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/20.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/21.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/22.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/23.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/24.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/25.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/26.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/27.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/28.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/29.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/31.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/32.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/33.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/35.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/36.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/37.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/38.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/39.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/40.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/41.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/42.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/43.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/44.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/45.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/47.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/48.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/50.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/51.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/52.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/53.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/54.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/55.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/56.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/57.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/58.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/59.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/60.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/61.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/62.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/63.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/64.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/65.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/66.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/67.png">
+<meta property="article:published_time" content="2021-08-09T07:31:25.000Z">
+<meta property="article:modified_time" content="2021-08-09T08:33:22.371Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-107-BGP双栈原理Advance">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/08/09/IE-BGP双栈原理Advance/"/>
+
+
+
+
+
+  <title>IE-BGP双栈原理Advance | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-BGP双栈原理Advance</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-09T15:31:25+08:00">
+                2021-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/1.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/2.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/3.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/4.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/5.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/6.png"></p>
+<blockquote>
+<ul>
+<li>在大规模的网络中，BGP路由表十分庞大，给设备造成了很大的负担，同时使发生路由振荡的几率也大大增加，影响网络的稳定性。</li>
+<li>路由聚合是将多条路由合并的机制，它通过只向对等体发送聚合后的路由而不发送所有的具体路由的方法，减小路由表的规模。并且被聚合的路由如果发生路由振荡，也不再对网络造成影响，从而提高了网络的稳定性。</li>
+<li>路由聚合是会使用Aggregator属性（可选过渡属性），该属性标识发生聚合的节点，携带发生聚合节点的route-id和AS号。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/7.png"></p>
+<blockquote>
+<ul>
+<li>自动聚合注意事项<ul>
+<li>该命令对BGP引入的路由进行聚合，引入的路由可以是直连路由、静态路由、OSPF路由、IS-IS路由。配置聚合后，BGP将按照自然网段聚合路由，明细路由在BGP路由更新中被抑制。该命令对network命令引入的路由无效。</li>
+<li>BGP只向对等体发送聚合后的路由；</li>
+<li>缺省情况下BGP不启用自动聚合；</li>
+<li>聚合之后的路由将带有atomic_aggregate和aggregator属性。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/8.png"></p>
+<blockquote>
+<ul>
+<li>手动聚合<ul>
+<li>可通过命令决定是否抑制明细路由，抑制后该聚合后的路由会携带atomic_aggregate属性。</li>
+<li>聚合路由不会携带成员明细路由的AS_PATH属性。</li>
+<li>通过AS_SET属性来携带AS号，以避免环路。SET和SEQUENCE的不同之处在于，SET选项下的AS列表通常用于路由聚合，将来自不同AS的AS号无序排列在AS列表里；而SEQUENCE选项下的AS列表是有序的，每经过一个AS都会将其AS号排列在列表的前端。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/9.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/10.png"></p>
+<blockquote>
+<ul>
+<li>对等体组（Peer Group）是一些具有某些相同策略的对等体的集合。当一个对等体加入对等体组中时，此对等体将获得与所在对等体组相同的配置。当对等体组的配置改变时，组内成员的配置也相应改变。</li>
+<li>在大型BGP网络中，对等体的数量会很多，其中很多对等体具有相同的策略，在配置时会重复使用一些命令，利用对等体组可以简化配置。</li>
+<li>对等体组中的单个对等体也可以配置自己的发布路由与接收路由的策略。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/11.png"></p>
+<blockquote>
+<ul>
+<li><p>BGP按组打包</p>
+<ul>
+<li>缺省情况下，BGP会针对不同邻居（即使出口策略相同）单独打包路由。</li>
+<li>应用按组打包功能后，每条待发送路由只被打包一次然后发给组内的所有邻居，使打包效率成倍提升。</li>
+</ul>
+</li>
+<li><p>拓扑描述</p>
+<ul>
+<li>一个反射器有3个客户机，有10万条路由需要反射。如果按照每个邻居分别打包的方式，反射器RR在向3个客户机发送路由的时候，所有路由被打包的总次数是10万×3。而按组打包技术将这个过程变为10 万×1，性能相当于提升了3倍。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/12.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/13.png"></p>
+<blockquote>
+<ul>
+<li><p>团体属性是一组有相同特征的目的地址的集合。团体属性用一组以4字节为单位的列表来表示，设备中团体属性的格式是aa:nn或团体号。</p>
+<ul>
+<li>aa:nn：aa和nn的取值范围都是0～65535，管理员可根据实际情况设置具体数值。通常aa表示自治系统AS编号，nn是管理员定义的团体属性标识。例如，来自AS100的一条路由，管理员定义的团体属性标识是1，则该路由的团体属性格式是100:1。</li>
+<li>团体号：团体号是0～4294967295的整数。RFC1997中定义，0（0x00000000）～65535（0x0000FFFF）和4294901760（0xFFFF0000）～4294967295（0xFFFFFFFF）是预留的。</li>
+</ul>
+</li>
+<li><p>团体属性用来简化路由策略的应用和降低维护管理的难度，利用团体可以使多个AS中的一组BGP设备共享相同的策略。团体是一个路由属性，在BGP对等体之间传播，且不受AS的限制。BGP设备在将带有团体属性的路由发布给其它对等体之前，可以先改变此路由原有的团体属性。</p>
+</li>
+<li><p>公认团体属性</p>
+<ul>
+<li>Internet：缺省情况下，所有的路由都属于Internet团体。具有此属性的路由可以被通告给所有的BGP对等体。</li>
+<li>No_Advertise：具有此属性的路由在收到后，不能被通告给任何其他的BGP对等体。</li>
+<li>No_Export：具有此属性的路由在收到后，不能被发布到本地AS之外。如果使用了联盟，则不能被发布到联盟之外，但可以发布给联盟中的其他子AS。</li>
+<li>No_Export_Subconfed：具有此属性的路由在收到后，不能被发布到本地AS之外，也不能发布到联盟中的其他子AS。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/14.png"></p>
+<blockquote>
+<ul>
+<li>为保证IBGP对等体之间的连通性，需要在IBGP对等体之间建立全连接（Full-mesh）关系。假设在一个AS内部有n台路由器，那么应该建立的IBGP连接数就为n(n-1)/2。当IBGP对等体数目很多时，对网络资源和CPU资源的消耗都很大。利用路由反射可以解决这一问题。</li>
+<li>在一个AS内，其中一台路由器作为路由反射器RR（Route Reflector），其它路由器作为客户机（Client）。客户机与路由反射器之间建立IBGP连接。路由反射器和它的客户机组成一个集群（Cluster）。路由反射器在客户机之间反射路由信息，客户机之间不需要建立BGP连接。</li>
+<li>路由反射器概念<ul>
+<li>路由反射器RR（Route Reflector）：允许把从IBGP 对等体学到的路由反射到其他IBGP对等体的BGP设备。</li>
+<li>客户机（Client）：与RR形成反射邻居关系的IBGP设备。在AS内部客户机只需要与RR直连。</li>
+<li>非客户机（Non-Client）：既不是RR也不是客户机的IBGP设备。在AS内部非客户机与RR之间，以及所有的非客户机之间仍然必须建立全连接关系。</li>
+<li>始发者（Originator）：在AS内部始发路由的设备。Originator_ID属性用于防止集群内产生路由环路。</li>
+<li>集群（Cluster）：路由反射器及其客户机的集合。Cluster_List属性用于防止集群间产生路由环路。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/15.png"></p>
+<blockquote>
+<ul>
+<li><p>在向IBGP邻居发布学习到的路由信息时，RR按照以下规则发布路由</p>
+<ul>
+<li>从EBGP对等体学到的路由，发布给所有的非客户机和客户机。</li>
+<li>从非客户机IBGP对等体学到的路由，发布给此RR的所有客户机。</li>
+<li>从客户机学到的路由，发布给此RR的所有非客户机和客户机（发起此路由的客户机除外）。</li>
+</ul>
+</li>
+<li><p>RR的配置方便，只需要对作为反射器的路由器进行配置，客户机并不需要知道自己是客户机。</p>
+</li>
+<li><p>在某些网络中，路由反射器的客户机之间已经建立了全连接，它们可以直接交换路由信息，此时客户机到客户机之间的路由反射是没有必要的，而且还占用带宽资源。VRP支持配置命令undo reflect between-clients来禁止RR将从客户机收到的路由再反射给其他客户机。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/16.png"></p>
+<blockquote>
+<ul>
+<li><p>Originator ID由RR产生，使用的Router ID的值标识路由的发送者，用于防止集群内产生路由环路。</p>
+<ul>
+<li>当一条路由第一次被RR反射的时候，RR将Originator_ID属性加入这条路由，标识这条路由的发起设备。如果一条路由中已经存在了Originator_ID属性，则RR将不会创建新的Originator_ID属性。</li>
+<li>当设备接收到这条路由的时候，将比较收到的Originator ID和本地的Router ID，如果两个ID相同，则不接收此路由。</li>
+</ul>
+</li>
+<li><p>路由反射器和它的客户机组成一个集群（Cluster）。在一个AS内，每个路由反射器使用唯一的Cluster ID作为集群标识。</p>
+<ul>
+<li>为了防止集群间产生路由环路，路由反射器使用Cluster_List属性，记录路由经过的所有集群的Cluster ID。</li>
+<li>当RR在它的客户机之间或客户机与非客户机之间反射路由时，RR会把本地Cluster_ID添加到Cluster_List的前面。如果Cluster_List为空，RR就创建一个。</li>
+<li>当RR接收到一条更新路由时，RR会检查Cluster_List。如果Cluster_List中已经有本地Cluster_ID，丢弃该路由；如果没有本地Cluster_ID，将其加入Cluster_List，然后反射该更新路由。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/17.png"></p>
+<blockquote>
+<ul>
+<li><p>备份RR主要是为了解决单点故障。</p>
+</li>
+<li><p>备份RR</p>
+<ul>
+<li>VRP需要使用命令reflector cluster-id给所有位于同一个集群内的路由反射器配置相同的Cluster_ID。</li>
+<li>在冗余的环境里，客户机会收到不同反射器发来的到达同一目的地的多条路由，这时客户机应用BGP选择路由的策略来选择最佳路由。</li>
+<li>Cluster_List的应用保证了同一AS内的不同RR之间不出现路由循环。</li>
+</ul>
+</li>
+<li><p>拓扑描述</p>
+<ul>
+<li>当客户机Client1从外部对等体接收到一条更新路由（10.0.0.0/24）后，它通过IBGP向RR1和RR2通告这条路由。</li>
+<li>RR1接收到该更新路由后，它向其他的客户机（Client2、Client3）和非客户机（RR2）反射，同时将本地Cluster_ID添加到Cluster_List前面。</li>
+<li>RR2接收到该反射路由后，检查Cluster_List，发现自己的Cluster_ID已经包含在Cluster_List中。因此，它丢弃该更新路由，不再向自己的客户机反射。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/18.png"></p>
+<blockquote>
+<ul>
+<li>一个骨干网被分成多个反射集群，每个RR将其它的RR配置成非客户机，各RR之间建立全连接。每个客户机只与所在集群的RR建立IBGP连接。这样该自治系统内的所有BGP路由器都会收到反射路由信息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/19.png"></p>
+<blockquote>
+<ul>
+<li>Cluster1中部署了一个一级RR（RR-1），Cluster2和Cluster3中的RR(RR-2和RR-3)作为RR-1的客户端。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/20.png"></p>
+<blockquote>
+<ul>
+<li>联盟<ul>
+<li>联盟将一个AS划分为若干个子AS。每个子AS内部建立IBGP全连接关系，子AS之间建立联盟EBGP连接关系，但联盟外部AS仍认为联盟是一个AS。</li>
+<li>配置联盟后，原AS号将作为每个路由器的联盟ID。</li>
+<li>原有的IBGP 属性，包括Local Preference属性、MED属性和NEXT_HOP属性等；联盟相关的属性在传出联盟时会自动被删除，即管理员无需在联盟的出口处配置过滤子AS号等信息的操作。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/21.png"></p>
+<blockquote>
+<ul>
+<li><p>AS_PATH属性被定义为公认必遵属性，该属性由AS号所组成。AS_PATH包含4种不同类型</p>
+<ul>
+<li>AS_SET: 由一系列AS号无序地组成，包含在UPDATE消息里。当网络发生聚合时，可通过适当策略使AS_PATH使用类型AS_SET来避免路径信息丢失。</li>
+<li>AS_SEQUENCE: 由一系列AS号顺序地组成，包含在UPDATE消息里。一般情况下，AS_PATH类型为AS_SEQUENCE。</li>
+<li>AS_CONFED_SEQUENCE: 在本地联盟内由一系列成员AS号按顺序地组成，包含在UPDATE消息中，用法和AS_SEQUENCE相同，只能在本地联盟内传递。</li>
+<li>AS_CONFED_SET: 在本地联盟内由一系列成员AS无序地组成，包含在UPDATE消息中，用法和AS_SET相同，只能在本地联盟内传递。</li>
+</ul>
+</li>
+<li><p>联盟内部的成员AS号对于其他非联盟AS是不可见的，所以路由在从联盟内部发送到其他非联盟AS时，联盟成员AS号被剥离。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/22.png"></p>
+<blockquote>
+<ul>
+<li>反射器和联盟的比较<ul>
+<li>联盟需要重新划分区域，对现网改动较大。</li>
+<li>反射器在配置时，只需要对RR进行配置，客户机不需要做任何其他的操作；联盟需要在所有路由器上进行配置。</li>
+<li>RR与RR间需要IBGP全互联。</li>
+<li>路由反射器应用较为广泛；联盟应用较少。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/23.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/24.png"></p>
+<blockquote>
+<ul>
+<li><p>BGP安全特性：</p>
+<ul>
+<li>MD5：BGP使用TCP作为传输层协议，为提高BGP的安全性，可以在建立TCP连接时进行MD5认证。但BGP的MD5认证并不能对BGP报文认证，它只是为TCP连接设置MD5认证密码，由TCP完成认证。如果认证失败，则不建立TCP连接。</li>
+<li>GTSM（Generalized TTL Security Mechanism）：GTSM通过检测IP报文头中的TTL值是否在一个预先定义好的特定范围内，对IP层以上业务进行保护，增强系统的安全性。使能BGP的GTSM策略后，接口板对所有BGP报文的TTL值进行检查。根据实际组网的需要，对于不符合TTL值范围的报文，GTSM可以设置为通过或丢弃。配置GTSM缺省动作为丢弃时，可以根据网络拓扑选择合适的TTL有限值范围，不符合TTL值范围的报文会被接口板直接丢弃，这样就避免了网络攻击者模拟的“合法”BGP报文占用CPU。该功能与EBGP多跳互斥。</li>
+<li>限制从对等体接收的路由数量，防止资源耗尽性攻击。</li>
+</ul>
+</li>
+<li><p>AS_Path长度保护。通过在入口和出口两个方向对AS_Path的长度进行限定，直接丢弃AS_Path超限的报文。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/25.png"></p>
+<blockquote>
+<ul>
+<li>路由衰减（Route Dampening）用来解决路由不稳定的问题。多数情况下，BGP协议都应用于复杂的网络环境中，路由变化十分频繁。为了防止持续的路由振荡带来的不利影响，BGP使用路由衰减来抑制不稳定的路由。</li>
+<li>BGP衰减使用惩罚值（Penalty Value）来衡量一条路由的稳定性，惩罚值越高则说明路由越不稳定。路由每发生一次振荡（路由从激活状态变为未激活状态，称为一次路由振荡），BGP便会给此路由增加一定的惩罚值（1000）。当惩罚值超过抑制阈值（Suppress Value）时，此路由被抑制，不加入到路由表中，也不再向其他BGP对等体发布更新报文。</li>
+<li>当某条路由的惩罚值到达最大抑制值（Maximum Suppress Value）,便不会再增加，这样就可以确保某路由在非常短的时间内翻动十几次之后，不会将惩罚值累加到一个很高的、使路由始终保持被抑制状态的值。</li>
+<li>被抑制的路由每经过一段时间，惩罚值便会减少一半，这个时间称为半衰期（Half-life）。当惩罚值降到再使用阈值（Reuse Value）时，此路由变为可用并被加入到路由表中，同时向其他BGP对等体发布更新报文。上文提到的惩罚值、抑制阈值和半衰期都可以手动配置。</li>
+<li>路由衰减只适用于EBGP路由。对于从IBGP收来的路由不能进行衰减，因为IBGP路由经常含有本AS的路由，内部网络路由要求转发表尽可能一致，IGP快速收敛就是为了达到信息同步，转发一致。如果衰减对IBGP路由起作用，不同设备的衰减参数不一致时，会导致转发表不一致。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/26.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/27.png"></p>
+<blockquote>
+<ul>
+<li>RFC5291、RFC5292规定了BGP基于前缀的ORF能力，能将本端设备配置的基于前缀的入口策略通过路由刷新报文发送给BGP邻居。BGP邻居根据这些策略构造出口策略，在路由发送时对路由条目进行过滤。这样不仅避免了本端设备接收大量无用的路由，降低了本端设备的CPU使用率，还有效减少了BGP邻居的配置工作，降低了链路带宽的占用率。</li>
+<li>拓扑描述<ul>
+<li>直连EBGP邻居中，Client1、R1协商基于前缀的ORF 能力后，Client1将本地配置的基于前缀的入口策略打包到Route-refresh报文中发送给R1。R1根据接收到的路由刷新报文构造出口策略，通过Route-refresh报文发送路由给Client1。Client1只收到它需要的路由，而R1不必维护路由策略，减少了配置工作。</li>
+<li>Client1、Client2为RR的客户端，Client1与RR、Client2与RR，分别协商基于前缀的ORF 能力，Client1、Client2将本地配置的基于前缀的入口策略打包到Route-refresh 报文中发送给RR。RR 根据接收到的前缀信息构造出口策略，通过Route-refresh 报文将路由反射给Client1、Client2。Client1和Client2只收到需要的路由，RR不必维护路由策略，减少了配置工作。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/28.png"></p>
+<blockquote>
+<ul>
+<li>Active-Route-Advertise<ul>
+<li>默认情况下路由只需在BGP中优选即可向邻居发布。配置了此特性之后，路由必须同时满足在BGP协议层面优选与在路由管理层面活跃两个条件，才能向邻居发布。</li>
+<li>与命令bgp-rib-only（用来禁止BGP路由下发到IP路由表）互斥。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/29.png"></p>
+<blockquote>
+<ul>
+<li><p>4字节AS号定义的角色</p>
+<ul>
+<li>New Speaker：支持4字节AS号扩展能力的对等体。</li>
+<li>Old Speaker：不支持4字节AS号扩展能力的对等体。</li>
+<li>New Session：New Speaker之间建立的BGP连接。</li>
+<li>Old Session：New Speaker和Old Speaker之间或者Old Speaker之间建立的BGP连接。</li>
+</ul>
+</li>
+<li><p>协议扩展</p>
+<ul>
+<li>定义了2种新的可选过渡属性AS4_Path（属性码为0x11）和AS4_Aggregator属性（属性码为0x12）用于在Old Session上传递4字节AS信息。</li>
+<li>如果New Speaker和Old Speaker建立连接，定义AS_TRANS（保留值为23456）用于衔接2字节AS和4字节AS。</li>
+<li>新的AS号有三种写法：<ul>
+<li>splain：就是一个十进制的数字</li>
+<li>asdot+:写成（2字节）.（2字节）的形式，所以旧的2字节ASN123可以写成0.123，ASN65536是1.0；最大为65535.65535；</li>
+<li>asdot：旧的2字节写法照旧，新的4字节写成asdot+的形式；（1－65535；1.0－65535.65535）</li>
+<li>华为支持asdot写法。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>拓扑描述</p>
+<ul>
+<li>R2收到R1的一条四字节AS的路由,AS号码为10.1；</li>
+<li>R2与R3建立邻居，需要令R3认为R2的AS号为AS_TRANS；</li>
+<li>R2发送路由给R3的时候把AS_TRANS记录在AS_Path里面，把10.1与自己的AS号码20.1按照BGP要求的顺序记录在AS4_Path；</li>
+<li>R3对于不识别的属性AS4_Path不作处理依然保留，它只按照BGP的规则来发送路由给RD。当然它认为R4的AS号码也是AS_TRANS；</li>
+</ul>
+</li>
+<li><p>这样当R4收到从R3来的路由会把AS_PATH中的AS_TRANS按照顺序替换为AS4_Path里所记录的相应的地址，在R4上把AS_PATH属性还原为30 20.1 10.1。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/31.png"></p>
+<blockquote>
+<ul>
+<li><p>按策略进行下一跳迭代</p>
+<ul>
+<li>BGP需要对非直连的下一跳进行路由迭代，但是如果不对迭代到的路由进行过滤的话，可能会迭代到一个错误的转发路径上。按策略进行下一跳迭代就是通过配置路由策略来限制迭代到的路由。如果路由不能通过路由策略，则该路由迭代失败。</li>
+</ul>
+</li>
+<li><p>拓扑描述</p>
+<ul>
+<li>R1和R2、R3之间通过Loopback口建立IBGP邻居。R1从R2、R3分别收到了前缀为10.0.0.0/24的BGP路由。其中从R2收到的BGP路由的原始下一跳为2.2.2.2。另外，R1上Ethernet0/0/0的接口地址为2.2.2.100/24。</li>
+<li>当R2正常运行时，R1收到从R2发来的前缀为10.0.0.0/24的路由会迭代到IGP路由2.2.2.2/32。但是当R2的IGP发生故障时，IGP路由2.2.2.2/32被撤销，这样就导致下一跳重新迭代。在R1上会用原始下一跳2.2.2.2在IP路由表中进行最长匹配迭代，结果会迭代到2.2.2.0/24的路由上。但此时用户期望的是，当到2.2.2.2的路由不可达时，可以重新选路优选到3.3.3.3的路由。实际上该故障主要是由于BGP收敛引起的，从而产生了路由的瞬时黑洞。</li>
+<li>配置下一跳迭代策略，可以通过到BGP路由原始下一跳所依赖路由的掩码长度来过滤迭代路由。可以通过配置下一跳迭代策略，使到原始下一跳2.2.2.2只能依赖于2.2.2.2/32的IGP路由。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/32.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/33.png"></p>
+<blockquote>
+<ul>
+<li><p>常见的企业网络拓扑类型</p>
+<ul>
+<li>单归属自治系统（一个出口设备且连接到一个ISP）</li>
+<li>多归属到单自治系统（多个出口设备仅连接到一个ISP）</li>
+<li>多归属到多自治系统（多个出口设备且连接到多个ISP）</li>
+</ul>
+</li>
+<li><p>单归属自治系统：仅有一个出口设备且只连接到一个ISP。</p>
+<ul>
+<li>这种情况下，就可以不需要配置BGP协议。可在用户边界设备上添加一条默认路由，并宣告到用户自治系统内部。</li>
+</ul>
+</li>
+<li><p>多归属到单自治系统：增加了对链路和网络设备的冗余性，一般这种情况下用户网络用的会是私有AS号。</p>
+<ul>
+<li>若两条链路采用主备的方式，那么也不需要采用BGP。两台出口设备分别向本自治系统内的设备宣告metric值不同的默认路由即可。（若采用OSPF为IGP，外部路由的cost应该采用E2方式，仅考虑外部开销（cost））</li>
+<li>若两台路由器采用负载分担方式：<ul>
+<li>方式一：两台路由器分别向自治系统内（IGP采用OSPF）宣告cost type为E1的默认路由，使得自治系统其他路由器选择距离自己最近的出口路由器到达外部网络。这种情况也可以不使用BGP。但是当两个出口路由器的物理间隔十分大，并且对时延有很高要求时，就可以考虑采取BGP来获取更精细的路由条目。</li>
+<li>方式二：与ISP设备之间建立BGP连接，从BGP接收更为精细的路由条目，配合上路由策略工具的使用，来达到针对不同目的地址使用不同出口路由的目的。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>多归属到多自治系统：不仅增加了对链路和网络设备的冗余性，同时使用了做到了ISP的冗余备份。</p>
+<ul>
+<li>对于这种自治系统，需要充分考虑到地址空间是否独立于运营商，是否拥有公有AS号等问题。</li>
+<li>理想情况下，当用户网络拥有独立于ISP的地址空间和公有AS号时，有三种部署方式<ul>
+<li>方式一：采取主备方式，出口路由器向内部宣告开销不一样的默认路由。</li>
+<li>方式二：负载分担方式，出口路由器向内部宣告默认路由，仅使用IGP的开销计算机制，由IGP自行决定使用哪一台出口路由器。</li>
+<li>方式三：部署BGP。考虑与ISP签署的合约，企业本身的业务流量特点等因素，使用各种路由策略工具，如有必要也可以使用默认路由宣告等方式。充分控制企业进和出方向的流量。</li>
+</ul>
+</li>
+<li>一般情况下，多归属到多自治系统的网络会考虑部署BGP协议，因为前两种方法不利于路由的控制。但是不是绝对的，需要仔细权衡所得到的好处与增加路由复杂度所带来的代价。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/35.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/36.png"></p>
+<blockquote>
+<ul>
+<li><p>BGP路由劫持</p>
+<ul>
+<li>产生原因：BGP协议里虽然有一些简单的安全认证的部分，但是对于两个已经成功建立BGP连接的AS来说，基本会无条件的相信对方AS所传来的信息，包括对方声称所拥有的IP地址范围。</li>
+<li>潜在危害：若无条件相信对方发送过来的Update消息，不排除恶意的AS宣告不存在的IP网段，通过修改AS_Path等BGP属性，让其他AS认为这条路径才是到达这个目的网段的最短路径，那么该恶意的AS就能截获到数据流量。</li>
+</ul>
+</li>
+<li><p>不对称路由</p>
+<ul>
+<li>产生原因：不恰当的属性使用或者是路由聚合不合理导致路由精准性不足，导致流量的出方向和入方向不同。</li>
+<li>潜在危害：首先，不对称流量会使互联网络的流量模型变得难以预测，使得网络基准、容量规划、故障检测及排除变得困难；其次，不对称流量会使链路使用率出现不均衡，某些链路的带宽出现饱和，而其他链路的带宽却得不到有效利用；再次，不对称流量会使出流量和入流量的时延出现很大的差异，这种时延变化（即抖动）会对某些时延敏感型应用（如语音和直播视频）造成损害。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/37.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/38.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/39.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/40.png"></p>
+<blockquote>
+<ul>
+<li><p>非BGP路由和BGP路由之间的交互</p>
+<ul>
+<li>一般情况下，IGP与BGP会有路由的引入。应采用合理的过滤策略，使合适的路由在IGP与BGP之间互相引入。</li>
+</ul>
+</li>
+<li><p>默认路由的控制</p>
+<ul>
+<li>对于默认路由的发放，可以通过策略使默认路由根据某些具体条件来下发默认路由。</li>
+</ul>
+</li>
+<li><p>策略路由</p>
+<ul>
+<li>通过策略路由来优化流量路径。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/41.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/42.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/43.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/44.png"></p>
+<blockquote>
+<ul>
+<li><p>案例描述</p>
+<ul>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RX与RY互联，则互联地址为XY.1.1.X与XY.1.1.Y，掩码长度为24位。</li>
+</ul>
+</li>
+<li>OSPF和OSPFv3已经运行正常，且设备互联地址和环回口地址已经宣告进了OSPF或OSPFv3。</li>
+</ul>
+</li>
+<li><p>案例分析</p>
+<ul>
+<li>EBGP邻居之间使用环回口建立邻居关系。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/45.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>peer as-number命令用来配置指定对等体（组）的对端AS号。</li>
+<li>peer connect-interface命令用来指定发送BGP报文的源接口，并可指定发起连接时使用的源地址。</li>
+<li>peer next-hop-local命令用来设置向IBGP对等体（组）通告路由时，把下一跳属性设为自身的IP地址。</li>
+<li>group命令可以用来创建对等体组。</li>
+</ul>
+</li>
+<li><p>具体用法</p>
+<ul>
+<li>上述命令均为BGP进程视图下的命令</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>peer ipv4-address as-number as-number</li>
+<li>ip-address：对等体的IPv4地址。</li>
+<li>as-number：对等体的对端AS号。</li>
+<li>peer ipv4-address connect-interface interface-type interface-number [ ipv4-source-address ]</li>
+<li>ip-address：对等体的IPv4地址。</li>
+<li>interface-type interface-number：接口类型和接口号。</li>
+<li>ipv4-source-address：建立连接时的IPv4源地址。</li>
+<li>peer ipv4-address next-hop-local</li>
+<li>ip-address：对等体的IPv4地址。</li>
+<li>group group-name [ external | internal ]<ul>
+<li>group-name:对等体组的名称。</li>
+<li>external:创建EBGP对等体组。</li>
+<li>internal:创建IBGP对等体组。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>在使用Loopback接口作为BGP报文的源接口时，必须注意以下事项：</li>
+<li>确认BGP对等体的Loopback接口的地址是可达的。</li>
+<li>如果是EBGP连接，还要配置peer ebgp-max-hop命令，允许EBGP通过非直连方式建立邻居关系。</li>
+<li>peer next-hop-local和peer next-hop-invariable是两条互斥命令。</li>
+<li>Display bgp peer中的Rec表示本端从对等体上收到路由前缀的数目。</li>
+<li>IPv6的配置与IPv4配置一致。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/47.png"></p>
+<blockquote>
+<ul>
+<li>案例描述<ul>
+<li>本案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。</li>
+<li>需求2中，要求缺省路由的下发需要关联路由172.16.0.0/16，如果172.16.0.0/16消失，该缺省路由也消失。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/48.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>peer route-policy命令用来对来自对等体（组）的路由或向对等体（组）发布的路由指定Route-Policy，对接收或发布的路由进行控制。</li>
+<li>peer default-route-advertise命令用来设置给对等体（组）发布缺省路由。</li>
+</ul>
+</li>
+<li><p>具体用法</p>
+<ul>
+<li>peer route-policy命令为BGP视图命令</li>
+<li>peer default-route-advertise命令BGP视图命令</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>peer ipv4-address route-policy route-policy-name { import | export }<ul>
+<li>ipv4-address：对等体的IPv4地址。</li>
+<li>route-policy-name：Route-Policy的名称。</li>
+<li>import：对从对等体（组）来的路由应用Route-Policy。</li>
+<li>export：对向对等体（组）发布的路由应用Route-Policy。</li>
+</ul>
+</li>
+<li>peer { group-name | ipv4-address } default-route-advertise [ route-policy route-policy-name ] [ conditional-route-match-all{ ipv4-address1 { mask1 | mask-length1 } } &amp;&lt;1-4&gt; | conditional-route-match-any { ipv4-address2 { mask2 | mask-length2 } } &amp;&lt;1-4&gt; ]<ul>
+<li>ipv4-address：对等体的IPv4地址。</li>
+<li>route-policy route-policy-name：指定Route-Policy名称。</li>
+<li>conditional-route-match-all ipv4-address1{ mask1 | mask-length1 }：指定条件路由的IPv4地址，以及掩码/掩码长度。匹配所有条件路由则发送缺省路由。</li>
+<li>conditional-route-match-any ipv4-address2{ mask2 | mask-length2 }：指定条件路由的IPv4地址，以及掩码/掩码长度。匹配任一条件路由则发送缺省路由。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实验现象</p>
+<ul>
+<li>我们通过命令display ip routing-table命令用来显示路由表中包含的信息。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/50.png"></p>
+<blockquote>
+<ul>
+<li>案例描述<ul>
+<li>本案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/51.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义：</p>
+<ul>
+<li>aggregate命令用来在BGP路由表中创建一条聚合路由。</li>
+</ul>
+</li>
+<li><p>具体用法</p>
+<ul>
+<li>命令aggregate为BGP视图命令。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>aggregate ipv4-address { mask | mask-length } [ as-set | attribute-policy route-policy-name1 | detail-suppressed | origin-policy route-policy-name2 | suppress-policyroute-policy-name3 ] *<ul>
+<li>ipv4-address：指定聚合路由的IPv4地址。</li>
+<li> mask：仅IBGP路由参与负载a分担。</li>
+<li>mask-length：指定聚合路由的网络掩码长度。</li>
+<li>as-set：指定生成具有AS-SET的路由。</li>
+<li>attribute-policy route-policy-name1：指定聚合后路由的属性策略名称。</li>
+<li>detail-suppressed：指定仅通告聚合路由。</li>
+<li>origin-policy route-policy-name2：指定允许生成聚合路由的策略名称。</li>
+<li>suppress-policy route-policy-name3：指定抑制指定路由通告的策略名称。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>手工聚合和自动聚合本地均会产生指向NULL0的路由。</li>
+<li>IPv6的配置与IPv4配置一致。</li>
+</ul>
+</li>
+<li><p>实验结果</p>
+<ul>
+<li>命令display ip routing-table protocol bgp可以查看BGP学到的路由。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/52.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/53.png"></p>
+<blockquote>
+<ul>
+<li><p>路由器Rx和Ry（X&lt;Y）之间的接口网段为10.0.xy.0/24网段，Rx地址=10.0.xy.x  Ry地址=10.0.xy.y 。</p>
+</li>
+<li><p>所有接口地址均已经配置完成。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/54.png"></p>
+<blockquote>
+<ul>
+<li>使用命令display bgp peer 可以查看是否已经建立BGP邻居关系。</li>
+<li>使用命令display bgp routing-table 可以查看是否已经获取到路由信息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/55.png"></p>
+<blockquote>
+<ul>
+<li>路由器Rx和Ry（X&lt;Y）之间的接口网段为10.0.xy.0/24网段，Rx地址=10.0.xy.x  Ry地址=10.0.xy.y 。</li>
+<li>所有接口地址均已经配置完成。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/56.png"></p>
+<blockquote>
+<ul>
+<li>可以看到，因为AS_Set中包含本自治系统的AS号，所以导致无法接受这条聚合后的路由，可以考虑关闭明细抑制或取消AS_Set。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/57.png"></p>
+<blockquote>
+<ul>
+<li>案例总结：<ul>
+<li>配置路由聚合时需要谨慎，聚合配置不当会出现以下问题：<ul>
+<li>无法学习到正确的路由；</li>
+<li>可能导致环路的产生。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/58.png"></p>
+<blockquote>
+<ul>
+<li>路由器Rx和Ry（X&lt;Y）之间的接口网段为10.0.xy.0/24网段，Rx地址=10.0.xy.x  Ry地址=10.0.xy.y 。</li>
+<li>所有接口地址均已经配置完成。</li>
+<li>R5是R3的client ， R6是R4的client 。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/59.png"></p>
+<blockquote>
+<ul>
+<li>配置完成之后所有BGP邻居关系建立正常，且OSPF学习到的路由也都完整</li>
+<li>R2与R1配置类似，R3与R4配置类似，R5与R6配置类似。</li>
+<li>建立完成之后R1通告直连的192.168.1.0/24进入BGP，R7通告直连的192.168.2.0/24进入BGP。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/60.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/61.png"></p>
+<blockquote>
+<ul>
+<li>配置完成之后所有BGP邻居关系建立正常，且OSPF学习到的路由也都完整。</li>
+<li>R2与R1配置类似，R3与R4配置类似，R5与R6配置类似。</li>
+<li>建立完成之后各路由器通告自己的loopback 0口的地址</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/62.png"></p>
+<blockquote>
+<ul>
+<li>故障分析：<ul>
+<li>R7向R5和R6发送192.168.2.0/24前缀。</li>
+<li>R5,R6收到，分别向自己的IBGP邻居R3,R4发送。</li>
+<li>这里分析R4的情况。R4收到后会有一个路径决策过程，这里R3也会向它发送192.168.2.0/24的前缀，根据BGP路径决策的13个原则，R4最总选择IGP度量值最小的，即选择R6作为下一跳。然后它将这个最佳路径发往R3和R1。</li>
+<li>同理，R3最终选择的下一跳是R5。</li>
+<li>关键在于R1和R2。因为R1只能收到R4发来的更新，所以，它去往192.168.2.0/24的下一跳也是R4；同理R2去往192.168.2.0/24的下一跳是R5。</li>
+<li>经过IGP路由的递归查询，从192.168.1.1到192.168.2.1的数据包会在R1和R2之间来回转发，直到IP报文的TTL被减至0 。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/63.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/64.png"></p>
+<blockquote>
+<ul>
+<li><p>参考答案：</p>
+<p>1.A</p>
+<p>2.路由聚合分为自动聚合和手工聚合</p>
+<ul>
+<li>自动聚合：只能聚合通过import命令引入的路由，只能按照自然掩码进行聚合，IPv6不支持自动聚合。</li>
+<li>手工聚合：IPv4与IPv6路由均能聚合，可设置明细路由抑制，添加AS_set等功能。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/65.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/66.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/67.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-107-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/" rel="tag"># HCRSE-107-BGP双栈原理Advance</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/" rel="next" title="IE-BGP双栈原理Basic">
+                <i class="fa fa-chevron-left"></i> IE-BGP双栈原理Basic
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

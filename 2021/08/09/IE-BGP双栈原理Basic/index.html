@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-106-BGP双栈原理Basic," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="BGP是一种用于自治系统（Autonomous System）之间的动态路由协议。早期发布的三个版本分别是BGP-1（RFC1105）、BGP-2（RFC1163）和BGP-3（RFC1267），主要用于交换AS之间的可达路由信息，构建AS域间的传播路径，防止路由环路的产生，并在AS级别应用一些路由策略。当前使用的版本是BGP-4（RFC4271）。  BGP作为事实上的Inter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-BGP双栈原理Basic">
+<meta property="og:url" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="BGP是一种用于自治系统（Autonomous System）之间的动态路由协议。早期发布的三个版本分别是BGP-1（RFC1105）、BGP-2（RFC1163）和BGP-3（RFC1267），主要用于交换AS之间的可达路由信息，构建AS域间的传播路径，防止路由环路的产生，并在AS级别应用一些路由策略。当前使用的版本是BGP-4（RFC4271）。  BGP作为事实上的Inter">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/1.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/2.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/3.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/4.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/5.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/6.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/7.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/8.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/9.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/10.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/11.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/12.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/13.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/14.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/15.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/16.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/17.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/18.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/19.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/20.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/21.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/22.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/23.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/24.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/25.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/26.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/27.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/28.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/29.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/30.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/31.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/32.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/33.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/34.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/35.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/36.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/37.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/38.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/39.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/40.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/41.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/42.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/43.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/44.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/45.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/46.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/47.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/48.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/49.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/50.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/51.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/52.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/53.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/54.png">
+<meta property="og:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/55.png">
+<meta property="article:published_time" content="2021-08-09T07:29:54.000Z">
+<meta property="article:modified_time" content="2021-08-09T08:16:07.534Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-106-BGP双栈原理Basic">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/08/09/IE-BGP双栈原理Basic/"/>
+
+
+
+
+
+  <title>IE-BGP双栈原理Basic | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-BGP双栈原理Basic</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-09T15:29:54+08:00">
+                2021-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/1.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/2.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/3.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/4.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/5.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/6.png"></p>
+<blockquote>
+<ul>
+<li><p>BGP是一种用于自治系统（Autonomous System）之间的动态路由协议。早期发布的三个版本分别是BGP-1（RFC1105）、BGP-2（RFC1163）和BGP-3（RFC1267），主要用于交换AS之间的可达路由信息，构建AS域间的传播路径，防止路由环路的产生，并在AS级别应用一些路由策略。当前使用的版本是BGP-4（RFC4271）。</p>
+</li>
+<li><p>BGP作为事实上的Internet外部路由协议标准，被广泛应用于ISP之间。</p>
+</li>
+<li><p>BGP概述</p>
+<ul>
+<li>BGP是一种外部网关协议（EGP），与OSPF、RIP等内部网关协议（IGP）不同，其着眼点不在于自动发现网络拓扑，而在于在AS之间选择最佳路由和控制路由的传播。</li>
+<li>BGP使用TCP作为其传输层协议（监听端口号为179），提高了协议的可靠性，且不需要专门的机制来确保连接的可控性。</li>
+<li>BGP进行域间的路由选择，对协议的稳定性要求非常高。因此用TCP协议的高可靠性来保证BGP协议的稳定性。<ul>
+<li>BGP的对等体之间必须在逻辑上连通，并进行TCP连接。目的端口号为179，本地端口号任意。</li>
+<li>路由更新时，BGP只发送更新的路由，大大减少了BGP传播路由所占用的带宽，适用于在Internet上传播大量的路由信息。</li>
+</ul>
+</li>
+<li>BGP从设计上避免了环路的发生。</li>
+<li>AS之间：BGP通过携带AS路径信息来标记途经的AS，带有本地AS号的路由将被丢弃，从而避免了域间产生环路。</li>
+<li>AS内部：BGP在AS内学到的路由不再通告给AS内的BGP邻居，避免了AS内产生环路。<ul>
+<li>BGP提供了丰富的路由策略，能够对路由实现灵活的过滤和选择。</li>
+<li>BGP提供了防止路由振荡的机制，有效提高了Internet网络的稳定性。</li>
+<li>BGP易于扩展，能够适应网络新的发展。主要是通过TLV进行扩展。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/7.png"></p>
+<blockquote>
+<ul>
+<li>BGP的运行是通过消息驱动的，共有Open、Update、Notification、Keepalive和Route-Refresh等5种消息类型。<ul>
+<li>Open消息：是TCP连接建立后发送的第一个消息，用于建立BGP对等体之间的连接关系。对等体在接收到Open消息并协商成功后，将发送Keepalive消息确认并保持连接的有效性。确认后，对等体间可以进行Update、Notification、Keepalive和Route-Refresh消息的交换。</li>
+<li>Update消息：用于在对等体之间交换路由信息。一条Update消息可以发布多条属性相同的可达路由信息，也可以撤销多条不可达路由信息。<ul>
+<li>一条Update消息可以发布多条具有相同路由属性的可达路由，这些路由可共享一组路由属性。所有包含在一个给定的Update消息里的路由属性适用于该Update消息中的NLRI（Network Layer Reachability Information）字段里的所有目的地（用IP前缀表示）。</li>
+<li>一条Update消息可以撤销多条不可达路由。每一个路由通过目的地（用IP前缀表示），清楚的定义了BGP Speaker之间先前通告过的路由。</li>
+<li>一条Update消息可以只用于撤销路由，这样就不需要包括路径属性或者NLRI。相反，也可以只用于通告可达路由，就不需要携带撤销路由信息了。</li>
+</ul>
+</li>
+<li>Keepalive消息：BGP会周期性的向对等体发出Keepalive消息，用来保持连接的有效性。</li>
+<li>Notification消息：当BGP检测到错误状态时，就向对等体发出Notification消息，之后BGP连接会立即中断。</li>
+<li>Route-Refresh消息：通过OPEN消息告知BGP peer本地支持路由刷新能力（Route-Refresh capability）。在所有BGP路由器使能Route-Refresh能力的情况下，如果BGP的入口路由策略发生了变化，本地BGP路由器会向对等体发布Route-Refresh消息，收到此消息的对等体会将其路由信息重新发给本地BGP路由器。这样，可以在不中断BGP连接的情况下，对BGP路由表进行动态刷新，并应用新的路由策略。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>BGP报文应用：<ul>
+<li>BGP使用TCP建立连接，本地监听端口为179。和TCP连接建立相同，BGP连接的建立也要经过一系列的对话和握手。TCP通过握手协商通告其端口等参数，BGP的握手协商的参数有：BGP版本、BGP连接保持时间、本地的路由器标识（Router ID）、授权信息等。这些信息都在Open消息中携带。</li>
+<li>BGP连接建立后，如果有路由需要发送则发送Update消息通告对端。Update消息发布路由时，还要携带此路由的路由属性，用以帮助对端BGP协议选择最优路由。在本地BGP路由变化时，要通过Update消息来通知BGP对等体。</li>
+<li>经过一段时间的路由信息交换后，本地BGP和对端BGP都无新路由通告，趋于稳定状态。此时要定时发送KEEPALIVE消息以保持BGP连接的有效性。对于本地BGP，如果在保持时间内，未收到任何对端发来的BGP消息，就认为此BGP连接已经中断，将断开此BGP连接，并删除所有从该对等体学来的BGP路由。</li>
+<li>当本地BGP在运行中发现错误时（如对端BGP版本本地不支持、本地BGP收到了结构非法的Update消息等），要发送Notification消息通告BGP对等体。本地BGP退出BGP连接时，也需发送Notification报文。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>BGP报头<ul>
+<li>Marker（标记）：16字节，固定为1。</li>
+<li>Length（长度）：两字节无符号整数。指定了消息的全长，包括头部。</li>
+<li>Type（类型）：1 字节，指示报文类型：<ul>
+<li>Open</li>
+<li>Update</li>
+<li>Keepalive</li>
+<li>Notification</li>
+<li>Route-Refresh</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Open报文结构<ul>
+<li>Version：BGP的版本号。对于BGPv4来说，其值为4。</li>
+<li>My Autonomous System：本地AS编号。通过比较两端的AS编号可以确定是EBGP连接还是IBGP连接。</li>
+<li>Hold Time：在建立对等体关系时两端要协商Hold time，并保持一致。如果两端所配置的Hold time时间不同，则BGP会选择较小的值作为协商的结果。如果在这个时间内未收到对端发来的Keepalive消息，则认为BGP连接中断。如果保持时间为0，则标识不发送Keepalive报文。</li>
+<li>BGP Identifier：BGP路由器的Router ID，以IP地址的形式表示，用来识别BGP路由器。</li>
+<li>Opt Parm Len（Optional Parameters Length）：可选参数的长度。如果为0则没有可选参数。</li>
+<li>Optional Parameters：是一个可选参数用于BGP验证或多协议扩展（Multiprotocol Extensions）等功能。每一个参数为一个（Parameter Type-Parameter Length-Parameter Value）三元组。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Update报文结构<ul>
+<li>Withdrawn Routes Length ：（2字节无符号整数） 不可达路由长度，表示Withdrawn Routes字段的数据长度。如果Withdrawn Routes Length字段数值为0，则表示Withdrawn Routes字段没有任何数据，在UPDATE消息中不会被显示。</li>
+<li>Withdrawn Routes ：（变长） 撤销路由。该字段包括一系列的IP地址前缀信息，以&lt;length, prefix&gt;的格式来表示，比如&lt;19,198.18.160.0&gt;表示一个198.18.160.0 255.255.224.0的网络。 </li>
+<li>Path Attribute Length ：（2字节无符号整数） 路由属性长度，表示Path Attribute字段的数据长度。如果Path Attribute Length数值为0，则表示Path Attribute字段没有任何数据，在UPDATE消息中不会被显示。</li>
+<li>Network Layer Reachability Information ：（变长） 网络可达信息。包括一系列的IP地址前缀。格式与撤消路由字段一样&lt;length, prefix&gt;。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Keepalive报文结构<ul>
+<li>KeepAlive 报文的组成只包括一个BGP数据报头。</li>
+<li>缺省情况下，发送KeepAlive 的时间间隔为 60 秒，Hold Time是180秒。每次从邻居处接收到KeepAlive 报文将重置Hold Time定时器，如果Hold Time定时器超时，就认为对等体Down掉。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Notification报文结构<ul>
+<li>Errorcode：错误码。1字节长的字段。每个不同的错误都使用唯一的代码表示，而每一个错误码都可以拥有一个或多个错误子码，但如果某些错误码并不存在错误子码的话，则该错误子码字段以全0表示。</li>
+<li>Errsubcode：错误子码。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/8.png"></p>
+<blockquote>
+<ul>
+<li>BGP有限状态机共有六种状态，分别是Idle、Connect、Active、OpenSent、OpenConfirm和Established。<ul>
+<li>Idle状态是BGP初始状态。在Idle状态下，BGP拒绝邻居发送的连接请求。只有在收到本设备的Start事件后，BGP才开始尝试和其它BGP对等体进行TCP连接，并转至Connect状态。<ul>
+<li>Start事件是由一个操作者配置一个BGP过程，或者重置一个已经存在的过程或者路由器软件重置BGP过程引起的。</li>
+<li>任何状态中收到Notification报文或TCP拆除链路通知等Error事件后，BGP都会转至Idle状态。</li>
+</ul>
+</li>
+<li>在Connect状态下，BGP启动连接重传定时器（Connect Retry，缺省为32秒），等待TCP完成连接。<ul>
+<li>此阶段主动发起TCP连接；</li>
+<li>如果TCP连接成功，那么BGP向对等体发送Open报文，并转至OpenSent状态；</li>
+<li>如果TCP连接失败，那么BGP转至Active状态；</li>
+<li>如果连接重传定时器超时，BGP仍没有收到BGP对等体的响应，那么BGP继续尝试和其它BGP对等体进行TCP连接，停留在Connect状态。</li>
+<li>如果发生其他事件（由系统或者操作人员启动的），则退回到Idle状态。</li>
+</ul>
+</li>
+<li>在Active状态下，BGP总是在试图建立TCP连接。<ul>
+<li>此阶段等待对方发起TCP连接；</li>
+<li>如果TCP连接成功，那么BGP向对等体发送Open报文，关闭连接重传定时器，并转至OpenSent状态；</li>
+<li>如果TCP连接失败，那么BGP停留在Active状态；</li>
+<li>如果连接重传定时器超时，BGP仍没有收到BGP对等体的响应，那么BGP转至Connect状态。</li>
+</ul>
+</li>
+<li>在OpenSent状态下，BGP等待对等体的Open报文，并对收到的Open报文中的AS号、版本号、认证码等进行检查。<ul>
+<li>如果收到的Open报文正确，那么BGP发送Keepalive报文，并转至OpenConfirm状态；</li>
+<li>如果发现收到的Open报文有错误，那么BGP发送Notification报文给对等体，并转至Idle状态。</li>
+</ul>
+</li>
+<li>在OpenConfirm状态下，BGP等待Keepalive或Notification报文。如果收到Keepalive报文，则转至Established状态，如果收到Notification报文，则转至Idle状态。</li>
+<li>在Established状态下，BGP可以和对等体交换Update、Keepalive、Route-refresh报文和Notification报文。<ul>
+<li>如果收到正确的Update或Keepalive报文，那么BGP就认为对端处于正常运行状态，将保持BGP连接。</li>
+<li>如果收到错误的Update或Keepalive报文，那么BGP发送Notification报文通知对端，并转至Idle状态。</li>
+<li>Route-refresh报文不会改变BGP状态。</li>
+<li>如果收到Notification报文，那么BGP转至Idle状态。</li>
+<li>如果收到TCP连接断开消息，那么BGP断开连接，转至Idle状态。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/9.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/10.png"></p>
+<blockquote>
+<ul>
+<li>BGP路由信息处理：<ul>
+<li>当从对等体接收到更新数据包时，路由器会把这些更新数据包存储到路由选择信息库(Routing Information Base, RIB)中，并指明是来自哪个对等体的(Adj-RIB-In)。这些更新数据包被输入策略引擎过滤后，路由器将会执行路径选择算法，来为每一条前缀确定最佳路径。</li>
+<li>得出的最佳路径被存储到本地BGP RIB (Loc-RIB)中，然后被提交给本地IP路由选择表(IP-RIB)，以用作安装考虑。</li>
+<li>除了从对等体接收来的最佳路径外，Loc-RIB也会包含当前路由器注入的(被称为本地发起的路由)，并被选择为最佳路径的BGP前缀。Loc-RIB中的内容在被通告给其他对等体之前，必须通过输出策略引擎。只有那些成功通过输出策略引擎的路由，才会被安装到输出RIB (Adj-RIB-Out)中。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/11.png"></p>
+<blockquote>
+<ul>
+<li>BGP设备将最优路由加入BGP路由表，形成BGP路由。<ul>
+<li>从IBGP对等体获得的BGP路由，BGP设备只发布给它的EBGP对等体</li>
+<li>从EBGP对等体获得的BGP路由，BGP设备发布给它所有EBGP和IBGP对等体</li>
+<li>当存在多条到达同一目的地址的有效路由时，BGP设备只将最优路由发布给对等体</li>
+<li>路由更新时，BGP设备只发送更新的BGP路由</li>
+<li>从IBGP邻居学到的路由，只有当IGP中也存在相同的路由时才会宣告给EBGP对等体</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/12.png"></p>
+<blockquote>
+<ul>
+<li>同步是指IBGP和IGP之间的同步，其目的是避免误导外部AS的路由器。</li>
+</ul>
+<ul>
+<li><p>拓扑说明（在同步开启情况下）</p>
+<ul>
+<li>R4通过BGP学习到R1宣告的10.0.0.0/24网络。R4在将该网络通告给R5之前，会首先检查自己的IGP路由表是否已经存在10.0.0.0/24网络。如果R4本地IGP路由表项存在10.0.0.0/24网络，则将该网络通告给R5；如果R4本地IGP路由表项不存在10.0.0.0/24网络，则不能将该网络通告给R5。</li>
+</ul>
+</li>
+<li><p>注意事项：</p>
+<ul>
+<li>VRP平台缺省情况下BGP与IGP是取消同步机制的，并不可改变。但取消同步是有条件的，在以下两种情况下可以取消同步：</li>
+<li>本AS不是过渡AS。</li>
+<li>本AS内所有路由器建立IBGP全连接。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/13.png"></p>
+<blockquote>
+<ul>
+<li><p>BGP路由属性是一套参数，它对特定的路由进一步的描述，使得BGP能够对路由进行过滤和选择。</p>
+</li>
+<li><p>常用的属性类别如下所示：</p>
+<ul>
+<li>Origin为公认必遵属性</li>
+<li>AS_Path为公认必遵属性</li>
+<li>Next_Hop为公认必遵属性</li>
+<li>Local_Pref为公认任意属性</li>
+<li>community为可选过渡属性</li>
+<li>MED为可选非过渡属性</li>
+<li>Originator_ID为可选非过渡属性</li>
+<li>Cluster_List为可选非过渡属性</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/14.png"></p>
+<blockquote>
+<ul>
+<li>Origin属性用来定义路径信息的来源，标记一条路由是怎么成为BGP路由的。它有以下3种类型：<ul>
+<li>IGP：具有最高的优先级。通过路由始发AS的IGP得到的路由信息，比如通过network命令注入到BGP路由表的路由，其Origin属性为IGP。</li>
+<li>EGP：优先级次之。通过EGP得到的路由信息，其Origin属性为EGP。</li>
+<li>Incomplete：优先级最低。通过其他方式学习到的路由信息。比如BGP通过import-route命令引入的路由，其Origin属性为Incomplete。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/15.png"></p>
+<blockquote>
+<ul>
+<li>在BGP进行选路时会优先比较协议首选值。默认情况下均为0，该值越大越优先。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/16.png"></p>
+<blockquote>
+<ul>
+<li><p>AS_Path属性可以当做BGP选路的参考属性之一，AS_Path长度越短越优先。此外，当BGP路由器从EBGP对等体接收路由时，如果发现AS_Path列表中有本AS号，则不接收该路由，从而避免了AS间的路由环路。</p>
+<ul>
+<li>当BGP Speaker本地通告一条路由时：<ul>
+<li>当BGP Speaker将这条路由通告到其他AS时，便会将本地AS号添加在AS_Path列表中，并通过Update消息通告给邻居路由器。</li>
+<li>当BGP Speaker将这条路由通告到本地AS时，便会在Update消息中创建一个空的AS_Path列表。</li>
+</ul>
+</li>
+<li>当BGP Speaker传播从其他BGP Speaker的Update消息中学习到的路由时：<ul>
+<li>当BGP Speaker将这条路由通告到其他AS时，便会把本地AS编号添加在AS_Path列表的最前面（最左面）。收到此路由的BGP路由器根据AS_Path属性就可以知道去目的地址所要经过的AS。离本地AS最近的相邻AS号排在前面，其他AS号按顺序依次排列。</li>
+<li>当BGP Speaker将这条路由通告到本地AS时，不会改变这条路由相关的AS_Path属性。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>拓扑描述：</p>
+<ul>
+<li>当R4将网段10.0.0.0/24通告给AS400和AS100时，会在AS_PATH中添加自己的AS号。当R5将网段10.0.0.0/24通告给AS100时，也会添加添加自己的AS号。当AS100内的R1、R3和R2之间将网段10.0.0.0/24相互通告时，AS_PATH属性不会改变，在其他BGP选路条件相同的前提下，BGP会选择AS_PATH路径最短的，即选择通过R3直达R4的路由。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/17.png"></p>
+<blockquote>
+<ul>
+<li>Next_Hop属性记录了路由的下一跳信息。BGP的下一跳属性和IGP的有所不同，不一定就是邻居设备的IP地址。通常情况下，Next_Hop属性遵循下面的规则：<ul>
+<li>BGP Speaker将本地始发路由发布给IBGP对等体时，会把该路由信息的下一跳属性设置为本地与对端建立BGP邻居关系的接口地址。</li>
+<li>BGP Speaker在向EBGP对等体发布某条路由时，会把该路由信息的下一跳属性设置为本地与对端建立BGP邻居关系的接口地址。</li>
+<li>BGP Speaker在向IBGP对等体发布从EBGP对等体学来的路由时，并不改变该路由信息的下一跳属性。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/18.png"></p>
+<blockquote>
+<ul>
+<li>Local_Pref属性<ul>
+<li>该属性仅在IBGP对等体之间有效，不通告给其他AS。它表明路由器的BGP优先级。</li>
+<li>当BGP路由器通过不同的IBGP对等体得到目的地址相同但下一跳不同的多条路由时，将优先选择Local_Pref属性值较高的路由，缺省情况下该值为100。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>拓扑描述<ul>
+<li>AS100内，R1，R2和R3之间分别两两建立IBGP对等体关系，而R2和R3分别和位于AS200和AS300的路由器建立EBGP对等体关系。这样路由器R2和R3都会从自己的EBGP对等体收到10.0.0.0/24这条路由，为了让AS100内的三台路由器优选R2作为10.0.0.0/24这条路由在本AS的出口，我们只需要在R2和R3上适当的对该路由的Local Pref属性进行修改，就可以达到目的。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/19.png"></p>
+<blockquote>
+<ul>
+<li>当一个运行BGP的设备通过不同的EBGP对等体（EBGP对等体需属于同一AS）得到目的地址相同但下一跳不同的多条路由时，在其它条件相同的情况下，将优先选择MED 值较小者作为最佳路由。</li>
+<li>MED属性仅在相邻两个AS之间传递，收到此属性的AS一方不会再将其通告给任何其他第三方AS。MED属性可以手动配置，如果路由没有配置MED属性，BGP选路时将该路由的MED值按缺省值0来处理。</li>
+<li>拓扑描述<ul>
+<li>R1和R2将网段10.0.0.0/24传递给各自的EBGP邻居R3和R4，R3和R4在其他条件相同的情况下，优先选择MED值较低的路径，即均选择经由R1访问网络10.0.0.0/24。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/20.png"></p>
+<blockquote>
+<ul>
+<li><p>BGP路径选择</p>
+</li>
+<li><p>下一跳地址必须可达。</p>
+</li>
+<li><p>协议首选值（PrefVal）是华为设备的特有属性，该属性仅在本地有效。</p>
+</li>
+<li><p>如果路由没有本地优先级，BGP选路时将该路由按缺省的本地优先级100来处理。通过执行default local-preference命令可以修改BGP路由的缺省本地优先级。</p>
+</li>
+<li><p>本地生成的路由包括通过network命令或import-route命令引入的路由、手动聚合路由和自动聚合路由。</p>
+<ul>
+<li>优选聚合路由（聚合路由优先级高于非聚合路由）。</li>
+<li>通过aggregate命令生成的手动聚合路由的优先级高于通过summary automatic命令生成的自动聚合路由。</li>
+<li>通过network命令引入的路由的优先级高于通过import-route命令引入的路由。</li>
+</ul>
+</li>
+<li><p>优选AS路径（AS_Path）最短的路由。</p>
+<ul>
+<li>AS_Path的长度不包括AS_CONFED_SEQUENCE和AS_CONFED_SET。</li>
+<li>AS_SET的长度为1，无论AS_SET中包括多少AS号。</li>
+<li>执行bestroute as-path-ignore命令后，BGP选路时，忽略AS_Path的比较。</li>
+</ul>
+</li>
+<li><p>优选MED值最低的路由。</p>
+<ul>
+<li>BGP只比较来自同一个AS（不包括联盟的子AS）的路由的MED值。即，只有两条路由的AS_SEQUENCE（不包括AS_CONFED_SEQUENCE）属性的第一个AS号相同时，BGP才会比较二者的MED值。</li>
+<li>如果路由没有MED属性，BGP选路时将该路由的MED值按缺省值0来处理；执行bestroute med-none-as-maximum命令后，BGP选路时将该路由的MED值按最大值4294967295来处理。</li>
+<li>执行compare-different-as-med命令后，BGP将强制比较来自不同自治系统中的邻居的路由的MED值。除非能够确认不同的自治系统采用了同样的IGP和路由选择方式，否则不要使用compare-different-as-med命令（可能产生环路）。</li>
+<li>执行bestroute med-confederation命令后，只有当AS_Path中不包含外部AS号（不属于联盟的子AS），且AS_CONFED_SEQUENCE的第一个AS号相同时，才能比较MED值的大小。</li>
+<li>执行deterministic-med命令后，将消除路由接收顺序对选路结果的影响。</li>
+</ul>
+</li>
+<li><p>负载分担</p>
+<ul>
+<li>当到达同一目的地址存在多条等价路由时，可以通过BGP等价负载分担实现均衡流量的目的。</li>
+<li>形成BGP等价负载分担的条件是：BGP选路规则中“到下一跳的IGP metric”这条规则之前所有需要比较的属性完全相同。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/21.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/22.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/23.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/24.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/25.png"></p>
+<blockquote>
+<ul>
+<li><p>除了多地址族的能力协商外，还有</p>
+<ul>
+<li>4字节AS号能力</li>
+<li>Route-Refresh支持能力</li>
+<li>多层标签能力</li>
+</ul>
+<p>等能力都会在该字段列出来进行协商。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/26.png"></p>
+<blockquote>
+<ul>
+<li>地址族信息（Address Family Information）域：由2字节的地址族标识AFI（Address Family Identifier）和1字节的子地址族标识SAFI（Subsequent Address Family Identifier）组成。</li>
+<li>下一跳长度（Length of Next Hop Network Address）域：1字节长度，表示下一跳地址的长度，通常情况下为16</li>
+<li>下一跳地址（Network Address of Next Hop）域：长度由上一个字段决定，一般情况下为全球单播地址。</li>
+<li>保留字段（Reserved）域：一字节，必须为0 </li>
+<li>网络层可达信息（Network Layer Reachability Information）域：表示含有匹配相同属性的路由信息。当此字段为0时，表示为缺省路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/27.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/28.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/29.png"></p>
+<blockquote>
+<ul>
+<li><p>地址族信息（Address Family Information）域：由2字节的地址族标识AFI（Address Family Identifier）和1字节的子地址族标识SAFI（Subsequent Address Family Identifier）组成。</p>
+</li>
+<li><p>撤销路由（Withdrawn Routes）域：表示撤销的路由条目。格式为&lt;掩码长度，路由前缀&gt; ，当此掩码长度为0时，表示为缺省路由。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/30.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/31.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/32.png"></p>
+<blockquote>
+<ul>
+<li><p>地址分配规则：</p>
+<ul>
+<li>Rx和Ry（X&lt;Y）直连接口的IPv4网段为：10.0.xy.0/24. Rx相应接口的地址为10.0.xy.x ，Ry为10.0.xy.y </li>
+<li>Rx和Ry（X&lt;Y）直连接口的IPv6网段为：2000::xy00/120. Rx相应接口的地址为2000::xy0x ，Ry为2000::xy0y </li>
+<li>各路由器的LoopBack 0 接口的地址已给出,各LoopBack 0接口的IPv6地址为2000::z(z为相应路由器的编号)</li>
+</ul>
+</li>
+<li><p>提示：</p>
+<ul>
+<li>AS内可运行OSPF，ISIS等协议来实现互通</li>
+<li>稳定的IBGP关系可通过loopback接口来建立</li>
+<li>EBGP邻居关系直接用物理接口建立即可</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/33.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>peer as-number命令用来配置指定对等体（组）的对端AS号。</li>
+<li>peer connect-interface命令用来指定发送BGP报文的源接口，并可指定发起连接时使用的源地址。</li>
+<li>peer next-hop-local命令用来设置向IBGP对等体（组）通告路由时，把下一跳属性设为自身的IP地址。</li>
+</ul>
+</li>
+<li><p>具体用法</p>
+<ul>
+<li>上述命令均为BGP进程视图下的命令</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>peer ipv4-address as-number as-number<ul>
+<li>ip-address：对等体的IPv4地址。</li>
+<li>as-number：对等体的对端AS号。</li>
+</ul>
+</li>
+<li>peer ipv4-address connect-interface interface-type interface-number [ ipv4-source-address ]<ul>
+<li>ip-address：对等体的IPv4地址。</li>
+<li>interface-type interface-number：接口类型和接口号。</li>
+<li>ipv4-source-address：建立连接时的IPv4源地址。</li>
+</ul>
+</li>
+<li>peer ipv4-address next-hop-local<ul>
+<li>ip-address：对等体的IPv4地址。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>在使用Loopback接口作为BGP报文的源接口时，必须注意以下事项：<ul>
+<li>确认BGP对等体的Loopback接口的地址是可达的。</li>
+<li>如果是EBGP连接，还要配置peer ebgp-max-hop命令，允许EBGP通过非直连方式建立邻居关系。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>peer next-hop-local和peer next-hop-invariable是两条互斥命令。</p>
+</li>
+<li><p>Display bgp peer中的PrefRcv表示本端从对等体上收到路由前缀的数目。</p>
+</li>
+<li><p>IPv6的配置与IPv4基本一致，但是在指定完peer地址和as-number之后，需手工进入ipv6-family unicast视图，执行peer peer-ip-address enable 命令来激活。</p>
+</li>
+<li><p>本页图中的互连接口IPv6地址，掩码位是120。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/34.png"></p>
+<blockquote>
+<ul>
+<li>此拓扑与“基础配置”一致，已建立了BGP邻居关系</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/35.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li><strong>peer route-policy</strong>命令用来对来自对等体（组）的路由或向对等体（组）发布的路由指定Route-Policy，对接收或发布的路由进行控制。</li>
+<li><strong>apply preferred-value</strong> preferred-value 命令用来在路由策略中配置改变BGP路由的首选值的动作。</li>
+</ul>
+</li>
+<li><p>具体用法</p>
+<ul>
+<li>peer route-policy命令为BGP视图命令</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>peer ipv4-address route-policy route-policy-name { import | export }<ul>
+<li>ipv4-address：对等体的IPv4地址。</li>
+<li>route-policy-name：Route-Policy的名称。</li>
+<li>import：对从对等体（组）来的路由应用Route-Policy。</li>
+<li>export：对向对等体（组）发布的路由应用Route-Policy。</li>
+<li>preferred-value：指定BGP的首选值。在选择路由时，协议优选首选值最高的BGP路由。整数形式，取值范围0～65535，默认为0</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实验现象</p>
+<ul>
+<li>我们使用display bgp routing-table和display bgp ipv6 routing-table命令查看BGP路由表。</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>Preferred-value是BGP协议的私有属性，该命令只对BGP路由生效。Preferred-value是BGP选路规则中的weight值，不是RFC规定的标准属性，所以该命令仅在本地生效，在BGP的出口策略中不生效。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/36.png"></p>
+<blockquote>
+<ul>
+<li>沿用BGP“基础配置”拓扑，仅建立了BGP邻居关系。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/37.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义：</p>
+<ul>
+<li><strong>apply local-preference</strong> preference  配置路由的本地优先级</li>
+</ul>
+</li>
+<li><p>参数含义：</p>
+<ul>
+<li>Preference 指定的BGP路由的本地优先级，整数形式，取值范围是0～4294967295，默认情况下为100</li>
+</ul>
+</li>
+<li><p>注意事项：</p>
+<ul>
+<li>策略生效后，将影响BGP路由选路。</li>
+<li>本地优先级仅用于同一个AS域内的选路，不向域外发布这个属性，所以用于配置EBGP邻居的export方向的策略时，apply local-preference命令的设置不生效。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/38.png"></p>
+<blockquote>
+<ul>
+<li>保留上一步local-preference的配置，其他不变。</li>
+<li>需要解决上一步出现的来回路径不一致的问题，可通过R2宣告更高MED属性的路由，使得R5选择R3宣告的路由。 </li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/39.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li><strong>apply</strong> <strong>cost</strong> [ <strong>+</strong> | <strong>-</strong> ]  cost命 令用来在路由策略中配置改变路由的开销值的动作。</li>
+</ul>
+</li>
+<li><p>参数含义：</p>
+<ul>
+<li>+：表示增加开销值。</li>
+<li>-： 表示减少开销值。</li>
+<li>cost ：指定路由的开销值。对路由的选路进行控制，需要将路由的开销设置为固定值时，可以通过调整开销值避免路由环路的产生。</li>
+</ul>
+</li>
+<li><p>注意事项：</p>
+</li>
+<li><p>在缺省情况下，BGP只比较来自同一AS的路由的MED值。这里的AS不包括联盟的子AS。为了使BGP在联盟内选择最优路由时能够比较MED值，可以配置bestroute med-confederation命令。</p>
+</li>
+<li><p>配置bestroute med-confederation命令后，只有当AS_Path中不包含外部自治系统（不在联盟内的自治系统）号时才比较MED值的大小。如果AS_Path中包含外部自治系统号，则不进行比较。</p>
+<ul>
+<li>例如：自治系统65000、65001、65002和65004属于同一联盟。四条到达同一目的地址的待选路由如下所示：<ul>
+<li>path1：AS_Path=65000 65004，med=2</li>
+<li>path2：AS_Path=65001 65004，med=3</li>
+<li>path3：AS_Path=65002 65004，med=4</li>
+<li>path4：AS_Path=65003 65004，med=1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在配置bestroute med-confederation命令后，因为path1、path2和path3的AS_Path中不包含同一联盟外的自治系统，所以当BGP需要通过比较MED值来选择路由时，将只比较path1、path2和path3的MED值。而path4的AS_Path中包含同一联盟外的自治系统，因此不比较path4的MED值。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/40.png"></p>
+<blockquote>
+<ul>
+<li>拓扑与配置采用“基础配置”的内容。仅有基本的BGP邻居配置</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/41.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li><strong>apply as-path</strong> { { as-number-plain | as-number-dot } &amp;&lt;1-10&gt; { additive } | none overwrite }</li>
+</ul>
+</li>
+<li><p>参数含义</p>
+<ul>
+<li><em>as*</em>-number-plain*<em>：</em>指定要替换或增加的整数形式的AS号。在同一个命令行中最多可以同时指定10个AS号。</li>
+<li><em>as*</em>-number-dot* <em>：指</em>定要替换或增加的点分形式的AS号。在同一个命令行中最多可以同时指定10个AS号。</li>
+<li><strong>additive</strong> <strong>：</strong>在原有的AS_Path列表中追加指定的AS号。</li>
+<li><strong>overwrite</strong> <strong>：</strong>用指定的AS号覆盖原有的AS_Path列表。</li>
+<li><strong>None</strong> <strong>：</strong>清空原来的AS_Path列表。</li>
+</ul>
+</li>
+<li><p>注意事项：</p>
+<ul>
+<li>策略生效后，将会影响BGP路由选路。</li>
+<li>配置该命令会直接影响网络流量所经过的途径，另外也可能造成环路和选路错误，<strong>请谨慎使用该命令</strong>。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/42.png"></p>
+<blockquote>
+<ul>
+<li>拓扑与配置采用“基础配置”的内容。仅有基本的BGP邻居配置</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/43.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义：</p>
+<ul>
+<li><strong>if-match as-path-filter</strong> { as-path-filter-number &amp;&lt;1-16&gt; | as-path-filter-name } </li>
+</ul>
+</li>
+<li><p>参数含义：</p>
+<ul>
+<li>as-path-filter-number ：指定AS路径过滤器号。在一个命令行中可以配置多个此参数，但最大不能超过16。 整数形式，取值范围1～256。</li>
+<li><em>as-path-filter*</em>-name*指定AS路径过滤器名称。字符串形式，区分大小写，不支持空格，长度范围是1～51，且不能都是数字。</li>
+</ul>
+</li>
+<li><p>注意事项：</p>
+<ul>
+<li>在一个命令行中可以配置多个AS-Path-filter值，但最多不能超过16个。它们之间是“或”的关系，即通过其中某一个AS路径过滤器的过滤就可以通过该命令的过滤。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/44.png"></p>
+<blockquote>
+<ul>
+<li><p><strong>命令含义：</strong></p>
+<ul>
+<li><em>ip*</em> <strong>as-path-filter</strong> { <em>as-path-filter-number</em> | <em>as-path-filter-name</em> } { <strong>deny</strong> | <strong>permit</strong> } <em>regular-expression</em>命令用来创建AS路径过滤器。</li>
+</ul>
+</li>
+<li><p>参数含义：</p>
+<ul>
+<li>as-path-filter-number 指定的AS路径过滤器号。 整数形式，取值范围1～256。</li>
+<li>as-path-filter-name 指定的AS路径过滤器名称。 字符串形式，区分大小写，不支持空格，长度范围是1～51，且不能都是数字。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li>deny 指定AS路径过滤器的匹配模式为拒绝。</li>
+<li>permit 指定AS路径过滤器的匹配模式为允许。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/45.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/46.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/47.png"></p>
+<blockquote>
+<ul>
+<li>拓扑与配置采用“基础配置”的内容。仅有基本的BGP邻居配置</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/48.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义：</p>
+<ul>
+<li><strong>maximum</strong> <strong>load-balancing</strong>命令用来设置等价路由的最大条数。</li>
+</ul>
+</li>
+<li><p>具体用法</p>
+<ul>
+<li>命令maximum load-balancing为BGP视图命令。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>ebgp：仅EBGP路由参与负载分担。</li>
+<li>ibgp：仅IBGP路由参与负载分担。</li>
+<li>number：BGP路由表中最大等价路由条数。</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>如果配置了maximum load-balancing number命令，那么再配置maximum load-balancing ebgp number或maximum load-balancing ibgpnumber命令都不会生效；如果配置了maximum load-balancing ebgp number或maximum load-balancing ibgp number命令，那么再配置maximum load-balancing number命令也不会生效。</li>
+<li>AS_Path不仅需要长度相等，内容也必须一致才能形成负载分担。可在BGP进程视图下使用load-balancing as-path-ignore设置路由在形成负载分担时不比较路由的AS-Path属性。</li>
+</ul>
+</li>
+<li><p>实验结果</p>
+<ul>
+<li>使用命令display ip routing-table protocol bgp可以查看到通过BGP学到的等价路由。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/49.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/50.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/51.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/52.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/53.png"></p>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/54.png"></p>
+<blockquote>
+<ul>
+<li>参考答案：<ul>
+<li>T，正确</li>
+<li>F，AS_Path需要完全一样才能形成负载分担。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/55.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-106-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Basic/" rel="tag"># HCRSE-106-BGP双栈原理Basic</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/06/IE-ISIS%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/" rel="next" title="IE-ISIS双栈原理">
+                <i class="fa fa-chevron-left"></i> IE-ISIS双栈原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/" rel="prev" title="IE-BGP双栈原理Advance">
+                IE-BGP双栈原理Advance <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
