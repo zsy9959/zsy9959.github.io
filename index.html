@@ -241,6 +241,1821 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/" itemprop="url">IE-PIM双栈原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-18T14:15:31+08:00">
+                2021-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/2.png"></p>
+<blockquote>
+<ul>
+<li><p>现代网络传输技术对以下两项目标给予更高的关注：</p>
+<ul>
+<li>资源发现</li>
+<li>点对多点的IP传输</li>
+</ul>
+</li>
+<li><p>实现这两项目标有三种解决方案：单播（Unicast）、广播（Broadcast）、组播（Multicast）</p>
+</li>
+<li><p>通过比较三种解决方案的数据传输方式，说明组播方式更适合点对多点的IP传输。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/3.png"></p>
+<blockquote>
+<ul>
+<li>学习完此课程，您将会：了解组播与单播以及广播三种数据传输方式的区别。掌握组播的地址结构以及组播报文的转发流程。掌握组播技术中的相关概念，如源路径树、共享树等。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li><p>组播协议包括用于主机注册的组播组管理协议，和用于组播选路转发的组播路由协议。各种组播协议在网络中的如图所示。</p>
+</li>
+<li><p>IGMP（Internet Group Management Protocol）在接收者主机和组播路由器之间运行，该协议定义了主机与路由器之间建立和维护组播成员关系的机制。</p>
+</li>
+<li><p>组播路由器之间运行组播路由协议，组播路由协议用于建立和维护组播路由，并正确、高效地转发组播数据包。</p>
+</li>
+<li><p>对于ASM模型，可以将组播路由分为域内和域间两大类。</p>
+<ul>
+<li>域内组播路由协议用来在自治系统AS（Autonomous System）内发现组播源并构建组播分发树，将信息传递到接收者。域内组播路由协议包括：DVRMP、MOSPF、PIM。<ul>
+<li>DVRMP是距离矢量组播路由协议（Distance Vector Multicast Routing Protocol）是一种密集模式协议。该协议有跳数限制，最大跳数32跳。</li>
+<li>MOSPF是OSPF路由协议的扩展协议。它通过定义新的LSA来支持组播。</li>
+<li>PIM（Protocol Independent Multicast）是典型的域内组播路由协议，分为DM（Dense Mode）和SM（Sparse Mode）两种模型。当接收者在网络中的分布较为密集时，适用DM；较为稀疏时，适用SM。PIM必须和单播路由协议协同工作。</li>
+</ul>
+</li>
+<li>域间组播路由协议用来实现组播信息在AS之间的传递。<ul>
+<li>MSDP（Multicast Source Discovery Protocol）能够跨越AS传播组播源信息。</li>
+<li>MPBGP （MultiProtocol Border Gateway Protocol）的组播扩展MBGP （Multicast BGP）能够跨越AS传播组播路由。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/6.png"></p>
+<blockquote>
+<ul>
+<li>对于SSM模型，没有域内和域间的划分。由于接收者预先知道组播源的具体位置，因此可以借助PIM SM的部分功能直接创建组播传输路径。</li>
+<li>为了使不同的 PIM-SM 域之间组播数据能够互通，需要在域间部署 MSDP 协议。MSDP 通过在各个 PIM-SM 域之间建立 MSDP 对等体关系，对等体之间交互 SA 消息来传递组播信 息，从而实现接收者主机可以接收其他 PIM-SM 域的组播源数据。MSDP 仅用于 IPv4 网络， 只对 ASM 服务模型有意义。在单个 PIM 域内，使用 IGMP 管理组成员关系，使用 PIM-SM 建 立组播路由指导数据转发。 </li>
+<li>由于 PIM 协议依赖于单播路由表，从而组播转发路径与单播转发路径是一致的。当组播源与接收者分布在不同的AS中时，需要跨AS建立组播转发树。此时可以部署MBGP 协议， 生成一张独立于单播路由的组播路由表，使组播数据通过组播路由表进行传输。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/7.png"></p>
+<blockquote>
+<ul>
+<li><p>相对于PIM-DM的“推（Push）模式”，PIM-SM使用“拉（Pull）模式”转发组播报文。PIM-SM假设网络中的组成员分布非常稀疏，几乎所有网段均不存在组成员，直到某网段出现组成员时，才构建组播路由，向该网段转发组播数据。一般应用于组播组成员规模相对较大、相对稀疏的网络。</p>
+</li>
+<li><p>基于这一种稀疏的网络模型，它的实现方法是：</p>
+<ul>
+<li>在网络中维护一台重要的PIM路由器：汇聚点RP（Rendezvous Point），可以为随时出现的组成员或组播源服务。网络中所有PIM路由器都知道RP的位置。</li>
+<li>当网络中出现组成员（用户主机通过IGMP加入某组播组G）时，最后一跳路由器向RP发送Join报文，逐跳创建（*，G）表项，生成一棵以RP为根的RPT。</li>
+<li>当网络中出现活跃的组播源（信源向某组播组G发送第一个组播数据）时，第一跳路由器将组播数据封装在Register报文中单播发往RP，在RP上创建（S，G）表项，注册源信息。</li>
+</ul>
+</li>
+<li><p>PIM-SM的关键机制包括邻居建立、DR竞选、RP发现、RPT构建、组播源注册、SPT切换、Assert；同时也可通过配置BSR（Bootstrap Router）管理域来实现单个PIM-SM域的精细化管理。PIM-SM中PIM邻居建立过程以及Assert机制与PIM-DM相同。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/8.png"></p>
+<blockquote>
+<ul>
+<li>源路径树以组播源作为树根，将组播源到每一个接收者的最短路径结合起来构成的转发树。</li>
+<li>源路径树使用的是从组播源到接收者的最短路径，也称为最短路径树（shortest path tree，SPT）。对于某个组，网络要为任何一个向该组发送报文的组播源建立一棵树。</li>
+<li>本例中有两个组播源（源S1和源S2），接收者R1和RT2。所以本例中有两棵源路径树，分别是：</li>
+<li>S1—A—C（R1）—–E（R2）</li>
+<li>S2—F—-D—C（R1）——E（R2）</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/9.png"></p>
+<blockquote>
+<ul>
+<li>共享树以某个路由器作为路由树的树根，该路由器称为汇集点（Rendezvous Point，RP），将 RP 到所有接收者的最短路径结合起来构成转发树。使用共享树时，对应某个组，网络中只有一棵树。所有的组播源和接收者都使用这棵树来收发报文，组播源先向树根发送数据报文，之后报文又向下转发到达所有的接收者。 </li>
+<li>本例中两个源S1和S2共享一颗树 D（RP）—-C（R1）—-E（R2）</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/10.png"></p>
+<blockquote>
+<ul>
+<li>PIM IPv6是与静态路由、RIPng、OSPFv3、IS-ISv6、BGP4+等IPv6单播路由协议类型无关的组播路由协议，其借助上述单播路由协议生成的路由项和RPF（Reverse Path Forwarding）机制创建组播路由表，实现组播报文转发。PIM IPv6域是指由支持PIM IPv6协议的组播路由器构成的网络。</li>
+<li>目前，存在两种组播模型：任意源组播ASM（Any-Source Multicast）和指定源组播SSM（Source-Specific Multicast）。IPv6中，ASM模型包括IPv6 PIM-DM（Protocol Independent Multicast-Dense Mode）和IPv6 PIM-SM（Protocol Independent Multicast Sparse Mode）；SSM模型则使用MLDv2和IPv6 PIM-SM的部分机制来实现。</li>
+<li>在组成员稀疏分布的大规模IPv6网络中，使用IPv6 PIM-SM，其主要特性是接收者需要显式加入。缺省情况下，IPv6 PIM-SM假设网络中的所有节点都不需要接收组播报文，上游节点只有接收到下游节点的加入消息后才进行组播数据的转发。</li>
+<li>IPv6 PIM-SM中，汇集点RP（Rendezvous Point）只向拥有接收者的下游分枝转发组播信息。这样可以节省数据报文和控制报文占用的网络带宽，减少路由器的处理开销。</li>
+<li>当主机希望从指定组播组接收数据时，与之相连的路由器向这个组的RP发送加入（Join）消息，沿途建立以RP为根节点的共享树RPT（Rendezvous Point Tree）。共享树的含义是不同组播源向相同组播组转发组播数据时，都使用此共享路径。</li>
+<li>当组播源向组播组发送数据时，与源相连的DR把组播数据封装在注册消息中以单播方式向RP发送。注册消息到达RP后，由RP对组播数据解封装，再沿RPT向接收者发送。当以注册消息方式发送的组播数据达到一定速率后，RP向组播源发送加入消息，建立组播源与RP之间的组播分发树。然后，RP向组播源的DR发送注册停止消息，指示DR直接以非封装方式根据组播转发表发送组播数据。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/11.png"></p>
+<blockquote>
+<ul>
+<li><p>借助Hello消息可以为共享网络（如Ethernet）选举DR（Designated Router），DR将作为本网段中组播信息的唯一转发者。无论是和组播源S连接的网络，还是和接收者连接的网络，只要网络为共享媒介则需要选举DR，接收者侧DR向RP发送Join加入消息；组播源侧DR向RP发送Register注册消息。</p>
+</li>
+<li><p>DR的选举过程如下所述：</p>
+<ul>
+<li>共享网段上的各路由器相互间发送带有DR优先级选项的Hello消息；</li>
+<li>具有最高优先级的路由器被选举为此网段的DR。如果路由器具有相同的优先级，则IPv6地址最大的路由器被选举为DR。</li>
+</ul>
+</li>
+<li><p>当DR出现异常，其他路由器将接收不到其发出的Hello消息。在此DR超时后，会触发共享网段上新一轮的DR选举。</p>
+</li>
+<li><p>如果网络中至少有一台路由器不支持在Hello报文中携带DR优先级，由IPv6链路本地地址最大的路由器充当DR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/12.png"></p>
+<blockquote>
+<ul>
+<li>如何发现RP？对于小规模的简单网络，一个RP用于全网转发信息就足够了，此RP的位置可通过静态指定，在DR和叶子路由器以及组播数据流将要经过的所有路由器上手工指定RP的IP地址。然而，在大多数应用中，IPv6 PIM-SM网络覆盖了很大的区域，需要通过RP转发大量的组播流量。因此，不同的组播组应该具有各自的RP。为了减少配置多个静态RP的工作量以及更好的适应网络的实时变化，采用自举（Bootstrap）机制来动态选举RP。</li>
+<li>自举路由器BSR（BootStrap Router）是IPv6 PIM-SM网络的管理核心。BSR收集来自各候选RP即C-RP（Candidate-RP）的通告（Advertisement）消息，选择合适的C-RP来构成组播组的RP-Set信息。RP-Set是各组播组与对应C-RP的数据库。BSR通过自举消息向整个IPv6 PIM-SM网络通告RP-Set信息。包括DR在内的所有路由器学习到各组播组对应的C-RP后，根据哈希算法计算出各组播组对应的唯一RP。</li>
+<li>一个网络（或一个管理域）只能有一个BSR，但可以有多个候选BSR即 C-BSR （Candidate-BSR）。一旦BSR发生故障后，可以通过自举机制从C-BSR中选举出新的BSR，从而避免业务的中断。IPv6 PIM-SM域中可以配置多个C-RP。BSR负责收集并发送各组播组的RP-Set信息。<ul>
+<li>RP配置方式建议：<ul>
+<li>中小型网络：建议选择静态RP方式，对设备要求低，也比较稳定。</li>
+<li>如果网络中只有一个组播源，建议选择直连组播源的设备作为静态RP，这样可以省略源端DR向RP注册的过程。</li>
+<li>采用静态RP方式要确保域内所有路由器（包括RP本身）的RP信息以及服务的组播组范围全网一致。</li>
+<li>大型网络：可以采用动态RP方式，可靠性高，可维护性强。</li>
+<li>如果网络中存在多个组播源，且分布密集，建议选择与组播源比较近的核心设备作为C-RP；如果网络中存在多个用户，且分布密集，建议选择与用户比较近的核心设备作为C-RP。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/13.png"></p>
+<blockquote>
+<ul>
+<li>BootStrap router工作的原理和过程：首先要在网络中选择合适的路由器把它配置成候选BSR（C-BSR，Candidate BootStrap Router），每个C-BSR都有优先级，当它得知自己是C-BSR后，首先启动一个定时器（默认为150秒），监听网络中的 BootStrap Message。BootStrap Message 初始时通告发送路由器的优先级、BSR的IPv6地址，当C-BSR收到一个BootStrap Message后，它会把自己的优先级和报文里的优先级做比较，如果对方的优先级高，它就把自己的定时器重置，继续监听BootStrap Message；如果是自己的高，那么它就发送BootStrap Message声明自己是BSR，如果优先级相等，则比较IPv6地址，谁的IPv6地址大谁就是BSR。BSR消息发送的目的地址是FF02::13，所有的PIM IPv6路由器都能接收到这个报文，该报文TTL一般被置为1，但每个PIM IPv6路由器收到此报文后都是把它以泛洪的方式从自己所有的使能PIM IPv6的接口上发送出去，这就能保证网络中的每台PIM IPv6设备都能收到BootStrap Message。</li>
+<li>RP就像C-BSR一样需要在设备上手工配置，首先配置C-RP（Candidate Rendezvous Point），包括RP IPv6地址、优先级和它所能服务的组。正如上文所述，一个RP可以给所有的IPv6组播组提供服务，也可以只给部分组提供服务。当C-RP收到BootStrap Message后，它可以从该message中得知网络中谁是BSR，然后C-RP通过Candidate-RP-Advertisement Message把自己所能服务的组单播给BSR，每个C-RP都这么做的话那么BSR就收集到了网络中所有C-RP的信息并把这些信息整理成一个集RP-Set。此后BSR通过BootStrap Message把RP-Set的信息通告给全网所有的路由器。</li>
+<li>RP的选举规则：<ul>
+<li>如果RP-Set对应该IPv6组地址的C-RP只有一个,那么DR就选该C-RP做RP；</li>
+<li>如果对应该IPv6组地址的有多个C-RP，那么优先级最高的是RP（优先级数越小优先级越高）；</li>
+<li>如果大家优先级相等，那么DR将开始Hash运算，把组地址、hash掩码、和C-RP的地址做为输入参数，输出是一些数字，数字高的C-RP将是该组的RP；</li>
+<li>如果hash的结果大家也相等，那么IPv6地址最大的C-RP将成为该组的RP。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/14.png"></p>
+<blockquote>
+<ul>
+<li><p>使能嵌入RP功能允许路由器从IPv6组播组地址中分析出RP的地址，从而取代静态配置RP或由BSR动态计算的RP。</p>
+</li>
+<li><p>使用嵌入式RP的组播组地址范围是FF7x::/16和FFFx::/16，x表示0～F的任意一个十六进制数。</p>
+</li>
+<li><p>在接收侧：</p>
+<ul>
+<li>接收者主机发布MLD报告消息，加入组播组；</li>
+<li>接收侧的DR提取内嵌在组播组地址中的RP地址，向其发送IPv6 PIM-SM加入消息。</li>
+</ul>
+</li>
+<li><p>在组播源侧：</p>
+<ul>
+<li>组播源知道组播地址后，向此组播组发送报文；</li>
+<li>组播源侧的DR提取内嵌在组播地址中的RP地址，向其以单播方式发送IPv6 PIM-SM注册消息。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/15.png"></p>
+<blockquote>
+<ul>
+<li>头8bits为FF说明是IPv6组播地址。</li>
+<li>Flags字段的范围是7-F，说明是一个嵌入了RP地址的IPv6组播组地址。</li>
+<li>RIID字段：RP Interface ID，抽取出来填充在RP地址的最后4bits。</li>
+<li>Plen字段：RP地址的前缀长度，换算成十进制数后不能为0，也不能大于64。</li>
+<li>Network Prefix字段：RP的地址前缀。</li>
+<li>Group ID：组ID。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/16.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/17.png"></p>
+<blockquote>
+<ul>
+<li>当接收者主机加入一个组播组G时，通过MLD报文知会与该主机直接相连的叶子路由器，叶子路由器掌握组播组G的接收者信息，然后朝着RP方向往上游节点发送加入组播组的Report消息。</li>
+<li>从叶子路由器到RP之间途经的每个路由器都会在转发表中生成（<em>，G）表项，这些沿途经过的路由器就形成了RP共享树（RPT）的一个分支。其中（</em>，G）表示从任意源来的信息去往组播组G。RPT共享树以RP为根，以接收者为叶子。</li>
+<li>当从组播源S来的发往组播组G的报文流经RP时，报文就会沿着已经建立好的RPT共享树路径到达叶子路由器，进而到达接收者主机。</li>
+<li>当某接收者对组播信息不再感兴趣时，离该接收者最近的组播路由器会逆着RPT树朝RP方向逐跳发送Prune剪枝消息。第一个上游路由器接收到该剪枝消息，在接口列表中删除连接此下游路由器的接口，并检查自己是否拥有感兴趣的接收者，如果没有则继续向上游转发该剪枝消息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/18.png"></p>
+<blockquote>
+<ul>
+<li><p>为了向RP通知组播源S的存在，当组播源S向组播组G发送了一个组播报文时，与组播源S直接相连的路由器接收到该组播报文后，就将该报文封装成IPv6 PIM Register注册报文，并单播发送给对应的RP。</p>
+</li>
+<li><p>当RP接收到来自组播源S的注册消息后，一方面解封装注册消息并将组播信息沿着RPT树转发到接收者，另一方面朝组播源S逐跳发送（S，G）加入消息，从而让RP和组播源S之间的所有路由器上都生成了（S，G）表项，这些沿途经过的路由器就形成了SPT树的一个分支。SPT源树以组播源S为根，以RP为目的地。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/19.png"></p>
+<blockquote>
+<ul>
+<li>组播源S发出的组播信息沿着已经建立好的SPT树到达RP，然后由RP将信息沿着RPT共享树进行转发。当RP收到沿着SPT树转发的组播流量后，向与组播源S直连的路由器单播发送注册停止报文。组播源注册过程结束。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/20.png"></p>
+<blockquote>
+<ul>
+<li>源数据流延源树（SPT）流向RP，从RP开始，数据流延共享树（RPT）流向接收者。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/21.png"></p>
+<blockquote>
+<ul>
+<li><p>针对特定的源，PIM-SM通过指定一个利用带宽的SPT阈值可以实现将最后一跳路由器(即离接收者最近的DR)从RPT切换到SPT。当最后一跳路由器发现从RP发往组播组G的组播报文速率超过了该阈值时，就向单播路由表中到组播源S的下一跳路由器发送（S，G）加入消息，Join加入消息经过一个个路由器后到达第一跳路由器（即离组播源最近的DR），沿途经过的所有路由器都拥有了（S，G）表项，从而建立了SPT树分支。</p>
+</li>
+<li><p>用户端DR周期性检测组播报文的转发速率，一旦发现从RP发往组播组G的报文速率超过阈值，则触发SPT切换：</p>
+<ul>
+<li>用户端DR逐跳向源端DR发送（S，G）Join报文并创建（S，G）表项，建立源端DR到用户端DR的SPT。</li>
+<li>SPT建立后，用户端DR会沿着RPT逐跳向RP发送剪枝报文，收到剪枝报文的路由器将（*，G）复制成相应的（S，G）,并将相应的下游接口置为剪枝状态。剪枝结束后，RP不再沿RPT转发组播报文到组成员端。</li>
+<li>如果SPT不经过RP，RP会继续向源端DR逐跳发送剪枝报文，删除（S，G）表项中相应的下游接口。剪枝结束后，源端DR不再沿“源端DR-RP”的SPT转发组播报文到RP。</li>
+</ul>
+</li>
+<li><p>在VRP中，缺省情况下连接接收者的路由器在探测到组播源之后（即接收到第一个数据报文），便立即加入最短路径树，即从RPT向SPT切换。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/22.png"></p>
+<blockquote>
+<ul>
+<li>当路由器在不同接口接收到RPT和SPT两条路径上传输的相同组播数据时，丢弃沿RPT接收的数据，并向RP逐跳发送剪枝消息。RP接收到剪枝消息后，更新转发状态，并停止沿RPT转发（S, G）的组播流量；同时RP向组播源发送剪枝消息删除或更新相关的（S, G）转发项。通过这种方法，组播数据从RPT切换到SPT。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/23.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/24.png"></p>
+<blockquote>
+<ul>
+<li>Host A和Host C分别是两个叶子网络中的组播信息接收者。这些接收者通过Router A、Router B、Router C和Router D连接到组播源。</li>
+<li>配置思路：<ul>
+<li>配置各路由器接口的IPv6地址和IPv6单播路由协议。<ul>
+<li>配置各路由器接口的IPv6地址和掩码。</li>
+<li>配置各路由器之间采用OSPFv3进行互连，进程号为1，区域号为0，确保网络中各路由器Router A、Router B、Router C和Router D之间能够在网络层互通。</li>
+</ul>
+</li>
+<li>在各路由器上使能IPv6组播功能，在路由器各接口上使能IPv6 PIM-SM，主机侧接口上配置MLD，采用缺省版本2。</li>
+<li>配置C-BSR和C-RP，充当C-BSR和C-RP的IPv6全球单播地址，此例中都为Router D上的2004::2。</li>
+<li>检查配置结果。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/25.png"></p>
+<blockquote>
+<ul>
+<li><p>进入系统视图</p>
+<ul>
+<li><strong>system-view</strong></li>
+</ul>
+</li>
+<li><p>使能IPv6组播路由</p>
+<ul>
+<li><strong>multicast ipv6 routing-enable</strong></li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em></li>
+</ul>
+</li>
+<li><p>使能IPv6 PIM-SM功能</p>
+<ul>
+<li><strong>pim</strong> <strong>ipv6</strong> <strong>sm</strong></li>
+</ul>
+</li>
+<li><p>IPv6 PIM-SM只有在使能IPv6组播后才能配置。在接口上配置IPv6 PIM-SM后，路由器周期性发送Hello消息来发现PIM IPv6邻居，并处理邻居发来的报文。当路由器加入IPv6 PIM-SM域时，建议在非边界路由器的所有接口上使能IPv6 PIM-SM。</p>
+</li>
+<li><p>不能在一个接口上同时使能IPv6 PIM-SM和IPv6 PIM-DM。同一路由器上所有接口的PIM IPv6模式必须相同。</p>
+</li>
+<li><p>Router B、Router C和Router D上的配置过程与Router A上的配置相似。</p>
+</li>
+<li><p>与接受者相连的路由器上需要使能MLD。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/26.png"></p>
+<blockquote>
+<ul>
+<li><p>在PIM域中可配置一个或多个C-BSR。从C-BSR选举出的BSR负责收集和通告C-RP信息。由于BSR和域中的其他设备需要交换大量信息，因此C-BSR与域中的其它设备之间应预留较大的带宽。所以由骨干网的路由器来充当C-BSR。</p>
+</li>
+<li><p>在指定本路由器的某接口地址作为C-BSR时，必须同时使能接口的IPv6 PIM-SM。C-BSR之间自动选举BSR的过程简要描述如下：</p>
+<ul>
+<li>初始时，每个C-BSR都认为自己是PIM-SM域内的BSR，使用自己接口的IPv6地址作为BSR地址来发送自举报文。</li>
+<li>当C-BSR从其他路由器接收到自举报文时，把报文中的BSR地址与自己的BSR地址相比较。比较的标准包括优先级和BSR地址。如果优先级相同，优选BSR地址大的，即如果接收的自举报文中的BSR地址更高，则用此地址来代替自己的BSR地址，并不再认为自己是BSR；如果自举报文的BSR地址并不大于自己的BSR地址，则继续认为自己是BSR。</li>
+</ul>
+</li>
+<li><p>进入PIM IPv6视图</p>
+<ul>
+<li><strong>pim-ipv6</strong></li>
+</ul>
+</li>
+<li><p>配置自己的接口地址为C-BSR</p>
+<ul>
+<li>**c-**<strong>bsr</strong> <em>ipv6-address</em> [ <em>hash-length</em> ] [ <em>priority-value</em> ]</li>
+</ul>
+</li>
+<li><p>配置C-RP</p>
+<ul>
+<li>**c-**<strong>rp</strong> <em>ipv6-address</em> [ <strong>priority</strong> <em>priority</em> ]</li>
+</ul>
+</li>
+<li><p>配置静态RP</p>
+<ul>
+<li>**static-<em><strong><em>rp*</em> *rp</strong>-address</em> [ <em>basic-acl6-number</em> ] [ <strong>preferred</strong> ]</li>
+</ul>
+</li>
+<li><p>配置嵌入式RP</p>
+<ul>
+<li>**embedded-**<strong>rp</strong> <strong>[</strong> <em>basic-acl6-number</em> <strong>]</strong></li>
+</ul>
+</li>
+<li><p>**c-*<em><strong>bsr</strong>命令用来在希望自己成为BSR的路由器上配置自身某接口地址为C-BSR的地址。</em></p>
+<ul>
+<li>ipv6-address<em>：指定候选自举路由器C-BSR的IPv6全球单播地址。</em></li>
+<li>hash-length*：指定计算RP的哈希函数的掩码长度。整数形式，取值范围是0～128。</li>
+</ul>
+</li>
+<li><p><strong>pim</strong> <strong>ipv6</strong> <strong>bsr**</strong>-boundary<strong>命令用来设置作为BSR域边界的接口。在接口上配置此命令后，自举消息不能通过此接口，而其他PIM报文可以通过。</strong></p>
+</li>
+<li><p>c-rp**命令用来配置路由器向BSR通告自身是C-RP。配置成为C-RP的路由器和其他设备之间需要保留相对大的带宽。通过配置希望成为RP的接口地址，并选择合适的优先级。</p>
+<ul>
+<li><em>ipv6-address</em>：指定C-RP的IPv6全球单播地址。</li>
+<li>如果网络中仅有一个动态RP，配置静态RP能避免由于单个RP发生故障引起的通信中断。使用静态RP转发组播数据时，应该在IPv6 PIM-SM域中所有路由器上配置完全相同的静态RP命令。</li>
+</ul>
+</li>
+<li><p>**static-*<em><strong>rp</strong>命令用来配置静态RP。</em></p>
+<ul>
+<li>rp**-address*：指定静态RP地址。此地址必须是有效的IPv6全球单播地址。</li>
+<li><em>basic-acl6-number</em>：指定用于控制静态RP服务的组播组范围的基本访问控制列表号。取值范围是2000～2999。</li>
+<li><strong>preferred</strong>：表示配置的静态RP和由BSR机制选择的RP不同时，优先选择此静态RP。不指定此参数时，优先选择BSR机制选择的RP。</li>
+</ul>
+</li>
+<li><p>嵌入式RP用于路由器从组播地址中获取RP地址，从而取代静态RP或从BSR机制选举的动态RP。使用嵌入式RP的组播地址范围是FF7x::/16～FFFx::/16，x表示0～F的任意一个十六进制数。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/28.png"></p>
+<blockquote>
+<ul>
+<li><p>查看接口上的PIM IPv6信息 </p>
+<ul>
+<li><strong>display</strong> <strong>pim</strong> <strong>ipv6</strong> <strong>interface</strong> [ <em>interface-type interface-number</em> ]</li>
+</ul>
+</li>
+<li><p>查看IPv6 PIM-SM域中BSR自举路由器的信息</p>
+<ul>
+<li><strong>display</strong> <strong>pim</strong> <strong>ipv6</strong> <strong>bsr**</strong>-info**</li>
+<li>此网络中的BSR是Router D的POS2/0/0接口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/29.png"></p>
+<blockquote>
+<ul>
+<li><p>查看IPv6 PIM-SM域中的RP信息</p>
+<ul>
+<li><strong>display</strong> <strong>pim</strong> <strong>ipv6</strong> <strong>rp**</strong>-info** [ <em>ipv6-group-address</em> ]</li>
+</ul>
+</li>
+<li><p>此网络中的RP是Router D的POS2/0/0接口。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/30.png"></p>
+<blockquote>
+<ul>
+<li>假设HostA加入组G（FF0E::1），RouterD和RouterB之间建立RPT树，在RPT路径上的路由器（RouterD和RouterB）生成（*, G）项。组播源S（2001::5）向组播组G发送组播报文后，在源树路径上的路由器（RouterA和RouterD）生成（S, G）项。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/31.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/32.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/33.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/34.png"></p>
+<blockquote>
+<ul>
+<li>IPv6 PIM-SSM的实现可以概括成邻居发现、DR选举和SPT生成：<ul>
+<li>邻居发现和DR选举过程与IPv6 PIM-SM中的描述相同，是通过在路由器间发送Hello消息来实现的；</li>
+<li>由于PIM-SSM也使用PIM-SM协议，路由器生成RPT还是生成SPT的判决取决于组播地址是否在SSM组地址范围内。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/35.png"></p>
+<blockquote>
+<ul>
+<li>SSM模型中，用信道（Channel）概念来表示（S, G）组合，用定制（Subscribed）消息概念来表示加入消息。</li>
+<li>假定网络中的User A和User B需要接收组播源S的信息，就通过MLDv2向最近的查询器发送一个标为（include S, G）的报告信息。如果User A和User B不需要接收组播源S的信息，发送一个标为（exclude S, G）或包含其他组播源的报告消息。无论使用上述哪个报告消息，接收者是明确指定组播源S的。</li>
+<li>接收到报告消息的查询器检查此消息的组播地址是否在SSM组地址的范围内。如果是，则路由器根据SSM模型建立组播分发树，随后向指定源逐跳发送定制消息（也称加入消息）。沿途上的所有路由器创建（S, G）项。以源S为根节点、接收者为叶子的SPT树就生成了。SSM模型使用此SPT树作为传输路径。</li>
+<li>如果查询器发现组播地址在SSM组范围外，就在IPv6 PIM-SM基础上建立组播分发树。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/36.png"></p>
+<blockquote>
+<ul>
+<li>Host A和Host C分别是两个叶子网络中的组播信息接收者。这些接收者通过Router A、Router B、Router C和Router D连接到组播源。</li>
+<li>Router B和N1、Router C和N2之间的主机侧接口必须运行MLDv2协议。</li>
+<li>配置思路：<ul>
+<li>配置各路由器接口的IPv6地址和IPv6单播路由协议。<ul>
+<li>配置各路由器接口的IPv6地址和掩码。</li>
+<li>配置各路由器之间采用OSPFv3进行互连，进程号为1，区域号为0，确保网络中各路由器Router A、Router B、Router C和Router D之间能够在网络层互通。</li>
+</ul>
+</li>
+<li>在各路由器上使能IPv6组播功能，在路由器各接口上使能IPv6 PIM-SM。</li>
+<li>在各路由器配置IPv6 PIM-SSM 组播组的地址范围。</li>
+<li>在路由器的主机侧接口上配置MLDv2。</li>
+<li>检查配置结果。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/37.png"></p>
+<blockquote>
+<ul>
+<li><p>在Router A上配置IPv6 PIM-SSM组播组的地址范围是FF3E::1。</p>
+</li>
+<li><p>Router B、Router C和Router D上的配置过程与Router A上的配置相似。</p>
+</li>
+<li><p>SSM模型采用的是IPv6 PIM-SM的子集，所以必须先在网络中所有的路由器上使能IPv6 PIM-SM功能。同时，配置SSM组的地址范围。缺省情况下，采用IANA定义的SSM组范围。</p>
+</li>
+<li><p>如果用户希望从指定源S接收信息，或从指定源外的所有源S接收信息，必须发送含有信道（S, G）的MLDv2报告消息。接收侧的DR接收到此消息后，判断消息中的组播地址G是否在SSM组的地址范围内。如果是，DR向组播源S发送加入消息，并在沿途各路由器上创建（S, G）项，从而建立SPT树，SSM模型就此建立。如果组播地址G在SSM组地址范围外，或用户没有显式指定源地址S，DR触发建立IPv6 PIM-SM基础上的ASM模型。</p>
+</li>
+<li><p>SSM模型通过IPv6 PIM-SM的子集来实现。使能IPv6 PIM-SM的同时也就使路由器具有SSM处理能力。路由器周期性发送Hello报文来发现PIM IPv6邻居，并处理邻居发来的报文。当路由器加入IPv6 PIM-SSM时，建议在非边界路由器所有接口上使能IPv6 PIM-SSM。</p>
+</li>
+<li><p>组播源的信息通过IPv6 PIM-SSM模式还是IPv6 PIM-SM模式传递到接收者，取决于信道（S, G）的组播地址是否在SSM组地址范围内。因此，IPv6 PIM-SSM模式中，组地址信息十分重要。</p>
+</li>
+<li><p>如果没有指定SSM组地址范围，系统采用IANA为SSM保留的FF3x::/12网段作为缺省的地址范围。</p>
+</li>
+<li><p>进入系统视图</p>
+<ul>
+<li><strong>system-view</strong></li>
+</ul>
+</li>
+<li><p>使能IPv6组播路由</p>
+<ul>
+<li><strong>multicast ipv6 routing-enable</strong></li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em> </li>
+</ul>
+</li>
+<li><p>使能IPv6 PIM-SSM功能</p>
+<ul>
+<li><strong>pim</strong> <strong>ipv6</strong> <strong>sm</strong></li>
+</ul>
+</li>
+<li><p>进入PIM IPv6视图</p>
+<ul>
+<li><strong>pim-ipv6</strong></li>
+</ul>
+</li>
+<li><p>配置IPv6 PIM-SSM组播地址范围</p>
+<ul>
+<li><strong>ssm**</strong>-policy** <em>basic-acl6-number</em></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/38.png"></p>
+<blockquote>
+<ul>
+<li>如果Host A需要接收组播源S（2001::5）发给组G（FF3E::1）的信息，Router B建立到源的SPT。SPT路径上的Router A和Router B生成（S,G）项，SPT路径外的Router D不存在（S,G）项</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/39.png"></p>
+<blockquote>
+<ul>
+<li>组播路由管理（Multicast Route Management）主要介绍如何创建或更改组播路由来控制组播报文的转发，以及组播转发路径的检测和维护。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/40.png"></p>
+<blockquote>
+<ul>
+<li>组播路由和转发与单播路由和转发类似，首先每个组播路由协议都各自建立并维护了一张协议路由表。各组播路由协议的组播路由信息经过综合形成一个总的组播路由表（Multicast Routing-Table）。最后，路由器根据组播路由和转发策略，从组播路由表中选出最优的组播路由，并下发到组播转发表（Multicast Forwarding-Table），直接用于控制组播数据的转发。</li>
+<li>通过组播转发表，整个网络建立了一条以组播源为根，组成员为叶子的一点到多点的转发路径。为了实现转发路径的控制与维护，组播路由管理提供了一系列特性。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/41.png"></p>
+<blockquote>
+<ul>
+<li>(FC00::2, FFE3::1) (S, G)表项。 </li>
+<li>Protocol: pim-sm 协议类型。第一个Protocol表示生成表项的协议类型，第二个Protocol表示生成下游接口的协议类型。</li>
+<li>Flag: SPT LOC ACT PIM路由表项的标志。</li>
+<li>UpTime: 00:04:24 存在时间。第一个UpTime表示表项已存在的时间，第二个UpTime表示下游接口已存在的时间。</li>
+<li>Upstream interface: Vlanif20 上游接口。 </li>
+<li>Upstream neighbor: FE80::A01:100:1 上游邻居。NULL表示不存在上游邻居。</li>
+<li>RPF prime neighbor: FE80::A01:100:1 RPF邻居。NULL表示不存在RPF邻居。</li>
+<li>Downstream interface(s) information: 下游接口信息。 </li>
+<li>Total number of downstreams: 1 下游接口数量。 </li>
+<li>Expires: 00:02:47 下游接口老化时间。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/42.png"></p>
+<blockquote>
+<ul>
+<li>(FC00::2, FFE3::1) 第00001号表项，是(S, G)形式。 </li>
+<li>Uptime: 00:00:14 组播路由表项更新时间。 </li>
+<li>Upstream Interface: Vlanif10 上游接口。 </li>
+<li>List of 1 downstream interface 下游接口列表。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/43.png"></p>
+<blockquote>
+<ul>
+<li>(FC00:1::3, FF1E::1) 第00001号表项，是(S, G)形式。 </li>
+<li>MID: 10 组播转发表项在MFIB表中的唯一标识，用于快速检索组播转发表。</li>
+<li>Flags: ACT 组播转发表项的标志。 </li>
+<li>UpTime: 02:54:43 组播转发表项已存在的时间。 </li>
+<li>Timeout in: 00:03:26 组播转发表项超时时间。</li>
+<li>Incoming interface: Vlanif10 表项入接口。 </li>
+<li>List of 1 outgoing interfaces 表项出接口列表。</li>
+<li>Activetime: 00:23:15 出接口已存在时间。 </li>
+<li>Matched 38264 packets(1071392 bytes) 匹配该表项的报文数目。</li>
+<li>Wrong If 0 packets 从错误接口进入的报文数目。</li>
+<li>Forwarded 38264 packets(1071392 bytes) 已转发的报文数目。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/44.png"></p>
+<blockquote>
+<ul>
+<li><p>RPF检查原理</p>
+<ul>
+<li>路由器收到一份组播报文后，会根据报文的源地址通过单播路由表查找到达“报文源”的路由，查看到“报文源”的路由表项的出接口是否与收到组播报文的入接口一致。如果一致，则认为该组播报文从正确的接口到达，从而保证了整个转发路径的正确性和唯一性。这个过程就被称为RPF检查。</li>
+<li>如果这几条等价路由都是来自同一张路由表项，则选取下一跳地址最大的路由作为RPF路由。</li>
+<li>RPF检验可以基于单播路由、MBGP路由和组播静态路由。他们之间的优先顺序为组播静态路由、MBGP路由、单播路由。</li>
+</ul>
+</li>
+<li><p>拓扑描述</p>
+</li>
+<li><p>来自组播源FC00:0:0:2001::1/64的组播流从S1口到达路由器，路由器检查路由表，发现可以转发该组播流的端口为S0，RPF检查失败。因此达到S1口的数据流被丢弃。</p>
+</li>
+<li><p>来自组播源FC00:0:0:2001::1/64的组播流从S0口达到路由器，检查路由表发现入接口与接收该组播流的接口S0一致，RPF检查成功。因此组播流将被正确的转发。</p>
+</li>
+<li><p>组播路由协议通过已有的单播路由信息来确定上、下游邻居设备，创建组播路由表项。运用RPF检查机制，来确保组播数据流能够沿组播分发树（路径）正确的传输，同时可以避免转发路径上环路的产生。</p>
+</li>
+<li><p>在实际组播数据转发过程中，如果对每一份接收到的组播数据报文都通过单播路由表进行RPF检查，会给路由器带来很大负担。因此，路由器在收到一份来自源S发往组G的组播数据报文之后，首先会在组播转发表中查找有无相应的（S，G）组播转发表项：</p>
+</li>
+<li><p>如果不存在（S，G）转发表项，则对该报文执行RPF检查，将检查到的RPF接口作为入接口，创建组播路由表项，下发到组播转发表中。其中，对RPF检查结果的处理方式为：如果检查通过，表明接收接口为RPF接口，向转发表项的所有出接口转发；如果检查失败，表明报文来源路径错误，丢弃该报文。</p>
+</li>
+<li><p>如果存在（S，G）转发表项，并且接收该报文的接口与转发表项的入接口一致，则向所有的出接口转发该报文。</p>
+</li>
+<li><p>如果存在（S，G）转发表项，但是接收该报文的接口与转发表项的入接口不一致，则对此报文进行RPF检查。对RPF检查结果的处理方式为：</p>
+<ul>
+<li>若RPF检查选取出的RPF接口与转发表项的入接口一致，则说明（S，G）表项正确，报文来源路径错误，将其丢弃。</li>
+<li>若RPF检查选取出的RPF接口与转发表项的入接口不符，则说明（S，G）表项已过时，于是把表项中的入接口更新为RPF接口。然后再根据RPF检查规则进行判断：如果接收该报文的接口正是其RPF接口，则向转发表项的所有出接口转发该报文，否则将其丢弃。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/46.png"></p>
+<blockquote>
+<ul>
+<li>缺省情况下，组播报文转发过程中如果存在多条等价的最优转发路径，按照RPF检查对等价路由的处理规则，只会从IGP路由表中选取出下一跳地址最大的路由作为RPF路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/47.png"></p>
+<blockquote>
+<ul>
+<li>组播源Source向组播组G发送组播流，路由器RouterA和RouterD之间运行某种IGP协议（如OSPF），RouterA→RouterB→RouterD和RouterA→RouterC→RouterD是2条等价转发路径。</li>
+<li>缺省情况下，根据RPF检查规则，组播流会从Int1端口转发，因为Int1的IP地址比Int0地址大。配置组播负载分担之后，就不会根据下一跳地址来选取转发路径，RouterA→RouterB→RouterD和RouterA→RouterC→RouterD都会转发组播流。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/48.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/49.png"></p>
+<blockquote>
+<ul>
+<li>如图所示，域内路由器运行PIM SM，和接收者相临的接口运行MLD v1，在IPv6组播中MLDv1协议等同于IPv4组播中的IGMPv2，用于获取组播组成员信息并通知上层协议。</li>
+<li>区域内所有路由器通过RP的静态配置、BSR、或者自动发现方式得到RP信息。</li>
+<li>和IPv6接收者相连的倒数第一跳路由器收到接收者发送的MLD report报文，沿RPF邻居向上游发送(*，G)加入消息，直到RP收到(*，G)加入消息，沿途路由器都创建(*，G)项，生成以RP为根的共享树。</li>
+<li>组播源发出组播数据，第一跳路由器向RP发送PIM注册消息，RP收到后回应注册停止消息。</li>
+<li>RP向通过RPF邻居向第一跳路由器发(S，G)加入消息，沿途路由器创建(S，G)项，生成以第一跳路由器为根的源路径树。</li>
+<li>组播数据沿源路径树到达RP，并沿(*，G)转发，沿途路由器生成(S，G)项，组播数据到达接收者。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/50.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/51.png"></p>
+<blockquote>
+<ul>
+<li><p>IPv6 PIM-SM和IPv4 PIM-SM有哪些不同？</p>
+<ul>
+<li>地址不同，协议机制完全一样。</li>
+</ul>
+</li>
+<li><p>IPv6 PIM-SSM的工作机制是怎样的？</p>
+<ul>
+<li>IPv6 PIM-SSM的实现可以概括成邻居发现、DR选举和SPT生成：<ul>
+<li>邻居发现和DR选举过程与IPv6 PIM-SM中的描述相同，是通过在路由器间发送Hello消息来实现的；</li>
+<li>由于PIM-SSM也使用PIM-SM协议，路由器生成RPT还是生成SPT的判决取决于组播地址是否在SSM组地址范围内。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/" itemprop="url">IE-MLD原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-18T14:15:11+08:00">
+                2021-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/2.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/3.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li>组播侦听发现协议MLD（Multicast Listener Discovery）用于IPv6组播中的组成员管理，其基本原理和功能与IGMP相似。MLD的目的是使能每个IPv6路由器发现在其直连网络上的组播侦听者（即希望接收组播数据的节点）的存在，并且能明确发现这些邻居节点所感兴趣的组播地址。然后提供这些消息给路由器所使用的组播路由协议，以确保组播数据转发至存在接收者的所有链接。</li>
+<li>MLD是非对称协议，明确了组播侦听者与路由器的不同行为。对路由器本身正在侦听的组播地址来说，路由器扮演协议的两种角色，包括对自己的消息作出回应。</li>
+<li>如果路由器有不止一个接口在同一网络上，它只需要在其中一个接口上运行此协议。另一方面，对侦听者来说，则必须在所有接口运行此协议以便上层协议从接口接收所需要的组播数据。</li>
+<li>所有MLD版本都支持ASM （Any-Source Multicast）模型。MLDv2可以直接应用于SSM （Source-Specific Multicast） 模型，而 MLDv1 则需要 SSM-Mapping 技术的支持。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/6.png"></p>
+<blockquote>
+<ul>
+<li>组播侦听者是希望接收组播数据的主机节点。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/7.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/8.png"></p>
+<blockquote>
+<ul>
+<li><p>类型（Type）：MLD消息共有三种。</p>
+<ul>
+<li>组播侦听查询（类型值＝130），可分为两种子类型：<ul>
+<li>普遍查询：用于获得在所连网络上具有侦听者的组播地址。</li>
+<li>特定组播地址查询：用于获得在所连网络上对一特定组播地址是否存在侦听者。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>组播侦听报告（类型值＝131）</p>
+</li>
+<li><p>组播侦听离开（ Multicast Listener Done）(类型值＝132)</p>
+</li>
+<li><p>代码（Code）</p>
+<ul>
+<li>发送时设置为1；接收时忽略。</li>
+</ul>
+</li>
+<li><p>校验和（Checksum）</p>
+<ul>
+<li>标准的ICMPv6校验和，覆盖所有MLD消息以及IPv6首部区域中的伪首部。</li>
+</ul>
+</li>
+<li><p>最大响应延迟（Maximum Response Delay）</p>
+<ul>
+<li>最大响应延迟值只在查询报文消息中有意义，它指定了发送响应报文的最大允许时间延迟，单位为毫秒。在其他报文消息中，发送时设置为零，接收时忽略。</li>
+</ul>
+</li>
+<li><p>保留（Reserved）</p>
+<ul>
+<li>发送者设为零；接收者忽略。</li>
+</ul>
+</li>
+<li><p>组播地址（Multicast Address）</p>
+<ul>
+<li>在查询报文中，当发送普遍查询时，组播地址值设为零；当发送特定组查询时，设为特定的IPv6组播地址。在报告或离开报文中，组播地址值分别设为报文发送者要侦听或者停止侦听的特定IPv6组播地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/9.png"></p>
+<blockquote>
+<ul>
+<li><p>所有MLD路由器在初始时都认为自己是查询器，并向本地网段内的所有主机和路由器发送MLD普遍组查询（General Query）报文（目的地址为 FF02::1）。</p>
+</li>
+<li><p>本地网段中的其它MLD路由器在收到该报文后，将报文的源IPv6地址与自己的接口地址作比较。通过比较，IPv6地址最小的路由器将成为查询器，其它路由器成为非查询器（Non-Querier）。</p>
+</li>
+<li><p>所有非查询器上都会启动一个定时器（即其它查询器存在时间定时器 Other Querier Present Timer）。在定 时器超时前，如果收到了来自查询器的 MLD 查询报文，则重置该定时器；否则，就认为原查询器失效， 并发起新的查询器选举过程。 </p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/10.png"></p>
+<blockquote>
+<ul>
+<li><p>VRP遵循RFC 2710来实现MLDv1。MLDv1基于查询/响应（Query/Response）机制完成组播组成员的管理。</p>
+</li>
+<li><p>MLDv1有两种类型的查询消息（Query Message）：</p>
+<ul>
+<li>普遍查询（General Query）：查询直连链路上是否有组播组的侦听者。</li>
+<li>指定组播组查询（Multicast-address-specific Query）：查询直连链路上是否有某个指定组播地址的侦听者。</li>
+</ul>
+</li>
+<li><p>如果共享网段上存在配置MLD的多个组播路由器，将触发查询路由器（Querier）选举机制，由网段上IPv6地址最小的路由器充当查询器（也称MLD查询器），其他路由器充当非查询器（Non-Querier）。</p>
+</li>
+<li><p>以普遍查询为例，主机加入组播组的基本过程是：</p>
+<ul>
+<li>1、MLD查询器周期性地向共享网段上的所有本地链路主机以组播方式（目的地址为FF02::1）发送普遍查询消息。</li>
+<li>2、网段上的所有主机都接收到该普遍查询消息。如果主机Host B和Host C希望加入某组播组G1，则设置定时器延时来响应。</li>
+<li>3、希望加入的主机在定时器超时后以组播方式向网段上的所有主机和路由器发送报告消息（Report Message）来响应查询，此消息包含组播组G1的地址信息。</li>
+<li>4、网段上的所有主机和路由器接收到此报告消息后，也就获得了关于G1的组播信息。此时网段中其他也希望加入组播组G1的主机将不再发送相同的报告消息，如果主机Host A希望加入另一个组播组G2，就会发送包含组播组G2地址的报告消息以响应普遍查询消息来加入G2。</li>
+<li>5、在查询/报告过程后，MLD查询器可以了解到在自己的直连网段上是否有组播组G1的接收者，生成形式为(<em>, G1)组播路由项，</em>表示任意的组播源。</li>
+<li>6、通过组播路由机制，MLD查询器接收到组播源发来的组播信息。如果直连网段上有接收者，就在网段上转发此数据，加入组播组的主机接收该数据。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/11.png"></p>
+<blockquote>
+<ul>
+<li>当主机想离开组播组，就以组播地址（目的地址是FF02::2）向链路上发送一个离开消息（Done Message），并且在其组播地址域携带要停止侦听的地址。</li>
+<li>当查询器从链路上收到离开消息时，如果要离开的组播报文地址在此链路上查询器的侦听者地址列表中，查询器就会发送Last Listener Query Count次组播地址特定查询，每次间隔时间为Last Listener Query Interval。组播地址特定查询一般将Last Listener Query Interval设定为Maximum Response Delay，如果最后查询的响应延迟时间过后，没有此组播地址的报告在此链路上发送给查询器，因此此地址就从侦听者列表中删除。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/12.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/13.png"></p>
+<blockquote>
+<ul>
+<li><p>头192bits部分是和MLDv1的消息格式相同的部分。</p>
+</li>
+<li><p>标志位S（Suppress Router-side Processing）：</p>
+<ul>
+<li>表示路由器接收到查询消息后是否对定时器更新进行抑制。</li>
+</ul>
+</li>
+<li><p>查询器的健壮性变量 QRV（Querier’s Robustness Variable）：</p>
+<ul>
+<li>健壮性变量值QRV是最后侦听者查询次数的缺省值，也就是路由器在确定没有剩余侦听者存在之前而发送的特定组播地址查询的次数。</li>
+</ul>
+</li>
+<li><p>查询器发送普遍查询消息的查询间隔 QQIC（Querier’s Query Interval Code）。</p>
+</li>
+<li><p>源数目（Number of Sources）：</p>
+<ul>
+<li>普遍查询或指定组播组查询中，此字段设置为0。</li>
+<li>指定组播源-组查询中，此字段表示查询消息中包含的源地址个数。</li>
+</ul>
+</li>
+<li><p>源地址（Source Address）：</p>
+<ul>
+<li>指定查询的组播源地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/14.png"></p>
+<blockquote>
+<ul>
+<li><p>主机通过发送MLD报告消息来汇报当前的组播侦听状态。</p>
+</li>
+<li><p>类型（Type）：</p>
+<ul>
+<li>Type=143</li>
+</ul>
+</li>
+<li><p>保留（Reserved）：</p>
+<ul>
+<li>发送时设置为0；接收时忽略。</li>
+</ul>
+</li>
+<li><p>校验和（Checksum）：</p>
+<ul>
+<li>标准的ICMPv6校验和，覆盖所有MLD消息以及IPv6首部区域中的伪首部。</li>
+</ul>
+</li>
+<li><p>组播地址记录的个数（ Number of Multicast Address Records ）</p>
+</li>
+<li><p>组播地址记录 （Multicast Address Records ）：</p>
+<ul>
+<li>表示主机在接口上侦听到的每个组播地址信息，包括记录类型、组播地址、源地址等。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/15.png"></p>
+<blockquote>
+<ul>
+<li><p>MLDv2兼容MLDv1，原理与MLDv1相同。MLDv2支持源列表和过滤模式，可以指定源地址加入，用于实现SSM。</p>
+</li>
+<li><p>对 IPv6 组播源的过滤 ：MLDv2是在指定组播组查询的基础上增加关于组播源的过滤模式：Include或Exclude。</p>
+<ul>
+<li>如果主机加入组播组时，只要求接收某些指定源如S1、S2、……发来的组播组报文，MLD报告消息中可以设置为Include Sources (S1, S2, …)。</li>
+<li>如果主机加入组播组时，拒绝接收某些指定源如S1、S2、……发来的组播报文，则可以设置从指定源外的源地址接收组播组报文，MLD报告消息中可以设置为Exclude Sources (S1, S2, …)。</li>
+</ul>
+</li>
+<li><p>IPv6 组播组状态跟踪：运行MLDv2协议的组播路由器按每条直连链路上的组播地址（per multicast address per attached link）来保持组播组的状态。组播组状态包括：</p>
+<ul>
+<li>过滤模式：保持对Include或Exclude的状态跟踪。</li>
+<li>源列表：保持对新增或删除组播源的跟踪。</li>
+<li>定时器：例如表示组播地址超时后切换到Include模式的过滤定时器、关于源记录的源定时器等。</li>
+</ul>
+</li>
+<li><p>接收者主机的状态侦听：运行MLDv2协议的组播路由器通过侦听接收者主机的状态，记录和维护网段上加入到源-组的主机的信息。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/16.png"></p>
+<blockquote>
+<ul>
+<li>接收者通过组播方式接收视频点播信息，不同组织的接收者组成末梢网络，每个末梢网络中都存在一到多台接收者Host。</li>
+<li>Host A和Host C为两个末梢网络中的组播信息接收者。PIM网络中的Router A通过GE1/0/0接口连接末梢网络N1，通过POS2/0/0接口连接PIM网络中的其它设备；Router B和Router C路由器通过各自的GE1/0/0接口连接末梢网络N2，分别通过POS2/0/0接口连接PIM网络中的其它设备。</li>
+<li>Router A和末梢网络N1之间运行MLDv1。</li>
+<li>Router B、Router C和末梢网络N2之间运行MLDv2。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/17.png"></p>
+<blockquote>
+<ul>
+<li><p>进入系统视图</p>
+<ul>
+<li><strong>system-view</strong></li>
+</ul>
+</li>
+<li><p>使能IP组播路由</p>
+<ul>
+<li><strong>multicast ipv6 routing-enable</strong></li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em></li>
+</ul>
+</li>
+<li><p>使能MLD</p>
+<ul>
+<li><strong>mld</strong> <strong>enable</strong></li>
+<li>配置了MLD的路由器必须在接口上使能MLD来侦听所有的IPv6组播地址。在需要建立和维持组播组成员关系的接口上使能MLD。</li>
+<li>查询器在直连网段上周期性发送MLD查询消息来维持组播侦听者的信息。当接收到组成员报告消息时，组播路由器刷新相关的组成员信息。</li>
+</ul>
+</li>
+<li><p>进入MLD视图</p>
+<ul>
+<li><strong>mld</strong></li>
+</ul>
+</li>
+<li><p>配置全局性MLD版本</p>
+<ul>
+<li><strong>version</strong> { <strong>1</strong> | <strong>2</strong> } </li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em></li>
+</ul>
+</li>
+<li><p>配置接口MLD版本</p>
+<ul>
+<li><strong>mld</strong> <strong>version</strong> { <strong>1</strong> | <strong>2</strong> } </li>
+<li>MLD版本号的配置是可选的。缺省情况下，使用MLDv2版本。</li>
+<li>当接口下没有配置新值时，缺省采用MLD视图下配置的值；假如接口下配置了新值，则接口视图下的取值优先被选择。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/18.png"></p>
+<blockquote>
+<ul>
+<li>缺省情况下使用MLDv2。</li>
+<li>Router C的配置与Router B类似。</li>
+<li>在这样一个网络上需要选举查询器，那一台路由器将被选举成查询器呢？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/19.png"></p>
+<blockquote>
+<ul>
+<li>可以看到，Router B是查询器，这是因为同一网段上组播路由器Router B的GE1/0/0的IPv6地址较小。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/20.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/21.png"></p>
+<blockquote>
+<ul>
+<li><p>配置完成后，当 RouterA 收到来自主机的 MLDv1 报告报文时，首先检查该报文中所携带的 IPv6 组播组地址 G， 然后根据检查结果的不同分别进行处理： </p>
+<ul>
+<li>如果 G 不在 IPv6 SSM 组地址范围内，则提供 ASM 组播服务。 </li>
+<li>如果 G 在 IPv6 SSM 组地址范围内： </li>
+<li>若 RouterA 上没有 G 对应的 MLD SSM Mapping 规则，则无法提供 SSM 组播服务，丢弃该报文； </li>
+<li>若 RouterA 上有 G 对应的 MLD SSM Mapping 规则，则依据规则将报告报文中所包含的（*，G）信息 映射为（G，INCLUDE，（ S1，S2…））信息，可以提供 SSM 组播服务。SSM映射功能使采用MLDv1版本的主机无须升级MLD版本就能顺利接收SSM的数据报文。此功能不影响采用MLDv2的主机。</li>
+</ul>
+</li>
+<li><p>映射策略可以多次配置，实现同一个组到多个源的映射。在一台路由器上，转发且仅转发映射表中的指定源-组报文。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/22.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/23.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/24.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/25.png"></p>
+<blockquote>
+<ul>
+<li><p>MLD的主要功能是什么？</p>
+<ul>
+<li>组播侦听发现协议MLD（Multicast Listener Discovery）用于IPv6组播中的组成员管理，其基本原理和功能与IGMP相似。MLD的目的是使能每个IPv6路由器发现在其直连网络上的组播侦听者（即希望接收组播数据的节点）的存在，并且能明确发现这些邻居节点所感兴趣的组播地址。然后提供这些消息给路由器所使用的组播路由协议，以确保组播数据转发至存在接收者的所有链接。</li>
+</ul>
+</li>
+<li><p>MLDv2和MLDv1有哪些主要区别？</p>
+<ul>
+<li>MLDv2兼容MLDv1，原理与MLDv1相同。MLDv2支持源列表和过滤模式，可以指定源地址加入，用于实现SSM。</li>
+</ul>
+</li>
+<li><p>SSM Mapping的主要作用是什么？</p>
+<ul>
+<li>发送MLDv1格式的报告消息的主机，不能接收到SSM组范围内的数据报文。 SSM映射功能使采用MLDv1版本的主机无须升级MLD版本就能顺利接收SSM的数据报文。此功能不影响采用MLDv2的主机。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/26.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/27.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/" itemprop="url">IE-路由import与Control</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-18T14:15:01+08:00">
+                2021-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/1.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/2.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/3.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/4.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/5.png"></p>
+<blockquote>
+<ul>
+<li><p>ACL访问控制类表</p>
+<ul>
+<li>ACL是由permit或deny语句组成的一系列有顺序规则的集合，它通过匹配报文的信息实现对报文的分类。路由器根据ACL定义的规则判断哪些报文可以接收，哪些报文需要拒绝，从而实现对报文的过滤。</li>
+<li>ACL通过配置的一系列匹配规则对特定的数据包进行过滤，从而识别需要过滤的对象。然后，根据预先设定的策略允许或禁止相应的数据包通过。同时，ACL可以作为基础配置被其他功能模块引用。</li>
+</ul>
+</li>
+<li><p>ip-prefix前缀类表</p>
+<ul>
+<li>ip-prefix将路由条目与前缀过滤列表的每一项进行匹配，然后根据定义的匹配模式进行过滤，达成路由筛选的目的。</li>
+<li>ip-prefix不能用来过滤数据包，只能过滤路由信息。</li>
+</ul>
+</li>
+<li><p>as-path-filter AS路径过滤器</p>
+<ul>
+<li>BGP的路由信息中，包含一个自治系统路径域。As-path-filter就是针对自治系统路径域指定匹配条件。AS路径过滤器仅应用于BGP协议。</li>
+</ul>
+</li>
+<li><p>community-filter团体属性过滤器</p>
+<ul>
+<li>BGP的路由信息中，可以携带一个或多个团体属性，团体属性过滤器就针对团体属性域指定匹配条件。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/6.png"></p>
+<blockquote>
+<ul>
+<li><p>ACL编号：用于标识ACL，表明该ACL是数字型ACL。</p>
+<ul>
+<li>根据ACL规则功能的不同，ACL被划分为基本ACL、高级ACL、二层ACL和用户ACL这几种类型，每类ACL编号的取值范围不同。</li>
+<li>除了可以通过ACL编号标识ACL，设备还支持通过名称来标识ACL，就像用域名代替IP地址一样，更加方便记忆。这种ACL，称为命名型ACL。</li>
+<li>命名型ACL实际上是“名字+数字”的形式，可以在定义命名型ACL时同时指定ACL编号。如果不指定编号，则由系统自动分配。</li>
+</ul>
+</li>
+<li><p>规则：即描述报文匹配条件的判断语句。</p>
+<ul>
+<li>规则编号：用于标识ACL规则。可以自行配置规则编号，也可以由系统自动分配。ACL规则的编号范围是0～4294967294，所有规则均按照规则编号从小到大进行排序。所以，图1中的rule 5排在首位，而规则编号最大的rule15排在末位。系统按照规则编号从小到大的顺序，将规则依次与报文匹配，一旦匹配上一条规则即停止匹配。</li>
+<li>动作：包括permit/deny两种动作，表示允许/拒绝。</li>
+<li>匹配项：ACL定义了极其丰富的匹配项。除了图中的源地址和生效时间段，ACL还支持很多其他规则匹配项。例如，二层以太网帧头信息（如源MAC、目的MAC、以太帧协议类型）、三层报文信息（如目的地址、协议类型）以及四层报文信息（如TCP/UDP端口号）等。</li>
+<li>如果规则存在，则系统会从ACL中编号最小的规则开始查找。如果匹配上了permit规则，则停止查找规则，并返回ACL匹配结果为：匹配（允许）。如果匹配上了deny规则，则停止查找规则，并返回ACL匹配结果为：匹配（拒绝）。如果未匹配上规则，则继续查找下一条规则，以此循环。如果一直查到最后一条规则，报文仍未匹配上，则返回ACL匹配结果为：不匹配。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/7.png"></p>
+<blockquote>
+<ul>
+<li><p>基本ACL</p>
+<ul>
+<li>仅使用报文的源IP地址、分片信息和生效时间段信息来定义规则。</li>
+</ul>
+</li>
+<li><p>高级ACL</p>
+<ul>
+<li>既可使用IPv4报文的源IP地址，也可使用目的IP地址、IP协议类型、ICMP类型、TCP源/目的端口、UDP源/目的端口号、生效时间段等来定义规则。</li>
+</ul>
+</li>
+<li><p>二层ACL</p>
+<ul>
+<li>使用报文的以太网帧头信息来定义规则，如根据源MAC（Media Access Control）地址、目的MAC地址、二层协议类型等。</li>
+</ul>
+</li>
+<li><p>用户ACL</p>
+<ul>
+<li>既可使用IPv4报文的源IP地址，也可使用目的IP地址、IP协议类型、ICMP类型、TCP源端口/目的端口、UDP源端口/目的端口号等来定义规则。</li>
+</ul>
+</li>
+<li><p>除此之外，还有基于IPv6的ACL，基本ACL6和高级ACL6。</p>
+<ul>
+<li>基本ACL6：可使用IPv6报文的源IPv6地址、分片信息和生效时间段来定义规则。</li>
+<li>高级ACL6：可以使用IPv6报文的源IPv6地址、目的IPv6地址、IPv6协议类型、ICMPv6类型、TCP源/目的端口、UDP源/目的端口号、生效时间段等来定义规则。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/8.png"></p>
+<blockquote>
+<ul>
+<li><p>ACL的匹配顺序</p>
+<ul>
+<li>一个ACL 可以由多条“deny | permit”语句组成，每一条语句描述一条规则，这些规则可能存在重复或矛盾的地方（一条规则可以包含另一条规则，但两条规则不可能完全相同）。</li>
+<li>设备支持两种匹配顺序，即配置顺序（config）和自动排序（auto）。当将一个数据包和访问控制列表的规则进行匹配的时候，由规则的匹配顺序决定规则的优先级，ACL通过设置规则的优先级来处理规则之间重复或矛盾的情形。缺省的ACL匹配顺序是config模式。</li>
+</ul>
+</li>
+<li><p>配置顺序</p>
+<ul>
+<li>如果配置规则时指定了规则编号，则规则编号越小，规则插入位置越靠前，该规则越先被匹配。</li>
+<li>如果配置规则时未指定规则编号，则由系统自动为其分配一个编号。该编号是一个大于当前ACL内最大规则编号且是步长整数倍的最小整数，因此该规则会被最后匹配。</li>
+</ul>
+</li>
+<li><p>自动排序（auto）</p>
+<ul>
+<li>自动排序（auto）使用“深度优先”的原则进行匹配。</li>
+<li>“深度优先”即根据规则的精确度排序，匹配条件（如协议类型、源和目的IP 地址范围等）限制越严格越精确。例如可以比较地址的反掩码，反掩码越小，则指定的主机的范围就越小，限制就越严格。</li>
+<li>若“深度优先”的顺序相同，则匹配该规则时按rule-id从小到大排列。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/9.png"></p>
+<blockquote>
+<ul>
+<li>ACL6和ACL命令行不同，而对应的编号可以相同，二者互不影响。</li>
+<li>例如：<ul>
+<li>[RouterA] acl ipv6 number 3001</li>
+<li>[RouterA-acl6-adv-3001] rule deny ipv6 source 3001::2/64</li>
+<li>[RouterA] acl 3001</li>
+<li>[Router-acl-adv-3001] rule permit ip source 202.169.10.5 0.0.0.0</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/10.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/11.png"></p>
+<blockquote>
+<ul>
+<li><p>ip-prefix</p>
+<ul>
+<li>每个地址前缀列表可以包含多个IP-Prefix条目，每个IP-Prefix条目对应一个索引号（index）。路由将按照索引号从小到大依次检查IP-Prefix列表，任意一个index匹配成功，将不再检查其余项。若所有index都匹配失败，路由信息将被过滤。</li>
+<li>根据匹配的前缀不同，前缀过滤列表可以进行精确匹配，也可以进行在一定掩码长度范围内匹配。</li>
+<li>前缀过滤列表可以进行精确匹配或者在一定掩码长度范围内匹配，可以通过配置关键字greater-equal和less-equal指定待匹配的前缀掩码长度范围。如果没有配置关键字greater-equal或less-equal，前缀过滤列表进行精确匹配，即只匹配掩码长度为前缀过滤列表掩码长度的相同IP地址路由；如果只配置了关键字greater-equal，则待匹配的掩码长度范围为从greater-equal指定值到32 位长度；如果只匹配了关键字less-equal，则待匹配的掩码长度范围为从指定的掩码到关键字less-equal指定值。</li>
+<li>greater-equal-value与less-equal-value的取值限制：mask-length&lt;=greater-equal-value&lt;=less-equal-value&lt;=32。</li>
+</ul>
+</li>
+<li><p>ip-prefix特点</p>
+<ul>
+<li>当所有前缀过滤列表均未匹配时，缺省情况下，存在最后一条默认匹配模式为deny。</li>
+<li>当引用的前缀过滤列表不存在时，默认匹配模式为permit。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/12.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/13.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/14.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/15.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/16.png"></p>
+<blockquote>
+<ul>
+<li>AS路径过滤器是将BGP中的AS_Path属性作为匹配条件的过滤器，只有BGP在收发路由的时候才能使用。</li>
+<li>由于AS_Path属性记录AS号是将最后经历的AS号放在AS_Path记录中的最左侧，所以在配置as-path-filter时需要格外注意。<ul>
+<li>如果一条路由起源于AS100，然后依次经过AS300, AS200, AS500，最后到达AS600。那么在AS600里，路由的AS-PATH属性表示为（500 200 300 100）。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/17.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/18.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/19.png"></p>
+<blockquote>
+<ul>
+<li>团体属性过滤器是将BGP中的团体属性作为匹配条件的过滤器，只有BGP在收发路由的时候才能使用。</li>
+<li>团体属性包括基本basic团体属性和extended团体属性<ul>
+<li>自定义团体属性和公认团体属性均属于basic团体属性。</li>
+<li>MPLS VPN中的RT和SOO均属于extended团体属性。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/20.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/21.png"></p>
+<blockquote>
+<ul>
+<li><p>路由策略主要实现了路由过滤和路由属性设置等功能，它通过改变路由属性（包括可达性）来改变网络流量所经过的路径。</p>
+</li>
+<li><p>路由策略常用于如下场景：</p>
+<ul>
+<li>控制路由的引入：<ul>
+<li>在对路由做相互引入时，为了防止次优路径或者环路，可以使用路由策略加以解决。</li>
+</ul>
+</li>
+<li>控制路由的接收和发布：<ul>
+<li>根据网络需求，接收或者发布特定的路由。</li>
+</ul>
+</li>
+<li>设置特定路由的属性：<ul>
+<li>可以通过路由策略修改路由的属性，以对网络进行优化、调整。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>路由策略原理</p>
+<ul>
+<li>一个Route-Policy由多个节点构成，路由进入路由策略后，按节点序号从小到大依次检查各个节点是否匹配。一个节点包括多个if-match和apply子句。if-match子句用来定义该节点的匹配条件，apply子句用来定义通过过滤的路由行为。if-match子句的过滤规则关系是“与”，即该节点的所有if-match子句都必须匹配。Route-Policy节点间的过滤关系是“或”，即只要通过了一个节点的过滤，就可通过该Route-Policy。如果没有通过任何一个节点的过滤，路由信息将无法通过该Route-Policy。</li>
+<li>对于同一个Route-Policy节点，在匹配的过程中，各个if-match子句间是“与”的关系，即路由信息必须同时满足所有匹配条件，才可以执行apply子句的动作。但命令if-match route-type和if-match interface除外，这两个命令的各自if-match子句间是“或”的关系，与其它命令的if-match子句间仍是“与”的关系。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/22.png"></p>
+<blockquote>
+<ul>
+<li>上面拓扑为双点双向重发布的示意图，如果不加控制，将会发生次优路由和环路等故障，产生故障的过程具体分析如下：<ul>
+<li>在拓扑中，R1将网段10.0.0.0/24及2000::/64引入到OSPF。R2/R3分别将该路由引入ISIS，正常情况下，R2/R3将路由引入ISIS会有先后，假设R3先于R2将该路由引入到IS-IS。那么R2就会同时从OSPF和IS-IS学到10.0.0.0/24及2000::/64的路由。于是R2会根据路由协议的优先级优选通过IS-IS学到的路由（OSPF的外部路由优先级为150，IS-IS的路由优先级为15）。于是，当R2访问10.0.0.0/24及2000::/64网段时，会使用R4-R3-R1这条次优路径。为了避免出现这种情况，可以在路由器R2上使用route-policy修改OSPF ASE路由的优先级，使得OSPF ASE的路由优先于从IS-IS学到的路由，使得R2选择正确的路由。</li>
+<li>当R1连接网络10.0.0.0/24及2000::/64的接口断掉之后，虽然该条外部LSA会在OSPF区域内老化，但是由于R2通过IS-IS已经学习到了10.0.0.0/24及2000::/64网络，所以R2会将该网络引入到OSPF，进而使R1和R3会通过R2学习到了网络10.0.0.0/24及2000::/64。当R2访问访问网络10.0.0.0/24及2000::/64时，流量会沿R4-R3-R1-R2的路径发送，从而引发环路。为避免这种情况，我们可以通过给路由条目添加标记tag标签，然后对特定标签进行过滤的方法来避免环路的发生。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/23.png"></p>
+<blockquote>
+<ul>
+<li><p>控制路由的接收和发布</p>
+<ul>
+<li>只接收必要、合法的路由信息，以控制路由表的容量，提高网络的安全性。</li>
+</ul>
+</li>
+<li><p>拓扑解释</p>
+<ul>
+<li>R4将网络10.0.X.0/24及2000::/64&amp;3000::/64引入到OSPF中。根据业务需要，R1只能接收网络10.0.0.0/24和2000::/64；而R2只能接收网络10.0.1.0/24和3000::/64。对于这种需求，可以通过filter-policy加以实现。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/24.png"></p>
+<blockquote>
+<ul>
+<li>Filter-policy import命令用来按照过滤策略，设置OSPF对接收的路由进行过滤。</li>
+<li>Filter-policy export命令用来按照过滤策略，设置对引入的路由在向外发布时进行过滤。<ul>
+<li>通过指定protocol或process-id对特定的某一种协议或某一进程的路由进行过滤。如果没有指定protocol和process-id，则OSPF将对所有引入的路由信息进行过滤。</li>
+<li>由于Type5、7 LSA是有ABSR产生的，因此，本命令仅在ASBR上配置。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/25.png"></p>
+<blockquote>
+<ul>
+<li><p>Filter-policy import命令用来配置IS-IS路由加入IP路由表时的过滤策略。</p>
+<ul>
+<li>配置该命令后，不会影响本地设备的LSP的扩散和LSDB的同步，只会影响本地的IP路由表。</li>
+</ul>
+</li>
+<li><p>Filter-policy export命令用来配置IS-IS对已引入的路由在向外发布时进行过滤的过滤策略。</p>
+<ul>
+<li>配置该命令后，不会影响本地设备的路由，只会将引入的部分外部路由发布给IS-IS邻居。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/26.png"></p>
+<blockquote>
+<ul>
+<li>filter-policy import命令用来配置对接收的路由信息进行过滤。</li>
+<li>filter-policy export命令用来配置对发布的路由进行过滤，只有通过过滤的路由才被BGP发布。<ul>
+<li>如果指定protocol参数，将只对引入的这种协议产生的路由进行过滤，对引入的其他协议产生的路由不受影响。如果没有指定protocol参数，对引入的任何一个协议产生的路由都要进行过滤。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/27.png"></p>
+<blockquote>
+<ul>
+<li>拓扑描述<ul>
+<li>通过route-policy修改BGP中的Local_Pref属性，进而影响流量走向。R2将从EBGP学到的10.0.0.0/24和2000::/64路由的Local_Pref设为300，R3将从EBGP学到的该路由的Local_Pref设置为200，R1/R2/R3相互之间通过IBGP交互各自的路由，最终将选择以R2作为本AS去往网络10.0.0.0/24和2000::/64的出口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/28.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/29.png"></p>
+<blockquote>
+<ul>
+<li>策略路由与路由策略存在以下不同：<ul>
+<li>策略路由的操作对象是数据包，在路由表已经产生的情况下，不按照路由表进行转发，而是根据需要，依照某种策略改变数据包转发路径。</li>
+<li>路由策略的操作对象是路由信息。路由策略主要实现了路由过滤和路由属性设置等功能，它通过改变路由属性（包括可达性）来改变网络流量所经过的路径。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/30.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/31.png"></p>
+<blockquote>
+<ul>
+<li><p>匹配顺序：</p>
+<ul>
+<li>如果找到了匹配的本地策略路由节点，则按照以下步骤发送报文：<ul>
+<li>查看用户是否设置了报文的优先级: 如果用户设置了报文的优先级，首先根据用户设置的优先级设置报文的优先级，然后继续向下执行;如果用户未设置报文的优先级，则继续向下执行</li>
+<li>查看用户是否设置了本地策略路由的出接口: 如果用户设置了出接口，则将报文从出接口发送出去，不再继续执行下面的步骤;如果用户未设置出接口，则继续向下执行</li>
+<li>查看用户是否设置了本地策略路由的下一跳（用户可以设置两个下一跳以达到负载分担的目的）如果用户设置了策略路由的下一跳，则将报文发往下一跳，不再继续执行下面的步骤; 如果用户未设置下一跳，则按照正常流程根据报文的目的地址查找路由。如果没有查找到路由，则继续向下执行</li>
+<li>查看用户是否设置了本地策略路由的缺省出接口: 如果用户设置了缺省出接口，则将报文从缺省出接口发送出去，不再继续执行下面的步骤;如果用户未设置缺省出接口，则继续执行</li>
+<li>查看用户是否设置了本地策略路由的缺省下一跳:如果用户设置了缺省下一跳，则将报文发往缺省下一跳，不再继续执行下面的步骤;如果用户未设置缺省下一跳，则继续执行</li>
+<li>丢弃报文，产生ICMP_UNREACH 消息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果没有找到匹配的本地策略路由节点，按照发送IP报文的一般流程，根据目的地址查找路由</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/32.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/33.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/34.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/35.png"></p>
+<blockquote>
+<ul>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RTX与RTY互联，则互联地址为XY.1.1.X与XY.1.1.Y，掩码长度为24位。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/36.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>route-policy命令用来创建Route-Policy并进入该Route-Policy视图。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>route-policy route-policy-name { permit | deny } node node<ul>
+<li>route-policy-name：指定Route-Policy名称。</li>
+<li>permit：指定Route-Policy节点的匹配模式为允许。如果路由匹配所有的if-match子句，该路由可通过过滤并执行此节点apply命令中规定的一系列动作；否则，必须进行下一节点的测试。</li>
+<li>deny：指定Route-Policy节点的匹配模式为拒绝。如果路由匹配所有的if-match子句，该路由不能通过过滤从而不能进入下一节点的测试。</li>
+<li>node node：Route-Policy的节点索引。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>Route-Policy用于过滤路由信息以及为通过过滤的路由信息设置路由属性。一个Route-Policy由多个节点构成。一个节点包括多个if-match和apply子句。if-match子句用来定义该节点的匹配条件，apply子句用来定义通过过滤的路由行为。if-match子句的过滤规则关系是“与”，即该节点的所有if-match子句都必须匹配。Route-Policy节点间的过滤关系是“或”，即只要通过了一个节点的过滤，就可通过该Route-Policy。如果没有通过任何一个节点的过滤，路由信息将无法通过该Route-Policy。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/37.png"></p>
+<blockquote>
+<ul>
+<li>此处的需求是对之前案例的扩展，在原案例的基础上进行配置。</li>
+<li>对于该需求，主要考察对filter-policy和ACL的理解。所谓最优配置，实际上就是使用最少的命令达到要求的效果。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/38.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>filter-policy export命令用来按照过滤策略，设置对引入的路由在向外发布时进行过滤。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>filter-policy { acl-number | acl-name acl-name | ip-prefix ip-prefix-name } export [ protocol [ process-id ] ]<ul>
+<li>acl-number：指定基本访问控制列表号。</li>
+<li>acl-name acl-name：指定访问控制列表名称。</li>
+<li>ip-prefix ip-prefix-name：指定地址前缀列表名称。</li>
+<li>protocol：指定发布路由信息的协议。</li>
+<li>process-id：当发布的路由协议为rip、isis、ospf时，可以指定进程号。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>OSPF通过命令import-route引入外部路由后，为了避免路由环路的产生，通过filter-policy export命令对引入的路由在发布时进行过滤，只将满足条件的外部路由转换为Type-5 LSA（AS-external-LSA）并发布出去。</li>
+<li>通过指定protocol或process-id对特定的某一种协议或某一进程的路由进行过滤。如果没有指定protocol和process-id，则OSPF将对所有引入的路由信息进行过滤。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/39.png"></p>
+<blockquote>
+<ul>
+<li>该案例拓扑和之前的拓扑一致。我们在完成需求后，要充分考虑到是否存在次优路由，是否发生了环路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/40.png"></p>
+<blockquote>
+<ul>
+<li>通过路由协议的相互引入之后，R4到达网络172.16.X.0/24出现次优路径。产生次优路径主要是因为R3将OSPF路由先行分发入ISIS协议域，于是R4从OSPF和ISIS同时学到了172.16.X.0/24的路由，因为OSPF的外部路由的preference值为150，而ISIS的preference值为15，所以R4选择了ISIS路由前往172.16.X.0/24网段，于是产生次优路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/41.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/42.png"></p>
+<blockquote>
+<ul>
+<li>本案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。<ul>
+<li>需要修正R4访问172.16.X.0/24网段的路由，避免出现经过ISIS区域的次优路由。</li>
+<li>可以通过Tag实现对双点双向路由引入的控制，从而避免环路。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/43.png"></p>
+<blockquote>
+<ul>
+<li><p>如果在做路由互相引入的时候不做过滤，那么，在网络发生变化的时候，可能会在网络中导致环路。为避免环路就要保证路由协议间相互引入的时候只引入各路由域自身的路由。在上面的配置场景中，使用了tag来实现路由相互引入时的限制。使用tag的优势是不需要指定具体的路由条目，当路由域内具体的路由项有增减的时候，引入的路由条目的tag值会随之变化，不需要手工干预，具有很好的扩展性。</p>
+</li>
+<li><p>虽然上面的配置场景的路由策略能够很好地避免环路，但是并不能解决次优路由的问题。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/44.png"></p>
+<blockquote>
+<ul>
+<li><p>次优路由主要是因为双点双向导入时，R3/R4中的某一台路由器会同时从两侧得到172.16.X.0/24路由，而因为OSPF的外部路由preference值大于ISIS的preference值（preference值越小越优先），导致R3/R4（其中一台）选择了次优路由。要解决此问题，需要修改OSPF外部路由条目的preference值，只要使OSPF_ASE路由的preference值小于ISIS路由的preference值就可以解决此问题。</p>
+</li>
+<li><p>考虑到合理性问题，不建议将OSPF_ASE路由的preference值设置成比OSPF内部路由的preference值（10）还小。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/45.png"></p>
+<blockquote>
+<ul>
+<li>本案例中，是对原案例进行的扩展，在原案例的基础上进行配置。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/46.png"></p>
+<blockquote>
+<ul>
+<li>当仅仅进行路由汇总，发现存在两个问题。第一个问题，R5学习到了该汇总路由；第二个问题，在R2 ping一个不存在的地址产生了环路。</li>
+<li>第一个问题产生的原因，主要是由于R3和R4学习到对方产生的汇总路由后，再引入到ISIS域中产生的。此处，R3首先进行了OSPF汇聚配置，通过R2传递到R4。R4将该OSPF汇聚路由引入到ISIS，通告给R5。</li>
+<li>第二个问题产生的原因，是因为R2上面有2条等价的10.0.0.0/16的路由，下一跳分别是R3和R4。当tracert的端口号变化时，tracert报文会被送给R3或R4。（1）tracert报文发给R4时： R4晚于R3进行OSPF路由汇聚，所以R4只有1条R3通告的OSPF聚合路由，所以R4对于10. 0.0.0/16，下一跳为R2。形成环路。（2）tracert报文发给R3时： R4生成OSPF汇聚路由后，通过R2通告给R3；R3生成OSPF汇聚路由后，通过R2传递给R4，R4将该OSPF汇聚路由引入到ISIS，通过R5通告给R3。所以R3会收到2条16位掩码的路由，通过比较协议优先级，R3会优选ISIS，下一跳为R5。R5的下一跳为R4。而R4晚于R3进行OSPF路由汇聚，所以R4有R3通告的OSPF聚合路由，所以R4对于10. 0.0.0/16，下一跳为R2。形成环路。</li>
+<li>为了解决上面两个问题，我们需要保证R3和R4既不能学习到对方产生的汇总路由，又不能将该路由引入到ISIS路由域。所以，我们只需在R3和R4上将他们学习到的对方的汇总路由过滤即可。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/47.png"></p>
+<blockquote>
+<ul>
+<li>在R3/R4上增加过滤策略，不从OSPF接收特定的汇聚路由。保证该汇聚路由不再重新导入到ISIS路由域。避免了环路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/48.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/49.png"></p>
+<blockquote>
+<p>案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。</p>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/50.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义：</p>
+<ul>
+<li>policy-based-route命令用来创建或修改策略路由和策略点。</li>
+<li>ip local policy-based-route命令用来使能本地策略路由。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>policy-based-route policy-name { permit | deny } node node-id<ul>
+<li>policy-name：指定策略名称。</li>
+<li>permit：策略点的模式，表示对满足匹配条件的报文进行策略路由。</li>
+<li>deny：策略点的模式，表示对满足匹配条件的报文不进行策略路由。</li>
+<li>node-id：指定策略点的顺序号。</li>
+</ul>
+</li>
+<li>ip local policy-based-route policy-name<ul>
+<li>policy-name：指定策略路由的名称。 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>在部署策略路由时，如果需要配置报文的出接口，则报文的出接口不能为以太接口等广播型接口。</li>
+</ul>
+</li>
+<li><p>实验结果</p>
+<ul>
+<li>在R5上指定不同的源地址对到达相同目的地的数据包进行跟踪，可以发现数据包选用了不同的路径。注意，ip local policy-based-route命令应用的策略只对路由器本地发起的数据包起作用。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/51.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/52.png"></p>
+<blockquote>
+<ul>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RTX与RTY互联，则互联地址为XY.1.1.X与XY.1.1.Y，掩码长度为24位。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/53.png"></p>
+<blockquote>
+<ul>
+<li>该部分只需要注意R5在做路由引入时，需要精细匹配。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/54.png"></p>
+<blockquote>
+<ul>
+<li>当tracert一个不存在的、但是在网络10.0.0.0/16内的地址时，会发生环路。该环路的产生主要是由于OSPF产生汇总路由时，不自动生成指向null0的路由所致。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/55.png"></p>
+<blockquote>
+<ul>
+<li>在R5上通过命令配置指向null0的静态路由，即可破除环路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/56.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/57.png"></p>
+<blockquote>
+<ul>
+<li>本案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。</li>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RTX与RTY互联，则互联地址为XY.1.1.X与XY.1.1.Y,掩码长度为24位。</li>
+<li>R1接口S1/0/0地址为12.1.1.1/24，R2接口S1/0/0地址为12.1.1.2/24；R1接口S1/0/1地址为21.1.1.1/24，R2接口S1/0/1地址为21.1.1.2/24。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/58.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/59.png"></p>
+<blockquote>
+<ul>
+<li>通过filter-policy结合ACL，将需求中指定的两个网段导入到ISIS协议中，注意，当使用filter-policy过滤路由协议的导入的时候，使用export方向。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/60.png"></p>
+<blockquote>
+<ul>
+<li>本案例中通过在导入路由的时候给路由条目加Tag的方法防止出现路由环路。ISIS路由协议如果需要支持Tag，必须要使用wide类型的开销，否则ISIS路由不能携带Tag标记。</li>
+<li>使用Tag标签防止了路由回环，但是不能防止次优路由的产生。如果要避免次优路由，需要修改相应路由的preference值。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/61.png"></p>
+<blockquote>
+<ul>
+<li>本例中的配置将避免路由10.0.0.0/16在R3/R4上出现次优路由。因为导入速度的不一致，总会导致R3/R4两台路由器中的一台会从ISIS和OSPF同时学到10.0.0.0/16，如果R3先行导入，那么R4就会同时从ISIS和OSPF学到10.0.0.0/16路由，而R4选择路由时会比较他们的preference，因OSPF外部路由的preference值为150，而isis的preference值为15，所以R4会选择到达经由IS-IS域到达网络10.0.0.0/16，该路径是次优路径。所以，通过在R4上，修改OSPF外部路由10.0.0.0/16的preference值，使其小于IS-IS的preference值，从而消除次优路径，考虑合理性，建议OSPF的外部路由preference值要大于OSPF的内部preference值（10）。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/62.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/63.png"></p>
+<blockquote>
+<ul>
+<li>ABCD</li>
+<li>D</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/64.png"></p>
+<blockquote>
+<ul>
+<li>AB</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/65.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -4784,363 +6599,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-%E7%BD%91%E7%BB%9C%E5%89%B2%E6%8E%A5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/30/IPadv-%E7%BD%91%E7%BB%9C%E5%89%B2%E6%8E%A5/" itemprop="url">IPadv-网络割接</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T13:47:55+08:00">
-                2021-06-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E9%99%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/30/IPadv-%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E9%99%A4/" itemprop="url">IPadv-网络故障排除</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T13:47:46+08:00">
-                2021-06-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/30/IPadv-%E7%BD%91%E7%BB%9C%E8%BF%90%E7%BB%B4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/30/IPadv-%E7%BD%91%E7%BB%9C%E8%BF%90%E7%BB%B4/" itemprop="url">IPadv-网络运维</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-30T13:47:37+08:00">
-                2021-06-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -5195,7 +6653,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">72</span>
+                  <span class="site-state-item-count">75</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -5208,7 +6666,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

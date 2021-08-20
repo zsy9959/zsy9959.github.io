@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-109-MLD原理," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="组播侦听发现协议MLD（Multicast Listener Discovery）用于IPv6组播中的组成员管理，其基本原理和功能与IGMP相似。MLD的目的是使能每个IPv6路由器发现在其直连网络上的组播侦听者（即希望接收组播数据的节点）的存在，并且能明确发现这些邻居节点所感兴趣的组播地址。然后提供这些消息给路由器所使用的组播路由协议，以确保组播数据转发至存在接收者的所有链接。 M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-MLD原理">
+<meta property="og:url" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="组播侦听发现协议MLD（Multicast Listener Discovery）用于IPv6组播中的组成员管理，其基本原理和功能与IGMP相似。MLD的目的是使能每个IPv6路由器发现在其直连网络上的组播侦听者（即希望接收组播数据的节点）的存在，并且能明确发现这些邻居节点所感兴趣的组播地址。然后提供这些消息给路由器所使用的组播路由协议，以确保组播数据转发至存在接收者的所有链接。 M">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/1.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/2.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/3.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/4.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/5.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/6.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/7.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/8.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/9.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/10.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/11.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/12.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/13.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/14.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/15.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/16.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/17.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/18.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/19.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/20.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/21.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/22.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/23.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/24.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/25.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/26.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/27.png">
+<meta property="article:published_time" content="2021-08-18T06:15:11.000Z">
+<meta property="article:modified_time" content="2021-08-17T06:52:51.758Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-109-MLD原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/08/18/IE-MLD原理/"/>
+
+
+
+
+
+  <title>IE-MLD原理 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-MLD原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-18T14:15:11+08:00">
+                2021-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/2.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/3.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li>组播侦听发现协议MLD（Multicast Listener Discovery）用于IPv6组播中的组成员管理，其基本原理和功能与IGMP相似。MLD的目的是使能每个IPv6路由器发现在其直连网络上的组播侦听者（即希望接收组播数据的节点）的存在，并且能明确发现这些邻居节点所感兴趣的组播地址。然后提供这些消息给路由器所使用的组播路由协议，以确保组播数据转发至存在接收者的所有链接。</li>
+<li>MLD是非对称协议，明确了组播侦听者与路由器的不同行为。对路由器本身正在侦听的组播地址来说，路由器扮演协议的两种角色，包括对自己的消息作出回应。</li>
+<li>如果路由器有不止一个接口在同一网络上，它只需要在其中一个接口上运行此协议。另一方面，对侦听者来说，则必须在所有接口运行此协议以便上层协议从接口接收所需要的组播数据。</li>
+<li>所有MLD版本都支持ASM （Any-Source Multicast）模型。MLDv2可以直接应用于SSM （Source-Specific Multicast） 模型，而 MLDv1 则需要 SSM-Mapping 技术的支持。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/6.png"></p>
+<blockquote>
+<ul>
+<li>组播侦听者是希望接收组播数据的主机节点。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/7.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/8.png"></p>
+<blockquote>
+<ul>
+<li><p>类型（Type）：MLD消息共有三种。</p>
+<ul>
+<li>组播侦听查询（类型值＝130），可分为两种子类型：<ul>
+<li>普遍查询：用于获得在所连网络上具有侦听者的组播地址。</li>
+<li>特定组播地址查询：用于获得在所连网络上对一特定组播地址是否存在侦听者。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>组播侦听报告（类型值＝131）</p>
+</li>
+<li><p>组播侦听离开（ Multicast Listener Done）(类型值＝132)</p>
+</li>
+<li><p>代码（Code）</p>
+<ul>
+<li>发送时设置为1；接收时忽略。</li>
+</ul>
+</li>
+<li><p>校验和（Checksum）</p>
+<ul>
+<li>标准的ICMPv6校验和，覆盖所有MLD消息以及IPv6首部区域中的伪首部。</li>
+</ul>
+</li>
+<li><p>最大响应延迟（Maximum Response Delay）</p>
+<ul>
+<li>最大响应延迟值只在查询报文消息中有意义，它指定了发送响应报文的最大允许时间延迟，单位为毫秒。在其他报文消息中，发送时设置为零，接收时忽略。</li>
+</ul>
+</li>
+<li><p>保留（Reserved）</p>
+<ul>
+<li>发送者设为零；接收者忽略。</li>
+</ul>
+</li>
+<li><p>组播地址（Multicast Address）</p>
+<ul>
+<li>在查询报文中，当发送普遍查询时，组播地址值设为零；当发送特定组查询时，设为特定的IPv6组播地址。在报告或离开报文中，组播地址值分别设为报文发送者要侦听或者停止侦听的特定IPv6组播地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/9.png"></p>
+<blockquote>
+<ul>
+<li><p>所有MLD路由器在初始时都认为自己是查询器，并向本地网段内的所有主机和路由器发送MLD普遍组查询（General Query）报文（目的地址为 FF02::1）。</p>
+</li>
+<li><p>本地网段中的其它MLD路由器在收到该报文后，将报文的源IPv6地址与自己的接口地址作比较。通过比较，IPv6地址最小的路由器将成为查询器，其它路由器成为非查询器（Non-Querier）。</p>
+</li>
+<li><p>所有非查询器上都会启动一个定时器（即其它查询器存在时间定时器 Other Querier Present Timer）。在定 时器超时前，如果收到了来自查询器的 MLD 查询报文，则重置该定时器；否则，就认为原查询器失效， 并发起新的查询器选举过程。 </p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/10.png"></p>
+<blockquote>
+<ul>
+<li><p>VRP遵循RFC 2710来实现MLDv1。MLDv1基于查询/响应（Query/Response）机制完成组播组成员的管理。</p>
+</li>
+<li><p>MLDv1有两种类型的查询消息（Query Message）：</p>
+<ul>
+<li>普遍查询（General Query）：查询直连链路上是否有组播组的侦听者。</li>
+<li>指定组播组查询（Multicast-address-specific Query）：查询直连链路上是否有某个指定组播地址的侦听者。</li>
+</ul>
+</li>
+<li><p>如果共享网段上存在配置MLD的多个组播路由器，将触发查询路由器（Querier）选举机制，由网段上IPv6地址最小的路由器充当查询器（也称MLD查询器），其他路由器充当非查询器（Non-Querier）。</p>
+</li>
+<li><p>以普遍查询为例，主机加入组播组的基本过程是：</p>
+<ul>
+<li>1、MLD查询器周期性地向共享网段上的所有本地链路主机以组播方式（目的地址为FF02::1）发送普遍查询消息。</li>
+<li>2、网段上的所有主机都接收到该普遍查询消息。如果主机Host B和Host C希望加入某组播组G1，则设置定时器延时来响应。</li>
+<li>3、希望加入的主机在定时器超时后以组播方式向网段上的所有主机和路由器发送报告消息（Report Message）来响应查询，此消息包含组播组G1的地址信息。</li>
+<li>4、网段上的所有主机和路由器接收到此报告消息后，也就获得了关于G1的组播信息。此时网段中其他也希望加入组播组G1的主机将不再发送相同的报告消息，如果主机Host A希望加入另一个组播组G2，就会发送包含组播组G2地址的报告消息以响应普遍查询消息来加入G2。</li>
+<li>5、在查询/报告过程后，MLD查询器可以了解到在自己的直连网段上是否有组播组G1的接收者，生成形式为(<em>, G1)组播路由项，</em>表示任意的组播源。</li>
+<li>6、通过组播路由机制，MLD查询器接收到组播源发来的组播信息。如果直连网段上有接收者，就在网段上转发此数据，加入组播组的主机接收该数据。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/11.png"></p>
+<blockquote>
+<ul>
+<li>当主机想离开组播组，就以组播地址（目的地址是FF02::2）向链路上发送一个离开消息（Done Message），并且在其组播地址域携带要停止侦听的地址。</li>
+<li>当查询器从链路上收到离开消息时，如果要离开的组播报文地址在此链路上查询器的侦听者地址列表中，查询器就会发送Last Listener Query Count次组播地址特定查询，每次间隔时间为Last Listener Query Interval。组播地址特定查询一般将Last Listener Query Interval设定为Maximum Response Delay，如果最后查询的响应延迟时间过后，没有此组播地址的报告在此链路上发送给查询器，因此此地址就从侦听者列表中删除。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/12.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/13.png"></p>
+<blockquote>
+<ul>
+<li><p>头192bits部分是和MLDv1的消息格式相同的部分。</p>
+</li>
+<li><p>标志位S（Suppress Router-side Processing）：</p>
+<ul>
+<li>表示路由器接收到查询消息后是否对定时器更新进行抑制。</li>
+</ul>
+</li>
+<li><p>查询器的健壮性变量 QRV（Querier’s Robustness Variable）：</p>
+<ul>
+<li>健壮性变量值QRV是最后侦听者查询次数的缺省值，也就是路由器在确定没有剩余侦听者存在之前而发送的特定组播地址查询的次数。</li>
+</ul>
+</li>
+<li><p>查询器发送普遍查询消息的查询间隔 QQIC（Querier’s Query Interval Code）。</p>
+</li>
+<li><p>源数目（Number of Sources）：</p>
+<ul>
+<li>普遍查询或指定组播组查询中，此字段设置为0。</li>
+<li>指定组播源-组查询中，此字段表示查询消息中包含的源地址个数。</li>
+</ul>
+</li>
+<li><p>源地址（Source Address）：</p>
+<ul>
+<li>指定查询的组播源地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/14.png"></p>
+<blockquote>
+<ul>
+<li><p>主机通过发送MLD报告消息来汇报当前的组播侦听状态。</p>
+</li>
+<li><p>类型（Type）：</p>
+<ul>
+<li>Type=143</li>
+</ul>
+</li>
+<li><p>保留（Reserved）：</p>
+<ul>
+<li>发送时设置为0；接收时忽略。</li>
+</ul>
+</li>
+<li><p>校验和（Checksum）：</p>
+<ul>
+<li>标准的ICMPv6校验和，覆盖所有MLD消息以及IPv6首部区域中的伪首部。</li>
+</ul>
+</li>
+<li><p>组播地址记录的个数（ Number of Multicast Address Records ）</p>
+</li>
+<li><p>组播地址记录 （Multicast Address Records ）：</p>
+<ul>
+<li>表示主机在接口上侦听到的每个组播地址信息，包括记录类型、组播地址、源地址等。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/15.png"></p>
+<blockquote>
+<ul>
+<li><p>MLDv2兼容MLDv1，原理与MLDv1相同。MLDv2支持源列表和过滤模式，可以指定源地址加入，用于实现SSM。</p>
+</li>
+<li><p>对 IPv6 组播源的过滤 ：MLDv2是在指定组播组查询的基础上增加关于组播源的过滤模式：Include或Exclude。</p>
+<ul>
+<li>如果主机加入组播组时，只要求接收某些指定源如S1、S2、……发来的组播组报文，MLD报告消息中可以设置为Include Sources (S1, S2, …)。</li>
+<li>如果主机加入组播组时，拒绝接收某些指定源如S1、S2、……发来的组播报文，则可以设置从指定源外的源地址接收组播组报文，MLD报告消息中可以设置为Exclude Sources (S1, S2, …)。</li>
+</ul>
+</li>
+<li><p>IPv6 组播组状态跟踪：运行MLDv2协议的组播路由器按每条直连链路上的组播地址（per multicast address per attached link）来保持组播组的状态。组播组状态包括：</p>
+<ul>
+<li>过滤模式：保持对Include或Exclude的状态跟踪。</li>
+<li>源列表：保持对新增或删除组播源的跟踪。</li>
+<li>定时器：例如表示组播地址超时后切换到Include模式的过滤定时器、关于源记录的源定时器等。</li>
+</ul>
+</li>
+<li><p>接收者主机的状态侦听：运行MLDv2协议的组播路由器通过侦听接收者主机的状态，记录和维护网段上加入到源-组的主机的信息。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/16.png"></p>
+<blockquote>
+<ul>
+<li>接收者通过组播方式接收视频点播信息，不同组织的接收者组成末梢网络，每个末梢网络中都存在一到多台接收者Host。</li>
+<li>Host A和Host C为两个末梢网络中的组播信息接收者。PIM网络中的Router A通过GE1/0/0接口连接末梢网络N1，通过POS2/0/0接口连接PIM网络中的其它设备；Router B和Router C路由器通过各自的GE1/0/0接口连接末梢网络N2，分别通过POS2/0/0接口连接PIM网络中的其它设备。</li>
+<li>Router A和末梢网络N1之间运行MLDv1。</li>
+<li>Router B、Router C和末梢网络N2之间运行MLDv2。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/17.png"></p>
+<blockquote>
+<ul>
+<li><p>进入系统视图</p>
+<ul>
+<li><strong>system-view</strong></li>
+</ul>
+</li>
+<li><p>使能IP组播路由</p>
+<ul>
+<li><strong>multicast ipv6 routing-enable</strong></li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em></li>
+</ul>
+</li>
+<li><p>使能MLD</p>
+<ul>
+<li><strong>mld</strong> <strong>enable</strong></li>
+<li>配置了MLD的路由器必须在接口上使能MLD来侦听所有的IPv6组播地址。在需要建立和维持组播组成员关系的接口上使能MLD。</li>
+<li>查询器在直连网段上周期性发送MLD查询消息来维持组播侦听者的信息。当接收到组成员报告消息时，组播路由器刷新相关的组成员信息。</li>
+</ul>
+</li>
+<li><p>进入MLD视图</p>
+<ul>
+<li><strong>mld</strong></li>
+</ul>
+</li>
+<li><p>配置全局性MLD版本</p>
+<ul>
+<li><strong>version</strong> { <strong>1</strong> | <strong>2</strong> } </li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em></li>
+</ul>
+</li>
+<li><p>配置接口MLD版本</p>
+<ul>
+<li><strong>mld</strong> <strong>version</strong> { <strong>1</strong> | <strong>2</strong> } </li>
+<li>MLD版本号的配置是可选的。缺省情况下，使用MLDv2版本。</li>
+<li>当接口下没有配置新值时，缺省采用MLD视图下配置的值；假如接口下配置了新值，则接口视图下的取值优先被选择。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/18.png"></p>
+<blockquote>
+<ul>
+<li>缺省情况下使用MLDv2。</li>
+<li>Router C的配置与Router B类似。</li>
+<li>在这样一个网络上需要选举查询器，那一台路由器将被选举成查询器呢？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/19.png"></p>
+<blockquote>
+<ul>
+<li>可以看到，Router B是查询器，这是因为同一网段上组播路由器Router B的GE1/0/0的IPv6地址较小。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/20.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/21.png"></p>
+<blockquote>
+<ul>
+<li><p>配置完成后，当 RouterA 收到来自主机的 MLDv1 报告报文时，首先检查该报文中所携带的 IPv6 组播组地址 G， 然后根据检查结果的不同分别进行处理： </p>
+<ul>
+<li>如果 G 不在 IPv6 SSM 组地址范围内，则提供 ASM 组播服务。 </li>
+<li>如果 G 在 IPv6 SSM 组地址范围内： </li>
+<li>若 RouterA 上没有 G 对应的 MLD SSM Mapping 规则，则无法提供 SSM 组播服务，丢弃该报文； </li>
+<li>若 RouterA 上有 G 对应的 MLD SSM Mapping 规则，则依据规则将报告报文中所包含的（*，G）信息 映射为（G，INCLUDE，（ S1，S2…））信息，可以提供 SSM 组播服务。SSM映射功能使采用MLDv1版本的主机无须升级MLD版本就能顺利接收SSM的数据报文。此功能不影响采用MLDv2的主机。</li>
+</ul>
+</li>
+<li><p>映射策略可以多次配置，实现同一个组到多个源的映射。在一台路由器上，转发且仅转发映射表中的指定源-组报文。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/22.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/23.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/24.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/25.png"></p>
+<blockquote>
+<ul>
+<li><p>MLD的主要功能是什么？</p>
+<ul>
+<li>组播侦听发现协议MLD（Multicast Listener Discovery）用于IPv6组播中的组成员管理，其基本原理和功能与IGMP相似。MLD的目的是使能每个IPv6路由器发现在其直连网络上的组播侦听者（即希望接收组播数据的节点）的存在，并且能明确发现这些邻居节点所感兴趣的组播地址。然后提供这些消息给路由器所使用的组播路由协议，以确保组播数据转发至存在接收者的所有链接。</li>
+</ul>
+</li>
+<li><p>MLDv2和MLDv1有哪些主要区别？</p>
+<ul>
+<li>MLDv2兼容MLDv1，原理与MLDv1相同。MLDv2支持源列表和过滤模式，可以指定源地址加入，用于实现SSM。</li>
+</ul>
+</li>
+<li><p>SSM Mapping的主要作用是什么？</p>
+<ul>
+<li>发送MLDv1格式的报告消息的主机，不能接收到SSM组范围内的数据报文。 SSM映射功能使采用MLDv1版本的主机无须升级MLD版本就能顺利接收SSM的数据报文。此功能不影响采用MLDv2的主机。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/26.png"></p>
+<p><img src="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/27.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-109-MLD%E5%8E%9F%E7%90%86/" rel="tag"># HCRSE-109-MLD原理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/" rel="next" title="IE-路由import与Control">
+                <i class="fa fa-chevron-left"></i> IE-路由import与Control
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/" rel="prev" title="IE-PIM双栈原理">
+                IE-PIM双栈原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

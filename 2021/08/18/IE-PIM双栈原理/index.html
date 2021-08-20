@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-110-OSPF双栈原理," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="现代网络传输技术对以下两项目标给予更高的关注：  资源发现 点对多点的IP传输   实现这两项目标有三种解决方案：单播（Unicast）、广播（Broadcast）、组播（Multicast）  通过比较三种解决方案的数据传输方式，说明组播方式更适合点对多点的IP传输。       学习完此课程，您将会：了解组播与单播以及广播三种数据传输方式的区别。掌握组播的地址结构以及组播报文的转发流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-PIM双栈原理">
+<meta property="og:url" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="现代网络传输技术对以下两项目标给予更高的关注：  资源发现 点对多点的IP传输   实现这两项目标有三种解决方案：单播（Unicast）、广播（Broadcast）、组播（Multicast）  通过比较三种解决方案的数据传输方式，说明组播方式更适合点对多点的IP传输。       学习完此课程，您将会：了解组播与单播以及广播三种数据传输方式的区别。掌握组播的地址结构以及组播报文的转发流程">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/1.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/2.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/3.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/4.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/5.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/6.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/7.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/8.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/9.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/10.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/11.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/12.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/13.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/14.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/15.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/16.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/17.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/18.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/19.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/20.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/21.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/22.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/23.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/24.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/25.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/26.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/28.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/29.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/30.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/31.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/32.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/33.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/34.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/35.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/36.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/37.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/38.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/39.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/40.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/41.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/42.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/43.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/44.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/46.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/47.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/48.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/49.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/50.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/51.png">
+<meta property="article:published_time" content="2021-08-18T06:15:31.000Z">
+<meta property="article:modified_time" content="2021-08-17T07:14:55.327Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-110-OSPF双栈原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/08/18/IE-PIM双栈原理/"/>
+
+
+
+
+
+  <title>IE-PIM双栈原理 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-PIM双栈原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-18T14:15:31+08:00">
+                2021-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/2.png"></p>
+<blockquote>
+<ul>
+<li><p>现代网络传输技术对以下两项目标给予更高的关注：</p>
+<ul>
+<li>资源发现</li>
+<li>点对多点的IP传输</li>
+</ul>
+</li>
+<li><p>实现这两项目标有三种解决方案：单播（Unicast）、广播（Broadcast）、组播（Multicast）</p>
+</li>
+<li><p>通过比较三种解决方案的数据传输方式，说明组播方式更适合点对多点的IP传输。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/3.png"></p>
+<blockquote>
+<ul>
+<li>学习完此课程，您将会：了解组播与单播以及广播三种数据传输方式的区别。掌握组播的地址结构以及组播报文的转发流程。掌握组播技术中的相关概念，如源路径树、共享树等。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li><p>组播协议包括用于主机注册的组播组管理协议，和用于组播选路转发的组播路由协议。各种组播协议在网络中的如图所示。</p>
+</li>
+<li><p>IGMP（Internet Group Management Protocol）在接收者主机和组播路由器之间运行，该协议定义了主机与路由器之间建立和维护组播成员关系的机制。</p>
+</li>
+<li><p>组播路由器之间运行组播路由协议，组播路由协议用于建立和维护组播路由，并正确、高效地转发组播数据包。</p>
+</li>
+<li><p>对于ASM模型，可以将组播路由分为域内和域间两大类。</p>
+<ul>
+<li>域内组播路由协议用来在自治系统AS（Autonomous System）内发现组播源并构建组播分发树，将信息传递到接收者。域内组播路由协议包括：DVRMP、MOSPF、PIM。<ul>
+<li>DVRMP是距离矢量组播路由协议（Distance Vector Multicast Routing Protocol）是一种密集模式协议。该协议有跳数限制，最大跳数32跳。</li>
+<li>MOSPF是OSPF路由协议的扩展协议。它通过定义新的LSA来支持组播。</li>
+<li>PIM（Protocol Independent Multicast）是典型的域内组播路由协议，分为DM（Dense Mode）和SM（Sparse Mode）两种模型。当接收者在网络中的分布较为密集时，适用DM；较为稀疏时，适用SM。PIM必须和单播路由协议协同工作。</li>
+</ul>
+</li>
+<li>域间组播路由协议用来实现组播信息在AS之间的传递。<ul>
+<li>MSDP（Multicast Source Discovery Protocol）能够跨越AS传播组播源信息。</li>
+<li>MPBGP （MultiProtocol Border Gateway Protocol）的组播扩展MBGP （Multicast BGP）能够跨越AS传播组播路由。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/6.png"></p>
+<blockquote>
+<ul>
+<li>对于SSM模型，没有域内和域间的划分。由于接收者预先知道组播源的具体位置，因此可以借助PIM SM的部分功能直接创建组播传输路径。</li>
+<li>为了使不同的 PIM-SM 域之间组播数据能够互通，需要在域间部署 MSDP 协议。MSDP 通过在各个 PIM-SM 域之间建立 MSDP 对等体关系，对等体之间交互 SA 消息来传递组播信 息，从而实现接收者主机可以接收其他 PIM-SM 域的组播源数据。MSDP 仅用于 IPv4 网络， 只对 ASM 服务模型有意义。在单个 PIM 域内，使用 IGMP 管理组成员关系，使用 PIM-SM 建 立组播路由指导数据转发。 </li>
+<li>由于 PIM 协议依赖于单播路由表，从而组播转发路径与单播转发路径是一致的。当组播源与接收者分布在不同的AS中时，需要跨AS建立组播转发树。此时可以部署MBGP 协议， 生成一张独立于单播路由的组播路由表，使组播数据通过组播路由表进行传输。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/7.png"></p>
+<blockquote>
+<ul>
+<li><p>相对于PIM-DM的“推（Push）模式”，PIM-SM使用“拉（Pull）模式”转发组播报文。PIM-SM假设网络中的组成员分布非常稀疏，几乎所有网段均不存在组成员，直到某网段出现组成员时，才构建组播路由，向该网段转发组播数据。一般应用于组播组成员规模相对较大、相对稀疏的网络。</p>
+</li>
+<li><p>基于这一种稀疏的网络模型，它的实现方法是：</p>
+<ul>
+<li>在网络中维护一台重要的PIM路由器：汇聚点RP（Rendezvous Point），可以为随时出现的组成员或组播源服务。网络中所有PIM路由器都知道RP的位置。</li>
+<li>当网络中出现组成员（用户主机通过IGMP加入某组播组G）时，最后一跳路由器向RP发送Join报文，逐跳创建（*，G）表项，生成一棵以RP为根的RPT。</li>
+<li>当网络中出现活跃的组播源（信源向某组播组G发送第一个组播数据）时，第一跳路由器将组播数据封装在Register报文中单播发往RP，在RP上创建（S，G）表项，注册源信息。</li>
+</ul>
+</li>
+<li><p>PIM-SM的关键机制包括邻居建立、DR竞选、RP发现、RPT构建、组播源注册、SPT切换、Assert；同时也可通过配置BSR（Bootstrap Router）管理域来实现单个PIM-SM域的精细化管理。PIM-SM中PIM邻居建立过程以及Assert机制与PIM-DM相同。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/8.png"></p>
+<blockquote>
+<ul>
+<li>源路径树以组播源作为树根，将组播源到每一个接收者的最短路径结合起来构成的转发树。</li>
+<li>源路径树使用的是从组播源到接收者的最短路径，也称为最短路径树（shortest path tree，SPT）。对于某个组，网络要为任何一个向该组发送报文的组播源建立一棵树。</li>
+<li>本例中有两个组播源（源S1和源S2），接收者R1和RT2。所以本例中有两棵源路径树，分别是：</li>
+<li>S1—A—C（R1）—–E（R2）</li>
+<li>S2—F—-D—C（R1）——E（R2）</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/9.png"></p>
+<blockquote>
+<ul>
+<li>共享树以某个路由器作为路由树的树根，该路由器称为汇集点（Rendezvous Point，RP），将 RP 到所有接收者的最短路径结合起来构成转发树。使用共享树时，对应某个组，网络中只有一棵树。所有的组播源和接收者都使用这棵树来收发报文，组播源先向树根发送数据报文，之后报文又向下转发到达所有的接收者。 </li>
+<li>本例中两个源S1和S2共享一颗树 D（RP）—-C（R1）—-E（R2）</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/10.png"></p>
+<blockquote>
+<ul>
+<li>PIM IPv6是与静态路由、RIPng、OSPFv3、IS-ISv6、BGP4+等IPv6单播路由协议类型无关的组播路由协议，其借助上述单播路由协议生成的路由项和RPF（Reverse Path Forwarding）机制创建组播路由表，实现组播报文转发。PIM IPv6域是指由支持PIM IPv6协议的组播路由器构成的网络。</li>
+<li>目前，存在两种组播模型：任意源组播ASM（Any-Source Multicast）和指定源组播SSM（Source-Specific Multicast）。IPv6中，ASM模型包括IPv6 PIM-DM（Protocol Independent Multicast-Dense Mode）和IPv6 PIM-SM（Protocol Independent Multicast Sparse Mode）；SSM模型则使用MLDv2和IPv6 PIM-SM的部分机制来实现。</li>
+<li>在组成员稀疏分布的大规模IPv6网络中，使用IPv6 PIM-SM，其主要特性是接收者需要显式加入。缺省情况下，IPv6 PIM-SM假设网络中的所有节点都不需要接收组播报文，上游节点只有接收到下游节点的加入消息后才进行组播数据的转发。</li>
+<li>IPv6 PIM-SM中，汇集点RP（Rendezvous Point）只向拥有接收者的下游分枝转发组播信息。这样可以节省数据报文和控制报文占用的网络带宽，减少路由器的处理开销。</li>
+<li>当主机希望从指定组播组接收数据时，与之相连的路由器向这个组的RP发送加入（Join）消息，沿途建立以RP为根节点的共享树RPT（Rendezvous Point Tree）。共享树的含义是不同组播源向相同组播组转发组播数据时，都使用此共享路径。</li>
+<li>当组播源向组播组发送数据时，与源相连的DR把组播数据封装在注册消息中以单播方式向RP发送。注册消息到达RP后，由RP对组播数据解封装，再沿RPT向接收者发送。当以注册消息方式发送的组播数据达到一定速率后，RP向组播源发送加入消息，建立组播源与RP之间的组播分发树。然后，RP向组播源的DR发送注册停止消息，指示DR直接以非封装方式根据组播转发表发送组播数据。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/11.png"></p>
+<blockquote>
+<ul>
+<li><p>借助Hello消息可以为共享网络（如Ethernet）选举DR（Designated Router），DR将作为本网段中组播信息的唯一转发者。无论是和组播源S连接的网络，还是和接收者连接的网络，只要网络为共享媒介则需要选举DR，接收者侧DR向RP发送Join加入消息；组播源侧DR向RP发送Register注册消息。</p>
+</li>
+<li><p>DR的选举过程如下所述：</p>
+<ul>
+<li>共享网段上的各路由器相互间发送带有DR优先级选项的Hello消息；</li>
+<li>具有最高优先级的路由器被选举为此网段的DR。如果路由器具有相同的优先级，则IPv6地址最大的路由器被选举为DR。</li>
+</ul>
+</li>
+<li><p>当DR出现异常，其他路由器将接收不到其发出的Hello消息。在此DR超时后，会触发共享网段上新一轮的DR选举。</p>
+</li>
+<li><p>如果网络中至少有一台路由器不支持在Hello报文中携带DR优先级，由IPv6链路本地地址最大的路由器充当DR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/12.png"></p>
+<blockquote>
+<ul>
+<li>如何发现RP？对于小规模的简单网络，一个RP用于全网转发信息就足够了，此RP的位置可通过静态指定，在DR和叶子路由器以及组播数据流将要经过的所有路由器上手工指定RP的IP地址。然而，在大多数应用中，IPv6 PIM-SM网络覆盖了很大的区域，需要通过RP转发大量的组播流量。因此，不同的组播组应该具有各自的RP。为了减少配置多个静态RP的工作量以及更好的适应网络的实时变化，采用自举（Bootstrap）机制来动态选举RP。</li>
+<li>自举路由器BSR（BootStrap Router）是IPv6 PIM-SM网络的管理核心。BSR收集来自各候选RP即C-RP（Candidate-RP）的通告（Advertisement）消息，选择合适的C-RP来构成组播组的RP-Set信息。RP-Set是各组播组与对应C-RP的数据库。BSR通过自举消息向整个IPv6 PIM-SM网络通告RP-Set信息。包括DR在内的所有路由器学习到各组播组对应的C-RP后，根据哈希算法计算出各组播组对应的唯一RP。</li>
+<li>一个网络（或一个管理域）只能有一个BSR，但可以有多个候选BSR即 C-BSR （Candidate-BSR）。一旦BSR发生故障后，可以通过自举机制从C-BSR中选举出新的BSR，从而避免业务的中断。IPv6 PIM-SM域中可以配置多个C-RP。BSR负责收集并发送各组播组的RP-Set信息。<ul>
+<li>RP配置方式建议：<ul>
+<li>中小型网络：建议选择静态RP方式，对设备要求低，也比较稳定。</li>
+<li>如果网络中只有一个组播源，建议选择直连组播源的设备作为静态RP，这样可以省略源端DR向RP注册的过程。</li>
+<li>采用静态RP方式要确保域内所有路由器（包括RP本身）的RP信息以及服务的组播组范围全网一致。</li>
+<li>大型网络：可以采用动态RP方式，可靠性高，可维护性强。</li>
+<li>如果网络中存在多个组播源，且分布密集，建议选择与组播源比较近的核心设备作为C-RP；如果网络中存在多个用户，且分布密集，建议选择与用户比较近的核心设备作为C-RP。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/13.png"></p>
+<blockquote>
+<ul>
+<li>BootStrap router工作的原理和过程：首先要在网络中选择合适的路由器把它配置成候选BSR（C-BSR，Candidate BootStrap Router），每个C-BSR都有优先级，当它得知自己是C-BSR后，首先启动一个定时器（默认为150秒），监听网络中的 BootStrap Message。BootStrap Message 初始时通告发送路由器的优先级、BSR的IPv6地址，当C-BSR收到一个BootStrap Message后，它会把自己的优先级和报文里的优先级做比较，如果对方的优先级高，它就把自己的定时器重置，继续监听BootStrap Message；如果是自己的高，那么它就发送BootStrap Message声明自己是BSR，如果优先级相等，则比较IPv6地址，谁的IPv6地址大谁就是BSR。BSR消息发送的目的地址是FF02::13，所有的PIM IPv6路由器都能接收到这个报文，该报文TTL一般被置为1，但每个PIM IPv6路由器收到此报文后都是把它以泛洪的方式从自己所有的使能PIM IPv6的接口上发送出去，这就能保证网络中的每台PIM IPv6设备都能收到BootStrap Message。</li>
+<li>RP就像C-BSR一样需要在设备上手工配置，首先配置C-RP（Candidate Rendezvous Point），包括RP IPv6地址、优先级和它所能服务的组。正如上文所述，一个RP可以给所有的IPv6组播组提供服务，也可以只给部分组提供服务。当C-RP收到BootStrap Message后，它可以从该message中得知网络中谁是BSR，然后C-RP通过Candidate-RP-Advertisement Message把自己所能服务的组单播给BSR，每个C-RP都这么做的话那么BSR就收集到了网络中所有C-RP的信息并把这些信息整理成一个集RP-Set。此后BSR通过BootStrap Message把RP-Set的信息通告给全网所有的路由器。</li>
+<li>RP的选举规则：<ul>
+<li>如果RP-Set对应该IPv6组地址的C-RP只有一个,那么DR就选该C-RP做RP；</li>
+<li>如果对应该IPv6组地址的有多个C-RP，那么优先级最高的是RP（优先级数越小优先级越高）；</li>
+<li>如果大家优先级相等，那么DR将开始Hash运算，把组地址、hash掩码、和C-RP的地址做为输入参数，输出是一些数字，数字高的C-RP将是该组的RP；</li>
+<li>如果hash的结果大家也相等，那么IPv6地址最大的C-RP将成为该组的RP。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/14.png"></p>
+<blockquote>
+<ul>
+<li><p>使能嵌入RP功能允许路由器从IPv6组播组地址中分析出RP的地址，从而取代静态配置RP或由BSR动态计算的RP。</p>
+</li>
+<li><p>使用嵌入式RP的组播组地址范围是FF7x::/16和FFFx::/16，x表示0～F的任意一个十六进制数。</p>
+</li>
+<li><p>在接收侧：</p>
+<ul>
+<li>接收者主机发布MLD报告消息，加入组播组；</li>
+<li>接收侧的DR提取内嵌在组播组地址中的RP地址，向其发送IPv6 PIM-SM加入消息。</li>
+</ul>
+</li>
+<li><p>在组播源侧：</p>
+<ul>
+<li>组播源知道组播地址后，向此组播组发送报文；</li>
+<li>组播源侧的DR提取内嵌在组播地址中的RP地址，向其以单播方式发送IPv6 PIM-SM注册消息。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/15.png"></p>
+<blockquote>
+<ul>
+<li>头8bits为FF说明是IPv6组播地址。</li>
+<li>Flags字段的范围是7-F，说明是一个嵌入了RP地址的IPv6组播组地址。</li>
+<li>RIID字段：RP Interface ID，抽取出来填充在RP地址的最后4bits。</li>
+<li>Plen字段：RP地址的前缀长度，换算成十进制数后不能为0，也不能大于64。</li>
+<li>Network Prefix字段：RP的地址前缀。</li>
+<li>Group ID：组ID。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/16.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/17.png"></p>
+<blockquote>
+<ul>
+<li>当接收者主机加入一个组播组G时，通过MLD报文知会与该主机直接相连的叶子路由器，叶子路由器掌握组播组G的接收者信息，然后朝着RP方向往上游节点发送加入组播组的Report消息。</li>
+<li>从叶子路由器到RP之间途经的每个路由器都会在转发表中生成（<em>，G）表项，这些沿途经过的路由器就形成了RP共享树（RPT）的一个分支。其中（</em>，G）表示从任意源来的信息去往组播组G。RPT共享树以RP为根，以接收者为叶子。</li>
+<li>当从组播源S来的发往组播组G的报文流经RP时，报文就会沿着已经建立好的RPT共享树路径到达叶子路由器，进而到达接收者主机。</li>
+<li>当某接收者对组播信息不再感兴趣时，离该接收者最近的组播路由器会逆着RPT树朝RP方向逐跳发送Prune剪枝消息。第一个上游路由器接收到该剪枝消息，在接口列表中删除连接此下游路由器的接口，并检查自己是否拥有感兴趣的接收者，如果没有则继续向上游转发该剪枝消息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/18.png"></p>
+<blockquote>
+<ul>
+<li><p>为了向RP通知组播源S的存在，当组播源S向组播组G发送了一个组播报文时，与组播源S直接相连的路由器接收到该组播报文后，就将该报文封装成IPv6 PIM Register注册报文，并单播发送给对应的RP。</p>
+</li>
+<li><p>当RP接收到来自组播源S的注册消息后，一方面解封装注册消息并将组播信息沿着RPT树转发到接收者，另一方面朝组播源S逐跳发送（S，G）加入消息，从而让RP和组播源S之间的所有路由器上都生成了（S，G）表项，这些沿途经过的路由器就形成了SPT树的一个分支。SPT源树以组播源S为根，以RP为目的地。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/19.png"></p>
+<blockquote>
+<ul>
+<li>组播源S发出的组播信息沿着已经建立好的SPT树到达RP，然后由RP将信息沿着RPT共享树进行转发。当RP收到沿着SPT树转发的组播流量后，向与组播源S直连的路由器单播发送注册停止报文。组播源注册过程结束。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/20.png"></p>
+<blockquote>
+<ul>
+<li>源数据流延源树（SPT）流向RP，从RP开始，数据流延共享树（RPT）流向接收者。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/21.png"></p>
+<blockquote>
+<ul>
+<li><p>针对特定的源，PIM-SM通过指定一个利用带宽的SPT阈值可以实现将最后一跳路由器(即离接收者最近的DR)从RPT切换到SPT。当最后一跳路由器发现从RP发往组播组G的组播报文速率超过了该阈值时，就向单播路由表中到组播源S的下一跳路由器发送（S，G）加入消息，Join加入消息经过一个个路由器后到达第一跳路由器（即离组播源最近的DR），沿途经过的所有路由器都拥有了（S，G）表项，从而建立了SPT树分支。</p>
+</li>
+<li><p>用户端DR周期性检测组播报文的转发速率，一旦发现从RP发往组播组G的报文速率超过阈值，则触发SPT切换：</p>
+<ul>
+<li>用户端DR逐跳向源端DR发送（S，G）Join报文并创建（S，G）表项，建立源端DR到用户端DR的SPT。</li>
+<li>SPT建立后，用户端DR会沿着RPT逐跳向RP发送剪枝报文，收到剪枝报文的路由器将（*，G）复制成相应的（S，G）,并将相应的下游接口置为剪枝状态。剪枝结束后，RP不再沿RPT转发组播报文到组成员端。</li>
+<li>如果SPT不经过RP，RP会继续向源端DR逐跳发送剪枝报文，删除（S，G）表项中相应的下游接口。剪枝结束后，源端DR不再沿“源端DR-RP”的SPT转发组播报文到RP。</li>
+</ul>
+</li>
+<li><p>在VRP中，缺省情况下连接接收者的路由器在探测到组播源之后（即接收到第一个数据报文），便立即加入最短路径树，即从RPT向SPT切换。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/22.png"></p>
+<blockquote>
+<ul>
+<li>当路由器在不同接口接收到RPT和SPT两条路径上传输的相同组播数据时，丢弃沿RPT接收的数据，并向RP逐跳发送剪枝消息。RP接收到剪枝消息后，更新转发状态，并停止沿RPT转发（S, G）的组播流量；同时RP向组播源发送剪枝消息删除或更新相关的（S, G）转发项。通过这种方法，组播数据从RPT切换到SPT。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/23.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/24.png"></p>
+<blockquote>
+<ul>
+<li>Host A和Host C分别是两个叶子网络中的组播信息接收者。这些接收者通过Router A、Router B、Router C和Router D连接到组播源。</li>
+<li>配置思路：<ul>
+<li>配置各路由器接口的IPv6地址和IPv6单播路由协议。<ul>
+<li>配置各路由器接口的IPv6地址和掩码。</li>
+<li>配置各路由器之间采用OSPFv3进行互连，进程号为1，区域号为0，确保网络中各路由器Router A、Router B、Router C和Router D之间能够在网络层互通。</li>
+</ul>
+</li>
+<li>在各路由器上使能IPv6组播功能，在路由器各接口上使能IPv6 PIM-SM，主机侧接口上配置MLD，采用缺省版本2。</li>
+<li>配置C-BSR和C-RP，充当C-BSR和C-RP的IPv6全球单播地址，此例中都为Router D上的2004::2。</li>
+<li>检查配置结果。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/25.png"></p>
+<blockquote>
+<ul>
+<li><p>进入系统视图</p>
+<ul>
+<li><strong>system-view</strong></li>
+</ul>
+</li>
+<li><p>使能IPv6组播路由</p>
+<ul>
+<li><strong>multicast ipv6 routing-enable</strong></li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em></li>
+</ul>
+</li>
+<li><p>使能IPv6 PIM-SM功能</p>
+<ul>
+<li><strong>pim</strong> <strong>ipv6</strong> <strong>sm</strong></li>
+</ul>
+</li>
+<li><p>IPv6 PIM-SM只有在使能IPv6组播后才能配置。在接口上配置IPv6 PIM-SM后，路由器周期性发送Hello消息来发现PIM IPv6邻居，并处理邻居发来的报文。当路由器加入IPv6 PIM-SM域时，建议在非边界路由器的所有接口上使能IPv6 PIM-SM。</p>
+</li>
+<li><p>不能在一个接口上同时使能IPv6 PIM-SM和IPv6 PIM-DM。同一路由器上所有接口的PIM IPv6模式必须相同。</p>
+</li>
+<li><p>Router B、Router C和Router D上的配置过程与Router A上的配置相似。</p>
+</li>
+<li><p>与接受者相连的路由器上需要使能MLD。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/26.png"></p>
+<blockquote>
+<ul>
+<li><p>在PIM域中可配置一个或多个C-BSR。从C-BSR选举出的BSR负责收集和通告C-RP信息。由于BSR和域中的其他设备需要交换大量信息，因此C-BSR与域中的其它设备之间应预留较大的带宽。所以由骨干网的路由器来充当C-BSR。</p>
+</li>
+<li><p>在指定本路由器的某接口地址作为C-BSR时，必须同时使能接口的IPv6 PIM-SM。C-BSR之间自动选举BSR的过程简要描述如下：</p>
+<ul>
+<li>初始时，每个C-BSR都认为自己是PIM-SM域内的BSR，使用自己接口的IPv6地址作为BSR地址来发送自举报文。</li>
+<li>当C-BSR从其他路由器接收到自举报文时，把报文中的BSR地址与自己的BSR地址相比较。比较的标准包括优先级和BSR地址。如果优先级相同，优选BSR地址大的，即如果接收的自举报文中的BSR地址更高，则用此地址来代替自己的BSR地址，并不再认为自己是BSR；如果自举报文的BSR地址并不大于自己的BSR地址，则继续认为自己是BSR。</li>
+</ul>
+</li>
+<li><p>进入PIM IPv6视图</p>
+<ul>
+<li><strong>pim-ipv6</strong></li>
+</ul>
+</li>
+<li><p>配置自己的接口地址为C-BSR</p>
+<ul>
+<li>**c-**<strong>bsr</strong> <em>ipv6-address</em> [ <em>hash-length</em> ] [ <em>priority-value</em> ]</li>
+</ul>
+</li>
+<li><p>配置C-RP</p>
+<ul>
+<li>**c-**<strong>rp</strong> <em>ipv6-address</em> [ <strong>priority</strong> <em>priority</em> ]</li>
+</ul>
+</li>
+<li><p>配置静态RP</p>
+<ul>
+<li>**static-<em><strong><em>rp*</em> *rp</strong>-address</em> [ <em>basic-acl6-number</em> ] [ <strong>preferred</strong> ]</li>
+</ul>
+</li>
+<li><p>配置嵌入式RP</p>
+<ul>
+<li>**embedded-**<strong>rp</strong> <strong>[</strong> <em>basic-acl6-number</em> <strong>]</strong></li>
+</ul>
+</li>
+<li><p>**c-*<em><strong>bsr</strong>命令用来在希望自己成为BSR的路由器上配置自身某接口地址为C-BSR的地址。</em></p>
+<ul>
+<li>ipv6-address<em>：指定候选自举路由器C-BSR的IPv6全球单播地址。</em></li>
+<li>hash-length*：指定计算RP的哈希函数的掩码长度。整数形式，取值范围是0～128。</li>
+</ul>
+</li>
+<li><p><strong>pim</strong> <strong>ipv6</strong> <strong>bsr**</strong>-boundary<strong>命令用来设置作为BSR域边界的接口。在接口上配置此命令后，自举消息不能通过此接口，而其他PIM报文可以通过。</strong></p>
+</li>
+<li><p>c-rp**命令用来配置路由器向BSR通告自身是C-RP。配置成为C-RP的路由器和其他设备之间需要保留相对大的带宽。通过配置希望成为RP的接口地址，并选择合适的优先级。</p>
+<ul>
+<li><em>ipv6-address</em>：指定C-RP的IPv6全球单播地址。</li>
+<li>如果网络中仅有一个动态RP，配置静态RP能避免由于单个RP发生故障引起的通信中断。使用静态RP转发组播数据时，应该在IPv6 PIM-SM域中所有路由器上配置完全相同的静态RP命令。</li>
+</ul>
+</li>
+<li><p>**static-*<em><strong>rp</strong>命令用来配置静态RP。</em></p>
+<ul>
+<li>rp**-address*：指定静态RP地址。此地址必须是有效的IPv6全球单播地址。</li>
+<li><em>basic-acl6-number</em>：指定用于控制静态RP服务的组播组范围的基本访问控制列表号。取值范围是2000～2999。</li>
+<li><strong>preferred</strong>：表示配置的静态RP和由BSR机制选择的RP不同时，优先选择此静态RP。不指定此参数时，优先选择BSR机制选择的RP。</li>
+</ul>
+</li>
+<li><p>嵌入式RP用于路由器从组播地址中获取RP地址，从而取代静态RP或从BSR机制选举的动态RP。使用嵌入式RP的组播地址范围是FF7x::/16～FFFx::/16，x表示0～F的任意一个十六进制数。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/28.png"></p>
+<blockquote>
+<ul>
+<li><p>查看接口上的PIM IPv6信息 </p>
+<ul>
+<li><strong>display</strong> <strong>pim</strong> <strong>ipv6</strong> <strong>interface</strong> [ <em>interface-type interface-number</em> ]</li>
+</ul>
+</li>
+<li><p>查看IPv6 PIM-SM域中BSR自举路由器的信息</p>
+<ul>
+<li><strong>display</strong> <strong>pim</strong> <strong>ipv6</strong> <strong>bsr**</strong>-info**</li>
+<li>此网络中的BSR是Router D的POS2/0/0接口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/29.png"></p>
+<blockquote>
+<ul>
+<li><p>查看IPv6 PIM-SM域中的RP信息</p>
+<ul>
+<li><strong>display</strong> <strong>pim</strong> <strong>ipv6</strong> <strong>rp**</strong>-info** [ <em>ipv6-group-address</em> ]</li>
+</ul>
+</li>
+<li><p>此网络中的RP是Router D的POS2/0/0接口。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/30.png"></p>
+<blockquote>
+<ul>
+<li>假设HostA加入组G（FF0E::1），RouterD和RouterB之间建立RPT树，在RPT路径上的路由器（RouterD和RouterB）生成（*, G）项。组播源S（2001::5）向组播组G发送组播报文后，在源树路径上的路由器（RouterA和RouterD）生成（S, G）项。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/31.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/32.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/33.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/34.png"></p>
+<blockquote>
+<ul>
+<li>IPv6 PIM-SSM的实现可以概括成邻居发现、DR选举和SPT生成：<ul>
+<li>邻居发现和DR选举过程与IPv6 PIM-SM中的描述相同，是通过在路由器间发送Hello消息来实现的；</li>
+<li>由于PIM-SSM也使用PIM-SM协议，路由器生成RPT还是生成SPT的判决取决于组播地址是否在SSM组地址范围内。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/35.png"></p>
+<blockquote>
+<ul>
+<li>SSM模型中，用信道（Channel）概念来表示（S, G）组合，用定制（Subscribed）消息概念来表示加入消息。</li>
+<li>假定网络中的User A和User B需要接收组播源S的信息，就通过MLDv2向最近的查询器发送一个标为（include S, G）的报告信息。如果User A和User B不需要接收组播源S的信息，发送一个标为（exclude S, G）或包含其他组播源的报告消息。无论使用上述哪个报告消息，接收者是明确指定组播源S的。</li>
+<li>接收到报告消息的查询器检查此消息的组播地址是否在SSM组地址的范围内。如果是，则路由器根据SSM模型建立组播分发树，随后向指定源逐跳发送定制消息（也称加入消息）。沿途上的所有路由器创建（S, G）项。以源S为根节点、接收者为叶子的SPT树就生成了。SSM模型使用此SPT树作为传输路径。</li>
+<li>如果查询器发现组播地址在SSM组范围外，就在IPv6 PIM-SM基础上建立组播分发树。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/36.png"></p>
+<blockquote>
+<ul>
+<li>Host A和Host C分别是两个叶子网络中的组播信息接收者。这些接收者通过Router A、Router B、Router C和Router D连接到组播源。</li>
+<li>Router B和N1、Router C和N2之间的主机侧接口必须运行MLDv2协议。</li>
+<li>配置思路：<ul>
+<li>配置各路由器接口的IPv6地址和IPv6单播路由协议。<ul>
+<li>配置各路由器接口的IPv6地址和掩码。</li>
+<li>配置各路由器之间采用OSPFv3进行互连，进程号为1，区域号为0，确保网络中各路由器Router A、Router B、Router C和Router D之间能够在网络层互通。</li>
+</ul>
+</li>
+<li>在各路由器上使能IPv6组播功能，在路由器各接口上使能IPv6 PIM-SM。</li>
+<li>在各路由器配置IPv6 PIM-SSM 组播组的地址范围。</li>
+<li>在路由器的主机侧接口上配置MLDv2。</li>
+<li>检查配置结果。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/37.png"></p>
+<blockquote>
+<ul>
+<li><p>在Router A上配置IPv6 PIM-SSM组播组的地址范围是FF3E::1。</p>
+</li>
+<li><p>Router B、Router C和Router D上的配置过程与Router A上的配置相似。</p>
+</li>
+<li><p>SSM模型采用的是IPv6 PIM-SM的子集，所以必须先在网络中所有的路由器上使能IPv6 PIM-SM功能。同时，配置SSM组的地址范围。缺省情况下，采用IANA定义的SSM组范围。</p>
+</li>
+<li><p>如果用户希望从指定源S接收信息，或从指定源外的所有源S接收信息，必须发送含有信道（S, G）的MLDv2报告消息。接收侧的DR接收到此消息后，判断消息中的组播地址G是否在SSM组的地址范围内。如果是，DR向组播源S发送加入消息，并在沿途各路由器上创建（S, G）项，从而建立SPT树，SSM模型就此建立。如果组播地址G在SSM组地址范围外，或用户没有显式指定源地址S，DR触发建立IPv6 PIM-SM基础上的ASM模型。</p>
+</li>
+<li><p>SSM模型通过IPv6 PIM-SM的子集来实现。使能IPv6 PIM-SM的同时也就使路由器具有SSM处理能力。路由器周期性发送Hello报文来发现PIM IPv6邻居，并处理邻居发来的报文。当路由器加入IPv6 PIM-SSM时，建议在非边界路由器所有接口上使能IPv6 PIM-SSM。</p>
+</li>
+<li><p>组播源的信息通过IPv6 PIM-SSM模式还是IPv6 PIM-SM模式传递到接收者，取决于信道（S, G）的组播地址是否在SSM组地址范围内。因此，IPv6 PIM-SSM模式中，组地址信息十分重要。</p>
+</li>
+<li><p>如果没有指定SSM组地址范围，系统采用IANA为SSM保留的FF3x::/12网段作为缺省的地址范围。</p>
+</li>
+<li><p>进入系统视图</p>
+<ul>
+<li><strong>system-view</strong></li>
+</ul>
+</li>
+<li><p>使能IPv6组播路由</p>
+<ul>
+<li><strong>multicast ipv6 routing-enable</strong></li>
+</ul>
+</li>
+<li><p>进入接口视图</p>
+<ul>
+<li><strong>interface</strong> <em>interface-type interface-number</em> </li>
+</ul>
+</li>
+<li><p>使能IPv6 PIM-SSM功能</p>
+<ul>
+<li><strong>pim</strong> <strong>ipv6</strong> <strong>sm</strong></li>
+</ul>
+</li>
+<li><p>进入PIM IPv6视图</p>
+<ul>
+<li><strong>pim-ipv6</strong></li>
+</ul>
+</li>
+<li><p>配置IPv6 PIM-SSM组播地址范围</p>
+<ul>
+<li><strong>ssm**</strong>-policy** <em>basic-acl6-number</em></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/38.png"></p>
+<blockquote>
+<ul>
+<li>如果Host A需要接收组播源S（2001::5）发给组G（FF3E::1）的信息，Router B建立到源的SPT。SPT路径上的Router A和Router B生成（S,G）项，SPT路径外的Router D不存在（S,G）项</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/39.png"></p>
+<blockquote>
+<ul>
+<li>组播路由管理（Multicast Route Management）主要介绍如何创建或更改组播路由来控制组播报文的转发，以及组播转发路径的检测和维护。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/40.png"></p>
+<blockquote>
+<ul>
+<li>组播路由和转发与单播路由和转发类似，首先每个组播路由协议都各自建立并维护了一张协议路由表。各组播路由协议的组播路由信息经过综合形成一个总的组播路由表（Multicast Routing-Table）。最后，路由器根据组播路由和转发策略，从组播路由表中选出最优的组播路由，并下发到组播转发表（Multicast Forwarding-Table），直接用于控制组播数据的转发。</li>
+<li>通过组播转发表，整个网络建立了一条以组播源为根，组成员为叶子的一点到多点的转发路径。为了实现转发路径的控制与维护，组播路由管理提供了一系列特性。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/41.png"></p>
+<blockquote>
+<ul>
+<li>(FC00::2, FFE3::1) (S, G)表项。 </li>
+<li>Protocol: pim-sm 协议类型。第一个Protocol表示生成表项的协议类型，第二个Protocol表示生成下游接口的协议类型。</li>
+<li>Flag: SPT LOC ACT PIM路由表项的标志。</li>
+<li>UpTime: 00:04:24 存在时间。第一个UpTime表示表项已存在的时间，第二个UpTime表示下游接口已存在的时间。</li>
+<li>Upstream interface: Vlanif20 上游接口。 </li>
+<li>Upstream neighbor: FE80::A01:100:1 上游邻居。NULL表示不存在上游邻居。</li>
+<li>RPF prime neighbor: FE80::A01:100:1 RPF邻居。NULL表示不存在RPF邻居。</li>
+<li>Downstream interface(s) information: 下游接口信息。 </li>
+<li>Total number of downstreams: 1 下游接口数量。 </li>
+<li>Expires: 00:02:47 下游接口老化时间。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/42.png"></p>
+<blockquote>
+<ul>
+<li>(FC00::2, FFE3::1) 第00001号表项，是(S, G)形式。 </li>
+<li>Uptime: 00:00:14 组播路由表项更新时间。 </li>
+<li>Upstream Interface: Vlanif10 上游接口。 </li>
+<li>List of 1 downstream interface 下游接口列表。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/43.png"></p>
+<blockquote>
+<ul>
+<li>(FC00:1::3, FF1E::1) 第00001号表项，是(S, G)形式。 </li>
+<li>MID: 10 组播转发表项在MFIB表中的唯一标识，用于快速检索组播转发表。</li>
+<li>Flags: ACT 组播转发表项的标志。 </li>
+<li>UpTime: 02:54:43 组播转发表项已存在的时间。 </li>
+<li>Timeout in: 00:03:26 组播转发表项超时时间。</li>
+<li>Incoming interface: Vlanif10 表项入接口。 </li>
+<li>List of 1 outgoing interfaces 表项出接口列表。</li>
+<li>Activetime: 00:23:15 出接口已存在时间。 </li>
+<li>Matched 38264 packets(1071392 bytes) 匹配该表项的报文数目。</li>
+<li>Wrong If 0 packets 从错误接口进入的报文数目。</li>
+<li>Forwarded 38264 packets(1071392 bytes) 已转发的报文数目。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/44.png"></p>
+<blockquote>
+<ul>
+<li><p>RPF检查原理</p>
+<ul>
+<li>路由器收到一份组播报文后，会根据报文的源地址通过单播路由表查找到达“报文源”的路由，查看到“报文源”的路由表项的出接口是否与收到组播报文的入接口一致。如果一致，则认为该组播报文从正确的接口到达，从而保证了整个转发路径的正确性和唯一性。这个过程就被称为RPF检查。</li>
+<li>如果这几条等价路由都是来自同一张路由表项，则选取下一跳地址最大的路由作为RPF路由。</li>
+<li>RPF检验可以基于单播路由、MBGP路由和组播静态路由。他们之间的优先顺序为组播静态路由、MBGP路由、单播路由。</li>
+</ul>
+</li>
+<li><p>拓扑描述</p>
+</li>
+<li><p>来自组播源FC00:0:0:2001::1/64的组播流从S1口到达路由器，路由器检查路由表，发现可以转发该组播流的端口为S0，RPF检查失败。因此达到S1口的数据流被丢弃。</p>
+</li>
+<li><p>来自组播源FC00:0:0:2001::1/64的组播流从S0口达到路由器，检查路由表发现入接口与接收该组播流的接口S0一致，RPF检查成功。因此组播流将被正确的转发。</p>
+</li>
+<li><p>组播路由协议通过已有的单播路由信息来确定上、下游邻居设备，创建组播路由表项。运用RPF检查机制，来确保组播数据流能够沿组播分发树（路径）正确的传输，同时可以避免转发路径上环路的产生。</p>
+</li>
+<li><p>在实际组播数据转发过程中，如果对每一份接收到的组播数据报文都通过单播路由表进行RPF检查，会给路由器带来很大负担。因此，路由器在收到一份来自源S发往组G的组播数据报文之后，首先会在组播转发表中查找有无相应的（S，G）组播转发表项：</p>
+</li>
+<li><p>如果不存在（S，G）转发表项，则对该报文执行RPF检查，将检查到的RPF接口作为入接口，创建组播路由表项，下发到组播转发表中。其中，对RPF检查结果的处理方式为：如果检查通过，表明接收接口为RPF接口，向转发表项的所有出接口转发；如果检查失败，表明报文来源路径错误，丢弃该报文。</p>
+</li>
+<li><p>如果存在（S，G）转发表项，并且接收该报文的接口与转发表项的入接口一致，则向所有的出接口转发该报文。</p>
+</li>
+<li><p>如果存在（S，G）转发表项，但是接收该报文的接口与转发表项的入接口不一致，则对此报文进行RPF检查。对RPF检查结果的处理方式为：</p>
+<ul>
+<li>若RPF检查选取出的RPF接口与转发表项的入接口一致，则说明（S，G）表项正确，报文来源路径错误，将其丢弃。</li>
+<li>若RPF检查选取出的RPF接口与转发表项的入接口不符，则说明（S，G）表项已过时，于是把表项中的入接口更新为RPF接口。然后再根据RPF检查规则进行判断：如果接收该报文的接口正是其RPF接口，则向转发表项的所有出接口转发该报文，否则将其丢弃。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/46.png"></p>
+<blockquote>
+<ul>
+<li>缺省情况下，组播报文转发过程中如果存在多条等价的最优转发路径，按照RPF检查对等价路由的处理规则，只会从IGP路由表中选取出下一跳地址最大的路由作为RPF路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/47.png"></p>
+<blockquote>
+<ul>
+<li>组播源Source向组播组G发送组播流，路由器RouterA和RouterD之间运行某种IGP协议（如OSPF），RouterA→RouterB→RouterD和RouterA→RouterC→RouterD是2条等价转发路径。</li>
+<li>缺省情况下，根据RPF检查规则，组播流会从Int1端口转发，因为Int1的IP地址比Int0地址大。配置组播负载分担之后，就不会根据下一跳地址来选取转发路径，RouterA→RouterB→RouterD和RouterA→RouterC→RouterD都会转发组播流。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/48.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/49.png"></p>
+<blockquote>
+<ul>
+<li>如图所示，域内路由器运行PIM SM，和接收者相临的接口运行MLD v1，在IPv6组播中MLDv1协议等同于IPv4组播中的IGMPv2，用于获取组播组成员信息并通知上层协议。</li>
+<li>区域内所有路由器通过RP的静态配置、BSR、或者自动发现方式得到RP信息。</li>
+<li>和IPv6接收者相连的倒数第一跳路由器收到接收者发送的MLD report报文，沿RPF邻居向上游发送(*，G)加入消息，直到RP收到(*，G)加入消息，沿途路由器都创建(*，G)项，生成以RP为根的共享树。</li>
+<li>组播源发出组播数据，第一跳路由器向RP发送PIM注册消息，RP收到后回应注册停止消息。</li>
+<li>RP向通过RPF邻居向第一跳路由器发(S，G)加入消息，沿途路由器创建(S，G)项，生成以第一跳路由器为根的源路径树。</li>
+<li>组播数据沿源路径树到达RP，并沿(*，G)转发，沿途路由器生成(S，G)项，组播数据到达接收者。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/50.png"></p>
+<p><img src="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/51.png"></p>
+<blockquote>
+<ul>
+<li><p>IPv6 PIM-SM和IPv4 PIM-SM有哪些不同？</p>
+<ul>
+<li>地址不同，协议机制完全一样。</li>
+</ul>
+</li>
+<li><p>IPv6 PIM-SSM的工作机制是怎样的？</p>
+<ul>
+<li>IPv6 PIM-SSM的实现可以概括成邻居发现、DR选举和SPT生成：<ul>
+<li>邻居发现和DR选举过程与IPv6 PIM-SM中的描述相同，是通过在路由器间发送Hello消息来实现的；</li>
+<li>由于PIM-SSM也使用PIM-SM协议，路由器生成RPT还是生成SPT的判决取决于组播地址是否在SSM组地址范围内。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-110-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/" rel="tag"># HCRSE-110-OSPF双栈原理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/" rel="next" title="IE-MLD原理">
+                <i class="fa fa-chevron-left"></i> IE-MLD原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

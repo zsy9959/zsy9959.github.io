@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-108-路由import&Control," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ACL访问控制类表  ACL是由permit或deny语句组成的一系列有顺序规则的集合，它通过匹配报文的信息实现对报文的分类。路由器根据ACL定义的规则判断哪些报文可以接收，哪些报文需要拒绝，从而实现对报文的过滤。 ACL通过配置的一系列匹配规则对特定的数据包进行过滤，从而识别需要过滤的对象。然后，根据预先设定的策略允许或禁止相应的数据包通过。同时，ACL可以作为基础配置被其他功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-路由import与Control">
+<meta property="og:url" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="ACL访问控制类表  ACL是由permit或deny语句组成的一系列有顺序规则的集合，它通过匹配报文的信息实现对报文的分类。路由器根据ACL定义的规则判断哪些报文可以接收，哪些报文需要拒绝，从而实现对报文的过滤。 ACL通过配置的一系列匹配规则对特定的数据包进行过滤，从而识别需要过滤的对象。然后，根据预先设定的策略允许或禁止相应的数据包通过。同时，ACL可以作为基础配置被其他功能">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/1.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/2.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/3.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/4.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/5.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/6.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/7.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/8.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/9.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/10.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/11.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/12.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/13.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/14.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/15.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/16.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/17.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/18.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/19.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/20.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/21.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/22.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/23.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/24.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/25.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/26.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/27.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/28.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/29.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/30.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/31.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/32.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/33.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/34.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/35.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/36.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/37.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/38.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/39.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/40.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/41.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/42.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/43.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/44.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/45.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/46.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/47.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/48.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/49.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/50.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/51.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/52.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/53.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/54.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/55.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/56.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/57.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/58.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/59.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/60.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/61.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/62.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/63.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/64.png">
+<meta property="og:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/65.png">
+<meta property="article:published_time" content="2021-08-18T06:15:01.000Z">
+<meta property="article:modified_time" content="2021-08-18T07:27:17.500Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-108-路由import&amp;Control">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/08/18/IE-路由import与Control/"/>
+
+
+
+
+
+  <title>IE-路由import与Control | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-路由import与Control</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-18T14:15:01+08:00">
+                2021-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/1.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/2.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/3.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/4.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/5.png"></p>
+<blockquote>
+<ul>
+<li><p>ACL访问控制类表</p>
+<ul>
+<li>ACL是由permit或deny语句组成的一系列有顺序规则的集合，它通过匹配报文的信息实现对报文的分类。路由器根据ACL定义的规则判断哪些报文可以接收，哪些报文需要拒绝，从而实现对报文的过滤。</li>
+<li>ACL通过配置的一系列匹配规则对特定的数据包进行过滤，从而识别需要过滤的对象。然后，根据预先设定的策略允许或禁止相应的数据包通过。同时，ACL可以作为基础配置被其他功能模块引用。</li>
+</ul>
+</li>
+<li><p>ip-prefix前缀类表</p>
+<ul>
+<li>ip-prefix将路由条目与前缀过滤列表的每一项进行匹配，然后根据定义的匹配模式进行过滤，达成路由筛选的目的。</li>
+<li>ip-prefix不能用来过滤数据包，只能过滤路由信息。</li>
+</ul>
+</li>
+<li><p>as-path-filter AS路径过滤器</p>
+<ul>
+<li>BGP的路由信息中，包含一个自治系统路径域。As-path-filter就是针对自治系统路径域指定匹配条件。AS路径过滤器仅应用于BGP协议。</li>
+</ul>
+</li>
+<li><p>community-filter团体属性过滤器</p>
+<ul>
+<li>BGP的路由信息中，可以携带一个或多个团体属性，团体属性过滤器就针对团体属性域指定匹配条件。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/6.png"></p>
+<blockquote>
+<ul>
+<li><p>ACL编号：用于标识ACL，表明该ACL是数字型ACL。</p>
+<ul>
+<li>根据ACL规则功能的不同，ACL被划分为基本ACL、高级ACL、二层ACL和用户ACL这几种类型，每类ACL编号的取值范围不同。</li>
+<li>除了可以通过ACL编号标识ACL，设备还支持通过名称来标识ACL，就像用域名代替IP地址一样，更加方便记忆。这种ACL，称为命名型ACL。</li>
+<li>命名型ACL实际上是“名字+数字”的形式，可以在定义命名型ACL时同时指定ACL编号。如果不指定编号，则由系统自动分配。</li>
+</ul>
+</li>
+<li><p>规则：即描述报文匹配条件的判断语句。</p>
+<ul>
+<li>规则编号：用于标识ACL规则。可以自行配置规则编号，也可以由系统自动分配。ACL规则的编号范围是0～4294967294，所有规则均按照规则编号从小到大进行排序。所以，图1中的rule 5排在首位，而规则编号最大的rule15排在末位。系统按照规则编号从小到大的顺序，将规则依次与报文匹配，一旦匹配上一条规则即停止匹配。</li>
+<li>动作：包括permit/deny两种动作，表示允许/拒绝。</li>
+<li>匹配项：ACL定义了极其丰富的匹配项。除了图中的源地址和生效时间段，ACL还支持很多其他规则匹配项。例如，二层以太网帧头信息（如源MAC、目的MAC、以太帧协议类型）、三层报文信息（如目的地址、协议类型）以及四层报文信息（如TCP/UDP端口号）等。</li>
+<li>如果规则存在，则系统会从ACL中编号最小的规则开始查找。如果匹配上了permit规则，则停止查找规则，并返回ACL匹配结果为：匹配（允许）。如果匹配上了deny规则，则停止查找规则，并返回ACL匹配结果为：匹配（拒绝）。如果未匹配上规则，则继续查找下一条规则，以此循环。如果一直查到最后一条规则，报文仍未匹配上，则返回ACL匹配结果为：不匹配。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/7.png"></p>
+<blockquote>
+<ul>
+<li><p>基本ACL</p>
+<ul>
+<li>仅使用报文的源IP地址、分片信息和生效时间段信息来定义规则。</li>
+</ul>
+</li>
+<li><p>高级ACL</p>
+<ul>
+<li>既可使用IPv4报文的源IP地址，也可使用目的IP地址、IP协议类型、ICMP类型、TCP源/目的端口、UDP源/目的端口号、生效时间段等来定义规则。</li>
+</ul>
+</li>
+<li><p>二层ACL</p>
+<ul>
+<li>使用报文的以太网帧头信息来定义规则，如根据源MAC（Media Access Control）地址、目的MAC地址、二层协议类型等。</li>
+</ul>
+</li>
+<li><p>用户ACL</p>
+<ul>
+<li>既可使用IPv4报文的源IP地址，也可使用目的IP地址、IP协议类型、ICMP类型、TCP源端口/目的端口、UDP源端口/目的端口号等来定义规则。</li>
+</ul>
+</li>
+<li><p>除此之外，还有基于IPv6的ACL，基本ACL6和高级ACL6。</p>
+<ul>
+<li>基本ACL6：可使用IPv6报文的源IPv6地址、分片信息和生效时间段来定义规则。</li>
+<li>高级ACL6：可以使用IPv6报文的源IPv6地址、目的IPv6地址、IPv6协议类型、ICMPv6类型、TCP源/目的端口、UDP源/目的端口号、生效时间段等来定义规则。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/8.png"></p>
+<blockquote>
+<ul>
+<li><p>ACL的匹配顺序</p>
+<ul>
+<li>一个ACL 可以由多条“deny | permit”语句组成，每一条语句描述一条规则，这些规则可能存在重复或矛盾的地方（一条规则可以包含另一条规则，但两条规则不可能完全相同）。</li>
+<li>设备支持两种匹配顺序，即配置顺序（config）和自动排序（auto）。当将一个数据包和访问控制列表的规则进行匹配的时候，由规则的匹配顺序决定规则的优先级，ACL通过设置规则的优先级来处理规则之间重复或矛盾的情形。缺省的ACL匹配顺序是config模式。</li>
+</ul>
+</li>
+<li><p>配置顺序</p>
+<ul>
+<li>如果配置规则时指定了规则编号，则规则编号越小，规则插入位置越靠前，该规则越先被匹配。</li>
+<li>如果配置规则时未指定规则编号，则由系统自动为其分配一个编号。该编号是一个大于当前ACL内最大规则编号且是步长整数倍的最小整数，因此该规则会被最后匹配。</li>
+</ul>
+</li>
+<li><p>自动排序（auto）</p>
+<ul>
+<li>自动排序（auto）使用“深度优先”的原则进行匹配。</li>
+<li>“深度优先”即根据规则的精确度排序，匹配条件（如协议类型、源和目的IP 地址范围等）限制越严格越精确。例如可以比较地址的反掩码，反掩码越小，则指定的主机的范围就越小，限制就越严格。</li>
+<li>若“深度优先”的顺序相同，则匹配该规则时按rule-id从小到大排列。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/9.png"></p>
+<blockquote>
+<ul>
+<li>ACL6和ACL命令行不同，而对应的编号可以相同，二者互不影响。</li>
+<li>例如：<ul>
+<li>[RouterA] acl ipv6 number 3001</li>
+<li>[RouterA-acl6-adv-3001] rule deny ipv6 source 3001::2/64</li>
+<li>[RouterA] acl 3001</li>
+<li>[Router-acl-adv-3001] rule permit ip source 202.169.10.5 0.0.0.0</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/10.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/11.png"></p>
+<blockquote>
+<ul>
+<li><p>ip-prefix</p>
+<ul>
+<li>每个地址前缀列表可以包含多个IP-Prefix条目，每个IP-Prefix条目对应一个索引号（index）。路由将按照索引号从小到大依次检查IP-Prefix列表，任意一个index匹配成功，将不再检查其余项。若所有index都匹配失败，路由信息将被过滤。</li>
+<li>根据匹配的前缀不同，前缀过滤列表可以进行精确匹配，也可以进行在一定掩码长度范围内匹配。</li>
+<li>前缀过滤列表可以进行精确匹配或者在一定掩码长度范围内匹配，可以通过配置关键字greater-equal和less-equal指定待匹配的前缀掩码长度范围。如果没有配置关键字greater-equal或less-equal，前缀过滤列表进行精确匹配，即只匹配掩码长度为前缀过滤列表掩码长度的相同IP地址路由；如果只配置了关键字greater-equal，则待匹配的掩码长度范围为从greater-equal指定值到32 位长度；如果只匹配了关键字less-equal，则待匹配的掩码长度范围为从指定的掩码到关键字less-equal指定值。</li>
+<li>greater-equal-value与less-equal-value的取值限制：mask-length&lt;=greater-equal-value&lt;=less-equal-value&lt;=32。</li>
+</ul>
+</li>
+<li><p>ip-prefix特点</p>
+<ul>
+<li>当所有前缀过滤列表均未匹配时，缺省情况下，存在最后一条默认匹配模式为deny。</li>
+<li>当引用的前缀过滤列表不存在时，默认匹配模式为permit。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/12.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/13.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/14.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/15.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/16.png"></p>
+<blockquote>
+<ul>
+<li>AS路径过滤器是将BGP中的AS_Path属性作为匹配条件的过滤器，只有BGP在收发路由的时候才能使用。</li>
+<li>由于AS_Path属性记录AS号是将最后经历的AS号放在AS_Path记录中的最左侧，所以在配置as-path-filter时需要格外注意。<ul>
+<li>如果一条路由起源于AS100，然后依次经过AS300, AS200, AS500，最后到达AS600。那么在AS600里，路由的AS-PATH属性表示为（500 200 300 100）。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/17.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/18.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/19.png"></p>
+<blockquote>
+<ul>
+<li>团体属性过滤器是将BGP中的团体属性作为匹配条件的过滤器，只有BGP在收发路由的时候才能使用。</li>
+<li>团体属性包括基本basic团体属性和extended团体属性<ul>
+<li>自定义团体属性和公认团体属性均属于basic团体属性。</li>
+<li>MPLS VPN中的RT和SOO均属于extended团体属性。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/20.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/21.png"></p>
+<blockquote>
+<ul>
+<li><p>路由策略主要实现了路由过滤和路由属性设置等功能，它通过改变路由属性（包括可达性）来改变网络流量所经过的路径。</p>
+</li>
+<li><p>路由策略常用于如下场景：</p>
+<ul>
+<li>控制路由的引入：<ul>
+<li>在对路由做相互引入时，为了防止次优路径或者环路，可以使用路由策略加以解决。</li>
+</ul>
+</li>
+<li>控制路由的接收和发布：<ul>
+<li>根据网络需求，接收或者发布特定的路由。</li>
+</ul>
+</li>
+<li>设置特定路由的属性：<ul>
+<li>可以通过路由策略修改路由的属性，以对网络进行优化、调整。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>路由策略原理</p>
+<ul>
+<li>一个Route-Policy由多个节点构成，路由进入路由策略后，按节点序号从小到大依次检查各个节点是否匹配。一个节点包括多个if-match和apply子句。if-match子句用来定义该节点的匹配条件，apply子句用来定义通过过滤的路由行为。if-match子句的过滤规则关系是“与”，即该节点的所有if-match子句都必须匹配。Route-Policy节点间的过滤关系是“或”，即只要通过了一个节点的过滤，就可通过该Route-Policy。如果没有通过任何一个节点的过滤，路由信息将无法通过该Route-Policy。</li>
+<li>对于同一个Route-Policy节点，在匹配的过程中，各个if-match子句间是“与”的关系，即路由信息必须同时满足所有匹配条件，才可以执行apply子句的动作。但命令if-match route-type和if-match interface除外，这两个命令的各自if-match子句间是“或”的关系，与其它命令的if-match子句间仍是“与”的关系。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/22.png"></p>
+<blockquote>
+<ul>
+<li>上面拓扑为双点双向重发布的示意图，如果不加控制，将会发生次优路由和环路等故障，产生故障的过程具体分析如下：<ul>
+<li>在拓扑中，R1将网段10.0.0.0/24及2000::/64引入到OSPF。R2/R3分别将该路由引入ISIS，正常情况下，R2/R3将路由引入ISIS会有先后，假设R3先于R2将该路由引入到IS-IS。那么R2就会同时从OSPF和IS-IS学到10.0.0.0/24及2000::/64的路由。于是R2会根据路由协议的优先级优选通过IS-IS学到的路由（OSPF的外部路由优先级为150，IS-IS的路由优先级为15）。于是，当R2访问10.0.0.0/24及2000::/64网段时，会使用R4-R3-R1这条次优路径。为了避免出现这种情况，可以在路由器R2上使用route-policy修改OSPF ASE路由的优先级，使得OSPF ASE的路由优先于从IS-IS学到的路由，使得R2选择正确的路由。</li>
+<li>当R1连接网络10.0.0.0/24及2000::/64的接口断掉之后，虽然该条外部LSA会在OSPF区域内老化，但是由于R2通过IS-IS已经学习到了10.0.0.0/24及2000::/64网络，所以R2会将该网络引入到OSPF，进而使R1和R3会通过R2学习到了网络10.0.0.0/24及2000::/64。当R2访问访问网络10.0.0.0/24及2000::/64时，流量会沿R4-R3-R1-R2的路径发送，从而引发环路。为避免这种情况，我们可以通过给路由条目添加标记tag标签，然后对特定标签进行过滤的方法来避免环路的发生。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/23.png"></p>
+<blockquote>
+<ul>
+<li><p>控制路由的接收和发布</p>
+<ul>
+<li>只接收必要、合法的路由信息，以控制路由表的容量，提高网络的安全性。</li>
+</ul>
+</li>
+<li><p>拓扑解释</p>
+<ul>
+<li>R4将网络10.0.X.0/24及2000::/64&amp;3000::/64引入到OSPF中。根据业务需要，R1只能接收网络10.0.0.0/24和2000::/64；而R2只能接收网络10.0.1.0/24和3000::/64。对于这种需求，可以通过filter-policy加以实现。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/24.png"></p>
+<blockquote>
+<ul>
+<li>Filter-policy import命令用来按照过滤策略，设置OSPF对接收的路由进行过滤。</li>
+<li>Filter-policy export命令用来按照过滤策略，设置对引入的路由在向外发布时进行过滤。<ul>
+<li>通过指定protocol或process-id对特定的某一种协议或某一进程的路由进行过滤。如果没有指定protocol和process-id，则OSPF将对所有引入的路由信息进行过滤。</li>
+<li>由于Type5、7 LSA是有ABSR产生的，因此，本命令仅在ASBR上配置。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/25.png"></p>
+<blockquote>
+<ul>
+<li><p>Filter-policy import命令用来配置IS-IS路由加入IP路由表时的过滤策略。</p>
+<ul>
+<li>配置该命令后，不会影响本地设备的LSP的扩散和LSDB的同步，只会影响本地的IP路由表。</li>
+</ul>
+</li>
+<li><p>Filter-policy export命令用来配置IS-IS对已引入的路由在向外发布时进行过滤的过滤策略。</p>
+<ul>
+<li>配置该命令后，不会影响本地设备的路由，只会将引入的部分外部路由发布给IS-IS邻居。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/26.png"></p>
+<blockquote>
+<ul>
+<li>filter-policy import命令用来配置对接收的路由信息进行过滤。</li>
+<li>filter-policy export命令用来配置对发布的路由进行过滤，只有通过过滤的路由才被BGP发布。<ul>
+<li>如果指定protocol参数，将只对引入的这种协议产生的路由进行过滤，对引入的其他协议产生的路由不受影响。如果没有指定protocol参数，对引入的任何一个协议产生的路由都要进行过滤。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/27.png"></p>
+<blockquote>
+<ul>
+<li>拓扑描述<ul>
+<li>通过route-policy修改BGP中的Local_Pref属性，进而影响流量走向。R2将从EBGP学到的10.0.0.0/24和2000::/64路由的Local_Pref设为300，R3将从EBGP学到的该路由的Local_Pref设置为200，R1/R2/R3相互之间通过IBGP交互各自的路由，最终将选择以R2作为本AS去往网络10.0.0.0/24和2000::/64的出口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/28.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/29.png"></p>
+<blockquote>
+<ul>
+<li>策略路由与路由策略存在以下不同：<ul>
+<li>策略路由的操作对象是数据包，在路由表已经产生的情况下，不按照路由表进行转发，而是根据需要，依照某种策略改变数据包转发路径。</li>
+<li>路由策略的操作对象是路由信息。路由策略主要实现了路由过滤和路由属性设置等功能，它通过改变路由属性（包括可达性）来改变网络流量所经过的路径。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/30.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/31.png"></p>
+<blockquote>
+<ul>
+<li><p>匹配顺序：</p>
+<ul>
+<li>如果找到了匹配的本地策略路由节点，则按照以下步骤发送报文：<ul>
+<li>查看用户是否设置了报文的优先级: 如果用户设置了报文的优先级，首先根据用户设置的优先级设置报文的优先级，然后继续向下执行;如果用户未设置报文的优先级，则继续向下执行</li>
+<li>查看用户是否设置了本地策略路由的出接口: 如果用户设置了出接口，则将报文从出接口发送出去，不再继续执行下面的步骤;如果用户未设置出接口，则继续向下执行</li>
+<li>查看用户是否设置了本地策略路由的下一跳（用户可以设置两个下一跳以达到负载分担的目的）如果用户设置了策略路由的下一跳，则将报文发往下一跳，不再继续执行下面的步骤; 如果用户未设置下一跳，则按照正常流程根据报文的目的地址查找路由。如果没有查找到路由，则继续向下执行</li>
+<li>查看用户是否设置了本地策略路由的缺省出接口: 如果用户设置了缺省出接口，则将报文从缺省出接口发送出去，不再继续执行下面的步骤;如果用户未设置缺省出接口，则继续执行</li>
+<li>查看用户是否设置了本地策略路由的缺省下一跳:如果用户设置了缺省下一跳，则将报文发往缺省下一跳，不再继续执行下面的步骤;如果用户未设置缺省下一跳，则继续执行</li>
+<li>丢弃报文，产生ICMP_UNREACH 消息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果没有找到匹配的本地策略路由节点，按照发送IP报文的一般流程，根据目的地址查找路由</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/32.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/33.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/34.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/35.png"></p>
+<blockquote>
+<ul>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RTX与RTY互联，则互联地址为XY.1.1.X与XY.1.1.Y，掩码长度为24位。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/36.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>route-policy命令用来创建Route-Policy并进入该Route-Policy视图。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>route-policy route-policy-name { permit | deny } node node<ul>
+<li>route-policy-name：指定Route-Policy名称。</li>
+<li>permit：指定Route-Policy节点的匹配模式为允许。如果路由匹配所有的if-match子句，该路由可通过过滤并执行此节点apply命令中规定的一系列动作；否则，必须进行下一节点的测试。</li>
+<li>deny：指定Route-Policy节点的匹配模式为拒绝。如果路由匹配所有的if-match子句，该路由不能通过过滤从而不能进入下一节点的测试。</li>
+<li>node node：Route-Policy的节点索引。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>Route-Policy用于过滤路由信息以及为通过过滤的路由信息设置路由属性。一个Route-Policy由多个节点构成。一个节点包括多个if-match和apply子句。if-match子句用来定义该节点的匹配条件，apply子句用来定义通过过滤的路由行为。if-match子句的过滤规则关系是“与”，即该节点的所有if-match子句都必须匹配。Route-Policy节点间的过滤关系是“或”，即只要通过了一个节点的过滤，就可通过该Route-Policy。如果没有通过任何一个节点的过滤，路由信息将无法通过该Route-Policy。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/37.png"></p>
+<blockquote>
+<ul>
+<li>此处的需求是对之前案例的扩展，在原案例的基础上进行配置。</li>
+<li>对于该需求，主要考察对filter-policy和ACL的理解。所谓最优配置，实际上就是使用最少的命令达到要求的效果。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/38.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>filter-policy export命令用来按照过滤策略，设置对引入的路由在向外发布时进行过滤。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>filter-policy { acl-number | acl-name acl-name | ip-prefix ip-prefix-name } export [ protocol [ process-id ] ]<ul>
+<li>acl-number：指定基本访问控制列表号。</li>
+<li>acl-name acl-name：指定访问控制列表名称。</li>
+<li>ip-prefix ip-prefix-name：指定地址前缀列表名称。</li>
+<li>protocol：指定发布路由信息的协议。</li>
+<li>process-id：当发布的路由协议为rip、isis、ospf时，可以指定进程号。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>OSPF通过命令import-route引入外部路由后，为了避免路由环路的产生，通过filter-policy export命令对引入的路由在发布时进行过滤，只将满足条件的外部路由转换为Type-5 LSA（AS-external-LSA）并发布出去。</li>
+<li>通过指定protocol或process-id对特定的某一种协议或某一进程的路由进行过滤。如果没有指定protocol和process-id，则OSPF将对所有引入的路由信息进行过滤。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/39.png"></p>
+<blockquote>
+<ul>
+<li>该案例拓扑和之前的拓扑一致。我们在完成需求后，要充分考虑到是否存在次优路由，是否发生了环路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/40.png"></p>
+<blockquote>
+<ul>
+<li>通过路由协议的相互引入之后，R4到达网络172.16.X.0/24出现次优路径。产生次优路径主要是因为R3将OSPF路由先行分发入ISIS协议域，于是R4从OSPF和ISIS同时学到了172.16.X.0/24的路由，因为OSPF的外部路由的preference值为150，而ISIS的preference值为15，所以R4选择了ISIS路由前往172.16.X.0/24网段，于是产生次优路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/41.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/42.png"></p>
+<blockquote>
+<ul>
+<li>本案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。<ul>
+<li>需要修正R4访问172.16.X.0/24网段的路由，避免出现经过ISIS区域的次优路由。</li>
+<li>可以通过Tag实现对双点双向路由引入的控制，从而避免环路。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/43.png"></p>
+<blockquote>
+<ul>
+<li><p>如果在做路由互相引入的时候不做过滤，那么，在网络发生变化的时候，可能会在网络中导致环路。为避免环路就要保证路由协议间相互引入的时候只引入各路由域自身的路由。在上面的配置场景中，使用了tag来实现路由相互引入时的限制。使用tag的优势是不需要指定具体的路由条目，当路由域内具体的路由项有增减的时候，引入的路由条目的tag值会随之变化，不需要手工干预，具有很好的扩展性。</p>
+</li>
+<li><p>虽然上面的配置场景的路由策略能够很好地避免环路，但是并不能解决次优路由的问题。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/44.png"></p>
+<blockquote>
+<ul>
+<li><p>次优路由主要是因为双点双向导入时，R3/R4中的某一台路由器会同时从两侧得到172.16.X.0/24路由，而因为OSPF的外部路由preference值大于ISIS的preference值（preference值越小越优先），导致R3/R4（其中一台）选择了次优路由。要解决此问题，需要修改OSPF外部路由条目的preference值，只要使OSPF_ASE路由的preference值小于ISIS路由的preference值就可以解决此问题。</p>
+</li>
+<li><p>考虑到合理性问题，不建议将OSPF_ASE路由的preference值设置成比OSPF内部路由的preference值（10）还小。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/45.png"></p>
+<blockquote>
+<ul>
+<li>本案例中，是对原案例进行的扩展，在原案例的基础上进行配置。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/46.png"></p>
+<blockquote>
+<ul>
+<li>当仅仅进行路由汇总，发现存在两个问题。第一个问题，R5学习到了该汇总路由；第二个问题，在R2 ping一个不存在的地址产生了环路。</li>
+<li>第一个问题产生的原因，主要是由于R3和R4学习到对方产生的汇总路由后，再引入到ISIS域中产生的。此处，R3首先进行了OSPF汇聚配置，通过R2传递到R4。R4将该OSPF汇聚路由引入到ISIS，通告给R5。</li>
+<li>第二个问题产生的原因，是因为R2上面有2条等价的10.0.0.0/16的路由，下一跳分别是R3和R4。当tracert的端口号变化时，tracert报文会被送给R3或R4。（1）tracert报文发给R4时： R4晚于R3进行OSPF路由汇聚，所以R4只有1条R3通告的OSPF聚合路由，所以R4对于10. 0.0.0/16，下一跳为R2。形成环路。（2）tracert报文发给R3时： R4生成OSPF汇聚路由后，通过R2通告给R3；R3生成OSPF汇聚路由后，通过R2传递给R4，R4将该OSPF汇聚路由引入到ISIS，通过R5通告给R3。所以R3会收到2条16位掩码的路由，通过比较协议优先级，R3会优选ISIS，下一跳为R5。R5的下一跳为R4。而R4晚于R3进行OSPF路由汇聚，所以R4有R3通告的OSPF聚合路由，所以R4对于10. 0.0.0/16，下一跳为R2。形成环路。</li>
+<li>为了解决上面两个问题，我们需要保证R3和R4既不能学习到对方产生的汇总路由，又不能将该路由引入到ISIS路由域。所以，我们只需在R3和R4上将他们学习到的对方的汇总路由过滤即可。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/47.png"></p>
+<blockquote>
+<ul>
+<li>在R3/R4上增加过滤策略，不从OSPF接收特定的汇聚路由。保证该汇聚路由不再重新导入到ISIS路由域。避免了环路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/48.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/49.png"></p>
+<blockquote>
+<p>案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。</p>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/50.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义：</p>
+<ul>
+<li>policy-based-route命令用来创建或修改策略路由和策略点。</li>
+<li>ip local policy-based-route命令用来使能本地策略路由。</li>
+</ul>
+</li>
+<li><p>参数意义</p>
+<ul>
+<li>policy-based-route policy-name { permit | deny } node node-id<ul>
+<li>policy-name：指定策略名称。</li>
+<li>permit：策略点的模式，表示对满足匹配条件的报文进行策略路由。</li>
+<li>deny：策略点的模式，表示对满足匹配条件的报文不进行策略路由。</li>
+<li>node-id：指定策略点的顺序号。</li>
+</ul>
+</li>
+<li>ip local policy-based-route policy-name<ul>
+<li>policy-name：指定策略路由的名称。 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>注意事项</p>
+<ul>
+<li>在部署策略路由时，如果需要配置报文的出接口，则报文的出接口不能为以太接口等广播型接口。</li>
+</ul>
+</li>
+<li><p>实验结果</p>
+<ul>
+<li>在R5上指定不同的源地址对到达相同目的地的数据包进行跟踪，可以发现数据包选用了不同的路径。注意，ip local policy-based-route命令应用的策略只对路由器本地发起的数据包起作用。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/51.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/52.png"></p>
+<blockquote>
+<ul>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RTX与RTY互联，则互联地址为XY.1.1.X与XY.1.1.Y，掩码长度为24位。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/53.png"></p>
+<blockquote>
+<ul>
+<li>该部分只需要注意R5在做路由引入时，需要精细匹配。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/54.png"></p>
+<blockquote>
+<ul>
+<li>当tracert一个不存在的、但是在网络10.0.0.0/16内的地址时，会发生环路。该环路的产生主要是由于OSPF产生汇总路由时，不自动生成指向null0的路由所致。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/55.png"></p>
+<blockquote>
+<ul>
+<li>在R5上通过命令配置指向null0的静态路由，即可破除环路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/56.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/57.png"></p>
+<blockquote>
+<ul>
+<li>本案例中的需求是对之前案例的扩展，在原案例的基础上进行配置。</li>
+<li>本案例中设备互联地址规则如下：<ul>
+<li>如RTX与RTY互联，则互联地址为XY.1.1.X与XY.1.1.Y,掩码长度为24位。</li>
+<li>R1接口S1/0/0地址为12.1.1.1/24，R2接口S1/0/0地址为12.1.1.2/24；R1接口S1/0/1地址为21.1.1.1/24，R2接口S1/0/1地址为21.1.1.2/24。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/58.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/59.png"></p>
+<blockquote>
+<ul>
+<li>通过filter-policy结合ACL，将需求中指定的两个网段导入到ISIS协议中，注意，当使用filter-policy过滤路由协议的导入的时候，使用export方向。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/60.png"></p>
+<blockquote>
+<ul>
+<li>本案例中通过在导入路由的时候给路由条目加Tag的方法防止出现路由环路。ISIS路由协议如果需要支持Tag，必须要使用wide类型的开销，否则ISIS路由不能携带Tag标记。</li>
+<li>使用Tag标签防止了路由回环，但是不能防止次优路由的产生。如果要避免次优路由，需要修改相应路由的preference值。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/61.png"></p>
+<blockquote>
+<ul>
+<li>本例中的配置将避免路由10.0.0.0/16在R3/R4上出现次优路由。因为导入速度的不一致，总会导致R3/R4两台路由器中的一台会从ISIS和OSPF同时学到10.0.0.0/16，如果R3先行导入，那么R4就会同时从ISIS和OSPF学到10.0.0.0/16路由，而R4选择路由时会比较他们的preference，因OSPF外部路由的preference值为150，而isis的preference值为15，所以R4会选择到达经由IS-IS域到达网络10.0.0.0/16，该路径是次优路径。所以，通过在R4上，修改OSPF外部路由10.0.0.0/16的preference值，使其小于IS-IS的preference值，从而消除次优路径，考虑合理性，建议OSPF的外部路由preference值要大于OSPF的内部preference值（10）。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/62.png"></p>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/63.png"></p>
+<blockquote>
+<ul>
+<li>ABCD</li>
+<li>D</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/64.png"></p>
+<blockquote>
+<ul>
+<li>AB</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/18/IE-%E8%B7%AF%E7%94%B1import%E4%B8%8EControl/65.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-108-%E8%B7%AF%E7%94%B1import-Control/" rel="tag"># HCRSE-108-路由import&Control</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/09/IE-BGP%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86Advance/" rel="next" title="IE-BGP双栈原理Advance">
+                <i class="fa fa-chevron-left"></i> IE-BGP双栈原理Advance
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/08/18/IE-MLD%E5%8E%9F%E7%90%86/" rel="prev" title="IE-MLD原理">
+                IE-MLD原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
