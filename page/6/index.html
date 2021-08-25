@@ -241,6 +241,474 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/MSTP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/06/MSTP/" itemprop="url">MSTP原理与配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:11:06+08:00">
+                2021-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/06/MSTP/MSTP.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP/STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。</p>
+<p>•为了弥补RSTP/STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree Protocol，多生成树协议）。MSTP兼容STP和RSTP，通过建立多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述RSTP/STP技术的缺陷</p>
+<p>▫描述MSTP对RSTP/STP技术的改进</p>
+<p>▫描述MSTP的各种概念</p>
+<p>▫描述MSTP的工作过程</p>
+<p>▫实现MSTP的基本配置</p>
+<h1 id="MSTP概述"><a href="#MSTP概述" class="headerlink" title="MSTP概述"></a>MSTP概述</h1><h2 id="RSTP-STP的不足-1"><a href="#RSTP-STP的不足-1" class="headerlink" title="RSTP/STP的不足 (1)"></a><strong>RSTP/STP的不足</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/1.png"></p>
+<h2 id="RSTP-STP的不足-2"><a href="#RSTP-STP的不足-2" class="headerlink" title="RSTP/STP的不足 (2)"></a><strong>RSTP/STP的不足</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/2.png"></p>
+<h2 id="多生成树协议概述"><a href="#多生成树协议概述" class="headerlink" title="多生成树协议概述"></a><strong>多生成树协议概述</strong></h2><p>•MSTP是IEEE 802.1S中定义的生成树协议，MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。</p>
+<p>•MSTP可以将一个或多个VLAN映射到一个Instance（实例），再基于Instance计算生成树，映射到同一个Instance的VLAN共享同一棵生成树。</p>
+<p><img src="/2021/05/06/MSTP/3.png"></p>
+<blockquote>
+<p>•如图中例子，经计算，最终生成两棵生成树：</p>
+<ul>
+<li><p>Instance1对应的生成树以SW1为根交换设备，转发VLAN1~VLAN10的报文。</p>
+</li>
+<li><p>Instance2对应的生成树以SW2为根交换设备，转发VLAN11~VLAN20的报文。</p>
+</li>
+<li><p>不同VLAN的报文沿不同的路径转发，实现了负载分担。</p>
+</li>
+</ul>
+<p>•注意：生成树不是基于VLAN运行的，而是基于Instance运行的。</p>
+</blockquote>
+<h1 id="MSTP的基本概念"><a href="#MSTP的基本概念" class="headerlink" title="MSTP的基本概念"></a><strong>MSTP的基本概念</strong></h1><h2 id="MST-Region"><a href="#MST-Region" class="headerlink" title="MST Region"></a><strong>MST</strong> <strong>Region</strong></h2><p><img src="/2021/05/06/MSTP/5.png"></p>
+<blockquote>
+<p>•同一个MST域的设备具有下列特点：</p>
+<ul>
+<li><p>都启动了MSTP。</p>
+</li>
+<li><p>具有相同的域名。</p>
+</li>
+<li><p>具有相同的VLAN到生成树实例映射配置。</p>
+</li>
+<li><p>具有相同的MSTP修订级别配置。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTI"><a href="#MSTI" class="headerlink" title="MSTI"></a><strong>MSTI</strong></h2><p><img src="/2021/05/06/MSTP/6.png"></p>
+<blockquote>
+<p>•Instance0是缺省存在的，而且缺省时，华为交换机上所有的VLAN都映射到了Instance0。</p>
+<p>•通过设置VLAN映射表（即VLAN和MSTI的对应关系表），把VLAN和MSTI联系起来。</p>
+<ul>
+<li>每个VLAN只能对应一个MSTI，即同一VLAN的数据只能在一个MSTI中传输，而一个MSTI可能对应多个VLAN。</li>
+</ul>
+</blockquote>
+<h2 id="CST"><a href="#CST" class="headerlink" title="CST"></a><strong>CST</strong></h2><p><img src="/2021/05/06/MSTP/7.png"></p>
+<h2 id="IST"><a href="#IST" class="headerlink" title="IST"></a><strong>IST</strong></h2><p><img src="/2021/05/06/MSTP/8.png"></p>
+<h2 id="CIST"><a href="#CIST" class="headerlink" title="CIST"></a><strong>CIST</strong></h2><p><img src="/2021/05/06/MSTP/9.png"></p>
+<h2 id="SST"><a href="#SST" class="headerlink" title="SST"></a><strong>SST</strong></h2><p><img src="/2021/05/06/MSTP/10.png"></p>
+<h2 id="总根，域根和主桥"><a href="#总根，域根和主桥" class="headerlink" title="总根，域根和主桥"></a><strong>总根，域根和主桥</strong></h2><p><img src="/2021/05/06/MSTP/11.png"></p>
+<blockquote>
+<p>•主桥包括总根和IST域根。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><img src="/2021/05/06/MSTP/12.png"></p>
+<h2 id="MSTP的端口角色-1"><a href="#MSTP的端口角色-1" class="headerlink" title="MSTP的端口角色 (1)"></a><strong>MSTP的端口角色 (1)</strong></h2><p>MSTP中定义的所有端口角色包括：</p>
+<p>根端口、指定端口、Alternate端口、Backup端口、Master端口、域边缘端口和边缘端口。</p>
+<p><img src="/2021/05/06/MSTP/15.png"></p>
+<p><img src="/2021/05/06/MSTP/14.png"></p>
+<p><img src="/2021/05/06/MSTP/16.png"></p>
+<blockquote>
+<p>•除边缘端口外，其他端口角色都参与MSTP的计算过程。</p>
+<p>•同一端口在不同的生成树实例中可以担任不同的角色。</p>
+</blockquote>
+<h2 id="MSTP的端口状态"><a href="#MSTP的端口状态" class="headerlink" title="MSTP的端口状态"></a><strong>MSTP的端口状态</strong></h2><p>MSTP定义的端口状态与RSTP协议中定义相同:</p>
+<ul>
+<li><p>Forwarding状态：端口既转发用户流量，学习MAC地址，又接收/发送BPDU报文。</p>
+</li>
+<li><p>Learning状态：过渡状态，端口接收/发送BPDU报文，不转发用户流量但是学习MAC地址。</p>
+</li>
+<li><p>Discarding状态：端口只接收BPDU报文，不转发用户流量也不学习MAC地址。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>MSTP端口状态</strong></th>
+<th><strong>端口在拓扑中的角色</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Forwarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口</td>
+</tr>
+<tr>
+<td>Discarding</td>
+<td>包括根端口、指定端口、Master端口、域边缘端口、Alternate端口、Backup端口</td>
+</tr>
+</tbody></table>
+<h2 id="MSTP报文"><a href="#MSTP报文" class="headerlink" title="MSTP报文"></a><strong>MSTP报文</strong></h2><p><img src="/2021/05/06/MSTP/18.png"></p>
+<p><img src="/2021/05/06/MSTP/19.png"></p>
+<p>•无论是域内的MST BPDU还是域间的，前36个字节和RST BPDU相同。从第37个字节开始是MSTP专有字段。最后的MSTI配置信息字段由若干MSTI配置信息组连缀而成。</p>
+<p>•MST BPDU中主要信息说明：</p>
+<ul>
+<li><p>Protocol Identifier：2 Byte，协议标识符。</p>
+</li>
+<li><p>Protocol Version Identifier：1 Byte，协议版本标识符，STP为0，RSTP为2，MSTP为3。</p>
+</li>
+<li><p>BPDU Type：1 Byte，BPDU类型：</p>
+<ul>
+<li>0x00：STP的Configuration BPDU</li>
+<li>0x80：STP的TCN BPDU（Topology Change Notification BPDU）</li>
+<li>0x02：RST BPDU（Rapid Spanning-Tree BPDU）或者MST BPDU（Multiple Spanning-Tree BPDU）</li>
+</ul>
+</li>
+<li><p>CIST Flags：1 Byte，CIST标志字段。</p>
+</li>
+<li><p>CIST Root Identifier：8 Byte，CIST的总根交换设备ID。</p>
+</li>
+<li><p>CIST External Path Cost：4 Byte，CIST外部路径开销指从本交换设备所属的MST域到CIST根交换设备所属的MST域的累计路径开销。CIST外部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Regional Root Identifier：8 Byte，CIST的域根交换设备ID，即IST Master的ID。如果总根在这个域内，那么域根交换设备ID就是总根交换设备ID。</p>
+</li>
+<li><p>CIST Port Identifier：2 Byte，本端口在IST中的指定端口ID。</p>
+</li>
+<li><p>Message Age：2 Byte，BPDU报文的生存期。</p>
+</li>
+<li><p>Max Age：2 Byte，BPDU报文的最大生存期，超时则认为到根交换设备的链路故障。</p>
+</li>
+<li><p>Hello Time：2 Byte，Hello定时器，缺省为2秒。</p>
+</li>
+<li><p>Forward Delay：2 Byte，Forward Delay定时器，缺省为15秒。</p>
+</li>
+<li><p>Version 1 Length：1 Byte，Version1 BPDU的长度，值固定为0。</p>
+</li>
+<li><p>Version 3 Length：2 Byte，Version3 BPDU的长度。</p>
+</li>
+<li><p>MST Configuration Identifier：51 Byte，MST配置标识，表示MST域的标签信息，包含4个字段。</p>
+</li>
+<li><p>CIST Internal Root Path Cost：4 Byte，CIST内部路径开销指从本端口到IST Master交换设备的累计路径开销。CIST内部路径开销根据链路带宽计算。</p>
+</li>
+<li><p>CIST Bridge Identifier：8 Byte，CIST的指定交换设备ID。</p>
+</li>
+<li><p>CIST Remaining Hops：1 Byte，BPDU报文在CIST中的剩余跳数。</p>
+</li>
+<li><p>MSTI Configuration Messages：16 Byte，MSTI配置信息。每个MSTI的配置信息占16 Byte，如果有n个MSTI就占用n×16 Byte。</p>
+</li>
+</ul>
+<h1 id="MSTP的工作原理"><a href="#MSTP的工作原理" class="headerlink" title="MSTP的工作原理"></a>MSTP的工作原理</h1><h2 id="MSTP拓扑计算"><a href="#MSTP拓扑计算" class="headerlink" title="MSTP拓扑计算"></a><strong>MSTP拓扑计算</strong></h2><p>•MSTP拓扑计算：</p>
+<ul>
+<li><p>MSTP可以将整个二层网络划分为多个MST域，各个域之间通过计算生成CST，域内生成IST，CST和IST构成了整个交换设备网络的CIST。</p>
+</li>
+<li><p>域内还可以基于实例计算生成多棵生成树，每棵生成树都被称为是一个MSTI。</p>
+</li>
+</ul>
+<p>•CIST和MSTI都是根据优先级向量来计算的，这些优先级向量信息都包含在MST BPDU中。各交换设备互相交换MST BPDU来生成CIST和MSTI 。</p>
+<ul>
+<li><p>参与CIST计算的优先级向量为：</p>
+<p>▪{ 根交换设备ID，外部路径开销，域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>参与MSTI计算的优先级向量为：</p>
+<p>▪{ 域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
+</li>
+<li><p>注意：括号中的向量的优先级从左到右依次递减。</p>
+</li>
+</ul>
+<blockquote>
+<p>•优先级向量说明：</p>
+<ul>
+<li><p>根交换设备ID：根交换设备ID用于选择CIST中的根交换设备。</p>
+<ul>
+<li><p>根交换设备ID = Priority(16 bit) + MAC(48 bit)。</p>
+</li>
+<li><p>其中Priority为MSTI0的优先级。</p>
+</li>
+</ul>
+</li>
+<li><p>外部路径开销（External Root Path Cost，ERPC）：从CIST的域根到达总根的路径开销。</p>
+<ul>
+<li>MST域内所有交换设备上保存的外部路径开销相同。</li>
+<li>若CIST根交换设备在域中，则域内所有交换设备上保存的外部路径开销为0。</li>
+</ul>
+</li>
+<li><p>域根ID：域根ID用于选择MSTI中的域根。</p>
+<ul>
+<li>域根ID = Priority(16 bit) + MAC(48 bit)。</li>
+<li>其中Priority为MSTI0的优先级。</li>
+</ul>
+</li>
+<li><p>内部路径开销（Internal Root Path Cost，IRPC）：本桥到达域根的路径开销。</p>
+<ul>
+<li>域边缘端口保存的内部路径开销大于非域边缘端口保存的内部路径开销。</li>
+</ul>
+</li>
+<li><p>指定交换设备ID：CIST或MSTI实例的指定交换设备是本桥通往域根的最邻近的上游桥。</p>
+<ul>
+<li>如果本桥就是总根或域根，则指定交换设备为自己。</li>
+</ul>
+</li>
+<li><p>指定端口ID：指定交换设备上同本设备上根端口相连的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+<li><p>接收端口ID：接收到BPDU报文的端口。</p>
+<ul>
+<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
+<li>端口优先级必须是16的整数倍。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>•优先级向量比较原则：</p>
+<ul>
+<li><p>同一向量比较，值最小的向量具有最高优先级。</p>
+</li>
+<li><p>优先级向量比较原则如下</p>
+<p>1.首先，比较根交换设备ID。</p>
+<p>2.如果根交换设备ID相同，再比较外部路径开销。</p>
+<p>3.如果外部路径开销相同，再比较域根ID。</p>
+<p>4.如果域根ID仍然相同，再比较内部路径开销。</p>
+<p>5.如果内部路径仍然相同，再比较指定交换设备ID。</p>
+<p>6.如果指定交换设备ID仍然相同，再比较指定端口ID。</p>
+<p>7.如果指定端口ID还相同，再比较接收端口ID。</p>
+</li>
+<li><p>如果端口接收到的BPDU内包含的配置消息优于端口上保存的配置消息，则端口上原来保存的配置消息被新收到的配置消息替代。端口同时更新交换设备保存的全局配置消息。反之，新收到的BPDU被丢弃。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="CIST计算"><a href="#CIST计算" class="headerlink" title="CIST计算"></a><strong>CIST计算</strong></h2><p>•经过比较MST BPDU消息后，在整个网络中选择一个优先级最高的交换设备作为CIST的树根，即总根。</p>
+<p>•在每个MST域内，MSTP通过计算生成IST；同时MSTP将每个MST域作为单台交换设备对待，通过计算在MST域间生成CST。CST和IST构成了整个交换设备网络的CIST。</p>
+<p><img src="/2021/05/06/MSTP/20.png"></p>
+<h2 id="MSTI计算"><a href="#MSTI计算" class="headerlink" title="MSTI计算"></a>MSTI计算</h2><p>•在MST域内，MSTP根据VLAN和生成树实例的映射关系，针对不同的VLAN生成不同的生成树实例。</p>
+<p>•每棵生成树独立进行计算，计算过程与STP计算生成树的过程类似。</p>
+<p><img src="/2021/05/06/MSTP/21.png"></p>
+<blockquote>
+<p>•MSTI的特点：</p>
+<p>​    ▫每个MSTI独立计算自己的生成树，互不干扰。</p>
+<p>​    ▫每个MSTI的生成树计算方法与STP基本相同。</p>
+<p>​    ▫每个MSTI的生成树可以有不同的根，不同的拓扑。</p>
+<p>​    ▫每个MSTI在自己的生成树内发送BPDU。</p>
+<p>​    ▫每个MSTI的拓扑通过命令配置决定。</p>
+<p>​    ▫每个端口在不同MSTI上的生成树参数可以不同。</p>
+<p>​    ▫每个端口在不同MSTI上的角色、状态可以不同。</p>
+<p>•根桥和备份根桥：可以通过计算来自动确定生成树的根桥，用户也可以手动配置设备为指定生成树的根桥或备份根桥。</p>
+<p>​    ▫设备在各生成树中的角色互相独立，在作为一棵生成树的根    桥或备份根桥的同时，也可以作为其它生成树的根桥或备份    根桥；但在同一棵生成树中，一台设备不能既作为根桥，又    作为备份根桥。</p>
+<p>​    ▫在一棵生成树中，生效的根桥只有一个；当两台或两台以上    的设备被指定为同一棵生成树的根桥时，系统将选择MAC地    址最小的设备作为根桥。</p>
+<p>​    ▫可以在每棵生成树中指定多个备份根桥。当根桥出现故障或    被关机时，备份根桥可以取代根桥成为指定生成树的根桥；    但此时若配置了新的根桥，则备份根桥将不会成为根桥。如    果配置了多个备份根桥，则MAC地址最小的备份根桥将成为    指定生成树的根桥。</p>
+</blockquote>
+<h2 id="MSTP网络数据转发"><a href="#MSTP网络数据转发" class="headerlink" title="MSTP网络数据转发"></a><strong>MSTP网络数据转发</strong></h2><p>在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：</p>
+<ul>
+<li><p>在MST域内，沿着其对应的MSTI转发。</p>
+</li>
+<li><p>在MST域间，沿着CST转发。</p>
+</li>
+</ul>
+<p><img src="/2021/05/06/MSTP/22.png"></p>
+<blockquote>
+<p>•如图所示，以VLAN2的数据发送为例。</p>
+</blockquote>
+<h1 id="MSTP的基本配置"><a href="#MSTP的基本配置" class="headerlink" title="MSTP的基本配置"></a>MSTP的基本配置</h1><h2 id="MSTP的基础配置命令"><a href="#MSTP的基础配置命令" class="headerlink" title="MSTP的基础配置命令"></a><strong>MSTP的基础配置命令</strong></h2><p><img src="/2021/05/06/MSTP/23.png"></p>
+<blockquote>
+<p>•命令：<strong>stp mode</strong> <strong>mstp</strong></p>
+<p>▫STP和MSTP不能互相识别报文，而MSTP和RSTP可以互相识别报文，所以若工作在MSTP工作模式下，交换设备会设置所有和运行STP的交换设备直接相连的端口工作在STP模式下，其他端口工作在MSTP模式下，实现运行不同生成树协议的设备之间的互通。</p>
+</blockquote>
+<h2 id="配置MST域并激活"><a href="#配置MST域并激活" class="headerlink" title="配置MST域并激活"></a><strong>配置MST域并激活</strong></h2><p><img src="/2021/05/06/MSTP/24.png"></p>
+<p><img src="/2021/05/06/MSTP/25.png"></p>
+<blockquote>
+<p>•命令：<strong>stp region-configuration</strong></p>
+<ul>
+<li>缺省情况下，MST域的三个参数均取缺省值。</li>
+</ul>
+<p>•命令：<strong>region-name</strong> <em>name</em></p>
+<ul>
+<li><em>name</em>：指定交换设备的MST域名。字符串形式，不支持空格，区分大小写，长度为1～32个字符。</li>
+</ul>
+<p>•命令：<strong>instance</strong> <em>instance-id</em> <strong>vlan</strong> { <em>vlan-id1</em> [ <strong>to</strong> <em>vlan-id2</em> ] }</p>
+<ul>
+<li><em>instance-id</em>：指定生成树实例的编号。整数形式，取值范围是0～4094，取值为0表示的是CIST。</li>
+</ul>
+<p>•命令：<strong>revision-level</strong> <em>level</em></p>
+<ul>
+<li><p><em>level</em>：指定MST域的修订级别。整数形式，取值范围是0～65535。</p>
+</li>
+<li><p>MSTP是标准协议，各厂商设备的MSTP修订级别一般都默认为0。如果某厂商的设备不为0，为保持MST域内计算，在部署MSTP时，需要将各设备的MSTP修订级别修改为一致。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MSTP的可选配置命令"><a href="#MSTP的可选配置命令" class="headerlink" title="MSTP的可选配置命令"></a>MSTP的可选配置命令</h2><p><img src="/2021/05/06/MSTP/26.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>root</strong> { <strong>primary</strong> | <strong>secondary</strong> }</p>
+<ul>
+<li><p><strong>instance</strong> <em>instance-id</em>：指定生成树实例的编号。如果不指定instance，则配置设备在实例0上为根桥/备份根桥设备。</p>
+</li>
+<li><p><strong>primary</strong>：指定配置为生成树的根桥设备。配置后该设备优先级值自动为0，将不能更改设备优先级。</p>
+</li>
+<li><p><strong>secondary</strong>：指定配置为生成树的备份根桥设备。配置后该设备优先级值自动为4096，将不能更改设备优先级。</p>
+</li>
+</ul>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定交换设备的优先级数值。优先级值越小，则交换设备的优先级越高。整数形式，取值范围是0～61440，步长为4096，如0、4096、8192等。缺省值是32768。</li>
+</ul>
+<p>•命令：<strong>stp</strong> <strong>pathcost-standard</strong> { <strong>dot1d-1998</strong> | <strong>dot1t</strong> | <strong>legacy</strong> }</p>
+<ul>
+<li><p><strong>dot1d-1998</strong>：指定路径开销值的计算方法是IEEE 802.1D-1998标准方法，取值范围为1~65535。</p>
+</li>
+<li><p><strong>dot1t</strong>：指定路径开销值的计算方法是IEEE 802.1T标准方法，取值范围为1~200,000,000。</p>
+</li>
+<li><p><strong>legacy</strong>：指定路径开销值的计算方法是华为计算方法，取值范围为1~200,000。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/05/06/MSTP/27.png"></p>
+<blockquote>
+<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>port priority</strong> <em>priority</em></p>
+<ul>
+<li><em>priority</em>：指定端口在生成树计算时的优先级。整数形式，取值范围是0～240，步长为16，如0、16、32等。</li>
+</ul>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-1"><a href="#案例：单域多实例场景配置-1" class="headerlink" title="案例：单域多实例场景配置 (1)"></a><strong>案例：单域多实例场景配置</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/29.png"></p>
+<blockquote>
+<p>可以配置SW1为VLAN2的网关（VLANIF2：192.168.1.254/24），SW2为VLAN3的网关（VLANIF3:192.168.2.254/24），最终实现PC1能Ping通SW1的VLANIF2接口，PC2能Ping通SW2的VLANIF3接口。</p>
+</blockquote>
+<h2 id="案例：单域多实例场景配置-2"><a href="#案例：单域多实例场景配置-2" class="headerlink" title="案例：单域多实例场景配置 (2)"></a><strong>案例：单域多实例场景配置</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/30.png"></p>
+<p><img src="/2021/05/06/MSTP/31.png"></p>
+<h2 id="案例：单域多实例场景配置-3"><a href="#案例：单域多实例场景配置-3" class="headerlink" title="案例：单域多实例场景配置 (3)"></a><strong>案例：单域多实例场景配置</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
+<p><img src="/2021/05/06/MSTP/32.png"></p>
+<p><img src="/2021/05/06/MSTP/33.png"></p>
+<p><img src="/2021/05/06/MSTP/34.png"></p>
+<h2 id="验证配置结果-1"><a href="#验证配置结果-1" class="headerlink" title="验证配置结果 (1)"></a><strong>验证配置结果</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/35.png"></p>
+<p><img src="/2021/05/06/MSTP/36.png"></p>
+<h2 id="验证配置结果-2"><a href="#验证配置结果-2" class="headerlink" title="验证配置结果 (2)"></a><strong>验证配置结果</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/37.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 某运行MSTP协议的交换机的端口角色如下图所示，请问GigabitEthernet0/0/1端口在Instance1中的端口状态应该是？</p>
+<p>A.Blocking</p>
+<p><strong>B.Discarding</strong></p>
+<p>C.Forwarding</p>
+<p>D.Learning</p>
+<p><img src="/2021/05/06/MSTP/4.png"></p>
+<p>2.(判断题) CIST是由内部生成树和公共生成树构成的一棵树。（  ）</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•在MSTP网络中，可以将一个或多个VLAN映射到一个Instance，然后MSTP基于该Instance计算生成树。基于Instance的生成树被称为MSTI，MSTP为每个Instance维护独立的MSTI，映射到同一个Instance的VLAN将共享同一棵生成树。</p>
+<p>•在以太网中部署MSTP协议后可实现如下功能：</p>
+<ul>
+<li><p>形成多棵无环路的树，解决广播风暴并实现冗余备份。</p>
+</li>
+<li><p>多棵生成树在VLAN间实现负载均衡，不同VLAN的流量按照不同的路径转发。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/RSTP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2962,237 +3430,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/" itemprop="url">网络编程与自动化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-02T10:50:27+08:00">
-                2021-05-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="网络编程与自动化"><a href="#网络编程与自动化" class="headerlink" title="网络编程与自动化"></a>网络编程与自动化</h2><h3 id="背景-传统网络运维困境"><a href="#背景-传统网络运维困境" class="headerlink" title="背景:传统网络运维困境"></a>背景:传统网络运维困境</h3><p>传统的网络运维工作需要网络工程师手动登录网络设备，人工查看和执行配置命令，肉眼筛选配置结果。这种严重依赖“人”的工作方式操作流程长，效率低下，而且操作过程不易审计。</p>
-<p>经典运维场景</p>
-<ol>
-<li>设备升级∶现网有数千台网络设备，你需要周期性、批量<br>性地对设备进行升级。</li>
-<li>配置审计:企业年度需要对设备进行配置审计。例如要求<br>所有设备开启Telnet功能，以太网交换机配置生成树安全功能。你需要快速地找出不符合要求的设备。</li>
-<li>配置变更:因为网络安全要求，需要每三个月修改设备账<br>号和密码。你需要在数干台网络设备上删除原有账号并新建账号。</li>
-</ol>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/1.png"></p>
-<h3 id="网络自动化"><a href="#网络自动化" class="headerlink" title="网络自动化"></a>网络自动化</h3><ul>
-<li>网络自动化，通过工具实现网络自动化地部署、运行和运维，逐步减少对“人”的依赖。这能够很好地解决传统网络运维的问题。</li>
-<li>业界有很多实现网络自动化的开源工具，例如Ansible、SaltStack、Puppet、Chef等。从网络工程能力构建的角度考虑，更推荐工程师具备代码编程能力。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/2.png"></p>
-<h3 id="基于编程实现的网络自动化"><a href="#基于编程实现的网络自动化" class="headerlink" title="基于编程实现的网络自动化"></a>基于编程实现的网络自动化</h3><ul>
-<li>近几年随着网络自动化技术的兴起，以Python为主的编程能力成为了网络工程师的新技能要求。</li>
-<li>Python编写的自动化脚本能够很好的执行重复、耗时、有规则的操作。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/3.png"></p>
-<h2 id="编程语言概述"><a href="#编程语言概述" class="headerlink" title="编程语言概述"></a>编程语言概述</h2><h3 id="编程语言"><a href="#编程语言" class="headerlink" title="编程语言"></a>编程语言</h3><ul>
-<li>编程语言（Programming Language )，是一种用于编写计算机程序的语言，用于控制计算机的行为。</li>
-<li>按照语言在执行之前是否需要编译区分，可以将编程语言分为需要编译的编译型语言(Compiled Language)，不需要编译的解释型语言( Interpreted Language )。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/4.png"></p>
-<h3 id="计算技术栈与程序执行过程"><a href="#计算技术栈与程序执行过程" class="headerlink" title="计算技术栈与程序执行过程"></a>计算技术栈与程序执行过程</h3><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/5.png"></p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/6.png"></p>
-<h3 id="高级编程语言–编译型语言"><a href="#高级编程语言–编译型语言" class="headerlink" title="高级编程语言–编译型语言"></a>高级编程语言–编译型语言</h3><ul>
-<li>编译型语言︰编译型语言的程序在执行之前有一个编译过程，把程序编译成为机器语言的文件。运行时不需要重新翻译，直接使用编译的结果。典型的如C/C++/Go语言，都属于编译型语言。</li>
-<li>从源码到程序的过程:源码需要由编译器、汇编器翻译成机器指令，再通过链接器链接库函数生成机器语言程序。机器语言必须与CPU的指令集匹配，在运行时通过加载器加载到内存，由CPU执行指令。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/7.png"></p>
-<h3 id="高级编程语言–解释型语言"><a href="#高级编程语言–解释型语言" class="headerlink" title="高级编程语言–解释型语言"></a>高级编程语言–解释型语言</h3><ul>
-<li>解释型语言∶解释型语言的程序不需要在运行前编译，在运行程序的时候才逐行翻译。典型的如Java/Python语言，都属于解释型语言。</li>
-<li>从源码到程序的过程:解释型语言的源代码由编译器生成字节码，然后再由虚拟机（JVM/PVM）解释执行。虚拟机将不<br>同CPU指令集的差异屏蔽，因此解释型语言的可移植性相对较好。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/8.png"></p>
-<h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><p>.Python是一门完全开源的高级编程语言。它的作者是Guido Van Rossum。</p>
-<h3 id="Python的优缺点"><a href="#Python的优缺点" class="headerlink" title="Python的优缺点"></a>Python的优缺点</h3><p>优点：</p>
-<ul>
-<li>Python拥有优雅的语法、动态类型具有解释性质。能够让学习者从语法细节的学习中抽离，专注于程序逻辑。</li>
-<li>Python同时支持面向过程和面向对象的编程。</li>
-<li>Python拥有丰富的第三方库。</li>
-<li> Python可以调用其他语言所写的代码，又被称为胶水语言。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>运行速度慢。Python是解释型语言,不需要编译即可运行。代码在运行时会逐行地翻译成CPU能理解的机器码这个翻译过程非常耗时。</li>
-</ul>
-<p>由于Python具有非常丰富的第三方库，加上Python语言本身的优点，所以Python可以在非常多的领域内使用:人工智能、数据科学、APP、自动化运维脚本等。</p>
-<h3 id="Python代码执行过程"><a href="#Python代码执行过程" class="headerlink" title="Python代码执行过程"></a>Python代码执行过程</h3><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/9.png"></p>
-<h3 id="Python运行方式"><a href="#Python运行方式" class="headerlink" title="Python运行方式"></a>Python运行方式</h3><p>Python有两种运行方式，交互式运行和脚本式运行。</p>
-<h4 id="交互式运行"><a href="#交互式运行" class="headerlink" title="交互式运行"></a>交互式运行</h4><p>交互式编程不需要创建脚本文件，是通过Python解释器的交互模式编写代码。</p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/10.png"></p>
-<h4 id="脚本式运行"><a href="#脚本式运行" class="headerlink" title="脚本式运行"></a>脚本式运行</h4><p>脚本模式里的代码可以在各种Python编译器或者集成开发环境上运行。例如Python自带的IDLE、Atom、Visual Studio、Pycharm和Anaconda等。</p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/11.png"></p>
-<h3 id="Python编码规范"><a href="#Python编码规范" class="headerlink" title="Python编码规范"></a>Python编码规范</h3><ul>
-<li>编码规范是使用Python编写代码时应遵守的命名规则、代码缩进、代码和语句分割方式等。良好的编码规范<br>有助于提高代码的可读性，便于代码的维护和修改。</li>
-<li>例如分号、圆括号、空行和空格的使用规范建议如下:</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/12.png"></p>
-<h4 id="Python编码规范-标识符命名"><a href="#Python编码规范-标识符命名" class="headerlink" title="Python编码规范-标识符命名"></a>Python编码规范-标识符命名</h4><ul>
-<li>Python标识符用于表示常量、变量、函数以及其他对象的名称。</li>
-<li>标识符通常由字母、数字和下划线组成，但不能以数字开头。标识符大小写敏感，不允许重名。如果标识符不符合规则，编译器运行代码时会输出SyntaxError语法错误。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/13.png"></p>
-<h4 id="Python编码规范-代码缩进"><a href="#Python编码规范-代码缩进" class="headerlink" title="Python编码规范-代码缩进"></a>Python编码规范-代码缩进</h4><ul>
-<li>在Python程序中，代码缩进代表代码块的作用域。如果一个代码块包含两个或更多的语句，则这些语句必须具有相同的缩进量。对于Python而言代码缩进是一种语法规则，它使用代码缩进和冒号来区分代码之间的层次。</li>
-<li>编写代码时候，建议使用4个空格来生成缩进。如果程序代码中使用了错误的缩进，则会在运行中发出IndentationError错误信息。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/14.png"></p>
-<h4 id="Python编码规范-使用注释"><a href="#Python编码规范-使用注释" class="headerlink" title="Python编码规范-使用注释"></a>Python编码规范-使用注释</h4><ul>
-<li>注释就是在程序中添加解释说明，能够增强程序的可读性。在Python程序中，注释分为单行注释和多行注释。</li>
-<li>单行注释以#字符开始直到行尾结束。</li>
-<li>多行注释内容可以包含多行，这些内容包含在一对三引号内(“…””或者”””…”””)。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/15.png"></p>
-<h4 id="Python编码规范–源码文件结构"><a href="#Python编码规范–源码文件结构" class="headerlink" title="Python编码规范–源码文件结构"></a>Python编码规范–源码文件结构</h4><ul>
-<li>一个完整的Python源码文件一般包含几个组成部分︰解释器和编码格式声明、文档字符串、模块导入和运行代码。</li>
-<li>如果会在程序中调用标准库或其他第三方库的类时，需要先使用import或from…. import语句导入相关的模块。导入语句始终在文件的顶部。在模块注释或文档字符串(docstring)之后。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/16.png"></p>
-<h3 id="Python的函数与模块"><a href="#Python的函数与模块" class="headerlink" title="Python的函数与模块"></a>Python的函数与模块</h3><ul>
-<li>函数(Function)是组织好的、可重复使用的一段代码。它能够提高程序的模块化程度和代码利用率。函数使用关键字def定义。</li>
-<li>模块(Module)是一个保存好的Python文件。模块可以由函数或者类组成。模块和常规Python程序之间的唯一区别是用途不同:模块用于被其他程序调用。因此，模块通常没有main函数。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/17.png"></p>
-<h3 id="Python的类与方法"><a href="#Python的类与方法" class="headerlink" title="Python的类与方法"></a>Python的类与方法</h3><ul>
-<li>类(Class)是用来描述具有一类相同的属性和方法的集合。类的定义使用关键字class。</li>
-<li>被实例化的类的”函数”被称作方法(Method)。类定义方法时候必须携带 self 关键字，它表示类的实例本身。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/18.png"></p>
-<h3 id="telnetlib介绍"><a href="#telnetlib介绍" class="headerlink" title="telnetlib介绍"></a>telnetlib介绍</h3><p>telnetlib是Python标准库中的模块。它提供了实现Telnet功能的类telnetlib.Telnet。这里通过调用telnetlib.Telnet类里的不同方法实现不同功能。</p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/19.png"></p>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/20.png"></p>
-<h3 id="案例-使用telnetlib登陆设备"><a href="#案例-使用telnetlib登陆设备" class="headerlink" title="案例:使用telnetlib登陆设备"></a>案例:使用telnetlib登陆设备</h3><h4 id="案例描述"><a href="#案例描述" class="headerlink" title="案例描述"></a>案例描述</h4><ul>
-<li>现有一台网络设备作为Telnet服务器，需要实现使用Python telnetlib作为Telnet客户端登录此设备。</li>
-</ul>
-<p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/21.png"></p>
-<p>实现过程分为四个步骤:</p>
-<ul>
-<li><p>配置设备Telnet服务。</p>
-</li>
-<li><p>手动验证和查看Telnet登录步骤，作为代码实现的参考。</p>
-</li>
-<li><p>编写和运行Python代码。</p>
-</li>
-<li><p>验证结果。</p>
-</li>
-</ul>
-<h4 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h4><h5 id="配置设备Telnet"><a href="#配置设备Telnet" class="headerlink" title="配置设备Telnet"></a>配置设备Telnet</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/22.png"></p>
-<h5 id="查看Telent登录步骤"><a href="#查看Telent登录步骤" class="headerlink" title="查看Telent登录步骤"></a>查看Telent登录步骤</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/23.png"></p>
-<h5 id="编写Python代码"><a href="#编写Python代码" class="headerlink" title="编写Python代码"></a>编写Python代码</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/24.png"></p>
-<h5 id="运行结果对比"><a href="#运行结果对比" class="headerlink" title="运行结果对比"></a>运行结果对比</h5><p><img src="/2021/05/02/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E4%B8%8E%E8%87%AA%E5%8A%A8%E5%8C%96/25.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3247,7 +3484,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3260,7 +3497,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

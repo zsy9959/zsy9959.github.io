@@ -241,6 +241,495 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/" itemprop="url">IE-MPLS-BGP-VPN跨域</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-23T10:20:47+08:00">
+                2021-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/1.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/2.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/3.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/4.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/5.png"></p>
+<blockquote>
+<ul>
+<li>引入：</li>
+<li>随着MPLS VPN解决方案的广泛应用，大型企业不同的分支站点之间，或相互协作的企业网络之间都存在着跨越不同自治域的情况。</li>
+<li>举例：</li>
+<li>一般的MPLS VPN体系结构都是在一个自治系统内运行，任何VPN的路由信息都是只能在一个自治系统内按需扩散，没有提供自治系统内的VPN信息向其他自治系统扩散的功能。</li>
+<li>如上图，基于MPLS的VPN可以将私有网络的不同Site连接起来，形成一个统一的网络，基于MPLS的VPN还支持对不同VPN间的互通控制。CE（Customer Edge）是用户边缘设备；PE（Provider Edge）是服务商边缘路由器，位于骨干网络；P（Provider），是服务提供商网络中的骨干路由器，不与CE直接相连。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/6.png"></p>
+<blockquote>
+<ul>
+<li>如果同一VPN的两个站点位于不同的AS，那么普通的MPLS BGP VPN是否还合适于业务的部署？</li>
+<li>答案是否定的。因为此时连接VPN的PE路由器已经无法简单地建立IBGP邻居关系了，或是与RR建立邻居关系。因此，需要一些手段通过建立EBGP邻居关系来传递VPNv4路由。</li>
+<li>为了支持不同AS之间的VPN路由信息交换，就需要扩展现有的协议和修改MPLS VPN体系框架，提供一个不同于基本的MPLS VPN体系结构所提供的互连模型——跨域（Inter-AS）的MPLS VPN，以便可以穿过AS间的链路来发布路由前缀和标签信息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/7.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/8.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/9.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/10.png"></p>
+<blockquote>
+<ul>
+<li>在本方案中，ASBR-PE之间直接相连。两台ASBR-PE之间用多个接口(包括子接口)互连，每个接口关联一个VPN，每个ASBR-PE都把对端当成CE。因此，ASBR-PE相连的接口(包括子接口)需要绑定VRF，并通过eBGP邻居关系把VPNv4路由转变成普通IPv4路由从一个AS传递到另一个AS。因此，两个ASBR相连，但不需要启用MPLS。此方案在MPLS BGP VPN业务属性上没有做扩展。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/11.png"></p>
+<blockquote>
+<p>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接，如上图，现在需要把Client1这条路由从CE1穿过AS100和AS200传递到CE2：</p>
+<p>1.在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1。</p>
+<p>2.在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR-PE1。</p>
+<p>3.在AS200中，同样通过运行LDP协议，ASBR-PE2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T3给P2。</p>
+<p>4.在AS200中，通过运行LDP协议，P2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T4给PE2。</p>
+<p>5.CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址。</p>
+<p>6.PE1将IPv4路由Client1通过MP-BGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，然后通告给ASBR-PE1。</p>
+<p>7.ASBR-PE1将VPNv4路由变为IPv4路由，把IPv4路由Client1通告给ASBR-PE2，并且下一跳指向ASBR-PE1。</p>
+<p>8.ASBR-PE2将IPv4路由Client1通过MP-BGP重发布为VPNv4路由，并且下一跳为ASBR-PE2，为该路由分配一个VPN标签V2，将其通告给PE2。</p>
+<p>9.PE2将VPNv4路由转变为IPv4路由Client1，把路由Client1通告给CE2，并且下一跳指向PE2。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/12.png"></p>
+<blockquote>
+<p>通过前文的过程分析，我们从反向来分析转发平面的工作过程，即CE2要发送一个目的地为Client1的IP报文给CE1，如上图所示：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V2，再封装外层标签T4，然后将此报文发送给P2。</p>
+<p>3.P2进行标签交换，把外层标签T4换成T3，然后将此报文发送给ASBR-PE2。</p>
+<p>4.ASBR-PE2去掉所有标签，将报文(普通IP报文)转发给ASBR-PE1。</p>
+<p>5.ASBR-PE1收到IP报文后进行MPLS标签的封装，先封装VPN标签V1，再封装外层标签T2，然后将此报文发送给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/13.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/14.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/15.png"></p>
+<blockquote>
+<ul>
+<li>此例中，为方便描述，采用不带RR的方式。带RR的实现方式可参考下文OptionB配置章节。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/16.png"></p>
+<blockquote>
+<ul>
+<li>在此方案中，PE通过MP-iBGP将VPNv4路由通告给ASBR-PE或是VPN RR(其中ASBR-PE是其客户机)。ASBR-PE再通过MP-eBGP将VPNv4通告给另一个AS的ASBR-PE，再由这个ASBR-PE将VPNv4路由通告给该AS内的PE。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/17.png"></p>
+<blockquote>
+<p>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接：</p>
+<p>1、在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1</p>
+<p>2、在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR-PE1</p>
+<p>3、在AS200中，同样通过运行LDP协议，ASBR-PE2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T3给P2</p>
+<p>4、在AS200中，通过运行LDP协议，P2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T4给PE2</p>
+<p>5、CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址</p>
+<p>6、PE1将IPv4路由Client1通过MP-IBGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，然后通告给ASBR-PE1</p>
+<p>7、ASBR-PE1通过MP-EBGP将Client1的VPNv4路由通告给ASBR-PE2，将下一跳改为ASBR-PE1，并重新分配一个VPN标签V2</p>
+<p>8、ASBR-PE2将收到的Client1的VPNv4路由通过MP-IBGP通告给PE2，将下一跳指向自己，并重新分配一个VPN标签V3</p>
+<p>9、PE2将Client1的VPNv4路由变为IPv4路由，把路由Client1通告给CE2，并且下一跳改为PE2</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/18.png"></p>
+<blockquote>
+<ul>
+<li><p>当VPN实例数量较多时，可以部署专门的RR设备。如图，AS内的PE和ASBR设备只与RR设备建立MP-BGP邻居关系，由RR负责路由的反射传递，PE和ASBR之间无需建立BGP邻居。</p>
+</li>
+<li><p>RR只负责控制平面的VPNv4路由传递，数据转发时，流量不经过RR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/19.png"></p>
+<blockquote>
+<p>通过上文的过程分析，我们从反向来分析转发平面的工作过程：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V3，再封装外层标签T4，然后将此报文发送给P2。</p>
+<p>3.P2进行标签交换，把外层标签T4换成T3，然后将此报文发送给ASBR-PE2。</p>
+<p>4.ASBR-PE2去掉外层标签，将VPN标签V3交换为V2，再将其转发给ASBR-PE1（此时报文仅带有一层私网标签）。</p>
+<p>5.ASBR-PE交换VPN标签V2成V1，再加一个外层标签T2，并将报文转发给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/20.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/21.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/22.png"></p>
+<blockquote>
+<ul>
+<li>此例中，为方便描述，采用不带RR的方式。带RR的实现方式可参考下文OptionC配置章节。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/23.png"></p>
+<blockquote>
+<ul>
+<li>在此方案中，ASBR不再维护或是通告VPNv4路由（所以如上图，此处将ASBR-PE路由器改名为ASBR）。ASBR只需要维护所有去往PE的带标签路由，并通过EBGP通告给对端AS。在transit AS内的ASBR也同样需要使用EBGP通告这些带标签的IPv4路由。这样在不同AS的PE之间给会建立一条LSP，从而可以建立起PE之间的多跳MP-EBGP连接并进行VPNv4路由的通告。</li>
+<li>如果每个AS的P路由器都能够知道去往其他AS的PE路由器的路由，那情况会比较简单。但是如果P不知道，那么当PE收到从CE收到VPN数据时，就要加上三层标签，底层标签是由对端PE分配的与VPN路由相关联的VPN标签，中间的标签是ASBR分配的与去往对端PE的路由相关联的标签，外层标签则是与去往下一跳ASBR的路由相关联的标签。</li>
+<li>为了进一步扩展性能，多跳MP-EBGP会话可以建立在不同的AS的VPN RR之间。并且当这些VPN RR通告VPNv4路由时不改变下一跳信息。PE只与VPN RR建立MP-iBGP会话。</li>
+<li>注意：为了方便，如上图，使用的是对称的LSP进行示意，但是实际上在控制平面和数据平面的工作过程上，两端AS的LSP结构是不对称的。下文将会详细讲解。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/24.png"></p>
+<blockquote>
+<ul>
+<li>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接，并且P1与P2路由器都没有去往另一个AS的PE的路由，以上图为例：<ul>
+<li>在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1</li>
+<li>在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR-PE1</li>
+<li>在AS200中，同样通过运行LDP协议，ASBR-PE2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T3给P2</li>
+<li>在AS200中，通过运行LDP协议，P2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T4给PE2</li>
+<li>ASBR1通过EBGP会话通告一条去往PE1的带标签的IPv4路由给ASBR2，其中下一跳为ASBR1，标签为BGP标签，值为B1</li>
+<li>ASBR2通过BGP会话通告一条去往PE1的带标签的IPv4路由给PE2，其中下一跳为ASBR2，标签为BGP标签，值为B2。<ul>
+<li>注意：这里假设PE2与ASBR1所在的AS已经为去往它们的路由分配了隧道标签(公网标签)，并且去往PE2的带标签路由也已经被通告。</li>
+</ul>
+</li>
+<li>PE1与PE2建立起MP-EBGP会话</li>
+<li>CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址</li>
+<li>PE1将IPv4路由Client1通过MP-EBGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，将其通告给PE2</li>
+<li>PE2将VPNv4路由变为IPv4路由，把IPv4路由Client1通告给CE2，并且下一跳改为PE2</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/25.png"></p>
+<blockquote>
+<ul>
+<li><p>VPNv4邻居：</p>
+<ul>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</li>
+<li><p>ASBR,PE同RR建立BGP单播IPv4邻居：</p>
+<ul>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR的loopback，传递给本端RR，用于本端RR与对端RR建立vpnv4邻居。</li>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR和PE的loopback，传递给本端RR，本端RR再将其反射给PE，用于跨域之间的PE建立BGP LSP。</li>
+</ul>
+</li>
+<li><p>带RR场景中，RR负责控制平面IPv4的路由反射、VPNv4路由的传递，转发平面的流量不经过RR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/26.png"></p>
+<blockquote>
+<p>通过上文的过程分析，我们从反向来分析转发平面的工作过程：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V1，由于去往Client1的下一跳PE1不是直连邻居，通过查表发现去往PE1的BGP路由是带标签的路由，因此加上分配的BGP标签B2做为中间标签，最后，由于去往PE1的路由的下一跳ASBR2也不是直连邻居，通过查表发现去往ASBR2也有关联的标签T4，因此，封装上外层标签T4。</p>
+<p>3.P2进行标签交换，把外层标签T4换成T3，然后将此报文发送给ASBR-PE2。</p>
+<p>4.ASBR2去掉外层标签，将BGP标签B2交换为B1，再将其转发给ASBR1。</p>
+<p>5.当ASBR1收到报文后，发现B1是它分配的，所以去掉B1进一步查表转发，发现此时去往PE1的路由有一个关联的标签T2，因此，ASBR1将其加在栈顶，并转发给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/27.png"></p>
+<blockquote>
+<p>此例中，为方便描述，采用不带RR的方式。带RR的实现方式可参考下文OptionC配置章节。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/28.png"></p>
+<blockquote>
+<ul>
+<li>在此方案中，ASBR不再维护或是通告VPNv4路由。ASBR只需要维护所有去往PE的带标签路由，并通过EBGP通告给对端ASBR。</li>
+<li>对端ASBR收到带BGP标签路由后，MPLS LDP会触发为该BGP标签路由产生标签，并在AS内的LDP邻居间传递。因此，在PE上可以看到去往对端PE的LDP LSP。</li>
+<li>为了进一步扩展性能，多跳MP-EBGP会话可以建立在不同的AS的VPN RR之间，本AS内的PE只需要与RR建立MP-IBGP即可。这些VPN RR通告VPNv4路由时不改变下一跳信息，进而当对端PE转发流量时，可以迭代至正确的隧道。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/29.png"></p>
+<blockquote>
+<p>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接，并且P1与P2路由器都没有去往另一个AS的PE的路由，以上图为例：</p>
+<p>1.在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1。</p>
+<p>2.在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR1。</p>
+<p>3.在AS200中，同样通过运行LDP协议，ASBR2分配一个与去往ASBR2的路由相关联的隧道标签(外层标签)T3给P2。</p>
+<p>4.在AS200中，通过运行LDP协议，P2分配一个与去往ASBR2的路由相关联的隧道标签(外层标签)T4给PE2。</p>
+<p>5.ASBR1通过EBGP会话通告一条去往PE1的带标签的IPv4路由给ASBR2，其中下一跳为ASBR1，标签为BGP标签，值为B1。</p>
+<p>6.ASBR2为这条BGP标签路由触发建立LSP，分发LDP标签T5至P2，P2进而分发T6至PE2。</p>
+<p>7.PE1与PE2建立起MP-EBGP会话。</p>
+<p>8.CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址。</p>
+<p>9.PE1将IPv4路由Client1通过MP-EBGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，将其通告给PE2。</p>
+<p>10.PE2将VPNv4路由变为IPv4路由，把IPv4路由Client1通告给CE2，并且下一跳改为PE2。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/30.png"></p>
+<blockquote>
+<ul>
+<li><p>VPNv4邻居：</p>
+<ul>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</li>
+<li><p>带RR场景中，RR只负责控制平面VPNv4路由的传递，转发平面的流量不经过RR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/31.png"></p>
+<blockquote>
+<p>通过上文的过程分析，我们从反向来分析转发平面的工作过程：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V1，由于去往Client1的下一跳PE1不是直连邻居，通过查表发现去往PE1的标签为T6，打上T6。</p>
+<p>3.P2进行标签交换，把外层标签T6换成T5，然后将此报文发送给ASBR2。</p>
+<p>4.ASBR2去掉外层标签，将T5交换为B1，再将其转发给ASBR1。</p>
+<p>5.当ASBR1收到报文后，发现B1是它分配的，所以去掉B1进一步查转发表，发现此时去往PE1的路由有一个关联的标签T2，因此，ASBR1将其加在栈顶，并转发给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/32.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/33.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/34.png"></p>
+<blockquote>
+<ul>
+<li>如上图所示，共分为4个AS，AS100和AS200作为ISP，PE1和ASBR1属于AS100，PE2和ASBR2属于AS200。CE1和CE2属于同一个VPN，CE1通过AS100的PE1接入，CE2通过AS200的PE2接入。</li>
+<li>每台路由器的IP地址规划详见拓扑图。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/35.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/36.png"></p>
+<blockquote>
+<p>1.搭建拓扑，配置IP：按照拓扑要求搭建试验拓扑，并配置IP地址。</p>
+<ul>
+<li>CE1需要配置Loopback 0，GE0/0/1；</li>
+<li>PE1需要配置Loopback 0，GE0/0/0；</li>
+<li>P1需要配置Loopback 0，GE0/0/0，GE0/0/1；</li>
+<li>ASBR1需要配置Loopback 0，GE0/0/1；</li>
+<li>ASBR2需要配置Loopback 0，GE0/0/1；</li>
+<li>P2需要配置Loopback 0，GE0/0/0，GE0/0/1；</li>
+<li>PE2需要配置Loopback 0，GE0/0/0；</li>
+<li>CE2需要配置：Loopback 0，GE0/0/1。</li>
+</ul>
+<p>2.配置OSPF路由协议：在PE1、P1和ASBR1，PE2、P2和ASBR2上配置OSPF协议</p>
+<ul>
+<li>在PE1上宣告网络1.1.1.1/32， 12.12.12.0/30；</li>
+<li>在P1上宣告网络2.2.2.2/32，12.12.12.0/30，23.23.23.0/30；</li>
+<li>在ASBR1上宣告网络3.3.3.3/32，23.23.23.0/30；</li>
+<li>在ASBR2上宣告网络4.4.4.4/32，45.45.45.0/30；</li>
+<li>在P2上宣告网络5.5.5.5/32，45.45.45.0/30，56.56.56.0/30；</li>
+<li>在PE2上宣告网络6.6.6.6/32， 56.56.56.0/30。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/37.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/38.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/39.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/40.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/41.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/42.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/43.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/44.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/45.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/46.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/47.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/48.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/49.png"></p>
+<blockquote>
+<ul>
+<li>本实例RR1和RR2分别作为AS100与200的RR，PE与ASBR与RR建立BGP邻居，由RR负责VPN路由的反射。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/50.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/51.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/52.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/53.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/54.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/55.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/56.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/57.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/58.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/59.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/60.png"></p>
+<blockquote>
+<ul>
+<li>如上图所示，共分为4个AS，AS100和AS200作为ISP，PE1，P1，RR1和ASBR1属于AS100，PE2，P2，RR2和ASBR2属于AS200。CE1和CE2属于同一个VPN，CE1通过AS100的PE1接入，CE2通过AS200的PE2接入。</li>
+<li>每台路由器的IP地址规划详见拓扑图。</li>
+<li>本例为OptionC方式实现方案一，可以采用PE1与PE2直接建立MP-EBGP（不带RR）来传递跨域VPN路由，也可以采用RR1与RR2建立MP-EBGP邻居（PE1与RR1，PE2与RR2建立MP-IBGP邻居）传递跨域VPN路由，两者相似，本例采用RR方式实现OptionC方案一。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/61.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/62.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/63.png"></p>
+<blockquote>
+<ul>
+<li>步骤4，RR2的配置参考RR1。PE，ASBR的配置参考普通BGP邻居配置。</li>
+<li>步骤5，ASBR2的配置参考ASBR1。</li>
+<li>ASBR之间建立单播EBGP邻居，并将本端RR和PE的loopback发布给对方。</li>
+<li>ASBR在向对端ASBR发布RR ,PE的loopback时，为其分配MPLS标签；向本AS的RR传递的对端的RR和PE的loopback路由时，为其分配新的MPLS标签。</li>
+<li>ASBR,PE同本端RR建立邻居时使能交换标签能力。</li>
+<li>ASBR,P,PE同RR建立ipv4邻居：<ul>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR的loopback，传递给本端RR，用于本端RR与对端建立vpnv4邻居。</li>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR和PE的loopback，传递给本端RR，本端RR再将其反射给P，用于跨域bgp路由的递归查询。</li>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR和PE的loopback，传递给本端RR，本端RR再将其反射给PE，用于跨域之间的PE建立BGP LSP。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/64.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/65.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/66.png"></p>
+<blockquote>
+<ul>
+<li>PE2与RR2的MP-IBGP配置参考PE1与RR1的配置。</li>
+<li>配置“undo policy vpn-target”原理与Opiton B中相同，即RR上不用RT来过滤路由。</li>
+<li>配置“peer X.X.X.X next-hop-invariable”，保证对端PE可以在流量传输时迭代到通往本端PE的BGP LSP。</li>
+<li>RR之间建立vpnv4邻居，向对端传递路由时不改变下一跳。即对端PE学到的VPNv4路由的下一跳是本端PE。</li>
+<li>RR与本端PE建立vpnv4邻居，RR向本端PE传递路由时不改变下一跳，即本端PE学到的VPNv4路由的下一跳是对端PE。</li>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/67.png"></p>
+<blockquote>
+<ul>
+<li>PE2,RR2,ASBR2的配置分别参考PE1,RR1和ASBR1。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/68.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/69.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/70.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/71.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/72.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/73.png"></p>
+<blockquote>
+<ul>
+<li>如上图所示，共分为4个AS，AS100和AS200作为ISP，PE1，P1，RR1和ASBR1属于AS100，PE2，P2，RR2和ASBR2属于AS200。CE1和CE2属于同一个VPN，CE1通过AS100的PE1接入，CE2通过AS200的PE2接入。</li>
+<li>每台路由器的IP地址规划详见拓扑图。</li>
+<li>本例为OptionC方式实现方案二。方案二的实现与方案一大致相似，主要区别在于，当本端ASBR收到对端ASBR传递来的labeled-IPv4-Route后，触发LDP为BGP标签路由分标签。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/74.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/75.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/76.png"></p>
+<blockquote>
+<ul>
+<li>在OSPF进程中引入BGP路由，是为了让RR1与RR2能够顺利建立EBGP邻居关系，进而传递VPN路由。建议在OSPF中引入BGP路由时配置路由策略，做好精确的明细引入，减少不必要的路由进入IGP域。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/77.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/78.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/79.png"></p>
+<blockquote>
+<ul>
+<li>PE2与RR2的MP-IBGP配置参考PE1与RR1的配置。</li>
+<li>配置“undo policy vpn-target”原理与Opiton B中相同，即RR上不用RT来过滤路由。</li>
+<li>配置“peer X.X.X.X next-hop-invariable”，保证对端PE可以在流量传输时迭代到通往本端PE的BGP LSP。</li>
+<li>RR之间建立vpnv4邻居，向对端传递路由时不改变下一跳。即对端PE学到的VPNv4路由的下一跳是本端PE。</li>
+<li>RR与本端PE建立vpnv4邻居，RR向本端PE传递路由时不改变下一跳，即本端PE学到的VPNv4路由的下一跳是对端PE。</li>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/80.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/81.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/82.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/83.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/84.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/85.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/86.png"></p>
+<blockquote>
+<p>1.C</p>
+<p>2.C</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/87.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -5813,792 +6302,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/" itemprop="url">IE-LAN技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-20T17:56:08+08:00">
-                2021-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%871.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%872.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%873.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%874.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%875.png"></p>
-<blockquote>
-<p>MAC地址表的定义</p>
-<ul>
-<li>MAC地址表记录了交换机学习到的其他设备的MAC地址与接口的对应关系，以及接口所属VLAN等信息。设备在转发报文时，根据报文的目的MAC地址查询MAC地址表，如果MAC地址表中包含与报文目的MAC地址对应的表项，则直接通过该表项中的出接口转发该报文；如果MAC地址表中没有包含报文目的MAC地址对应的表项时，设备将采取广播方式在所属VLAN内除接收接口外的所有接口转发该报文。</li>
-</ul>
-<p>MAC地址表中的表项分为：动态表项、静态表项和黑洞表项。</p>
-<ul>
-<li><p>动态表项：由接口通过报文中的源MAC地址学习获得，表项可老化。在系统复位、接口板热插拔或接口板复位后，动态表项会丢失。可以通过查看动态MAC地址表项，可以判断两台相连设备之间是否有数据转发；也可以通过查看指定动态MAC地址表项的个数，可以获取接口下通信的用户数。</p>
-</li>
-<li><p>静态表项：由用户手工配置，并下发到各接口板，表项不可老化。在系统复位、接口板热插拔或接口板复位后，保存的表项不会丢失。一条静态MAC地址表项，只能绑定一个出接口。一个接口和MAC地址静态绑定后，不会影响该接口动态MAC地址表项的学习。通过绑定静态MAC地址表项，可以保证合法用户的使用，防止其他用户使用该MAC进行攻击。</p>
-</li>
-<li><p>黑洞表项：由用户手工配置，并下发到各接口板，表项不可老化。在系统复位、接口板热插拔或接口板复位后，保存的表项不会丢失。通过配置黑洞MAC地址表项，可以过滤掉非法用户。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%876.png"></p>
-<blockquote>
-<p>通过“display mac-address”命令，可以查看设备的mac表项，如图所示，mac表的组成可以分为动态、静态和黑洞。从表项中也可以看出，mac地址所对应的VLAN以及VSI。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%877.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%878.png"><br><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%879.png"></p>
-<blockquote>
-<ul>
-<li><p>接口使能端口安全功能时，接口上之前学习到的动态MAC地址表项将被删除，之后学习到的MAC地址将变为安全动态MAC地址。</p>
-</li>
-<li><p>接口使能Sticky MAC功能时，接口上的安全动态MAC地址表项将转化为Sticky MAC地址，之后学习到的MAC地址也变为Sticky MAC地址。</p>
-</li>
-<li><p>接口去使能端口安全功能时，接口上的安全动态MAC地址将被删除，重新学习动态MAC地址。</p>
-</li>
-<li><p>接口去使能Sticky MAC功能时，接口上的Sticky MAC地址，会转换为安全动态MAC地址。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8710.png"></p>
-<blockquote>
-<p>说明：</p>
-<ul>
-<li><p>接口使能Sticky MAC功能，安全动态MAC地址表项将转化为Sticky MAC地址，之后学习到的MAC地址也变为Sticky MAC地址。</p>
-</li>
-<li><p>接口使能Sticky MAC功能，即使配置了port-security aging-time，Sticky MAC也不会被老化。</p>
-</li>
-<li><p>Sticky MAC地址表项，保存后重启设备不丢弃。</p>
-</li>
-</ul>
-<p>端口安全的保护动作：</p>
-<ul>
-<li><p>Restrict：丢弃源MAC地址不存在的报文并上报告警。推荐使用restrict动作。</p>
-</li>
-<li><p>Protect：只丢弃源MAC地址不存在的报文，不上报告警。</p>
-</li>
-<li><p>Shutdown：接口状态被置为error-down，并上报告警。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8711.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8712.png"></p>
-<blockquote>
-<ul>
-<li><p>如图所示，MAC地址为0011-0022-0034的表项，出接口由GE1/0/1刷新为GE1/0/2，这就是MAC地址漂移。设备出现MAC地址漂移时，设备CPU占用率会有不同程度的升高。正常情况下，网络中不会在短时间内出现大量MAC地址漂移的情况。出现这种现象一般都意味着网络中存在环路，可以通过查看告警信息和漂移记录，快速定位和排除环路。</p>
-</li>
-<li><p>网络中产生环路或非法用户进行网络攻击都会造成MAC地址发生漂移，导致MAC地址不稳定。在规划网络时，可以通过下面两种方式来避免这种情况：</p>
-<ul>
-<li>提高接口MAC地址学习优先级。当不同接口学到相同的MAC地址表项时，高优先级接口学到的MAC地址表项可以覆盖低优先级接口学到的MAC地址表项，防止MAC地址在接口间发生漂移。</li>
-<li>不允许相同优先级的接口发生MAC地址表项覆盖。当伪造网络设备所连接口的优先级与安全的网络设备相同时，后学习到的伪造网络设备的MAC地址表项不会覆盖之前正确的表项。但如果网络设备下电，仍会学习到伪造网络设备的MAC地址，当网络设备再次上电时将无法学习到正确的MAC地址。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8713.png"></p>
-<blockquote>
-<ul>
-<li><p>配置MAC地址漂移检测功能后，在发生MAC地址漂移时，可以上报包括MAC地址、VLAN，以及跳变的接口等信息的告警。其中跳变的接口即为可能出现环路的接口。网络管理员可以根据告警信息，手工排查网络中环路的源头，也可以使用MAC漂移检测提供的后续动作，使跳变的端口down或者VLAN从端口中退出，实现自动破环。</p>
-</li>
-<li><p>如图所示网络中，若SwitchC和SwitchD之间误接网线，则SwitchB、SwitchC、SwitchD之间形成环路。当SwitchA上Port1接口从网络中收到一个广播报文后转发给SwitchB，该报文经过环路，会被SwitchA上Port2接口收到。配置MAC地址漂移检测功能，SwitchA就会感知到MAC地址出接口跳变的现象。若连续出现此现象，SwitchA就会上报MAC漂移告警，提醒管理员进行维护。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8714.png"></p>
-<blockquote>
-<ul>
-<li><p>接口配置不同的MAC地址学习优先级后，如果不同接口学到相同的MAC地址表项，那么高优先级接口学到的MAC地址表项可以覆盖低优先级接口学到的MAC地址表项，防止MAC地址发生漂移。</p>
-</li>
-<li><p>配置不允许相同优先级的接口发生MAC地址表项覆盖，也可以防止MAC地址漂移，提高网络的安全性。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8715.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8716.png"></p>
-<blockquote>
-<p>免费ARP有如下作用：</p>
-<ul>
-<li>IP地址冲突检测：当设备接口的协议状态变为Up时，设备主动对外发送免费ARP报文。正常情况下不会收到ARP应答，如果收到，则表明本网络中存在与自身IP地址重复的地址。如果检测到IP地址冲突，设备会周期性的广播发送免费ARP应答报文，直到冲突解除。</li>
-<li>用于通告一个新的MAC地址：发送方更换了网卡，MAC地址变化了，为了能够在动态ARP表项老化前通告网络中其他设备，发送方可以发送一个免费ARP。</li>
-<li>在VRRP备份组中用来通告主备发生变换：发生主备变换后，MASTER设备会广播发送一个免费ARP报文来通告发生了主备变换。</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8717.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8718.png"></p>
-<blockquote>
-<ul>
-<li><p>在STP和RSTP的算法中，所有VLAN共享一课生成树，会造成部分VLAN无法通信、次优路径、流量无法负载分担等问题。</p>
-</li>
-<li><p>为了弥补STP和RSTP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP。MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8719.png"></p>
-<blockquote>
-<ul>
-<li><p>所谓生成树实例就是多个VLAN的一个集合。通过将多个VLAN捆绑到一个实例，可以节省通信开销和资源占用率。MSTP各个实例拓扑的计算相互独立，在这些实例上可以实现负载均衡。可以把多个相同拓扑结构的VLAN映射到一个实例里，这些VLAN在端口上的转发状态取决于端口在对应MSTP实例的状态。</p>
-</li>
-<li><p>如图所示，MSTP通过设置VLAN映射表（即VLAN和MSTI的对应关系表），把VLAN和MSTI联系起来。每个VLAN只能对应一个MSTI，即同一VLAN的数据只能在一个MSTI中传输，而一个MSTI可能对应多个VLAN。</p>
-</li>
-<li><p>经计算，最终生成两棵生成树：</p>
-<ul>
-<li>MSTI1以S4为根交换设备，转发VLAN2的报文。</li>
-<li>MSTI2以S6为根交换设备，转发VLAN3的报文。</li>
-</ul>
-</li>
-<li><p>这样所有VLAN内部可以互通，同时不同VLAN的报文沿不同的路径转发，实现了负载分担。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8720.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8721.png"></p>
-<blockquote>
-<ul>
-<li><p>MST由交换网络中的多台交换设备以及它们间的网段所构成。MSTI是MST域下实例，一个MST域下可以有多个MSTI。</p>
-</li>
-<li><p>VLAN映射表描述了VLAN和MSTI之间的映射关系。如图2所示，MST Region4中，VLAN1映射到MSTI1，VLAN2映射到MSTI2，其余VLAN映射到MSTI3。</p>
-</li>
-<li><p>公共生成树CST是连接交换网络内所有MST域的一棵生成树。如果把每个MST域看作是一个节点，CST就是这些节点通过STP或RSTP协议计算生成的一棵生成树。</p>
-</li>
-<li><p>内部生成树IST（Internal Spanning Tree）是各MST域内的一棵生成树。IST是一个特殊的MSTI，MSTI的ID为0，通常称为MSTI0。</p>
-</li>
-<li><p>SST（Single Spanning Tree）：运行STP或RSTP的交换设备只能属于一个生成树；MST域中只有一个交换设备，这个交换设备构成单生成树。</p>
-</li>
-<li><p>所有MST域的IST加上CST就构成一棵完整的生成树，即CIST。</p>
-</li>
-<li><p>域根（Regional Root）分为IST域根和MSTI域根。</p>
-<ul>
-<li>IST域根如图1所示，在MST域中IST生成树中距离总根最近的交换设备是IST域根。</li>
-<li>一个MST域内可以生成多棵生成树，每棵生成树都称为一个MSTI。MSTI域根是每个多生成树实例的树根。如图3所示，域中不同的MSTI有各自的域根。</li>
-</ul>
-</li>
-<li><p>总根是CIST（Common and Internal Spanning Tree）的根桥。如图1中的S1。</p>
-</li>
-<li><p>主桥（Master Bridge）也就是IST Master，它是域内距离总根最近的交换设备。如图1中的黄色交换机。如果总根在MST域中，则总根为该域的主桥。</p>
-</li>
-<li><p>端口角色：同RSTP，MSTP中定义了根端口、指定端口、Alternate端口、Backup端口和边缘端口。</p>
-</li>
-<li><p>端口状态：同RSTP，MSTP定义的端口状态有Forwarding, Learning, Discarding。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8722.png"></p>
-<blockquote>
-<p>MSTI的特点：</p>
-<ul>
-<li>每个MSTI独立计算自己的生成树，互不干扰。</li>
-<li>每个MSTI的生成树计算方法与STP基本相同。</li>
-<li>每个MSTI的生成树可以有不同的根，不同的拓扑。</li>
-<li>每个MSTI在自己的生成树内发送BPDU。</li>
-<li>每个MSTI的拓扑通过命令配置决定。</li>
-<li>每个端口在不同MSTI上的生成树参数可以不同。</li>
-<li>每个端口在不同MSTI上的角色、状态可以不同。</li>
-</ul>
-<p>在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：</p>
-<ul>
-<li><p>在MST域内，沿着其对应的MSTI转发。</p>
-</li>
-<li><p>在MST域间，沿着CST转发。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8723.png"></p>
-<blockquote>
-<ul>
-<li><p>如图所示，在MSTP中，P/A机制工作过程如下：</p>
-<p>1.上游设备发送Proposal报文，请求进行快速迁移。下游设备接收到后，把与上游设备相连的端口设置为根端口，并阻塞所有非边缘端口。</p>
-<p>2.上游设备继续发送Agreement报文。下游设备接收到后，根端口转为Forwarding状态。</p>
-<p>3.下游设备回应Agreement报文。上游设备接收到后，把与下游设备相连的端口设置为指定端口，指定端口进入Forwarding状态。</p>
-</li>
-<li><p>缺省情况下，华为数据通信设备使用增强的快速迁移机制。如果华为数据通信设备和其他制造商的设备进行互通，而其他制造商的设备P/A机制使用普通的快速迁移机制，此时，可在华为数据通信设备上通过设置P/A机制为普通的快速迁移机制，从而实现华为数据通信设备和其他制造商的设备进行互通。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8724.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8725.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8726.png"></p>
-<blockquote>
-<ul>
-<li><p>如图所示，为园区网络CSS+iStack组网之一，其主要有简单、高效、可靠的特点。</p>
-</li>
-<li><p>简单</p>
-<ul>
-<li>各层设备均使用堆叠技术，逻辑设备少，网络拓扑简单，二层天然无环，无需部署xSTP破环协议。</li>
-</ul>
-</li>
-<li><p>高效</p>
-<ul>
-<li>各层设备间使用Eth-Trunk链路聚合技术，负载分担算法灵活，链路利用率高。</li>
-</ul>
-</li>
-<li><p>可靠</p>
-<ul>
-<li>服务器和主机可以配置多NIC网卡Teaming负载均衡或主备冗余链路提高服务器接入可靠性。</li>
-<li>堆叠技术同链路聚合技术结合使用，各层物理设备形成双归接入组网，提高整网可靠性。</li>
-</ul>
-</li>
-<li><p>缺点</p>
-</li>
-<li><p>对设备性能要求较高，盒式设备堆叠台数过多，可能导致堆叠主的主控性能下降。</p>
-</li>
-<li><p>如果采用业务口堆叠或集群，会占用业务端口数。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8727.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8728.png"></p>
-<blockquote>
-<ul>
-<li>通过交换机堆叠，可以实现网络高可靠性和网络大数据量转发，同时简化网络管理。<ul>
-<li>高可靠性。堆叠系统多台成员交换机之间冗余备份；堆叠支持跨设备的链路聚合功能，实现跨设备的链路冗余备份。</li>
-<li>强大的网络扩展能力。通过增加成员交换机，可以轻松的扩展堆叠系统的端口数、带宽和处理能力；同时支持成员交换机热插拔，新加入的成员交换机自动同步主交换机的配置文件和系统软件版本。</li>
-<li>简化配置和管理。一方面，用户可以通过任何一台成员交换机登录堆叠系统，对堆叠系统所有成员交换机进行统一配置和管理；另一方面，堆叠形成后，不需要配置复杂的二层破环协议和三层保护倒换协议，简化了网络配置。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8729.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8730.png"></p>
-<blockquote>
-<ul>
-<li><p>“系统自动完成堆叠”实际上可以细分为三步：</p>
-<p>1.主交换机选举</p>
-<p>​    ①运行状态比较，已经运行的交换机比处于启动状态的交换机优先竞争为主交换机。</p>
-<p>​    ②堆叠优先级高的交换机优先竞争为主交换机。</p>
-<p>​    ③堆叠优先级相同时，MAC地址小的交换机优先竞争为主交换机。</p>
-<p>2.拓扑收集和备交换机选举</p>
-<ul>
-<li>主交换机选举完成后，主交换机会收集所有成员交换机的拓扑信息，根据拓扑信息计算出堆叠转发表项和破环点信息下发给堆叠中的所有成员交换机，并向所有成员交换机分配堆叠ID。之后进行备交换机的选举，作为主交换机的备份交换机。当除主交换机外其它交换机同时完成启动时：<ul>
-<li>堆叠优先级最高的设备成为备交换机。</li>
-<li>堆叠优先级相同时，MAC地址最小的成为备交换机。</li>
-</ul>
-</li>
-</ul>
-<p>3.稳定运行</p>
-<ul>
-<li>角色选举、拓扑收集完成之后，剩下的其他成员交换机作为从交换机加入堆叠，所有成员交换机会自动同步主交换机的系统软件和配置文件：<ul>
-<li>堆叠具有自动加载系统软件的功能，待组成堆叠的成员交换机不需要具有相同软件版本，只需要版本间兼容即可。当备交换机或从交换机与主交换机的软件版本不一致时，备交换机或从交换机会自动从主交换机下载系统软件，然后使用新系统软件重启，并重新加入堆叠。</li>
-<li>堆叠具有配置文件同步机制，备交换机或从交换机会将主交换机的配置文件同步到本设备并执行，以保证堆叠中的多台设备能够像一台设备一样在网络中工作，并且在主交换机出现故障之后，其余交换机仍能够正常执行各项功能。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8731.png"></p>
-<blockquote>
-<ul>
-<li><p>物理成员端口</p>
-<ul>
-<li>成员交换机之间用于堆叠连接的物理端口。物理成员端口用于转发需要跨成员交换机的业务报文或成员交换机之间的堆叠协议报文。</li>
-</ul>
-</li>
-<li><p>逻辑堆叠端口</p>
-<ul>
-<li>逻辑堆叠端口是专用于堆叠的逻辑端口，需要和物理成员端口绑定。堆叠的每台成员交换机上支持两个逻辑堆叠端口，分别为stack-port n/1和stack-port n/2，其中n为成员交换机的堆叠ID。</li>
-</ul>
-</li>
-<li><p>业务口堆叠根据连接线缆的不同又可以分为：普通线缆堆叠和专用线缆堆叠。</p>
-<ul>
-<li>普通线缆堆叠<ul>
-<li>普通堆叠线缆包括：光线缆、网线和高速电缆。使用普通线缆堆叠时，逻辑堆叠端口需要手动进行配置，否则无法组建堆叠。</li>
-</ul>
-</li>
-<li>专用线缆堆叠<ul>
-<li>专用堆叠线缆的两端区分主和备，带有Master标签的一端为主端，不带有标签的一端为备端。使用专用线缆堆叠时，专用堆叠线缆按照规则插入端口后，交换机就可以自动组建堆叠。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8732.png"></p>
-<blockquote>
-<ul>
-<li><p>堆叠成员加入是指向已经稳定运行的堆叠系统添加一台新的交换机。</p>
-</li>
-<li><p>使能堆叠并配置好SWD的堆叠参数</p>
-<ul>
-<li>如果是业务口堆叠，新加入的交换机需要配置物理成员端口加入逻辑堆叠端口；并且链形连接时，当前堆叠系统链形两端（或一端）的成员交换机也需要配置物理成员端口加入逻辑堆叠口。</li>
-<li>如果是堆叠卡堆叠，新加入的成员交换机需要使能堆叠功能。</li>
-<li>为了便于管理，建议为新加入的交换机配置堆叠ID。如果不配置，堆叠系统会为其分配一个堆叠ID。</li>
-</ul>
-</li>
-<li><p>将SWD连接到堆叠系统</p>
-<ul>
-<li>如果是链形连接，新加入的交换机建议添加到链形的两端，这样对现有的业务影响最小。</li>
-<li>如果是环形连接，需要把当前环形拆成链形，然后在链形的两端添加设备。</li>
-</ul>
-</li>
-<li><p>系统完成堆叠</p>
-<p>1.新加入的交换机连线上电启动后，进行角色选举，新加入的交换机会选举为从交换机，堆叠系统中原有主备从角色不变。</p>
-<p>2.角色选举结束后，主交换机更新堆叠拓扑信息，同步到其他成员交换机上，并向新加入的交换机分配堆叠ID（新加入的交换机没有配置堆叠ID或配置的堆叠ID与原堆叠系统的冲突时）。</p>
-<p>3.新加入的交换机更新堆叠ID，并同步主交换机的配置文件和系统软件，之后进入稳定运行状态。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8733.png"></p>
-<blockquote>
-<ul>
-<li><p>堆叠合并是指稳定运行的两个堆叠系统合并成一个新的堆叠系统。如图所示，两个堆叠系统的主交换机SWA和SWD通过竞争，选举出一个更优的作为新堆叠系统的主交换机。竞争成功的主交换机SWA所在的堆叠系统将保持原有主备从角色和配置不变，业务也不会受到影响；而另外一个堆叠系统的所有成员交换机SWD和SWE将重新启动，以从交换机的角色加入到新堆叠系统，其堆叠ID将由新主交换机重新分配，并将同步新主交换机的配置文件和系统软件，该堆叠系统的原有业务也将中断。</p>
-</li>
-<li><p>堆叠合并通常在以下两种情形下出现：</p>
-<ul>
-<li>堆叠链路或设备故障导致堆叠分裂，链路或设备故障恢复后，分裂的堆叠系统重新合并。</li>
-<li>待加入堆叠系统的交换机配置了堆叠功能，在不下电的情况下，使用堆叠线缆连接到正在运行的堆叠系统。通常情况下，不建议使用该方式形成堆叠，因为在合并前过程中可能会导致正在运行的堆叠系统重启，影响业务运行。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8734.png"></p>
-<blockquote>
-<p>堆叠成员退出是指成员交换机从堆叠系统中离开。根据退出成员交换机角色的不同，对堆叠系统的影响也有所不同：</p>
-<ul>
-<li>当主交换机退出，备份交换机升级为主交换机，重新计算堆叠拓扑并同步到其他成员交换机，指定新的备交换机，之后进入稳定运行状态。</li>
-<li>当备交换机退出，主交换机重新指定备交换机，重新计算堆叠拓扑并同步到其他成员交换机，之后进入稳定运行状态。</li>
-<li>当从交换机退出，主交换机重新计算堆叠拓扑并同步到其他成员交换机，之后进入稳定运行状态。</li>
-</ul>
-<p>堆叠成员交换机退出的过程，主要就是拆除堆叠线缆和移除交换机的过程：</p>
-<ul>
-<li>对于环形堆叠：成员交换机退出后，为保证网络的可靠性还需要把退出交换机连接的两个端口通过堆叠线缆进行连接。</li>
-<li>对于链形堆叠：拆除中间交换机会造成堆叠分裂。这时需要在拆除前进行业务分析，尽量减少对业务的影响。</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8735.png"></p>
-<blockquote>
-<p>堆叠分裂是指稳定运行的堆叠系统中带电移出部分成员交换机，或者堆叠线缆多点故障导致一个堆叠系统变成多个堆叠系统。根据原堆叠系统主备交换机分裂后所处位置的不同，堆叠分裂可分为以下两类：</p>
-<ul>
-<li><p>堆叠分裂后，原主备交换机被分裂到同一个堆叠系统中：原主交换机会重新计算堆叠拓扑，将移出的成员交换机的拓扑信息删除，并将新的拓扑信息同步给其他成员交换机；而移出的成员交换机检测到堆叠协议报文超时，将自行复位，重新进行选举。</p>
-</li>
-<li><p>堆叠分裂后，原主备交换机被分裂到不同的堆叠系统中：原主交换机所在堆叠系统重新指定备交换机，重新计算拓扑信息并同步给其他成员交换机；原备交换机所在堆叠系统将发生备升主，原备交换机升级为主交换机，重新计算堆叠拓扑并同步到其他成员交换机，并指定新的备交换机。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8736.png"></p>
-<blockquote>
-<ul>
-<li><p>由于堆叠系统中所有成员交换机都使用同一个IP地址和MAC地址（堆叠系统MAC），一个堆叠分裂后，可能产生多个具有相同IP地址和MAC地址的堆叠系统。为防止堆叠分裂后，产生多个具有相同IP地址和MAC地址的堆叠系统，引起网络故障，必须进行IP地址和MAC地址的冲突检查。多主检测MAD（Multi-Active Detection），是一种检测和处理堆叠分裂的协议。链路故障导致堆叠系统分裂后，MAD可以实现堆叠分裂的检测、冲突处理和故障恢复，降低堆叠分裂对业务的影响。</p>
-</li>
-<li><p>MAD检测方式有两种：直连检测方式和代理检测方式。在同一个堆叠系统中，两种检测方式互斥，不可以同时配置。</p>
-</li>
-<li><p>直连检测方式是指堆叠成员交换机间通过普通线缆直连的专用链路进行多主检测。在直连检测方式中，堆叠系统正常运行时，不发送MAD报文；堆叠系统分裂后，分裂后的两台交换机以1s为周期通过检测链路发送MAD报文以进行多主冲突处理。</p>
-</li>
-<li><p>通过中间设备直连：堆叠系统的所有成员交换机之间至少有一条检测链路与中间设备相连。</p>
-</li>
-<li><p>Full-mesh方式直连：堆叠系统的各成员交换机之间通过检测链路建立Full-mesh全连接，即每两台成员交换机之间至少有一条检测链路。</p>
-</li>
-<li><p>通过中间设备直连可以实现通过中间设备缩短堆叠成员交换机之间的检测链路长度，适用于成员交换机相距较远的场景。与通过中间设备直连相比，Full-mesh方式直连可以避免由中间设备故障导致的MAD检测失败，但是每两台成员交换机之间都建立全连接会占用较多的接口，所以该方式适用于成员交换机数目较少的场景。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8737.png"></p>
-<blockquote>
-<ul>
-<li><p>代理检测方式是在堆叠系统Eth-Trunk上启用代理检测，在代理设备上启用MAD检测功能。此种检测方式要求堆叠系统中的所有成员交换机都与代理设备连接，并将这些链路加入同一个Eth-Trunk内。与直连检测方式相比，代理检测方式无需占用额外的接口，Eth-Trunk接口可同时运行MAD代理检测和其他业务。</p>
-</li>
-<li><p>在代理检测方式中，堆叠系统正常运行时，堆叠成员交换机以30s为周期通过检测链路发送MAD报文。堆叠成员交换机对在正常工作状态下收到的MAD报文不做任何处理；堆叠分裂后，分裂后的两台交换机以1s为周期通过检测链路发送MAD报文以进行多主冲突处理。</p>
-</li>
-<li><p>MAD冲突处理</p>
-<ul>
-<li>堆叠分裂后，MAD冲突处理机制会使分裂后的堆叠系统处于Detect状态或Recovery状态。Detect状态表示堆叠正常工作状态，Recovery状态表示堆叠禁用状态。</li>
-<li>MAD冲突处理机制如下：MAD分裂检测机制会检测到网络中存在多个处于Detect状态的堆叠系统，这些堆叠系统之间相互竞争，竞争成功的堆叠系统保持Detect状态，竞争失败的堆叠系统会转入Recovery状态；并且在Recovery状态堆叠系统的所有成员交换机上，关闭除保留端口以外的其它所有物理端口，以保证该堆叠系统不再转发业务报文。</li>
-</ul>
-</li>
-<li><p>MAD故障恢复</p>
-</li>
-<li><p>通过修复故障链路，分裂后的堆叠系统重新合并为一个堆叠系统。重新合并的方式有以下两种：</p>
-<ul>
-<li>堆叠链路修复后，处于Recovery状态的堆叠系统重新启动，与Detect状态的堆叠系统合并，同时将被关闭的业务端口恢复Up，整个堆叠系统恢复。</li>
-<li>如果故障链路修复前，承载业务的Detect状态的堆叠系统也出现了故障。此时，可以先将Detect状态的堆叠系统从网络中移除，再通过命令行启用Recovery状态的堆叠系统，接替原来的业务，然后再修复原Detect状态堆叠系统的故障及链路故障。故障修复后，重新合并堆叠系统。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8738.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8739.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8740.png"></p>
-<blockquote>
-<ul>
-<li><p>CSS与iStack的区别在于，一般框式交换机堆叠称为CSS，盒式交换机堆叠称为iStack，都可以称为堆叠。两者只是叫法和实现有些差异，但是功能是一样的。</p>
-</li>
-<li><p>通过交换机集群，可以实现网络高可靠性和网络大数据量转发，同时简化网络管理。</p>
-<ul>
-<li>高可靠性：集群系统两台成员交换机之间冗余备份，同时利用链路聚合功能实现跨设备的链路冗余备份。</li>
-<li>强大的网络扩展能力：通过组建集群增加交换机，从而轻松的扩展端口数、带宽和处理能力。</li>
-<li>简化配置和管理：集群建立后，两台物理设备虚拟成为一台设备，用户只需登录一台成员交换机即可对集群系统所有成员交换机进行统一配置和管理。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8741.png"></p>
-<blockquote>
-<p>不同于iStack可以多台设备堆叠，对于CSS集群，集群中只能有一主一备两台交换机。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8742.png"></p>
-<blockquote>
-<ul>
-<li><p>集群建立时，成员交换机间相互发送集群竞争报文，通过竞争，一台成为主交换机，负责管理整个集群系统，另一台则成为备交换机。</p>
-</li>
-<li><p>角色选举</p>
-<p>1.最先完成启动，并进入单框集群运行状态的交换机成为主交换机。</p>
-<p>2.当两台交换机同时启动时，集群优先级高的交换机成为主交换机。</p>
-<p>3.当两台交换机同时启动，且集群优先级又相同时，MAC地址小的交换机成为主交换机。</p>
-<p>4.当两台交换机同时启动，且集群优先级和MAC都相同时，集群ID小的交换机成为主交换机。</p>
-</li>
-<li><p>版本同步</p>
-<ul>
-<li>集群具有自动加载系统软件的功能，待组成集群的成员交换机不需要具有相同的软件版本，只需要版本间兼容即可。当主交换机选举结束后，如果备交换机与主交换机的软件版本号不一致时，备交换机会自动从主交换机下载系统软件，然后使用新的系统软件重启，并重新加入集群。</li>
-</ul>
-</li>
-<li><p>配置同步</p>
-<ul>
-<li>集群具有严格的配置文件同步机制，来保证集群中的多台交换机能够像一台设备一样在网络中工作。</li>
-</ul>
-</li>
-<li><p>配置备份</p>
-<ul>
-<li>交换机从非集群状态进入集群状态后，会自动将原有的非集群状态下的配置文件加上.bak的扩展名进行备份，以便去使能集群功能后，恢复原有配置。例如，原配置文件扩展名为.cfg，则备份配置文件扩展名为.cfg.bak。去使能交换机集群功能时，用户如果希望恢复交换机的原有配置，可以更改备份配置文件名并指定其为下一次启动的配置文件，然后重新启动交换机，恢复原有配置。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8743.png"></p>
-<blockquote>
-<ul>
-<li><p>物理成员端口</p>
-<ul>
-<li>成员交换机之间用于集群连接的普通业务口。物理成员端口用于转发需要跨成员交换机的业务报文或成员交换机之间的集群协议报文。</li>
-</ul>
-</li>
-<li><p>逻辑集群端口</p>
-<ul>
-<li>逻辑集群端口是专用于集群的逻辑端口，需要和物理成员端口绑定。集群的每台成员交换机上支持两个逻辑集群端口。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8744.png"></p>
-<blockquote>
-<ul>
-<li><p>使能了集群功能的单台交换机即为单框集群。</p>
-<ul>
-<li>集群成员加入是指向稳定运行的单框集群系统中添加一台新的交换机。如图1所示，新交换机SwitchB将加入单框集群系统从而形成新的集群系统。原单框集群的交换机成为主交换机，新加入的交换机成为备交换机。</li>
-</ul>
-</li>
-<li><p>集群加入通常在以下两种情形下出现：</p>
-<ul>
-<li>在建立集群时，先将一台交换机使能集群功能后重启，重启后这台交换机将进入单框集群状态。然后再使能另外一台交换机的集群功能后重启，则后启动的交换机则按照集群成员加入的流程加入集群系统，成为备交换机。</li>
-<li>在稳定运行的两框集群场景中，将其中一台交换机重启，则这台交换机将以集群成员加入的流程重新加入集群系统，并成为备交换机。</li>
-</ul>
-</li>
-<li><p>集群合并是指稳定运行的两个单框集群系统合并成一个新的集群系统。如图2所示，两个单框集群系统将自动选出一个更优的作为合并后集群系统的主交换机。被选为主交换机的配置不变，业务也不会受到影响，框内的备用主控板将重启。而备交换机将整框重启，以集群备的角色加入新的集群系统，并将同步主交换机的配置，该交换机原有的业务也将中断。</p>
-</li>
-<li><p>集群合并通常在以下两种情形下出现：</p>
-<ul>
-<li>将两台交换机分别使能集群功能后重启（重启后的两台交换机都属于单框集群），再使用集群线缆将两台交换机连接，之后会进入集群合并流程。</li>
-<li>集群链路或设备故障导致集群分裂。故障恢复后，分裂后的两个单框集群系统重新合并。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8745.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8746.png"></p>
-<blockquote>
-<ul>
-<li><p>由于集群系统中所有成员交换机都使用同一个IP地址和MAC地址（集群系统MAC），一个集群分裂后，由于这些成员交换机运行着相同的配置文件（即原集群系统的配置文件），就会产生两个具有相同IP地址和MAC地址的集群系统。为防止集群分裂后，产生两个具有相同IP地址和MAC地址的集群系统，引起网络故障，必须进行IP地址和MAC地址的冲突检查。</p>
-</li>
-<li><p>多主检测MAD（Multi-Active Detection），是一种检测和处理集群分裂的协议。链路故障导致集群系统分裂后，MAD可以实现集群分裂的检测、冲突处理和故障恢复，降低集群分裂对业务的影响。</p>
-</li>
-<li><p>MAD检测方式有两种：直连检测方式和代理检测方式。在同一个集群系统中，两种检测方式互斥，不可以同时配置。</p>
-</li>
-<li><p>直连检测方式是指集群成员交换机间通过普通线缆直连的专用链路进行多主检测。在直连检测方式中，集群系统正常运行时，不发送MAD报文；集群系统分裂后，分裂后的两台交换机周期性地通过检测链路发送MAD报文以进行多主冲突处理。</p>
-</li>
-<li><p>直连检测的连接方式包括通过中间设备直连和集群成员交换机直接直连：</p>
-<ul>
-<li>通过中间设备直连：集群系统的成员交换机之间至少有一条检测链路与中间设备相连。此种方式适用于成员交换机相距较远的场景。</li>
-<li>直接直连：集群成员交换机直接直连可以避免由中间设备故障导致MAD检测失败。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8747.png"></p>
-<blockquote>
-<ul>
-<li><p>代理检测方式是在集群系统Eth-Trunk上启用代理检测，在代理设备上启用MAD检测功能。此种检测方式要求集群系统中的所有成员交换机都与代理设备连接，并将这些链路加入同一个Eth-Trunk内。与直连检测方式相比，代理检测方式无需占用额外的接口，Eth-Trunk接口可同时运行MAD代理检测和其他业务。</p>
-</li>
-<li><p>在代理检测方式中，集群系统正常运行时，集群成员交换机以30s为周期通过检测链路发送MAD报文。集群成员交换机对在正常工作状态下收到的MAD报文不做任何处理；集群分裂后，分裂后的两台交换机周期性地通过检测链路发送MAD报文以进行多主冲突处理。</p>
-</li>
-<li><p>MAD冲突处理</p>
-<ul>
-<li>集群分裂后，MAD冲突处理机制会使分裂后的单框集群系统处于Detect状态或Recovery状态。Detect状态表示集群正常工作状态，Recovery状态表示集群禁用状态。</li>
-<li>MAD冲突处理机制如下：MAD分裂检测机制会检测到网络中存在两个处于Detect状态的集群系统即两台交换机，此时会进行集群优先级比较（优先级相同比较MAC地址，MAC地址相同则比较集群ID），优先级高的交换机将成为主交换机继续正常工作，另一台交换机会转入Recovery状态；并且在Recovery状态的交换机上，关闭除保留端口以外的其它所有物理端口，以保证该交换机不再转发业务报文。</li>
-</ul>
-</li>
-<li><p>MAD故障恢复</p>
-</li>
-<li><p>通过修复故障链路，分裂后的集群系统重新合并为一个集群系统。重新合并的方式有以下两种：</p>
-<ul>
-<li>集群链路修复后，处于Recovery状态的集群系统重新启动，与Detect状态的集群系统合并，同时将被关闭的业务端口恢复Up，整个集群系统恢复。</li>
-<li>如果故障链路修复前，承载业务的Detect状态的集群系统也出现了故障。此时，可以先将Detect状态的集群系统从网络中移除，再通过命令行启用Recovery状态的集群系统，接替原来的业务，然后再修复原Detect状态集群系统的故障。故障修复后，重新合并集群系统。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8748.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8749.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8750.png"></p>
-<blockquote>
-<ul>
-<li><p>链路聚合技术主要有以下三个优势：增加带宽、提高可靠性和负载分担。</p>
-</li>
-<li><p>链路聚合组和成员接口</p>
-<ul>
-<li>链路聚合组LAG是指将若干条以太链路捆绑在一起所形成的逻辑链路。组成Eth-Trunk接口的各个物理接口称为成员接口。</li>
-</ul>
-</li>
-<li><p>活动接口和非活动接口、活动链路和非活动链路</p>
-<ul>
-<li>链路聚合组的成员接口存在活动接口和非活动接口两种。转发数据的接口称为活动接口，不转发数据的接口称为非活动接口。</li>
-<li>活动接口对应的链路称为活动链路，非活动接口对应的链路称为非活动链路。</li>
-</ul>
-</li>
-<li><p>活动接口数上限阈值</p>
-<ul>
-<li>当前活动链路数目达到上限阈值时，再向Eth-Trunk中添加成员接口，不会增加Eth-Trunk活动接口的数目，超过上限阈值的链路状态将被置为Down，作为备份链路。</li>
-</ul>
-</li>
-<li><p>活动接口数下限阈值</p>
-<ul>
-<li>设置活动接口数下限阈值是为了保证最小带宽，当前活动链路数目小于下限阈值时，Eth-Trunk接口的状态转为Down。</li>
-</ul>
-</li>
-<li><p>设备支持的链路聚合方式</p>
-<ul>
-<li>同板：是指链路聚合时，同一聚合组的成员接口分布在同一单板上。</li>
-<li>跨板：是指链路聚合时，同一聚合组的成员接口分布在不同的单板上。</li>
-<li>跨框：是指在集群场景下，成员接口分布在集群的各个成员设备上。</li>
-<li>跨设备：是指E-Trunk基于LACP进行了扩展，能够实现多台设备间的链路聚合。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8751.png"></p>
-<blockquote>
-<ul>
-<li><p>Eth-Trunk模块根据转发表转发数据帧的过程如下：</p>
-<p>1.Eth-Trunk模块从MAC子层接收到一个数据帧后，根据负载分担方式提取数据帧的源MAC地址/IP地址或目的MAC地址/IP地址。</p>
-<p>2.根据HASH算法进行计算，得到HASH-KEY值。</p>
-<p>3.Eth-Trunk模块根据HASH-KEY值在转发表中查找对应的接口，把数据帧从该接口发送出去。</p>
-</li>
-<li><p>例如 ，某设备每Eth-Trunk支持最大加入接口数为8个，将接口1、2、3、4捆绑为一个Eth-Trunk接口，此时生成的转发表如图2所示。其中HASH-KEY值为0、1、2、3、4、5、6、7，对应的出接口号分别为1、2、3、4、1、2、3、4。</p>
-</li>
-<li><p>为了避免数据包乱序情况的发生，Eth-Trunk采用逐流负载分担的机制，其中如何转发数据则由于选择不同的负载分担方式而有所差别。</p>
-</li>
-<li><p>负载分担的方式主要包括以下几种，用户可以根据具体应用选择不同的负载分担方式。</p>
-<ul>
-<li>根据报文的源MAC地址进行负载分担；</li>
-<li>根据报文的目的MAC地址进行负载分担；</li>
-<li>根据报文的源IP地址进行负载分担；</li>
-<li>根据报文的目的IP地址进行负载分担；</li>
-<li>根据报文的源MAC地址和目的MAC地址进行负载分担；</li>
-<li>根据报文的源IP地址和目的IP地址进行负载分担；</li>
-<li>根据报文的VLAN、源物理端口等对L2、IPv4、IPv6和MPLS报文进行增强型负载分担。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8752.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8753.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8754.png"></p>
-<blockquote>
-<p>作为链路聚合技术，手工模式Eth-Trunk可以完成多个物理接口聚合成一个Eth-Trunk口来提高带宽，同时能够检测到同一聚合组内的成员链路有断路等有限故障，但是无法检测到链路层故障、链路错连等故障。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8755.png"></p>
-<blockquote>
-<ul>
-<li><p>如图所示，两端设备均会收到对端发来的LACPDU报文。以DeviceB为例，当DeviceB收到DeviceA发送的报文时，DeviceB会查看并记录对端信息，然后比较系统优先级字段，如果DeviceA的系统优先级高于本端的系统优先级，则确定DeviceA为LACP主动端。如果DeviceA和DeviceB的系统优先级相同，比较两端设备的MAC地址，确定MAC地址小的一端为LACP主动端。</p>
-</li>
-<li><p>选出主动端后，两端都会以主动端的接口优先级来选择活动接口，如果主动端的接口优先级都相同则选择接口编号比较小的为活动接口。两端设备选择了一致的活动接口，活动链路组便可以建立起来，从这些活动链路中以负载分担的方式转发数据。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8756.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8757.png"></p>
-<blockquote>
-<ul>
-<li><p>在设备集群情况下，为了保证流量的可靠传输，流量的出接口设置为Eth-Trunk接口。那么Eth-Trunk接口中必定存在跨框成员口。当集群设备转发流量时，Eth-Trunk接口通过HASH算法可能会选择跨框的成员口。由于集群设备间线缆带宽有限，跨框转发流量增加了集群设备之间的带宽承载压力，同时也降低了流量转发效率。为了解决这个问题，可以使能Eth-Trunk接口流量本地优先转发。</p>
-</li>
-<li><p>如图所示，DeviceB和DeviceC组成集群，集群设备和DeviceA之间用Eth-Trunk连接。通过在集群设备上部署接口流量本地优先转发功能，可实现：</p>
-<ul>
-<li>入本设备流量从本设备转发<ul>
-<li>当Eth-Trunk接口在DeviceB有出接口且出接口无故障时，DeviceB的Eth-Trunk接口转发表中将只包含DeviceB的出接口。这样DeviceB到DeviceA的流量在通过HASH算法选择出接口时只能选中DeviceB的接口，流量从DeviceB本设备转发出去。</li>
-</ul>
-</li>
-<li>入本设备流量跨框转发<ul>
-<li>当Eth-Trunk接口在DeviceB本设备无出接口或者出接口全部故障时，DeviceB的Eth-Trunk转发表中将包含Eth-Trunk接口中所有可转发的出接口。这样DeviceB到DeviceA的流量在通过HASH算法选择出接口时将选中DeviceC上的出接口，流量将通过DeviceC跨框转发。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8758.png"></p>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8759.png"></p>
-<blockquote>
-<ul>
-<li><p>E-Trunk机制主要应用于CE双归接入VPLS、VLL、PWE3网络时，CE与PE间的链路保护以及对PE设备节点故障的保护。在没有使用E-Trunk前，CE通过Eth-Trunk链路只能单归到一个PE设备。如果Eth-Trunk出现故障或者PE设备故障，CE将无法与PE设备继续进行通信。使用E-Trunk后，CE可以双归到PE上，从而实现设备间保护。</p>
-</li>
-<li><p>如图，CE分别与PE1和PE2直连，PE1和PE2之间运行E-Trunk。PE侧，需要在PE1和PE2设备上分别创建ID相同的E-Trunk和Eth-Trunk，并将Eth-Trunk加入到E-Trunk。CE侧，在CE设备上配置LACP模式的Eth-Trunk，此Eth-Trunk分别与PE1和PE2设备相连。对CE设备而言，E-Trunk不可见。</p>
-</li>
-<li><p>PE1与PE2设备之间通过E-Trunk报文进行主备协商，确定E-Trunk的主备状态。正常情况下两台PE的协商结果是一个为主用一个为备用。PE设备上E-Trunk主备状态是根据报文中所携带的E-Trunk优先级和E-Trunk系统ID确定的。优先级的数值越小，优先级越高，优先级高的为主用。如果E-Trunk优先级相同，那么E-Trunk系统ID小的为主用。PE1为主，PE1的Eth-Trunk 10为主，链路状态为Up。PE2为备，PE2的Eth-Trunk 10为备，链路状态为Down。</p>
-</li>
-<li><p>如果CE到PE1间的链路出现故障：PE1会向对端发送E-Trunk报文，报文中携带PE1的Eth-Trunk 10故障的信息。PE2收到E-Trunk报文后，发现对端Eth-Trunk 10故障，则PE2设备上Eth-Trunk 10的状态将变为主。然后经过LACP协商，PE2设备上的Eth-Trunk 10的状态变为Up。这样PE2设备的Eth-Trunk状态变为Up，CE的流量会通过PE2转发，以达到对CE的流量进行保护的目的。</p>
-</li>
-<li><p>如果PE1设备出现故障：如果PE设备上配置了BFD，PE2检测到BFD会话状态为Down后，PE2设备从备用状态变为主用状态，PE2的Eth-Trunk 10状态也变为主。如果PE设备上没有配置BFD，PE2设备上的定时器超时后仍然没有收到PE1设备发送的E-Trunk报文，PE2设备从备用状态变为主用状态，PE2的Eth-Trunk 10状态也变为主。经过LACP协商，PE2设备上的Eth-Trunk 10的状态变为Up。CE的流量会通过PE2转发，以达到对CE的流量进行保护的目的。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8760.png"></p>
-<blockquote>
-<p>参考答案：</p>
-<ul>
-<li><p>如何清除MAC地址表项和ARP表项？</p>
-<ul>
-<li>清除所有动态MAC（系统视图）：undo mac-address dynamic </li>
-<li>清除所有静态MAC（系统视图） ：undo mac-address static</li>
-<li>删除一条静态ARP表项（系统视图）：undo arp static</li>
-<li>删除多条ARP表项（用户视图）：reset arp</li>
-</ul>
-</li>
-<li><p>MSTP域如何配置？</p>
-<ul>
-<li>MSTP的域信息在stp region-configuration视图下配置，同一个域中各台设备的域配置信息必须完全一致。存在任何一点差异，就不在同一个域中。MSTP可以配置的域信息有：<ul>
-<li>Format selector：格式选择符，在命令行不能配置，默认为0；</li>
-<li>Region name：域名，默认是桥MAC地址；</li>
-<li>Revision level：修订级别，默认是0；</li>
-<li>Instance/Vlans Mapped：实例和VLAN映射表，默认全部VLAN映射到实例0。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Eth-Trunk是否支持抢占功能？</p>
-<ul>
-<li>只有在LACP模式下，Eth-Trunk才支持优先级抢占功能，可以执行lacp preempt enable命令使能优先级抢占功能。在LACP模式下，当活动链路中出现故障链路时，系统会从备用链路中选择优先级最高的链路替代故障链路；如果被替代的故障链路恢复了正常，而且该链路的优先级又高于替代自己的链路，这种情况下，如果使能了LACP优先级抢占功能，高优先级链路会抢占低优先级链路，回切到活动状态。要求Eth-Trunk两端LACP抢占功能使能情况配置一致，即：统一使能或不使能。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/%E5%B9%BB%E7%81%AF%E7%89%8761.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -6653,7 +6356,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -6666,7 +6369,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

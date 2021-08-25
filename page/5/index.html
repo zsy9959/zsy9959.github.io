@@ -241,6 +241,459 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/" itemprop="url">IP-路由策略与路由控制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:08:48+08:00">
+                2021-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•在复杂的数据通信网络中，根据实际组网需求，往往需要实施一些路由策略对路由信息进行过滤、属性设置等操作，通过对路由的控制，可以影响数据流量转发。</p>
+<p>•路由策略并非单一的技术或者协议，而是一个技术专题或方法论，里面包含了多种工具及方法。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫使用ACL匹配感兴趣路由</p>
+<p>▫使用IP-Prefix匹配感兴趣路由</p>
+<p>▫使用Filter-Policy进行路由过滤</p>
+<p>▫使用Route-Policy进行路由过滤及路由属性修改</p>
+<h1 id="1-路由控制概述"><a href="#1-路由控制概述" class="headerlink" title="1.路由控制概述"></a>1.<strong>路由控制概述</strong></h1><h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/1.png"></p>
+<p>•R1上将业务A、B、C的网段路由引入时希望不引入业务C网段路由，同时R3上将OSPF路由引入到IS-IS中时，同样只希望引入B业务网段路由。</p>
+<p>•此时需要一个工具在引入路由时进行限制。</p>
+<h2 id="路由控制概述"><a href="#路由控制概述" class="headerlink" title="路由控制概述"></a>路由控制概述</h2><p>路由控制可以通过路由策略（Route-Policy）实现，路由策略应用灵活而广泛，有以下几种常见方式：</p>
+<p>▫控制路由的发布：通过路由策略对发布的路由进行过滤，只发布满足条件的路由。</p>
+<p>▫控制路由的接收：通过路由策略对接收的路由进行过滤，只接收满足条件的路由。</p>
+<p>▫控制路由的引入：通过路由策略控制从其他路由协议引入的路由条目，只有满足条件的路由才会被引入。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/2.png"></p>
+<h1 id="2-路由控制工具"><a href="#2-路由控制工具" class="headerlink" title="2.路由控制工具"></a>2.路由控制工具</h1><h2 id="路由匹配工具"><a href="#路由匹配工具" class="headerlink" title="路由匹配工具"></a>路由匹配工具</h2><h3 id="匹配工具1：访问控制列表"><a href="#匹配工具1：访问控制列表" class="headerlink" title="匹配工具1：访问控制列表"></a>匹配工具1：访问控制列表</h3><p>•访问控制列表（Access Control List，ACL）是一个匹配工具，能够对报文及路由进行匹配和区分。</p>
+<p>•ACL由若干条permit或deny语句组成。每条语句就是该ACL的一条规则，每条语句中的permit或deny就是与这条规则相对应的处理动作。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/3.png"></p>
+<blockquote>
+<p>ACL的组成：</p>
+<p>▫ACL编号：在网络设备上配置ACL时，每个ACL都需要分配一个编号，称为ACL编号，用来标识ACL。不同分类的ACL编号范围不同，这个后面具体讲。</p>
+<p>▫规则：前面提到了，一个ACL通常由若干条“permit/deny”语句组成，每条语句就是该ACL的一条规则。</p>
+<p>▫规则编号：每条规则都有一个相应的编号，称为规则编号，用来标识ACL规则。可以自定义，也可以系统自动分配。ACL规则的编号范围是0～4294967294，所有规则均按照规则编号从小到大进行排序。</p>
+<p>▫动作：每条规则中的permit或deny，就是与这条规则相对应的处理动作。permit指“允许”，deny指“拒绝”，但是ACL一般是结合其他技术使用，不同的场景，处理动作的含义也有所不同。</p>
+<ul>
+<li>比如：ACL如果与流量过滤技术结合使用（即流量过滤中调用ACL），permit就是“允许通行”的意思，deny就是“拒绝通行”的意思。</li>
+</ul>
+<p>▫匹配项：ACL定义了极其丰富的匹配项。例子中体现的源地址，ACL还支持很多其他规则匹配项。例如，二层以太网帧头信息（如源MAC、目的MAC、以太帧协议类型）、三层报文信息（如目的地址、协议类型）以及四层报文信息（如TCP/UDP端口号）等。</p>
+</blockquote>
+<h4 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/4.png"></p>
+<p>匹配规则：</p>
+<ul>
+<li>“0”表示“匹配”；“1”表示“无需匹配”</li>
+</ul>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/5.png"></p>
+<blockquote>
+<p>•当进行IP地址匹配的时候，后面会跟着32位掩码位，这32位称为通配符。</p>
+<p>•通配符，也是点分十进制格式，换算成二进制后，“0”表示“匹配”，“1”表示“不匹配”。通配符中的1或者0可以不连续。</p>
+<p>•具体看下这2条规则：</p>
+<ul>
+<li><p>rule 5: 拒绝源IP地址为10.1.1.1报文通过——因为通配符为全0，所以每一位都要严格匹配，因此匹配的是主机IP地址10.1.1.1；</p>
+</li>
+<li><p>rule 15:允许源IP地址为10.1.1.0/24网段地址的报文通过——因为通配符：0.0.0.11111111，后8位为1，表示不关心，因此10.1.1.xxxxxxxx 的后8位可以为任意值，所以匹配的是10.1.1.0/24网段。</p>
+</li>
+</ul>
+<p>•例子：如果要精确匹配192.168.1.1/24这个IP地址对应的网段地址，通配符是多少？</p>
+<ul>
+<li>可以得出：网络位需要严格匹配，主机位无所谓，因此通配符为“0.0.0.255”。</li>
+</ul>
+<p>•两个特殊的通配符：</p>
+<ul>
+<li><p>当通配符全为0来匹配IP地址时，表示精确匹配某个IP地址；</p>
+</li>
+<li><p>当通配符全为1来匹配0.0.0.0地址时，表示匹配了所有IP地址。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="ACL的分类与基本ACL"><a href="#ACL的分类与基本ACL" class="headerlink" title="ACL的分类与基本ACL"></a>ACL的分类与基本ACL</h4><p>•基于ACL规则定义方式的划分</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/6.png"></p>
+<p>•基本ACL</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/7.png"></p>
+<blockquote>
+<p>•对于使用ACL进行路由匹配的场景，用户只能使用基本ACL。</p>
+</blockquote>
+<h4 id="ACL的匹配机制"><a href="#ACL的匹配机制" class="headerlink" title="ACL的匹配机制"></a>ACL的匹配机制</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/8.png"></p>
+<blockquote>
+<p>•ACL的匹配机制概括来说就是：</p>
+<ul>
+<li><p>配置ACL的设备接收报文后，会将该报文与ACL中的规则逐条进行匹配，如果不能匹配上，就会继续尝试去匹配下一条规则。</p>
+</li>
+<li><p>一旦匹配上，则设备会对该报文执行这条规则中定义的处理动作，并且不再继续尝试与后续规则匹配。</p>
+</li>
+</ul>
+<p>•匹配流程：首先系统会查找设备上是否配置了ACL。</p>
+<ul>
+<li><p>如果ACL不存在，则返回ACL匹配结果为：不匹配。</p>
+</li>
+<li><p>如果ACL存在，则查找设备是否配置了ACL规则。</p>
+<ul>
+<li>如果规则不存在，则返回ACL匹配结果为：不匹配。</li>
+<li>如果规则存在，则系统会从ACL中编号最小的规则开始查找。<ul>
+<li>如果匹配上了permit规则，则停止查找规则，并返回ACL匹配结果为：匹配（允许）。</li>
+<li>如果匹配上了deny规则，则停止查找规则，并返回ACL匹配结果为：匹配（拒绝）。</li>
+<li>如果未匹配上规则，则继续查找下一条规则，以此循环。如果一直查到最后一条规则，报文仍未匹配上，则返回ACL匹配结果为：不匹配。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>•从整个ACL匹配流程可以看出，报文与ACL规则匹配后，会产生两种匹配结果：“匹配”和“不匹配”。</p>
+<ul>
+<li><p>匹配（命中规则）：指存在ACL，且在ACL中查找到了符合匹配条件的规则。不论匹配的动作是“permit”还是“deny”，都称为“匹配”，而不是只是匹配上permit规则才算“匹配”。</p>
+</li>
+<li><p>不匹配（未命中规则）：指不存在ACL，或ACL中无规则，再或者在ACL中遍历了所有规则都没有找到符合匹配条件的规则。以上三种情况，都叫做“不匹配”。</p>
+</li>
+</ul>
+<p>•匹配原则：一旦命中即停止匹配。</p>
+</blockquote>
+<h4 id="ACL的匹配顺序及匹配结果"><a href="#ACL的匹配顺序及匹配结果" class="headerlink" title="ACL的匹配顺序及匹配结果"></a>ACL的匹配顺序及匹配结果</h4><p>配置顺序（config模式）</p>
+<p>▫系统按照ACL规则编号从小到大的顺序进行报文匹配，规则编号越小越容易被匹配。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/9.png"></p>
+<blockquote>
+<p>•一条ACL可以由多条“deny或permit”语句组成，每一条语句描述一条规则，这些规则可能存在包含关系，也可能有重复或矛盾的地方，因此ACL的匹配顺序是十分重要的。</p>
+<p>•华为设备支持两种匹配顺序：自动排序（auto模式）和配置顺序（config模式）。缺省的ACL匹配顺序是config模式。</p>
+<ul>
+<li><p>自动排序，是指系统使用“深度优先”的原则，将规则按照精确度从高到低进行排序，并按照精确度从高到低的顺序进行报文匹配。——这个比较复杂，这里就不具体展开了，</p>
+</li>
+<li><p>配置顺序，系统按照ACL规则编号从小到大的顺序进行报文匹配，规则编号越小越容易被匹配。——这个就是前面提到的匹配顺序。</p>
+<ul>
+<li>如果后面又添加了一条规则，则这条规则会被加入到相应的位置，报文仍然会按照从小到大的顺序进行匹配。</li>
+</ul>
+</li>
+</ul>
+<p>•注意：ACL技术总是与其他技术结合在一起使用的，因此，所结合的技术不同，“允许 (permit)”及“拒绝 (deny)”的实际作用也会不同。例如，当ACL技术与路由过滤技术结合使用时，permit就是“匹配该条路由条目”的意思，deny就是“不匹配该条路由条目”的意思。</p>
+</blockquote>
+<h4 id="常用匹配举例"><a href="#常用匹配举例" class="headerlink" title="常用匹配举例"></a>常用匹配举例</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/10.png"></p>
+<h4 id="基本ACL的基础配置命令"><a href="#基本ACL的基础配置命令" class="headerlink" title="基本ACL的基础配置命令"></a>基本ACL的基础配置命令</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/11.png"></p>
+<blockquote>
+<p>•创建基本ACL</p>
+<p>•[Huawei] <strong>acl</strong> [ <strong>number</strong> ] <em>acl-number</em> [ <strong>match-order</strong> <strong>config</strong> ]</p>
+<ul>
+<li><p><em>acl-number</em>：指定访问控制列表的编号。</p>
+</li>
+<li><p><strong>match-order</strong> <strong>config</strong>：指定ACL规则的匹配顺序，config表示配置顺序。</p>
+</li>
+</ul>
+<p>•[Huawei] <strong>acl</strong> <strong>name</strong> <em>acl-name</em> { <strong>basic</strong> | <em>acl-number</em> } [ <strong>match-order</strong> <strong>config</strong> ]</p>
+<ul>
+<li><p><em>acl-name</em>：指定创建的ACL的名称。</p>
+</li>
+<li><p><strong>basic</strong>：指定ACL的类型为基本ACL。</p>
+</li>
+</ul>
+<p>•配置基本ACL规则</p>
+<p>•[Huawei-acl-basic-2000] <strong>rule</strong> [ <em>rule-id</em> ] { <strong>deny</strong> | <strong>permit</strong> } [ <strong>source</strong> { <em>source-address source-wildcard</em> | <strong>any</strong> } | <strong>time-range</strong> <em>time-name</em> ] </p>
+<ul>
+<li><p><em>rule-id</em>：指定ACL的规则ID。</p>
+</li>
+<li><p><strong>deny</strong>：指定拒绝符合条件的报文。</p>
+</li>
+<li><p><strong>permit</strong>：指定允许符合条件的报文。</p>
+</li>
+<li><p><strong>source</strong> { <em>source-address source-wildcard</em> | <strong>any</strong> }：指定ACL规则匹配报文的源地址信息。如果不配置，表示报文的任何源地址都匹配。其中：</p>
+<ul>
+<li><em>source-address</em>：指定报文的源地址。</li>
+<li><em>source-wildcard</em>：指定源地址通配符。</li>
+<li><strong>any</strong>：表示报文的任意源地址。相当于source-address为0.0.0.0或者source-wildcard为255.255.255.255。</li>
+</ul>
+</li>
+<li><p><strong>time-range</strong> <em>time-name</em>：指定ACL规则生效的时间段。其中，time-name表示ACL规则生效时间段名称。如果不指定时间段，表示任何时间都生效。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="匹配工具2：IP前缀列表"><a href="#匹配工具2：IP前缀列表" class="headerlink" title="匹配工具2：IP前缀列表"></a>匹配工具2：IP前缀列表</h3><p>•IP前缀列表（IP-Prefix List）是将路由条目的网络地址、掩码长度作为匹配条件的过滤器，可在各路由协议发布和接收路由时使用。</p>
+<p>•不同于ACL，IP-Prefix List能够同时匹配IP地址前缀长度以及掩码长度，增强了匹配的精确度。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/12.png"></p>
+<p>1、<strong>ip-prefix-name</strong>：地址前缀列表名称<br>2、<strong>序号</strong>：本匹配项在地址前缀列表中的序号，匹配时根据序号从小到大进行顺序匹配<br>3、<strong>动作</strong>：permit/deny，地址前缀列表的匹配模式为允许/拒绝，表示匹配/不匹配<br>4、<strong>IP网段与掩码</strong>：匹配路由的网络地址，以及限定网络地址的前多少位需严格匹配<br>5、<strong>掩码范围</strong>：匹配路由前缀长度，掩码长度的匹配范围 mask-length&lt;=greater-equal-value&lt;=less-equal-value&lt;=32</p>
+<h4 id="IP-Prefix的匹配机制"><a href="#IP-Prefix的匹配机制" class="headerlink" title="IP-Prefix的匹配机制"></a>IP-Prefix的匹配机制</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/13.png"></p>
+<h4 id="IP-Prefix的匹配示例"><a href="#IP-Prefix的匹配示例" class="headerlink" title="IP-Prefix的匹配示例"></a>IP-Prefix的匹配示例</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/14.png"></p>
+<h4 id="IP-Prefix的基础配置命令"><a href="#IP-Prefix的基础配置命令" class="headerlink" title="IP-Prefix的基础配置命令"></a>IP-Prefix的基础配置命令</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/15.png"></p>
+<blockquote>
+<p>•<strong>ip-prefix-name</strong>：指定地址前缀列表的名称。字符串形式，长度范围是1～169，不支持空格，区分大小写。</p>
+<p>•<strong>index</strong> <em>index-number</em>：指定本匹配项在地址前缀列表中的序号。整数形式，取值范围是1～4294967295。缺省情况下，该序号值按照配置先后顺序依次递增，每次加10，第一个序号值为10。</p>
+<p>•<strong>permit</strong>：指定地址前缀列表的匹配模式为允许。在该模式下，如果过滤的IP地址在定义的范围内，则通过过滤，进行相应的设置；否则，必须进行下一节点的测试。</p>
+<p>•<strong>deny</strong>：指定地址前缀列表的匹配模式为拒绝。在该模式下，如果过滤的IP地址在定义的范围内，该IP地址不能通过过滤从而不能进入下一节点的测试；否则，将进行下一节点的测试。</p>
+<p>•<em>ipv4-address mask-length</em>：指定IP地址和指定掩码长度。其中掩码长度为整数形式，取值范围是0～32。</p>
+<p>•<strong>greater-equal</strong> <em>greater-equal-value</em>：指定掩码长度匹配范围的下限。若不配置<strong>greater-equal</strong> <em>greater-equal-value</em>和<strong>less-equal</strong> <em>less-equal-value</em>，则使用mask-length作为掩码长度。 </p>
+<ul>
+<li><p>参数<em>greater-equal-value</em>的取值限制为：<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>&lt;=32。</p>
+</li>
+<li><p>如果只配置了<strong>greater-equal</strong>，则掩码长度范围在<em>greater-equal-value</em>和32之间。</p>
+</li>
+</ul>
+<p>•<strong>less-equal</strong> <em>less-equal-value</em>：指定掩码长度匹配范围的上限。若不配置<strong>greater-equal</strong> <em>greater-equal-value</em>和<strong>less-equal</strong> <em>less-equal-value</em>，则使用<em>mask-length</em>作为掩码长度。</p>
+<ul>
+<li><p>参数less-equal-value的取值限制为：<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>&lt;=32<em>。</em></p>
+</li>
+<li><p>如果只配置了<strong>less-equal</strong>，则掩码长度范围在<em>mask-length</em>和<em>less-equal-value</em>之间。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="IP-Prefix的配置举例-1"><a href="#IP-Prefix的配置举例-1" class="headerlink" title="IP-Prefix的配置举例 (1)"></a>IP-Prefix的配置举例 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/16.png"></p>
+<blockquote>
+<p>•Case1说明：这种情况属于单节点的精确匹配，只有目的地址，掩码完全相同的路由才会匹配成功，而且节点的匹配模式为Permit，所以路由10.1.1.0/24被Permit，属于匹配成功并被Permit，其他路由由于未匹配成功被Deny。</p>
+<p>•Case2说明：这种情况属于单节点的精确匹配，但节点的匹配模式为deny，所以路由10.1.1.0/24还是被Deny，属于匹配成功但被Deny，其他路由则属于未匹配成功被默认Deny。</p>
+</blockquote>
+<h4 id="IP-Prefix的配置举例-2"><a href="#IP-Prefix的配置举例-2" class="headerlink" title="IP-Prefix的配置举例 (2)"></a>IP-Prefix的配置举例 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/17.png"></p>
+<blockquote>
+<p>•Case1说明：这种情况属于多节点的精确匹配。</p>
+<ul>
+<li><p>路由10.1.1.0/24在匹配index 10时，满足匹配条件，但匹配模式是deny，属于匹配成功但被Deny。</p>
+</li>
+<li><p>路由10.1.1.1/32在匹配index 10时，不满足匹配条件，则继续匹配index 20，此时匹配成功，且index 20的匹配模式是permit，属于匹配成功并被Permit。</p>
+</li>
+<li><p>其他路由由于都不符合index 10和20的条件，属于未匹配成功被默认Deny。</p>
+</li>
+</ul>
+<p>•Case2说明：此时<em>greater-equal-value</em>=26，<em>less-equal-value</em>=32。配置时，需满足<em>mask-length</em>&lt;=<em>greater-equal-value</em>&lt;=<em>less-equal-value</em>，否则配置不成功。</p>
+</blockquote>
+<h4 id="IP-Prefix的配置举例-3"><a href="#IP-Prefix的配置举例-3" class="headerlink" title="IP-Prefix的配置举例 (3)"></a>IP-Prefix的配置举例 (3)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/18.png"></p>
+<blockquote>
+<p>•Case1说明：此时<em>greater-equal-value</em>=8，<em>less-equal-value</em>=32，前8个bit与10.0.0.0相同，掩码长度在8-32之间的路由全部被匹配。</p>
+<p>•Case2说明：</p>
+<ul>
+<li><p>对于index 10，<em>greater-equal-value</em>=24，<em>less-equal-value</em>=32，前24个bit与10.1.1.0相同，所有掩码长度在24到32的路由全部被Deny；</p>
+</li>
+<li><p>对于index 20，<em>greater-equal-value</em>=0，<em>less-equal-value</em>=32，前16个bit与10.1.0.0相同，掩码长度在16到32的路由被匹配，此时只有10.1.0.0/16被匹配，剩下的被默认deny。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="路由策略工具"><a href="#路由策略工具" class="headerlink" title="路由策略工具"></a>路由策略工具</h2><h3 id="策略工具1：Filter-Policy"><a href="#策略工具1：Filter-Policy" class="headerlink" title="策略工具1：Filter-Policy"></a>策略工具1：Filter-Policy</h3><p>•Filter-Policy（过滤-策略）是一个很常用的路由信息过滤工具，能够对接收、发布、引入的路由进行过滤，可应用于IS-IS、OSPF、BGP等协议。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/19.png"></p>
+<p>•如图所示，R1、R2、R3之间运行BGP路由协议，路由在各个设备之间传递，当需要根据实际需求过滤某些路由信息的时候可以使用Filter-Policy实现。</p>
+<h4 id="Filter-Policy在距离矢量路由协议中的应用"><a href="#Filter-Policy在距离矢量路由协议中的应用" class="headerlink" title="Filter-Policy在距离矢量路由协议中的应用"></a>Filter-Policy在距离矢量路由协议中的应用</h4><p>在距离矢量路由协议中，设备之间传递的是路由信息，如果需要对这种路由信息进行某种过滤，可以使用Filter-Policy实现，出方向和入方向的生效位置如图所示。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/20.png"></p>
+<blockquote>
+<p>•距离矢量协议是基于路由表生成路由的，因此过滤器会影响从邻居接收的路由和向邻居发布的路由。</p>
+<p>•如果要过滤掉上游设备到下游设备的路由，只需要在上游设备配置filter-policy export或者在下游设备上配置filter-policy import。</p>
+</blockquote>
+<h4 id="Filter-Policy在链路状态路由协议中的应用"><a href="#Filter-Policy在链路状态路由协议中的应用" class="headerlink" title="Filter-Policy在链路状态路由协议中的应用"></a>Filter-Policy在链路状态路由协议中的应用</h4><p>在链路状态路由协议中，各路由设备之间传递的是LSA信息，然后设备根据LSA汇总成的LSDB信息计算出路由表。但是Filter-Policy只能过滤路由信息，无法过滤LSA。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/21.png"></p>
+<blockquote>
+<p>•OSPF把网络中所泛洪的LSA存储到自己的LSDB中，并且运行SPF算法，计算出一颗以自己为根，无环的最短路径树，Filter-Policy对OSPF计算出来的路由（加载到路由表之前）进行过滤，而不会对LSA进行过滤。</p>
+<p>•上面的实例以OSPF为例，展示了Filter-Policy在链路状态中的应用。</p>
+</blockquote>
+<h4 id="Filter-Policy的基础配置命令-1"><a href="#Filter-Policy的基础配置命令-1" class="headerlink" title="Filter-Policy的基础配置命令 (1)"></a>Filter-Policy的基础配置命令 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/22.png"></p>
+<blockquote>
+<p>命令：[Huawei-ospf-100] <strong>filter-policy</strong> { acl-number | <strong>acl-name</strong> acl-name | <strong>ip-prefix</strong> ip-prefix-name | <strong>route-policy</strong> route-policy-name [ <strong>secondary</strong> ] } <strong>import</strong></p>
+<ul>
+<li>acl-number：指定基本访问控制列表号。整数形式，取值范围是2000～2999。</li>
+<li><strong>acl-name</strong> acl-name：指定访问控制列表名称。字符串形式，不支持空格，区分大小写，长度范围是1～32，以英文字母a～z或A～Z开始。</li>
+<li><strong>ip-prefix</strong> ip-prefix-name：指定地址前缀列表名称。字符串形式，长度范围是1～169，不支持空格，区分大小写。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>route-policy</strong> route-policy-name：指定路由策略名称。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</li>
+<li><strong>secondary</strong>：设置优选次优路由。</li>
+</ul>
+<p>命令：[Huawei-ospf-100] <strong>filter-policy</strong> { acl-number | <strong>acl-name</strong> acl-name | <strong>ip-prefix</strong> ip-prefix-name | <em>9</em>route-policy** route-policy-name } <strong>export</strong> [ protocol [ process-id ] ]</p>
+<ul>
+<li>protocol process-id：指定需要对引入的特定的路由协议进行过滤。目前的协议包括direct、isis、bgp、ospf、unr和static。当指定路由协议为RIP、IS-IS、OSPF时，还可以指定进程号。整数类型，取值范围是1～65535，缺省值是1。</li>
+</ul>
+</blockquote>
+<h4 id="Filter-Policy的基础配置命令-2"><a href="#Filter-Policy的基础配置命令-2" class="headerlink" title="Filter-Policy的基础配置命令 (2)"></a>Filter-Policy的基础配置命令 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/23.png"></p>
+<h4 id="Filter-Policy的基础配置命令-3"><a href="#Filter-Policy的基础配置命令-3" class="headerlink" title="Filter-Policy的基础配置命令 (3)"></a>Filter-Policy的基础配置命令 (3)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/24.png"></p>
+<h4 id="OSPF中使用Filter-Policy"><a href="#OSPF中使用Filter-Policy" class="headerlink" title="OSPF中使用Filter-Policy"></a>OSPF中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/25.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/26.png"></p>
+<blockquote>
+<p>•OSPF的路由信息记录在LSDB中，<strong>filter-policy import</strong>命令实际上是对OSPF计算出来的路由进行过滤，不是对发布和接收的LSA进行过滤。</p>
+<p>•<strong>filter-policy export</strong>命令通过指定<em>protocol</em>或<em>process-id</em>对特定的某一种协议或某一进程的路由进行过滤。如果没有指定<em>protocol</em>和<em>process-id</em>，则OSPF将对所有引入的路由信息进行过滤。</p>
+</blockquote>
+<h4 id="IS-IS中使用Filter-Policy"><a href="#IS-IS中使用Filter-Policy" class="headerlink" title="IS-IS中使用Filter-Policy"></a>IS-IS中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/27.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/28.png"></p>
+<blockquote>
+<p>•IS-IS的路由表项需要被成功下发到IP路由表中，才能用来指导IP报文转发。如果IS-IS路由表中有到达某个目的网段的路由，但是并不希望将该路由下发到IP路由表中，可以使用<strong>filter-policy import</strong>命令结合基本ACL、IP-Prefix、路由策略等方式，只将部分IS-IS路由下发到IP路由表中。</p>
+</blockquote>
+<h4 id="BGP中使用Filter-Policy"><a href="#BGP中使用Filter-Policy" class="headerlink" title="BGP中使用Filter-Policy"></a>BGP中使用Filter-Policy</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/29.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/30.png"></p>
+<h3 id="策略工具2：Route-Policy"><a href="#策略工具2：Route-Policy" class="headerlink" title="策略工具2：Route-Policy"></a>策略工具2：Route-Policy</h3><p>•Route-Policy是一个策略工具，用于过滤路由信息，以及为过滤后的路由信息设置路由属性。</p>
+<p>•一个Route-Policy由一个或多个节点（Node）构成，每个节点都可以是一系列条件语句（匹配条件）以及执行语句（执行动作）的集合，这些集合按照编号从小到大的顺序排列。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/31.png"></p>
+<p>•每个节点内可包含多个条件语句。节点内的多个条件语句之间的关系为“与”，即匹配所有条件语句才会执行本节点内的动作。</p>
+<p>•节点之间的关系为“或”，route-policy根据节点编号大小从小到大顺序执行，匹配中一个节点将不会继续向下匹配。</p>
+<blockquote>
+<p>•当使用Route-Policy时，Node的值小的节点先进行匹配。一个节点匹配成功后，路由将不再匹配其他节点。全部节点匹配失败后，路由将被过滤。</p>
+</blockquote>
+<h4 id="Route-Policy的组成"><a href="#Route-Policy的组成" class="headerlink" title="Route-Policy的组成"></a>Route-Policy的组成</h4><p>一个Route-Policy由一个或多个节点构成，每个节点包括多个if-match和apply子句。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/32.png"></p>
+<p>•permit或deny：指定Route-Policy节点的匹配模式为允许或拒绝。</p>
+<p>•node：指定Route-Policy的节点号。整数形式，取值范围是0～65535。</p>
+<p>•if-match子句：定义该节点的匹配条件。</p>
+<p>•apply子句：定义针对被匹配路由执行的操作。</p>
+<h4 id="Route-Policy的匹配顺序"><a href="#Route-Policy的匹配顺序" class="headerlink" title="Route-Policy的匹配顺序"></a>Route-Policy的匹配顺序</h4><p>路由策略使用不同的匹配条件和匹配模式选择路由和改变路由属性。</p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/33.png"></p>
+<blockquote>
+<p>•一个路由策略中包含N（N&gt;=1）个节点（Node）。路由进入路由策略后，按节点序号从小到大依次检查各个节点是否匹配。匹配条件由If-match子句定义。</p>
+<ul>
+<li><p>当路由与该节点的所有If-match子句都匹配成功后，进入匹配模式选择，不再匹配其他节点。匹配模式分permit和deny两种：</p>
+<ul>
+<li><p>permit：路由将被允许通过，并且执行该节点的apply子句对路由信息的一些属性进行设置。</p>
+</li>
+<li><p>deny：路由将被拒绝通过。</p>
+</li>
+</ul>
+</li>
+<li><p>当路由与该节点的任意一个If-match子句匹配失败后，进入下一节点。如果和所有节点都匹配失败，路由信息将被拒绝通过。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="Route-Policy的基础配置命令-1"><a href="#Route-Policy的基础配置命令-1" class="headerlink" title="Route-Policy的基础配置命令 (1)"></a>Route-Policy的基础配置命令 (1)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/34.png"></p>
+<blockquote>
+<p>•命令：<strong>route-policy</strong> <em>route-policy-name</em> { <strong>permit</strong> | <strong>deny</strong> } <strong>node</strong> <em>node</em></p>
+<ul>
+<li><p><strong>permit</strong>：指定Route-Policy节点的匹配模式为允许。如果路由与节点所有的if-match子句匹配成功，则执行此节点apply子句；否则，进行下一节点。</p>
+</li>
+<li><p><strong>deny</strong>：指定Route-Policy节点的匹配模式为拒绝。如果路由与节点所有的if-match子句匹配成功，则该路由将被拒绝通过；否则进行下一节点。</p>
+</li>
+<li><p><strong>node</strong> <em>node</em>：指定Route-Policy的节点号。当使用Route-Policy时，node的值小的节点先进行匹配。一个节点匹配成功后，路由将不再匹配其他节点。全部节点匹配失败后，路由将被过滤。整数形式，取值范围是0～65535。</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="Route-Policy的基础配置命令-2"><a href="#Route-Policy的基础配置命令-2" class="headerlink" title="Route-Policy的基础配置命令 (2)"></a>Route-Policy的基础配置命令 (2)</h4><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/35.png"></p>
+<blockquote>
+<p>•apply子句用来为路由策略指定动作，用来设置匹配成功的路由的属性。在一个节点中，如果没有配置apply子句，则该节点仅起过滤路由的作用。如果配置一个或多个apply子句，则通过节点匹配的路由将执行所有apply子句。</p>
+</blockquote>
+<h1 id="3-路由控制案例"><a href="#3-路由控制案例" class="headerlink" title="3.路由控制案例"></a>3.路由控制案例</h1><h2 id="对接收的路由进行过滤"><a href="#对接收的路由进行过滤" class="headerlink" title="对接收的路由进行过滤"></a>对接收的路由进行过滤</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/36.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/37.png"></p>
+<blockquote>
+<p>•通过Filter-Policy进行路由过滤，只影响本地的路由表，因此R3可以正常学习到192.168.1.0/24网段的路由。</p>
+</blockquote>
+<h2 id="对发布的路由进行过滤"><a href="#对发布的路由进行过滤" class="headerlink" title="对发布的路由进行过滤"></a>对发布的路由进行过滤</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/38.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/39.png"></p>
+<h2 id="修改路由属性"><a href="#修改路由属性" class="headerlink" title="修改路由属性"></a>修改路由属性</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/40.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/41.png"></p>
+<h2 id="双点双向路由重发布"><a href="#双点双向路由重发布" class="headerlink" title="双点双向路由重发布"></a>双点双向路由重发布</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/42.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/myblog\zsyblog\source_posts\IP-路由策略与路由控制\43.png"></p>
+<h2 id="次优路径问题"><a href="#次优路径问题" class="headerlink" title="次优路径问题"></a>次优路径问题</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/44.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/45.png"></p>
+<h2 id="解决次优路径问题-1"><a href="#解决次优路径问题-1" class="headerlink" title="解决次优路径问题 (1)"></a>解决次优路径问题 (1)</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/46.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/47.png"></p>
+<h2 id="解决次优路径问题-2"><a href="#解决次优路径问题-2" class="headerlink" title="解决次优路径问题 (2)"></a>解决次优路径问题 (2)</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/48.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/49.png"></p>
+<h2 id="路由环路问题"><a href="#路由环路问题" class="headerlink" title="路由环路问题"></a>路由环路问题</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/50.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/51.png"></p>
+<h3 id="解决路由环路问题-1"><a href="#解决路由环路问题-1" class="headerlink" title="解决路由环路问题 (1)"></a>解决路由环路问题 (1)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/52.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/53.png"></p>
+<h3 id="解决路由环路问题-2"><a href="#解决路由环路问题-2" class="headerlink" title="解决路由环路问题 (2)"></a>解决路由环路问题 (2)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/54.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/55.png"></p>
+<h3 id="解决路由环路问题-3"><a href="#解决路由环路问题-3" class="headerlink" title="解决路由环路问题 (3)"></a>解决路由环路问题 (3)</h3><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/56.png"></p>
+<p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/57.png"></p>
+<h2 id="场景思考"><a href="#场景思考" class="headerlink" title="场景思考"></a>场景思考</h2><p><img src="/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/58.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）Filter-Policy export在OSPF、BGP中的作用分别是？</p>
+<p><strong>在OSPF中的作用为过滤从其他路由协议引入到OSPF中的路由条目；在BGP中的作用为限制本地对外发布的路由条目。</strong></p>
+<p>2.（简答题）Route-Policy多个节点之间的逻辑关系为？一个节点内多个条件语句的逻辑关系为？</p>
+<p><strong>节点之间的逻辑关系为或，条件语句间的逻辑关系为与。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•控制路由的发布、接收时需要先将相应的路由使用匹配器进行抓取，最常见的匹配器有ACL、 IP-Prefix List 。</p>
+<p>•Filter-Policy、Route-Policy都可用来在发布、接收路由时进行过滤，但需要注意在链路状态路由协议中使用Filter-Policy并不能正常的过滤链路状态信息，只是影响了本地的路由表。</p>
+<p>•Route-Policy在发布、接收路由时可以对路由的属性进行灵活地修改，以实现XXX。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/10/BGP-EVPN%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3527,474 +3980,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/MSTP/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/06/MSTP/" itemprop="url">MSTP原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:11:06+08:00">
-                2021-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/06/MSTP/MSTP.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•RSTP在STP基础上进行了改进，实现了网络拓扑快速收敛。但在划分VLAN的网络中运行RSTP/STP，局域网内所有的VLAN共享一棵生成树，被阻塞后的链路将不承载任何流量，无法在VLAN间实现数据流量的负载均衡，导致链路带宽利用率、设备资源利用率较低。</p>
-<p>•为了弥补RSTP/STP的缺陷，IEEE于2002年发布的802.1S标准定义了MSTP（Multiple Spanning Tree Protocol，多生成树协议）。MSTP兼容STP和RSTP，通过建立多棵无环路的树，解决广播风暴并实现冗余备份。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述RSTP/STP技术的缺陷</p>
-<p>▫描述MSTP对RSTP/STP技术的改进</p>
-<p>▫描述MSTP的各种概念</p>
-<p>▫描述MSTP的工作过程</p>
-<p>▫实现MSTP的基本配置</p>
-<h1 id="MSTP概述"><a href="#MSTP概述" class="headerlink" title="MSTP概述"></a>MSTP概述</h1><h2 id="RSTP-STP的不足-1"><a href="#RSTP-STP的不足-1" class="headerlink" title="RSTP/STP的不足 (1)"></a><strong>RSTP/STP的不足</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/1.png"></p>
-<h2 id="RSTP-STP的不足-2"><a href="#RSTP-STP的不足-2" class="headerlink" title="RSTP/STP的不足 (2)"></a><strong>RSTP/STP的不足</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/2.png"></p>
-<h2 id="多生成树协议概述"><a href="#多生成树协议概述" class="headerlink" title="多生成树协议概述"></a><strong>多生成树协议概述</strong></h2><p>•MSTP是IEEE 802.1S中定义的生成树协议，MSTP兼容STP和RSTP，既可以快速收敛，又提供了数据转发的多个冗余路径，在数据转发过程中实现VLAN数据的负载均衡。</p>
-<p>•MSTP可以将一个或多个VLAN映射到一个Instance（实例），再基于Instance计算生成树，映射到同一个Instance的VLAN共享同一棵生成树。</p>
-<p><img src="/2021/05/06/MSTP/3.png"></p>
-<blockquote>
-<p>•如图中例子，经计算，最终生成两棵生成树：</p>
-<ul>
-<li><p>Instance1对应的生成树以SW1为根交换设备，转发VLAN1~VLAN10的报文。</p>
-</li>
-<li><p>Instance2对应的生成树以SW2为根交换设备，转发VLAN11~VLAN20的报文。</p>
-</li>
-<li><p>不同VLAN的报文沿不同的路径转发，实现了负载分担。</p>
-</li>
-</ul>
-<p>•注意：生成树不是基于VLAN运行的，而是基于Instance运行的。</p>
-</blockquote>
-<h1 id="MSTP的基本概念"><a href="#MSTP的基本概念" class="headerlink" title="MSTP的基本概念"></a><strong>MSTP的基本概念</strong></h1><h2 id="MST-Region"><a href="#MST-Region" class="headerlink" title="MST Region"></a><strong>MST</strong> <strong>Region</strong></h2><p><img src="/2021/05/06/MSTP/5.png"></p>
-<blockquote>
-<p>•同一个MST域的设备具有下列特点：</p>
-<ul>
-<li><p>都启动了MSTP。</p>
-</li>
-<li><p>具有相同的域名。</p>
-</li>
-<li><p>具有相同的VLAN到生成树实例映射配置。</p>
-</li>
-<li><p>具有相同的MSTP修订级别配置。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="MSTI"><a href="#MSTI" class="headerlink" title="MSTI"></a><strong>MSTI</strong></h2><p><img src="/2021/05/06/MSTP/6.png"></p>
-<blockquote>
-<p>•Instance0是缺省存在的，而且缺省时，华为交换机上所有的VLAN都映射到了Instance0。</p>
-<p>•通过设置VLAN映射表（即VLAN和MSTI的对应关系表），把VLAN和MSTI联系起来。</p>
-<ul>
-<li>每个VLAN只能对应一个MSTI，即同一VLAN的数据只能在一个MSTI中传输，而一个MSTI可能对应多个VLAN。</li>
-</ul>
-</blockquote>
-<h2 id="CST"><a href="#CST" class="headerlink" title="CST"></a><strong>CST</strong></h2><p><img src="/2021/05/06/MSTP/7.png"></p>
-<h2 id="IST"><a href="#IST" class="headerlink" title="IST"></a><strong>IST</strong></h2><p><img src="/2021/05/06/MSTP/8.png"></p>
-<h2 id="CIST"><a href="#CIST" class="headerlink" title="CIST"></a><strong>CIST</strong></h2><p><img src="/2021/05/06/MSTP/9.png"></p>
-<h2 id="SST"><a href="#SST" class="headerlink" title="SST"></a><strong>SST</strong></h2><p><img src="/2021/05/06/MSTP/10.png"></p>
-<h2 id="总根，域根和主桥"><a href="#总根，域根和主桥" class="headerlink" title="总根，域根和主桥"></a><strong>总根，域根和主桥</strong></h2><p><img src="/2021/05/06/MSTP/11.png"></p>
-<blockquote>
-<p>•主桥包括总根和IST域根。</p>
-</blockquote>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><img src="/2021/05/06/MSTP/12.png"></p>
-<h2 id="MSTP的端口角色-1"><a href="#MSTP的端口角色-1" class="headerlink" title="MSTP的端口角色 (1)"></a><strong>MSTP的端口角色 (1)</strong></h2><p>MSTP中定义的所有端口角色包括：</p>
-<p>根端口、指定端口、Alternate端口、Backup端口、Master端口、域边缘端口和边缘端口。</p>
-<p><img src="/2021/05/06/MSTP/15.png"></p>
-<p><img src="/2021/05/06/MSTP/14.png"></p>
-<p><img src="/2021/05/06/MSTP/16.png"></p>
-<blockquote>
-<p>•除边缘端口外，其他端口角色都参与MSTP的计算过程。</p>
-<p>•同一端口在不同的生成树实例中可以担任不同的角色。</p>
-</blockquote>
-<h2 id="MSTP的端口状态"><a href="#MSTP的端口状态" class="headerlink" title="MSTP的端口状态"></a><strong>MSTP的端口状态</strong></h2><p>MSTP定义的端口状态与RSTP协议中定义相同:</p>
-<ul>
-<li><p>Forwarding状态：端口既转发用户流量，学习MAC地址，又接收/发送BPDU报文。</p>
-</li>
-<li><p>Learning状态：过渡状态，端口接收/发送BPDU报文，不转发用户流量但是学习MAC地址。</p>
-</li>
-<li><p>Discarding状态：端口只接收BPDU报文，不转发用户流量也不学习MAC地址。</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th><strong>MSTP端口状态</strong></th>
-<th><strong>端口在拓扑中的角色</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Forwarding</td>
-<td>包括根端口、指定端口、Master端口、域边缘端口</td>
-</tr>
-<tr>
-<td>Learning</td>
-<td>包括根端口、指定端口、Master端口、域边缘端口</td>
-</tr>
-<tr>
-<td>Discarding</td>
-<td>包括根端口、指定端口、Master端口、域边缘端口、Alternate端口、Backup端口</td>
-</tr>
-</tbody></table>
-<h2 id="MSTP报文"><a href="#MSTP报文" class="headerlink" title="MSTP报文"></a><strong>MSTP报文</strong></h2><p><img src="/2021/05/06/MSTP/18.png"></p>
-<p><img src="/2021/05/06/MSTP/19.png"></p>
-<p>•无论是域内的MST BPDU还是域间的，前36个字节和RST BPDU相同。从第37个字节开始是MSTP专有字段。最后的MSTI配置信息字段由若干MSTI配置信息组连缀而成。</p>
-<p>•MST BPDU中主要信息说明：</p>
-<ul>
-<li><p>Protocol Identifier：2 Byte，协议标识符。</p>
-</li>
-<li><p>Protocol Version Identifier：1 Byte，协议版本标识符，STP为0，RSTP为2，MSTP为3。</p>
-</li>
-<li><p>BPDU Type：1 Byte，BPDU类型：</p>
-<ul>
-<li>0x00：STP的Configuration BPDU</li>
-<li>0x80：STP的TCN BPDU（Topology Change Notification BPDU）</li>
-<li>0x02：RST BPDU（Rapid Spanning-Tree BPDU）或者MST BPDU（Multiple Spanning-Tree BPDU）</li>
-</ul>
-</li>
-<li><p>CIST Flags：1 Byte，CIST标志字段。</p>
-</li>
-<li><p>CIST Root Identifier：8 Byte，CIST的总根交换设备ID。</p>
-</li>
-<li><p>CIST External Path Cost：4 Byte，CIST外部路径开销指从本交换设备所属的MST域到CIST根交换设备所属的MST域的累计路径开销。CIST外部路径开销根据链路带宽计算。</p>
-</li>
-<li><p>CIST Regional Root Identifier：8 Byte，CIST的域根交换设备ID，即IST Master的ID。如果总根在这个域内，那么域根交换设备ID就是总根交换设备ID。</p>
-</li>
-<li><p>CIST Port Identifier：2 Byte，本端口在IST中的指定端口ID。</p>
-</li>
-<li><p>Message Age：2 Byte，BPDU报文的生存期。</p>
-</li>
-<li><p>Max Age：2 Byte，BPDU报文的最大生存期，超时则认为到根交换设备的链路故障。</p>
-</li>
-<li><p>Hello Time：2 Byte，Hello定时器，缺省为2秒。</p>
-</li>
-<li><p>Forward Delay：2 Byte，Forward Delay定时器，缺省为15秒。</p>
-</li>
-<li><p>Version 1 Length：1 Byte，Version1 BPDU的长度，值固定为0。</p>
-</li>
-<li><p>Version 3 Length：2 Byte，Version3 BPDU的长度。</p>
-</li>
-<li><p>MST Configuration Identifier：51 Byte，MST配置标识，表示MST域的标签信息，包含4个字段。</p>
-</li>
-<li><p>CIST Internal Root Path Cost：4 Byte，CIST内部路径开销指从本端口到IST Master交换设备的累计路径开销。CIST内部路径开销根据链路带宽计算。</p>
-</li>
-<li><p>CIST Bridge Identifier：8 Byte，CIST的指定交换设备ID。</p>
-</li>
-<li><p>CIST Remaining Hops：1 Byte，BPDU报文在CIST中的剩余跳数。</p>
-</li>
-<li><p>MSTI Configuration Messages：16 Byte，MSTI配置信息。每个MSTI的配置信息占16 Byte，如果有n个MSTI就占用n×16 Byte。</p>
-</li>
-</ul>
-<h1 id="MSTP的工作原理"><a href="#MSTP的工作原理" class="headerlink" title="MSTP的工作原理"></a>MSTP的工作原理</h1><h2 id="MSTP拓扑计算"><a href="#MSTP拓扑计算" class="headerlink" title="MSTP拓扑计算"></a><strong>MSTP拓扑计算</strong></h2><p>•MSTP拓扑计算：</p>
-<ul>
-<li><p>MSTP可以将整个二层网络划分为多个MST域，各个域之间通过计算生成CST，域内生成IST，CST和IST构成了整个交换设备网络的CIST。</p>
-</li>
-<li><p>域内还可以基于实例计算生成多棵生成树，每棵生成树都被称为是一个MSTI。</p>
-</li>
-</ul>
-<p>•CIST和MSTI都是根据优先级向量来计算的，这些优先级向量信息都包含在MST BPDU中。各交换设备互相交换MST BPDU来生成CIST和MSTI 。</p>
-<ul>
-<li><p>参与CIST计算的优先级向量为：</p>
-<p>▪{ 根交换设备ID，外部路径开销，域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
-</li>
-<li><p>参与MSTI计算的优先级向量为：</p>
-<p>▪{ 域根ID，内部路径开销，指定交换设备ID，指定端口ID，接收端口ID }</p>
-</li>
-<li><p>注意：括号中的向量的优先级从左到右依次递减。</p>
-</li>
-</ul>
-<blockquote>
-<p>•优先级向量说明：</p>
-<ul>
-<li><p>根交换设备ID：根交换设备ID用于选择CIST中的根交换设备。</p>
-<ul>
-<li><p>根交换设备ID = Priority(16 bit) + MAC(48 bit)。</p>
-</li>
-<li><p>其中Priority为MSTI0的优先级。</p>
-</li>
-</ul>
-</li>
-<li><p>外部路径开销（External Root Path Cost，ERPC）：从CIST的域根到达总根的路径开销。</p>
-<ul>
-<li>MST域内所有交换设备上保存的外部路径开销相同。</li>
-<li>若CIST根交换设备在域中，则域内所有交换设备上保存的外部路径开销为0。</li>
-</ul>
-</li>
-<li><p>域根ID：域根ID用于选择MSTI中的域根。</p>
-<ul>
-<li>域根ID = Priority(16 bit) + MAC(48 bit)。</li>
-<li>其中Priority为MSTI0的优先级。</li>
-</ul>
-</li>
-<li><p>内部路径开销（Internal Root Path Cost，IRPC）：本桥到达域根的路径开销。</p>
-<ul>
-<li>域边缘端口保存的内部路径开销大于非域边缘端口保存的内部路径开销。</li>
-</ul>
-</li>
-<li><p>指定交换设备ID：CIST或MSTI实例的指定交换设备是本桥通往域根的最邻近的上游桥。</p>
-<ul>
-<li>如果本桥就是总根或域根，则指定交换设备为自己。</li>
-</ul>
-</li>
-<li><p>指定端口ID：指定交换设备上同本设备上根端口相连的端口。</p>
-<ul>
-<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
-<li>端口优先级必须是16的整数倍。</li>
-</ul>
-</li>
-<li><p>接收端口ID：接收到BPDU报文的端口。</p>
-<ul>
-<li>Port ID = Priority(4 bit) + 端口号（12 bit）。</li>
-<li>端口优先级必须是16的整数倍。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<blockquote>
-<p>•优先级向量比较原则：</p>
-<ul>
-<li><p>同一向量比较，值最小的向量具有最高优先级。</p>
-</li>
-<li><p>优先级向量比较原则如下</p>
-<p>1.首先，比较根交换设备ID。</p>
-<p>2.如果根交换设备ID相同，再比较外部路径开销。</p>
-<p>3.如果外部路径开销相同，再比较域根ID。</p>
-<p>4.如果域根ID仍然相同，再比较内部路径开销。</p>
-<p>5.如果内部路径仍然相同，再比较指定交换设备ID。</p>
-<p>6.如果指定交换设备ID仍然相同，再比较指定端口ID。</p>
-<p>7.如果指定端口ID还相同，再比较接收端口ID。</p>
-</li>
-<li><p>如果端口接收到的BPDU内包含的配置消息优于端口上保存的配置消息，则端口上原来保存的配置消息被新收到的配置消息替代。端口同时更新交换设备保存的全局配置消息。反之，新收到的BPDU被丢弃。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="CIST计算"><a href="#CIST计算" class="headerlink" title="CIST计算"></a><strong>CIST计算</strong></h2><p>•经过比较MST BPDU消息后，在整个网络中选择一个优先级最高的交换设备作为CIST的树根，即总根。</p>
-<p>•在每个MST域内，MSTP通过计算生成IST；同时MSTP将每个MST域作为单台交换设备对待，通过计算在MST域间生成CST。CST和IST构成了整个交换设备网络的CIST。</p>
-<p><img src="/2021/05/06/MSTP/20.png"></p>
-<h2 id="MSTI计算"><a href="#MSTI计算" class="headerlink" title="MSTI计算"></a>MSTI计算</h2><p>•在MST域内，MSTP根据VLAN和生成树实例的映射关系，针对不同的VLAN生成不同的生成树实例。</p>
-<p>•每棵生成树独立进行计算，计算过程与STP计算生成树的过程类似。</p>
-<p><img src="/2021/05/06/MSTP/21.png"></p>
-<blockquote>
-<p>•MSTI的特点：</p>
-<p>​    ▫每个MSTI独立计算自己的生成树，互不干扰。</p>
-<p>​    ▫每个MSTI的生成树计算方法与STP基本相同。</p>
-<p>​    ▫每个MSTI的生成树可以有不同的根，不同的拓扑。</p>
-<p>​    ▫每个MSTI在自己的生成树内发送BPDU。</p>
-<p>​    ▫每个MSTI的拓扑通过命令配置决定。</p>
-<p>​    ▫每个端口在不同MSTI上的生成树参数可以不同。</p>
-<p>​    ▫每个端口在不同MSTI上的角色、状态可以不同。</p>
-<p>•根桥和备份根桥：可以通过计算来自动确定生成树的根桥，用户也可以手动配置设备为指定生成树的根桥或备份根桥。</p>
-<p>​    ▫设备在各生成树中的角色互相独立，在作为一棵生成树的根    桥或备份根桥的同时，也可以作为其它生成树的根桥或备份    根桥；但在同一棵生成树中，一台设备不能既作为根桥，又    作为备份根桥。</p>
-<p>​    ▫在一棵生成树中，生效的根桥只有一个；当两台或两台以上    的设备被指定为同一棵生成树的根桥时，系统将选择MAC地    址最小的设备作为根桥。</p>
-<p>​    ▫可以在每棵生成树中指定多个备份根桥。当根桥出现故障或    被关机时，备份根桥可以取代根桥成为指定生成树的根桥；    但此时若配置了新的根桥，则备份根桥将不会成为根桥。如    果配置了多个备份根桥，则MAC地址最小的备份根桥将成为    指定生成树的根桥。</p>
-</blockquote>
-<h2 id="MSTP网络数据转发"><a href="#MSTP网络数据转发" class="headerlink" title="MSTP网络数据转发"></a><strong>MSTP网络数据转发</strong></h2><p>在运行MSTP协议的网络中，一个VLAN报文将沿着如下路径进行转发：</p>
-<ul>
-<li><p>在MST域内，沿着其对应的MSTI转发。</p>
-</li>
-<li><p>在MST域间，沿着CST转发。</p>
-</li>
-</ul>
-<p><img src="/2021/05/06/MSTP/22.png"></p>
-<blockquote>
-<p>•如图所示，以VLAN2的数据发送为例。</p>
-</blockquote>
-<h1 id="MSTP的基本配置"><a href="#MSTP的基本配置" class="headerlink" title="MSTP的基本配置"></a>MSTP的基本配置</h1><h2 id="MSTP的基础配置命令"><a href="#MSTP的基础配置命令" class="headerlink" title="MSTP的基础配置命令"></a><strong>MSTP的基础配置命令</strong></h2><p><img src="/2021/05/06/MSTP/23.png"></p>
-<blockquote>
-<p>•命令：<strong>stp mode</strong> <strong>mstp</strong></p>
-<p>▫STP和MSTP不能互相识别报文，而MSTP和RSTP可以互相识别报文，所以若工作在MSTP工作模式下，交换设备会设置所有和运行STP的交换设备直接相连的端口工作在STP模式下，其他端口工作在MSTP模式下，实现运行不同生成树协议的设备之间的互通。</p>
-</blockquote>
-<h2 id="配置MST域并激活"><a href="#配置MST域并激活" class="headerlink" title="配置MST域并激活"></a><strong>配置MST域并激活</strong></h2><p><img src="/2021/05/06/MSTP/24.png"></p>
-<p><img src="/2021/05/06/MSTP/25.png"></p>
-<blockquote>
-<p>•命令：<strong>stp region-configuration</strong></p>
-<ul>
-<li>缺省情况下，MST域的三个参数均取缺省值。</li>
-</ul>
-<p>•命令：<strong>region-name</strong> <em>name</em></p>
-<ul>
-<li><em>name</em>：指定交换设备的MST域名。字符串形式，不支持空格，区分大小写，长度为1～32个字符。</li>
-</ul>
-<p>•命令：<strong>instance</strong> <em>instance-id</em> <strong>vlan</strong> { <em>vlan-id1</em> [ <strong>to</strong> <em>vlan-id2</em> ] }</p>
-<ul>
-<li><em>instance-id</em>：指定生成树实例的编号。整数形式，取值范围是0～4094，取值为0表示的是CIST。</li>
-</ul>
-<p>•命令：<strong>revision-level</strong> <em>level</em></p>
-<ul>
-<li><p><em>level</em>：指定MST域的修订级别。整数形式，取值范围是0～65535。</p>
-</li>
-<li><p>MSTP是标准协议，各厂商设备的MSTP修订级别一般都默认为0。如果某厂商的设备不为0，为保持MST域内计算，在部署MSTP时，需要将各设备的MSTP修订级别修改为一致。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="MSTP的可选配置命令"><a href="#MSTP的可选配置命令" class="headerlink" title="MSTP的可选配置命令"></a>MSTP的可选配置命令</h2><p><img src="/2021/05/06/MSTP/26.png"></p>
-<blockquote>
-<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>root</strong> { <strong>primary</strong> | <strong>secondary</strong> }</p>
-<ul>
-<li><p><strong>instance</strong> <em>instance-id</em>：指定生成树实例的编号。如果不指定instance，则配置设备在实例0上为根桥/备份根桥设备。</p>
-</li>
-<li><p><strong>primary</strong>：指定配置为生成树的根桥设备。配置后该设备优先级值自动为0，将不能更改设备优先级。</p>
-</li>
-<li><p><strong>secondary</strong>：指定配置为生成树的备份根桥设备。配置后该设备优先级值自动为4096，将不能更改设备优先级。</p>
-</li>
-</ul>
-<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>priority</strong> <em>priority</em></p>
-<ul>
-<li><em>priority</em>：指定交换设备的优先级数值。优先级值越小，则交换设备的优先级越高。整数形式，取值范围是0～61440，步长为4096，如0、4096、8192等。缺省值是32768。</li>
-</ul>
-<p>•命令：<strong>stp</strong> <strong>pathcost-standard</strong> { <strong>dot1d-1998</strong> | <strong>dot1t</strong> | <strong>legacy</strong> }</p>
-<ul>
-<li><p><strong>dot1d-1998</strong>：指定路径开销值的计算方法是IEEE 802.1D-1998标准方法，取值范围为1~65535。</p>
-</li>
-<li><p><strong>dot1t</strong>：指定路径开销值的计算方法是IEEE 802.1T标准方法，取值范围为1~200,000,000。</p>
-</li>
-<li><p><strong>legacy</strong>：指定路径开销值的计算方法是华为计算方法，取值范围为1~200,000。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/05/06/MSTP/27.png"></p>
-<blockquote>
-<p>•命令：<strong>stp</strong> [ <strong>instance</strong> <em>instance-id</em> ] <strong>port priority</strong> <em>priority</em></p>
-<ul>
-<li><em>priority</em>：指定端口在生成树计算时的优先级。整数形式，取值范围是0～240，步长为16，如0、16、32等。</li>
-</ul>
-</blockquote>
-<h2 id="案例：单域多实例场景配置-1"><a href="#案例：单域多实例场景配置-1" class="headerlink" title="案例：单域多实例场景配置 (1)"></a><strong>案例：单域多实例场景配置</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
-<p><img src="/2021/05/06/MSTP/29.png"></p>
-<blockquote>
-<p>可以配置SW1为VLAN2的网关（VLANIF2：192.168.1.254/24），SW2为VLAN3的网关（VLANIF3:192.168.2.254/24），最终实现PC1能Ping通SW1的VLANIF2接口，PC2能Ping通SW2的VLANIF3接口。</p>
-</blockquote>
-<h2 id="案例：单域多实例场景配置-2"><a href="#案例：单域多实例场景配置-2" class="headerlink" title="案例：单域多实例场景配置 (2)"></a><strong>案例：单域多实例场景配置</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
-<p><img src="/2021/05/06/MSTP/30.png"></p>
-<p><img src="/2021/05/06/MSTP/31.png"></p>
-<h2 id="案例：单域多实例场景配置-3"><a href="#案例：单域多实例场景配置-3" class="headerlink" title="案例：单域多实例场景配置 (3)"></a><strong>案例：单域多实例场景配置</strong> <strong>(3)</strong></h2><p><img src="/2021/05/06/MSTP/28.png"></p>
-<p><img src="/2021/05/06/MSTP/32.png"></p>
-<p><img src="/2021/05/06/MSTP/33.png"></p>
-<p><img src="/2021/05/06/MSTP/34.png"></p>
-<h2 id="验证配置结果-1"><a href="#验证配置结果-1" class="headerlink" title="验证配置结果 (1)"></a><strong>验证配置结果</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/MSTP/35.png"></p>
-<p><img src="/2021/05/06/MSTP/36.png"></p>
-<h2 id="验证配置结果-2"><a href="#验证配置结果-2" class="headerlink" title="验证配置结果 (2)"></a><strong>验证配置结果</strong> <strong>(2)</strong></h2><p><img src="/2021/05/06/MSTP/37.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 某运行MSTP协议的交换机的端口角色如下图所示，请问GigabitEthernet0/0/1端口在Instance1中的端口状态应该是？</p>
-<p>A.Blocking</p>
-<p><strong>B.Discarding</strong></p>
-<p>C.Forwarding</p>
-<p>D.Learning</p>
-<p><img src="/2021/05/06/MSTP/4.png"></p>
-<p>2.(判断题) CIST是由内部生成树和公共生成树构成的一棵树。（  ）</p>
-<p><strong>A.正确</strong></p>
-<p>B.错误</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•在MSTP网络中，可以将一个或多个VLAN映射到一个Instance，然后MSTP基于该Instance计算生成树。基于Instance的生成树被称为MSTI，MSTP为每个Instance维护独立的MSTI，映射到同一个Instance的VLAN将共享同一棵生成树。</p>
-<p>•在以太网中部署MSTP协议后可实现如下功能：</p>
-<ul>
-<li><p>形成多棵无环路的树，解决广播风暴并实现冗余备份。</p>
-</li>
-<li><p>多棵生成树在VLAN间实现负载均衡，不同VLAN的流量按照不同的路径转发。</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4049,7 +4034,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4062,7 +4047,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

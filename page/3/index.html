@@ -241,6 +241,668 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/" itemprop="url">IPadv-IGP高级特性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-31T11:38:08+08:00">
+                2021-05-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•OSPF和IS-IS都是基于链路状态的内部网关路由协议，运行这两种协议的路由器通过同步LSDB，采用SPF算法计算最优路由。</p>
+<p>•当网络拓扑发生变化时，OSPF和IS-IS支持多种快速收敛和保护机制，能够降低网络故障导致的流量丢失。</p>
+<p>•为了实现对路由表规模的控制，OSPF和IS-IS支持路由选路及路由信息的控制，能够减少特定路由器路由表的大小。</p>
+<p>•本节课程将介绍OSPF和IS-IS的高级特性，包括：快速收敛机制、路由控制等。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述OSPF和IS-IS的各种快速收敛的技术</p>
+<p>▫实现OSPF和IS-IS等价路由的配置</p>
+<p>▫实现OSPF和IS-IS发布缺省路由</p>
+<p>▫描述OSPF和IS-IS多进程使用场景</p>
+<p>▫描述OSPF转发地址的使用场景</p>
+<p>▫描述IS-IS的LSP分片扩展的工作原理</p>
+<h1 id="1-OSPF快速收敛"><a href="#1-OSPF快速收敛" class="headerlink" title="1.OSPF快速收敛"></a>1.OSPF快速收敛</h1><h2 id="OSPF快速收敛概述"><a href="#OSPF快速收敛概述" class="headerlink" title="OSPF快速收敛概述"></a>OSPF快速收敛概述</h2><p>•OSPF快速收敛是为了提高路由的收敛速度而做的扩展特性，包括：PRC（Partial Route Calculation，部分路由计算）和智能定时器。</p>
+<p>•同时，OSPF支持故障恢复快速收敛，例如通过OSPF IP FRR（Fast reroute，快速重路由）实现备份链路的快速切换，也可以与BFD联动实现对故障的快速感知。</p>
+<h2 id="PRC"><a href="#PRC" class="headerlink" title="PRC"></a>PRC</h2><p>•PRC的工作原理：当网络上路由发生变化的时候，只对发生变化的路由进行重新计算。</p>
+<p>•PRC不计算节点路径，而是根据SPF算法算出来的最短路径树来更新路由。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/1.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/2.png"></p>
+<blockquote>
+<p>•注意：在华为设备上，OSPF的PRC功能默认开启。</p>
+</blockquote>
+<h2 id="智能定时器"><a href="#智能定时器" class="headerlink" title="智能定时器"></a>智能定时器</h2><p>•智能定时器是在进行SPF计算和产生LSA的时候用到的一种定时器。</p>
+<p>•智能定时器既可以对少量的外界突发事件进行快速响应，又可以避免过度的占用CPU。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/3.png"></p>
+<blockquote>
+<p>•如果触发路由计算的时间间隔较长，同样会影响网络的收敛速度。</p>
+<p>•智能定时器首次超时时间是一个固定的时间。如果在定时器超时前，又有触发定时器的事件发生，则该定时器下一次的超时时间会增加。</p>
+</blockquote>
+<h2 id="智能定时器的基础配置命令-1"><a href="#智能定时器的基础配置命令-1" class="headerlink" title="智能定时器的基础配置命令 (1)"></a>智能定时器的基础配置命令 (1)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/4.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf] <strong>lsa**</strong>-originate-interval** { <strong>0</strong> | { <strong>intelligent-timer</strong> <em>max-interval</em> <em>start-interval</em> <em>hold-interval</em> | <strong>other-type</strong> <em>interval</em> } }</p>
+<p>​    ▫<strong>0</strong>：指定LSA更新的时间间隔为0，即取消LSA的5秒的更新时间间隔。</p>
+<p>​    ▫<strong>intelligent-timer</strong>：指定通过智能定时器设置OSPF Router LSA和Network LSA的更新间隔时间。</p>
+<p>​    ▫<em>max-interval</em>：指定更新OSPF LSA的最长间隔时间。整数形式，取值范围是1～120000，单位是毫秒。缺省值是5000。</p>
+<p>​    ▫<em>start-interval</em>：指定更新OSPF LSA的初始间隔时间。整数形式，取值范围是0～60000，单位是毫秒。缺省值是500。</p>
+<p>​    ▫<em>hold-interval</em>：指定更新OSPF LSA的基数间隔时间。整数形式，取值范围是1～60000，单位是毫秒。缺省值是1000。</p>
+<p>​    ▫<strong>other-type</strong>：指定设置除OSPF Router LSA和Network LSA外LSA的更新间隔时间。</p>
+<p>​    ▫<em>interval</em>：指定LSA更新的时间间隔。整数形式，取值范围是0～10，单位是秒。缺省值是5。</p>
+</blockquote>
+<h2 id="智能定时器的基础配置命令-2"><a href="#智能定时器的基础配置命令-2" class="headerlink" title="智能定时器的基础配置命令 (2)"></a>智能定时器的基础配置命令 (2)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/5.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf-1] <strong>lsa**</strong>-arrival-interval** { <em>interval</em> | <strong>intelligent-timer</strong> <em>max-interval</em> <em>start-interval</em> <em>hold-interval</em> }</p>
+<p>​    ▫<em>interval</em>：指定LSA接收的时间间隔。整数形式，取值范围是0～10000，单位是毫秒。</p>
+<p>​    ▫<strong>intelligent-timer</strong>：指定通过智能定时器设置LSA接收的间隔时间。</p>
+<p>​    ▫<em>max-interval</em>：指定接收OSPF LSA的最长间隔时间。整数形式，取值范围是1～120000，单位是毫秒。缺省值是1000。</p>
+<p>​    ▫<em>start-interval</em>：指定接收OSPF LSA的初始间隔时间。整数形式，取值范围是0～60000，单位是毫秒。缺省值是500。</p>
+<p>​    ▫<em>hold-interval</em>：指定接收OSPF LSA的基数间隔时间。整数形式，取值范围是1～60000，单位是毫秒。缺省值是500。</p>
+</blockquote>
+<h2 id="智能定时器的基础配置命令-3"><a href="#智能定时器的基础配置命令-3" class="headerlink" title="智能定时器的基础配置命令 (3)"></a>智能定时器的基础配置命令 (3)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/6.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf-1] <strong>spf**</strong>-schedule-interval** { <em>interval1</em> | <strong>intelligent-timer</strong> <em>max-interval</em> <em>start-interval</em> <em>hold-interval</em> | <strong>millisecond</strong> <em>interval2</em> }</p>
+<p>​    ▫<em>interval1**：</em>指定OSPF SPF计算间隔时间。整数形式，取值范围是1～10，单位是秒。</p>
+<p>​    ▫<strong>intelligent-timer</strong>：指定通过智能定时器设置OSPF SPF计算的间隔时间。</p>
+<p>​    ▫<em>max-interval</em>：指定OSPF SPF计算的最长间隔时间。整数形式，取值范围是1～120000，单位是毫秒。缺省值是10000。</p>
+<p>​    ▫<em>start-interval</em>：指定OSPF SPF计算的初始间隔时间。整数形式，取值范围是1～60000，单位是毫秒。缺省值是500。</p>
+<p>​    ▫<em>hold-interval</em>：指定OSPF SPF计算的基数间隔时间。整数形式，取值范围是1～60000，单位是毫秒。缺省值是1000。</p>
+<p>​    ▫<strong>millisecond</strong> <em>interval2</em>：指定OSPF SPF计算间隔时间。整数形式，取值范围是1～10000，单位是毫秒。</p>
+</blockquote>
+<h2 id="OSPF-IP-FRR"><a href="#OSPF-IP-FRR" class="headerlink" title="OSPF IP FRR"></a>OSPF IP FRR</h2><p>•OSPF IP FRR（Fast reroute，快速重路由）是动态IP FRR，利用LFA（Loop-Free Alternates）算法预先计算出备份路径，保存在转发表中，以备在故障时将流量快速切换到备份链路上，保证流量不中断，从而达到流量保护的目的，该功能可将故障恢复时间降低到50ms以内。</p>
+<p>•LFA计算备份链路的基本思路是：</p>
+<p>​    ▫以可提供备份链路的邻居为根节点，利用SPF算法计算出到目的节点的最短距离。然后，按照不等式计算出开销最小且无环的备份链路。</p>
+<h2 id="OSPF-IP-FRR组网应用"><a href="#OSPF-IP-FRR组网应用" class="headerlink" title="OSPF IP FRR组网应用"></a>OSPF IP FRR组网应用</h2><p>OSPF IP FRR的流量保护分为链路保护和节点链路双保护。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/7.png"></p>
+<blockquote>
+<p>•节点链路双保护：</p>
+<p>​    ▫如图：流量从设备S到D进行转发，网络开销值满足节点链路保护公式，可保证当主链路故障后，设备S将流量切换到备份链路S到N后可以继续向下游转发，确保流量中断小于50ms。</p>
+<p>•OSPF IP FRR的流量保护分为链路保护和节点链路双保护。</p>
+<p>​    ▫当需要保护的对象是经过特定链路的流量时，流量保护类型为链路保护。</p>
+<p>​    ▫当需要保护的对象是经过特定设备的流量时，流量保护类型为节点链路双保护。节点保护优先级高于链路保护。</p>
+</blockquote>
+<h2 id="OSPF-IP-FRR的基础配置命令"><a href="#OSPF-IP-FRR的基础配置命令" class="headerlink" title="OSPF IP FRR的基础配置命令"></a>OSPF IP FRR的基础配置命令</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/8.png"></p>
+<h2 id="OSPF-IP-FRR配置举例"><a href="#OSPF-IP-FRR配置举例" class="headerlink" title="OSPF IP FRR配置举例"></a>OSPF IP FRR配置举例</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/9.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/10.png"></p>
+<h3 id="查看OSPF-IP-FRR配置结果"><a href="#查看OSPF-IP-FRR配置结果" class="headerlink" title="查看OSPF IP FRR配置结果"></a>查看OSPF IP FRR配置结果</h3><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/11.png"></p>
+<h2 id="OSPF与BFD联动"><a href="#OSPF与BFD联动" class="headerlink" title="OSPF与BFD联动"></a>OSPF与BFD联动</h2><p>•网络上的链路故障或拓扑变化都会导致设备重新进行路由计算，所以缩短路由协议的收敛时间对于提高网络的性能是非常重要的。</p>
+<p>•OSPF与BFD联动就是将BFD和OSPF关联起来，一旦与邻居之间的链路出现故障，BFD对链路故障的快速感应能够加快OSPF对于网络拓扑变化的响应。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/12.png"></p>
+<blockquote>
+<p>•OSPF通过周期性的向邻居发送Hello报文来实现邻居检测，检测到故障所需时间比较长，超过1秒钟（默认通过OSPF Dead Timer超时判断邻居失效，缺省为40s）。随着科技的发展，语音、视频及其它点播业务应用广泛，而这些业务对于丢包和延时非常敏感，当数据达到吉比特速率级时，较长的检测时间会导致大量数据丢失，无法满足电信级网络高可靠性的需求。</p>
+<p>•为了解决上述问题，配置指定进程或指定接口的OSPF与BFD联动功能，可以快速检测链路的状态，故障检测时间可以达到毫秒级，提高链路状态变化时OSPF的收敛速度。</p>
+</blockquote>
+<h2 id="OSPF与BFD联动的基础配置命令"><a href="#OSPF与BFD联动的基础配置命令" class="headerlink" title="OSPF与BFD联动的基础配置命令"></a>OSPF与BFD联动的基础配置命令</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/13.png"></p>
+<blockquote>
+<p>•配置前提：</p>
+<ul>
+<li>如果需要使用BFD功能快速检测链路故障，则必须在系统视图下执行<strong>bfd</strong>命令，使能全局BFD功能。</li>
+</ul>
+<p>•接口配置的BFD特性优先级高于进程配置的BFD特性优先级。如果打开了接口的BFD开关，则按照接口上BFD参数建立BFD会话。</p>
+<p>•可以配置OSPF IP FRR与BFD联动：</p>
+<ul>
+<li><p>配置OSPF IP FRR特性时，需要底层能够快速响应链路变化，以便迅速将流量切换到备份链路。</p>
+</li>
+<li><p>将OSPF IP FRR与BFD会话绑定可以达到快速感知故障的目的，确保故障后流量切换的及时性。</p>
+</li>
+</ul>
+<p>•命令：[Huawei-ospf-1] <strong>bfd</strong> <strong>all-interfaces</strong> { <strong>min-rx-interval</strong> <em>receive-interval</em> | <strong>min-tx-interval</strong> <em>transmit-interval</em> | <strong>detect-multiplier</strong> <em>multiplier-value</em> | <strong>frr-binding</strong> } </p>
+<ul>
+<li><p><strong>min-rx-interval</strong> <em>receive-interval</em>：指定期望从对端接收BFD报文的最小接收间隔。整数形式，取值范围是10～2000，单位是毫秒。缺省值是1000毫秒。</p>
+</li>
+<li><p><strong>min-tx-interval</strong> <em>transmit-interval</em>：指定向对端发送BFD报文的最小发送间隔。整数形式，取值范围是10～2000，单位是毫秒。缺省值是1000毫秒。</p>
+</li>
+<li><p><strong>detect-multiplier</strong> <em>multiplier-value</em>：指定本地检测倍数。整数形式，取值范围是3～50，缺省值是3。</p>
+</li>
+<li><p><strong>frr-binding</strong>：将BFD会话状态与接口的链路状态进行绑定。当BFD会话状态变为Down时，接口的物理层链路状态也会变为Down，从而触发流量切换到备份路径。</p>
+</li>
+</ul>
+</blockquote>
+<h1 id="2-OSPF路由控制"><a href="#2-OSPF路由控制" class="headerlink" title="2.OSPF路由控制"></a>2.OSPF路由控制</h1><h2 id="OSPF路由控制概述"><a href="#OSPF路由控制概述" class="headerlink" title="OSPF路由控制概述"></a>OSPF路由控制概述</h2><p>OSPF的路由控制包括：</p>
+<p>▫调整OSPF的接口开销</p>
+<p>▫设置等价路由</p>
+<p>▫引入外部路由</p>
+<p>▫路由聚合a</p>
+<p>▫缺省路由通告</p>
+<p>▫Filter-Policy</p>
+<p>▫对发送的LSA进行过滤</p>
+<p>▫对ABR Type3 LSA进行过滤</p>
+<p>▫设置LSDB中External LSA的最大数量</p>
+<blockquote>
+<p>•本课程只介绍等价路由、缺省路由、对LSA的过滤，其他内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h2 id="等价路由"><a href="#等价路由" class="headerlink" title="等价路由"></a>等价路由</h2><p>•当路由表中存在到达同一目的地址，且同一路由协议发现的多条路由时，若这几条路由的开销值也相同，那么这些路由就是等价路由，可以实现负载分担。</p>
+<p>•设备将按照负载分担的方式从多条等价路由发送报文到同一目的地址。</p>
+<p>   设置进行负载分担的等价路由的最大数量：</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/14.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf-1] <strong>maximum load-balancing</strong> <em>number</em></p>
+<p>▫<em>number</em>：等价路由的最大数量。设备型号不同，取值范围不同，具体请参考相应设备的产品文档。</p>
+</blockquote>
+<h2 id="等价路由配置举例"><a href="#等价路由配置举例" class="headerlink" title="等价路由配置举例"></a>等价路由配置举例</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/15.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/16.png"></p>
+<h2 id="缺省路由"><a href="#缺省路由" class="headerlink" title="缺省路由"></a>缺省路由</h2><p>•OSPF实际组网应用中，区域边界和自治系统边界通常都是由多个路由器组成的多出口冗余备份或者负载分担。此时，为了减少路由表的容量，可以配置缺省路由，保证网络的高可用性。</p>
+<p>•OSPF缺省路由通常应用于下面两种情况：</p>
+<p>​    ▫由区域边界路由器（ABR）发布Type3 LSA，用来指导区域内路由器进行区域之间报文的转发。</p>
+<p>​    ▫由自治系统边界路由器（ASBR）发布Type5 LSA或Type7 LSA，用来指导OSPF路由域内路由器进行域外报文的转发。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/17.png"></p>
+<blockquote>
+<p>•缺省路由是指目的地址和掩码都是0的路由。当设备无精确匹配的路由时，就可以通过缺省路由进行报文转发。由于OSPF路由的分级管理，Type3缺省路由的优先级高于Type5或Type7路由。</p>
+<p>•普通区域：</p>
+<p>​    ▫缺省情况下，普通OSPF区域内的OSPF路由器是不会产生缺省路由的，即使它有缺省路由。当该路由器需要向OSPF发布缺省路由时，必须手工执行<strong>default-route-advertise</strong>命令，配置完成后，路由器会产生一个缺省ASE LSA（Type5 LSA），并且通告到整个OSPF自治系统中。</p>
+<p>•Stub区域：</p>
+<p>​    ▫Stub区域不允许自治系统外部的路由（Type5 LSA）在区域内传播。区域内的路由器必须通过ABR学到自治系统外部的路由。</p>
+<p>​    ▫Stub区域的ABR会自动产生一条缺省的Type3 LSA通告到整个Stub区域。ABR通过该缺省路由，将到达AS外部的流量吸引到自己这里，然后通过ABR转发出去。</p>
+<p>•Totally Stub区域：</p>
+<p>​    ▫Totally Stub区域既不允许自治系统外部的路由（Type5 LSA）在区域内传播，也不允许区域间路由（Type3 LSA）在区域内传播。区域内的路由器必须通过ABR学到自治系统外部和其他区域的路由。</p>
+<p>​    ▫Totally Stub区域的ABR会自动产生一条缺省的Type3 LSA通告到整个Stub区域。ABR通过该缺省路由，将到达AS外部的流量吸引到自己这里，然后通过ABR转发出去。</p>
+<p>•NSSA区域：</p>
+<p>​    ▫如果希望到达自治系统外部的路由通过本区域（NSSA区域）的ASBR到达，而其它外部路由通过其它区域出去。此时，ABR会产生一条Type7 LSA的缺省路由，通告到整个NSSA区域内。这样，除了某少部分路由通过NSSA的ASBR到达，其它路由都可以通过NSSA的ABR到达其它区域的ASBR出去。这种情况下，在ABR上无论路由表中是否存在缺省路由0.0.0.0，都会产生Type7 LSA的缺省路由。</p>
+<p>​    ▫如果希望所有的外部路由只通过本区域（NSSA区域）的ASBR到达，则必须在ASBR上手动执行<strong>nssa</strong> **[default-route-advertise]**命令进行配置，使ASBR产生一条缺省的NSSA LSA（Type7 LSA），通告到整个NSSA区域内。这样，所有的外部路由就只能通过本区域NSSA的ASBR到达。这种情况下，在ASBR上只有当路由表中存在缺省路由0.0.0.0时，才会产生Type7 LSA的缺省路由。</p>
+<p>​    ▫注意：因为缺省路由只是在本NSSA区域内泛洪，并没有泛洪到整个OSPF域中，所以本NSSA区域内的路由器在找不到路由之后可以从该NSSA的ASBR出去，但不能实现其他OSPF域的路由从这个出口出去。Type7 LSA缺省路由不会在ABR上转换成Type5 LSA缺省路由泛洪到整个OSPF域。</p>
+<p>•Totally NSSA区域：</p>
+<p>​    ▫Totally NSSA的ABR会自动向该区域下发使用Type3 LSA描述的缺省路由，而Totally NSSA的ASBR则不会自动下发缺省路由。因此，在该场景下，对于区域内的路由器而言，可以通过ASBR引入的外部路由到达相应的外部网段、通过ABR下发的缺省路由到达其他网段。</p>
+<p>​    ▫如果希望Totally NSSA内的路由器选择ASBR作为默认出口，而不是ABR，那么需要让ASBR也下发缺省路由，此时必须在ASBR上手工执行配置。</p>
+</blockquote>
+<h2 id="将缺省路由通告到OSPF路由区域"><a href="#将缺省路由通告到OSPF路由区域" class="headerlink" title="将缺省路由通告到OSPF路由区域"></a>将缺省路由通告到OSPF路由区域</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/18.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf-1] <strong>default-route-advertise</strong> [ [ <strong>always</strong> | <strong>permit-calculate-other</strong> ] | <strong>cost</strong> <em>cost</em> | <strong>type</strong> <em>type</em> | <strong>route-policy</strong> <em>route-policy-name</em> [ <strong>match-any</strong> ] ]</p>
+<p>​    ▫<strong>always</strong>：无论本机是否存在激活的非本OSPF缺省路由，都会产生并发布一个描述缺省路由的LSA。</p>
+<p>​        ▪如果配置了always参数，设备不再计算来自其他设备的缺省路由。</p>
+<p>​        ▪如果没有配置always参数，本机路由表中必须有激活的非本OSPF缺省路由时才生成缺省路由的LSA。</p>
+<p>​    ▫<strong>permit-calculate-other</strong>：本机必须存在激活的非本OSPF缺省路由时才会产生并发布一个缺省路由的LSA，且设备仍然计算来自于其他设备的缺省路由。</p>
+<p>​    ▫<strong>type</strong> <em>type</em> ：指定外部路由的类型。整数形式，取值为1或2。缺省值是2。</p>
+<p>​        ▪1：第一类外部路由</p>
+<p>​        ▪2：第二类外部路由</p>
+<p>​    ▫<strong>route-policy</strong> <em>route-policy-name</em>：通过路由策略，实现在路由表中有匹配的非OSPF产生的缺省路由表项时，按路由策略所配置的参数发布缺省路由。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+<p>​    ▫<strong>match-any</strong>：通过路由策略，实现在路由表中有匹配的路由表项时，按路由策略所配置的参数发布缺省路由。</p>
+<p>•命令：[Huawei-ospf-1] <strong>default-route-advertise</strong> <strong>summary</strong> <strong>cost</strong> <em>cost</em></p>
+<p>​    ▫<strong>summary</strong>：发布指定缺省路由的Type3 LSA。在选用该参数时，必须首先使能VPN，否则路由不能发布。</p>
+<p>​    ▫<strong>cost</strong> <em>cost</em>：指定该LSA的开销值。整数形式，取值范围是0～16777214。缺省值是1。</p>
+<p>•always参数：</p>
+<p>​    ▫ASBR已经有缺省路由，执行default-route-advertise命令，将在整个OSPF区域中通告缺省路由0.0.0.0。</p>
+<p>​    ▫ASBR没有缺省路由，执行default-route-advertise命令时按照以下需求选择是否配置always参数。</p>
+<p>​        ▪如果配置always参数，无论ASBR是否有缺省路由都将在整个OSPF区域中通告缺省路由0.0.0.0，并且不再计算来自其他设备的缺省路由。</p>
+<p>​        ▪如果没有配置always参数，ASBR的路由表中必须有激活的非OSPF（BGP除外）缺省路由时才生成缺省路由的LSA。</p>
+<p>•match-any参数：</p>
+<p>​    ▫使用带match-any参数的路由策略时，如果有多条路由通过策略，选取最优者来生成缺省LSA。路由通过策略时，选取最优者的原则按照优先级从高到低的顺序如下：</p>
+<p>​        ▪路由设置了type的优先于未设置的，如果都设置了type，值越小越优先。</p>
+<p>​        ▪路由设置了cost的优先于未设置的，如果都设置了cost，值越小越优先。</p>
+<p>​        ▪路由设置了tag的优先于未设置的， 如果都设置了tag，值越小越优先。</p>
+</blockquote>
+<h2 id="对发送的LSA进行过滤"><a href="#对发送的LSA进行过滤" class="headerlink" title="对发送的LSA进行过滤"></a>对发送的LSA进行过滤</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/19.png"></p>
+<blockquote>
+<p>•命令：[Huawei-GigabitEthernet0/0/1] <strong>ospf</strong> <strong>filter-lsa-out</strong> { <strong>all</strong> | { <strong>summary</strong> [ <strong>acl</strong> { <em>acl-number</em> | <em>acl-name</em> } ] | <strong>ase</strong> [ <strong>acl</strong> { <em>acl-number</em> | <em>acl-name</em> } ] | <strong>nssa</strong> [ <strong>acl</strong> { <em>acl-number</em> | <em>acl-name</em> } ] } }</p>
+<p>​    ▫<strong>all</strong>：对除Grace LSA外的所有LSA进行过滤。</p>
+<p>​    ▫<strong>summary</strong>：对Network Summary LSA（Type3 LSA）进行过滤。</p>
+<p>​    ▫<strong>ase</strong>：对AS External LSA（Type5 LSA）进行过滤。</p>
+<p>​    ▫<strong>nssa</strong>：对NSSA LSA（Type7 LSA）进行过滤。</p>
+<p>​    ▫<strong>acl</strong> <em>acl-number</em>：指定基本访问控制列表编号。整数形式，取值范围是2000～2999。</p>
+<p>​    ▫<strong>acl</strong> <em>acl-name</em>：指定访问控制列表名称。字符串形式，不支持空格，区分大小写，长度范围是1～32，以英文字母a～z或A～Z开始。</p>
+</blockquote>
+<h2 id="对ABR-Type3-LSA进行过滤"><a href="#对ABR-Type3-LSA进行过滤" class="headerlink" title="对ABR Type3 LSA进行过滤"></a>对ABR Type3 LSA进行过滤</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/20.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf-1-area-0.0.0.1] <strong>filter</strong> { <em>acl-number</em> | <strong>acl-name</strong> <em>acl-name</em> | <strong>ip-prefix</strong> <em>ip-prefix-name</em> | <strong>route-policy</strong> <em>route-policy-name</em> } <strong>export</strong></p>
+<p>▫<em>acl-number</em>：指定基本访问控制列表号。整数形式，取值范围是2000～2999。</p>
+</blockquote>
+<h2 id="OSPF-Database-Overflow概述"><a href="#OSPF-Database-Overflow概述" class="headerlink" title="OSPF Database Overflow概述"></a>OSPF Database Overflow概述</h2><p>•OSPF要求同一个区域中的路由器保存相同的LSDB。随着网络上路由数量不断增加，一些路由器由于系统资源有限，不能再承载如此多的路由信息，这种状态就被称为数据库超限（OSPF Database Overflow）。</p>
+<p>•对于路由信息不断增加导致路由器系统资源耗尽而失效的问题，可以通过配置Stub或NSSA区域来解决，但Stub或NSSA区域的方案不能解决动态路由增长导致的数据库超限问题。为了解决数据库超限引发的问题，通过设置LSDB中External LSA的最大条目数，可以动态限制链路数据库的规模。</p>
+<p>   设置OSPF的LSDB中External LSA的最大条目数</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/21.png"></p>
+<blockquote>
+<p>•当OSPF引入的外部路由（Type5 LSA和Type7 LSA）数量超过允许的范围，会导致超出的外部路由无法得到正常处理，丢失引入的路由。为了解决上述问题，通过配置OSPF的LSDB中External LSA的最大条目数，保证引入的外部路由在一个合理的范围内，调整和优化OSPF网络。</p>
+<p>•命令：[Huawei-ospf-1] <strong>lsdb-overflow-limit</strong> <em>number</em></p>
+<p>​    ▫<em>number</em>：指定LSDB中External LSA的最大条目数。整数形式，取值范围是1～1000000。</p>
+</blockquote>
+<h2 id="避免OSPF-Database-Overflow工作原理"><a href="#避免OSPF-Database-Overflow工作原理" class="headerlink" title="避免OSPF Database Overflow工作原理"></a>避免OSPF Database Overflow工作原理</h2><p>•为了避免数据库超限，可以设置路由器上非缺省外部路由数量的上限。</p>
+<p>•OSPF网络中所有路由器都配置相同的上限值，只要路由器上外部路由的数量达到该上限，路由器就进入Overflow状态，并同时启动Overflow状态定时器（默认超时时间为5秒），路由器在定时器超过5秒后自动退出Overflow状态。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/22.png"></p>
+<h2 id="OSPF路由控制配置举例-1"><a href="#OSPF路由控制配置举例-1" class="headerlink" title="OSPF路由控制配置举例 (1)"></a>OSPF路由控制配置举例 (1)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/23.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/24.png"></p>
+<h2 id="OSPF路由控制配置举例-2"><a href="#OSPF路由控制配置举例-2" class="headerlink" title="OSPF路由控制配置举例 (2)"></a>OSPF路由控制配置举例 (2)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/25.png"></p>
+<h2 id="OSPF路由控制案例分析"><a href="#OSPF路由控制案例分析" class="headerlink" title="OSPF路由控制案例分析"></a>OSPF路由控制案例分析</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/26.png"></p>
+<blockquote>
+<p>•市场部数据转发需求：</p>
+<p>​    ▫只要边界-2路由器及其上联链路正常运行，市场部数据流就只会通过边界-2路由器进行数据转发。</p>
+<p>​    ▫只要核心-2路由器及其上联链路正常运行，市场部数据流就只会通过核心-2路由器进行数据转发。</p>
+<p>•本案例以分析财务部数据转发路径为例，市场部相关内容不再赘述。</p>
+</blockquote>
+<h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/27.png"></p>
+<blockquote>
+<p>•第二类外部路由（Type2 External）：</p>
+<p>​    ▫这类路由的可信度比较低，所以OSPF认为从ASBR到自治系统之外的开销远远大于在自治系统之内到达ASBR的开销。</p>
+<p>​    ▫OSPF计算路由开销时只考虑ASBR到自治系统之外的开销，即到第二类外部路由的开销=ASBR到该路由目的地址的开销。</p>
+</blockquote>
+<h2 id="控制流量出口"><a href="#控制流量出口" class="headerlink" title="控制流量出口"></a>控制流量出口</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/28.png"></p>
+<blockquote>
+<p>•控制流量出口时，不考虑到达各ASBR的内部路径开销。</p>
+</blockquote>
+<h2 id="控制内部路径"><a href="#控制内部路径" class="headerlink" title="控制内部路径"></a>控制内部路径</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/29.png"></p>
+<h2 id="控制内部路径：调整汇聚到核心开销"><a href="#控制内部路径：调整汇聚到核心开销" class="headerlink" title="控制内部路径：调整汇聚到核心开销"></a>控制内部路径：调整汇聚到核心开销</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/30.png"></p>
+<h2 id="控制内部路径：调整核心到边界开销"><a href="#控制内部路径：调整核心到边界开销" class="headerlink" title="控制内部路径：调整核心到边界开销"></a>控制内部路径：调整核心到边界开销</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/31.png"></p>
+<h2 id="OSPF路由控制案例主要配置-1"><a href="#OSPF路由控制案例主要配置-1" class="headerlink" title="OSPF路由控制案例主要配置 (1)"></a>OSPF路由控制案例主要配置 (1)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/32.png"></p>
+<h2 id="OSPF路由控制案例主要配置-2"><a href="#OSPF路由控制案例主要配置-2" class="headerlink" title="OSPF路由控制案例主要配置 (2)"></a>OSPF路由控制案例主要配置 (2)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/33.png"></p>
+<h2 id="OSPF路由控制案例主要配置-3"><a href="#OSPF路由控制案例主要配置-3" class="headerlink" title="OSPF路由控制案例主要配置 (3)"></a>OSPF路由控制案例主要配置 (3)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/34.png"></p>
+<h1 id="3-OSPF其他特性"><a href="#3-OSPF其他特性" class="headerlink" title="3.OSPF其他特性"></a>3.OSPF其他特性</h1><h2 id="OSPF多进程"><a href="#OSPF多进程" class="headerlink" title="OSPF多进程"></a>OSPF多进程</h2><p>•OSPF支持多进程，在同一台路由器上可以运行多个不同的OSPF进程，它们之间互不影响，彼此独立。不同OSPF进程之间的路由交互相当于不同路由协议之间的路由交互。</p>
+<p>•路由器的一个接口只能属于某一个OSPF进程。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/35.png"></p>
+<blockquote>
+<p>•VPN（Virtual Private Network）：虚拟专用网络。</p>
+<p>•创建OSPF进程时，如果指定了VPN实例，那么OSPF进程属于此实例，否则属于全局实例。</p>
+</blockquote>
+<h2 id="OSPF与BGP联动-1"><a href="#OSPF与BGP联动-1" class="headerlink" title="OSPF与BGP联动 (1)"></a>OSPF与BGP联动 (1)</h2><p>当有新的设备加入到网络中，或者设备重启时，可能会出现在BGP收敛期间内网络流量丢失的现象。这是由于IGP收敛速度比BGP快而造成的。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/36.png"></p>
+<h2 id="OSPF与BGP联动-2"><a href="#OSPF与BGP联动-2" class="headerlink" title="OSPF与BGP联动 (2)"></a>OSPF与BGP联动 (2)</h2><p>•通过使能OSPF与BGP联动特性，可以解决流量丢失问题。</p>
+<p>•使能了OSPF与BGP联动特性的设备会在设定的联动时间内保持为Stub路由器，也就是说，该设备发布的LSA中的链路度量值为最大值（65535），从而告知其它OSPF设备不要使用这个路由器来转发数据。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/37.png"></p>
+<blockquote>
+<p>•命令：[Huawei-ospf-1] <strong>stub-router</strong> [ <strong>on-startup</strong> [ <em>interval</em> ] ]</p>
+<ul>
+<li><p><strong>on-startup</strong> [ <em>interval</em> ]：设备在发生重启或故障时保持为Stub路由器的时间间隔。整数形式，取值范围是5～65535，单位是s，缺省值是500s。</p>
+<ul>
+<li><p>如果未配置<strong>on-startup</strong>参数，则表示该设备始终保持为Stub路由器，即所有来自这个设备的路由条目Cost值均设为65535。</p>
+</li>
+<li><p>如果配置了<strong>on-startup</strong>参数，则表示该设备仅在重启或者故障时保持为Stub路由器，保持时间由<em>interval</em>参数决定。此时若未配置<em>interval</em>参数，则使用<em>interval</em>的缺省值500s。</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="OSPF转发地址"><a href="#OSPF转发地址" class="headerlink" title="OSPF转发地址"></a>OSPF转发地址</h2><p>FA（Forwarding Address，转发地址）：</p>
+<ul>
+<li><p>到达所通告的目的地的数据包应该被转发到的地址，如果转发地址为0.0.0.0，那么数据包将被转发到始发ASBR上。</p>
+</li>
+<li><p>Type5 AS-External-LSA 和 Type7 NSSA LSA：</p>
+</li>
+</ul>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/38.png"></p>
+<h2 id="没有FA引发的问题"><a href="#没有FA引发的问题" class="headerlink" title="没有FA引发的问题"></a>没有FA引发的问题</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/39.png"></p>
+<p>•R2、R3和R4运行OSPF，均部署在Area0中。其中R2和R3的GE0/0/1接口都激活OSPF并建立邻接关系，但是两者与外部路由器R1并不建立OSPF邻接关系。</p>
+<p>​    1.R2配置到达10.1.1.1/32的静态路由，下一跳为10.1.123.1。</p>
+<p>​    2.R2将静态路由引入OSPF，产生Type5 LSA在区域内泛洪。</p>
+<p>​    3.R3接收到R2产生的5类LSA，计算出到达10.1.1.1/32的外部路由，并且将路由的下一跳指定为R2（10.1.123.2）。 </p>
+<p>•OSPF域内的路由器如R4到达10.1.1.1/32的路径是：R4-R3-R2-R1，该路径是次优路径的。</p>
+<h2 id="利用FA解决次优路径问题"><a href="#利用FA解决次优路径问题" class="headerlink" title="利用FA解决次优路径问题"></a>利用FA解决次优路径问题</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/40.png"></p>
+<p>•R2向OSPF域内通告到达10.1.1.1/32的外部路由时，为对应的Type5 LSA设置FA，值为其自己到达该外部路由的下一跳：10.1.123.1。</p>
+<p>•当R3收到该LSA后，计算到达10.1.1.1/32的路由时，发现FA为非0，因此它认为到达目标地址10.1.1.1/32的下一跳为FA所指定的地址，即：10.1.123.1。</p>
+<h2 id="FA的取值"><a href="#FA的取值" class="headerlink" title="FA的取值"></a>FA的取值</h2><p>•当ASBR引入外部路由时，若Type5 LSA中的FA字段为0，表示路由器认为到达目的网段的数据包应该发往该ASBR；若Type5 LSA中的FA字段不为0，表示路由器认为到达目的网段的数据包应该发往这个FA所标识的设备。</p>
+<p>•当以下条件全部满足时，FA字段才可以被设置为非0：</p>
+<p>​    ▫ASBR在其连接外部网络的接口（外部路由的出接口）上激活了OSPF；</p>
+<p>​    ▫该接口没有被配置为Silent-Interface；</p>
+<p>​    ▫该接口的OSPF网络类型为Broadcast或NBMA；</p>
+<p>​    ▫该接口的IP地址在OSPF配置的network命令指定的网段范围内。</p>
+<p>•到达FA地址的路由必须是OSPF区域内部路由或区域间路由，这样接收到该外部LSA的路由器才能够加载该LSA进入路由表。加载的外部LSA生成的路由条目下一跳与到达FA地址的下一跳相同。</p>
+<blockquote>
+<p>•NSSA区域Type7 LSA转化为Type5 LSA：</p>
+<p>​    ▫为了将NSSA区域引入的外部路由发布到其它区域，需要把Type7 LSA转化为Type5 LSA以便在整个OSPF网络中通告。缺省情况下，转换路由器是NSSA区域中Router ID最大的区域边界路由器（ABR）。</p>
+<p>​    ▫LSA头部Options字段中的P-bit（Propagate bit）用于告知转化路由器该条Type7 LSA是否需要转化为Type5 LSA。只有P-bit置位并且FA不为0的Type7 LSA才能转化为Type5 LSA。</p>
+<p>​    ▫区域边界路由器产生的Type7 LSA不会置位P-bit。(防环)</p>
+<p>•注意：所有的OSPF LSA有相同的LSA头部，P-bit在LSA头部中的Options字段。</p>
+</blockquote>
+<h3 id="7类-LSA的FA取值"><a href="#7类-LSA的FA取值" class="headerlink" title="7类 LSA的FA取值"></a>7类 LSA的FA取值</h3><p>若满足以下条件，FA取值同5类LSA</p>
+<ol>
+<li>接口network</li>
+<li>接口不是静默接口</li>
+<li>接口的链路类型不是p2p或者是p2mp</li>
+</ol>
+<p>若不满足，FA取值先后顺序如下</p>
+<ol>
+<li>配置了loopback口，取loopback口中ip地址最大的作为FA地址</li>
+<li>未配置loopback口，取物理接口中ip地址最大的作为FA地址</li>
+</ol>
+<p>（例如OSPF中router id 的选举）</p>
+<h2 id="案例：NSSA场景下FA的典型应用"><a href="#案例：NSSA场景下FA的典型应用" class="headerlink" title="案例：NSSA场景下FA的典型应用"></a>案例：NSSA场景下FA的典型应用</h2><p>•当NSSA区域中有多个ABR时，系统会根据规则自动选择一个ABR作为转换器，将Type7 LSA转换为Type5 LSA，其他ABR不做LSA转换。</p>
+<p>•如图所示，如果不考虑FA，由于R3的Router ID比R2大，因此它将执行7转5的动作，如此一来，R1将认为必须经由ABR（R3）到达目的网络。这样，流量便会被引导到低带宽链路，即R1-R3-R4-R5。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/41.png"></p>
+<blockquote>
+<p>•如图所示：</p>
+<ul>
+<li><p>R5引入直连外部路由，且将FA设为自己访问目的网段10.1.5.0/24的地址：10.1.45.5。</p>
+</li>
+<li><p>R3执行Type7 LSA转换Type5 LSA动作，继续携带FA：10.1.45.5。</p>
+</li>
+<li><p>R1收到后，会在自己的OSPF路由表中查询到达这个FA的路由，发现在OSPF路由表中能够找到匹配这个FA的路由，就使用到达这个FA的下一跳地址作为这条外部路由的下一跳地址。</p>
+</li>
+<li><p>因此，R1最终会通过R1-R2-R4-R5路径，访问目的网段10.1.5.0/24。</p>
+</li>
+</ul>
+</blockquote>
+<h1 id="4-IS-IS高级特性"><a href="#4-IS-IS高级特性" class="headerlink" title="4.IS-IS高级特性"></a>4.IS-IS高级特性</h1><h2 id="IS-IS快速收敛概述"><a href="#IS-IS快速收敛概述" class="headerlink" title="IS-IS快速收敛概述"></a>IS-IS快速收敛概述</h2><p>•IS-IS快速收敛是为了提高路由的收敛速度而做的扩展特性，包括：I-SPF（Incremental SPF，增量最短路径优先算法）、PRC、智能定时器、LSP快速扩散。</p>
+<p>•同时，IS-IS支持故障恢复快速收敛，例如通过IS-IS Auto FRR实现备份链路的快速切换，也可以与BFD联动实现对故障的快速感知。</p>
+<blockquote>
+<p>•IS-IS的PRC、智能定时器、FRR等功能与OSPF类似，不再赘述。</p>
+</blockquote>
+<h2 id="I-SPF"><a href="#I-SPF" class="headerlink" title="I-SPF"></a>I-SPF</h2><p>I-SPF的工作原理：当网络拓扑改变的时候，只对受影响的节点进行路由计算，而不是对全部节点重新进行路由计算，从而加快了路由的计算。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/42.png"></p>
+<blockquote>
+<p>•使用SPF算法进行路由计算：当网络拓扑中有一个节点发生变化时，SPF算法需要重新计算网络中的所有节点，计算时间长，占用过多的CPU资源，影响整个网络的收敛速度。</p>
+<p>•I-SPF改进了SPF算法，除了第一次SPF计算时需要计算全部节点外，之后每次都通过I-SPF计算受到影响的节点，而最后生成的最短路径树与原来的算法所计算的结果相同，大大降低了CPU的占用率，提高了网络收敛速度。</p>
+<p>•在IS-IS网络中，I-SPF和PRC结合使用。</p>
+<ul>
+<li><p>如果I-SPF计算后的最短路径树改变，PRC会只处理那个变化的节点上的所有叶子（路由）。</p>
+</li>
+<li><p>如果经过I-SPF计算后的最短路径树并没有变化，则PRC只处理变化的叶子信息。比如一个节点使能一个IS-IS接口，则整个网络拓扑的最短路径树是不变的，这时PRC只更新这个节点的接口路由，从而节省CPU占用率。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="LSP快速扩散"><a href="#LSP快速扩散" class="headerlink" title="LSP快速扩散"></a>LSP快速扩散</h2><p>LSP快速扩散：此特性可以加快LSP的扩散速度。</p>
+<p>▫正常情况下，当IS-IS路由器收到其它路由器发来的LSP时，如果此LSP比本地LSDB中相应的LSP要新，则更新LSDB中的LSP，并用一个定时器定期将LSDB内已更新的LSP扩散出去。</p>
+<p>▫LSP快速扩散特性改进了这种方式，使能了此特性的设备收到一个或多个较新的LSP时，在路由计算之前，先将小于指定数目的LSP扩散出去，加快LSDB的同步过程。这种方式在很大程度上可以提高整个网络的收敛速度。</p>
+<p>   配置LSP快速扩散</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/43.png"></p>
+<p>注意：用户可以指定每次扩散的LSP数量，这个数量是针对所有IS-IS接口的。如果需要发送的LSP的数量大于这个数，则就发送<em>lsp-count</em>个LSP。如果配置了定时器，在路由计算之前如果这个定时器未超时，则立即扩散；否则在该定时器超时后发送。</p>
+<blockquote>
+<p>•命令：[Huawei-isis-1] <strong>flash-flood</strong> [ <em>lsp-count</em> | <strong>max-timer-interval</strong> <em>interval</em> | [ <strong>level-1</strong> | <strong>level-2</strong> ] ]</p>
+<p>​    ▫<em>lsp-count</em>：指定每个接口一次扩散LSP的最大数量。整数形式，取值范围是1～15。缺省值是5。</p>
+<p>​    ▫<strong>max-timer-interval</strong> <em>interval</em>：指定LSP扩散的最大间隔时间。整数形式，取值范围是10～50000，单位是毫秒。缺省值是10毫秒。</p>
+<p>​    ▫<strong>level-1</strong>：表示在Level-1中使能此特性。如果命令中没有指定级别，则缺省同时在Level-1和Level-2中使能此功能。</p>
+<p>​    ▫<strong>level-2</strong>：表示在Level-2中使能此特性。如果命令中没有指定级别，则缺省同时在Level-1和Level-2中使能此功能。</p>
+</blockquote>
+<h2 id="IS-IS路由控制概述"><a href="#IS-IS路由控制概述" class="headerlink" title="IS-IS路由控制概述"></a>IS-IS路由控制概述</h2><p>在实际应用中，IS-IS根据SPF算法计算出来的路由有时并不能满足网络所需，可能出现如下弊端：如路由表中条目过多降低路由查找的速度、网络中链路利用率不均衡等，这些都不能很好地满足网络规划和流量管理的需要。为了达到优化IS-IS网络和便于流量管理的目的，需要对网络中的路由进行更加精确的控制。IS-IS的路由控制包括：</p>
+<p>​    ▫调整IS-IS的优先级</p>
+<p>​    ▫调整IS-IS的接口开销</p>
+<p>​    ▫设置等价路由</p>
+<p>​    ▫IS-IS路由渗透</p>
+<p>​    ▫通告缺省路由</p>
+<p>​    ▫引入外部路由</p>
+<p>​    ▫Filter-Policy</p>
+<blockquote>
+<p>•本课程只介绍等价路由和缺省路由，其他内容请参考《HCIP-Datacom-Core Technology》课程。</p>
+</blockquote>
+<h2 id="等价路由-1"><a href="#等价路由-1" class="headerlink" title="等价路由"></a>等价路由</h2><p>当IS-IS网络中有多条冗余链路时，可能会出现多条等价路由，此时可以采取两种方式：</p>
+<ul>
+<li><p>配置负载分担。流量会被均匀的分配到每条链路上。</p>
+<ul>
+<li>该方式可以提高网络中链路的利用率及减少某些链路负担过重造成阻塞发生的情况。但是由于对流量转发具有一定的随机性，因此可能不利于对业务流量的管理。</li>
+</ul>
+</li>
+<li><p>配置等价路由优先级。针对等价路由中的每一条路由，明确指定其优先级，优先级高的路由将被优选，优先级低的路由可以作为备用链路。</p>
+<ul>
+<li>当IS-IS网络中有多条冗余链路时，可能会出现多条等价路由，即达到某一目的网段有多条等开销路径。配置等价路由优先级可以在不修改原有配置的基础上，指定某条路由被优选，便于业务的管理，同时提高网络的可靠性。</li>
+<li>注意：配置等价路由优先级后，IS-IS设备在转发到达目的网段的流量时，将不采用负载分担方式，而是将流量转发到优先级最高的下一跳。</li>
+</ul>
+</li>
+</ul>
+<h2 id="配置IS-IS对等价路由的处理方式"><a href="#配置IS-IS对等价路由的处理方式" class="headerlink" title="配置IS-IS对等价路由的处理方式"></a>配置IS-IS对等价路由的处理方式</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/44.png"></p>
+<blockquote>
+<p>•命令：[Huawei-isis-1] <strong>maximum load-balancing</strong> <em>number</em></p>
+<ul>
+<li><em>number</em>：指定在负载分担方式下等价路由的最大数量。不同设备型号取值不同。</li>
+</ul>
+<p>•命令：[Huawei-isis-1] <strong>nexthop</strong> <em>ip-address</em> <strong>weight</strong> <em>value</em></p>
+<ul>
+<li><p><em>ip-address</em>：指定下一跳的IP地址。点分十进制格式。</p>
+</li>
+<li><p><strong>weight</strong> <em>value</em>：指定下一跳权重。<em>value</em>越小则优先级越高。<em>value</em>是整数形式，取值范围是1～254。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="等价路由配置举例-1"><a href="#等价路由配置举例-1" class="headerlink" title="等价路由配置举例 (1)"></a>等价路由配置举例 (1)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/45.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/46.png"></p>
+<h2 id="等价路由配置举例-2"><a href="#等价路由配置举例-2" class="headerlink" title="等价路由配置举例 (2)"></a>等价路由配置举例 (2)</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/47.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/48.png"></p>
+<h2 id="缺省路由-1"><a href="#缺省路由-1" class="headerlink" title="缺省路由"></a>缺省路由</h2><p>•在IS-IS中，主要通过以下3种方式控制缺省路由的生成和发布。</p>
+<p>​    ▫在Level-1-2设备上，控制其产生的Level-1 LSP中ATT位的置位情况。</p>
+<p>​    ▫在Level-1设备上，通过配置使其即使收到ATT位置位的Level-1 LSP也不会自动产生缺省路由。</p>
+<p>​    ▫在IS-IS中发布缺省路由。</p>
+<p>•LSP的报文格式：</p>
+<p>​    ▫ATT（Attachment）：由Level-1-2路由器产生，用来指明始发路由器是否与其它区域相连。此字段有4bit，华为数通产品只使用了其中1bit。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/49.png"></p>
+<h2 id="通过设置ATT位控制缺省路由生成"><a href="#通过设置ATT位控制缺省路由生成" class="headerlink" title="通过设置ATT位控制缺省路由生成"></a>通过设置ATT位控制缺省路由生成</h2><p>•IS-IS规定，如果IS-IS Level-1-2设备根据LSDB判断通过Level-2区域比Level-1区域能够到达更多的区域，该设备会在所发布的Level-1 LSP内将ATT位置位。对于收到ATT位置位的LSP报文的Level-1设备，会生成一条目的地为发送该LSP的Level-1-2设备地址的缺省路由。</p>
+<p>•以上是协议的默认原则，在实际应用中，可以根据需要对ATT比特位进行手动配置以更好地为网络服务。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/50.png"></p>
+<blockquote>
+<p>•命令：[Huawei-isis-1] <strong>attached-bit advertise</strong> { <strong>always</strong> | <strong>never</strong> }</p>
+<ul>
+<li><p><strong>always</strong>：指定ATT位永远置位，收到该LSP的Level-1设备会生成缺省路由。</p>
+</li>
+<li><p><strong>never</strong>：指定ATT位永不置位，可以避免Level-1设备生成缺省路由，减小路由表的规模。</p>
+</li>
+</ul>
+<p>•虽然ATT位同时在Level-1 LSP和Level-2 LSP中进行了定义，但是它只会在Level-1 LSP中被置位，并且只有Level-1-2设备会设置这个字段，因此，该命令仅对Level-1-2设备生效。</p>
+<p>•配置Level-1设备不将缺省路由下发到路由表，有以下两种方式可以实现：</p>
+<ul>
+<li><p>在Level-1-2设备上配置<strong>attached-bit advertise never</strong>命令，使得其不会发布ATT位置位的LSP。</p>
+</li>
+<li><p>在与Level-1-2设备相连的Level-1设备上配置<strong>attached-bit avoid-learning</strong>命令。</p>
+</li>
+</ul>
+<p>•其中，<strong>attached-bit avoid-learning</strong>命令适用于需要针对指定设备配置的情况。</p>
+</blockquote>
+<h2 id="IS-IS发布缺省路由"><a href="#IS-IS发布缺省路由" class="headerlink" title="IS-IS发布缺省路由"></a>IS-IS发布缺省路由</h2><p>•在具有外部路由的边界设备上配置IS-IS发布缺省路由可以使该设备在IS-IS路由域内发布一条0.0.0.0/0的缺省路由。在执行此配置后，IS-IS域内的其他设备在转发流量时，将所有去往外部路由域的流量首先转发到该设备，然后通过该设备去往外部路由域。</p>
+<p>•通常，当网络中部署了IS-IS和其他路由协议时，为了实现IS-IS域内的流量可以到达IS-IS域外，通常有如下两种方式：</p>
+<p>​    ▫在边界设备上配置IS-IS设备向IS-IS域发布缺省路由。该方式较为简单，不需要学习外部路由。</p>
+<p>​    ▫在边界设备上将其他路由域的路由引入到IS-IS中。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/51.png"></p>
+<blockquote>
+<p>•命令：[Huawei-isis-1] <strong>default-route-advertise</strong> [ <strong>always</strong> | <strong>match default</strong> | <strong>route-policy</strong> <em>route-policy-name</em> ] [ <strong>cost</strong> <em>cost</em> | <strong>tag</strong> <em>tag</em> | [ <strong>level-1</strong> | <strong>level-1-2</strong> | <strong>level-2</strong> ] ] [ <strong>avoid-learning</strong> ]</p>
+<ul>
+<li><p><strong>always</strong>：指定设备无条件的发布缺省路由，且发布的缺省路由中将自己作为下一跳。</p>
+</li>
+<li><p><strong>match default</strong>：如果在路由表中存在其他路由协议或其它IS-IS进程生成的缺省路由，则在LSP中发布该缺省路由。</p>
+</li>
+<li><p><strong>route-policy</strong> <em>route-policy-name</em>：指定路由策略名称。当该边界设备的路由表中存在满足路由策略的外部路由时，才向IS-IS域发布缺省路由，避免由于链路故障等原因造成该设备已经不存在某些重要的外部路由时，仍然发布缺省路由从而造成路由黑洞。此处的路由策略不影响IS-IS引入外部路由。字符串形式，区分大小写，不支持空格，长度范围是1～40。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+</li>
+<li><p><strong>cost</strong> <em>cost</em>：指定缺省路由的开销值。整数形式。取值范围根据cost-style而定：当cost-style为narrow、narrow-compatible或compatible时，取值范围是0～63；当cost-style为wide或wide-compatible时，取值范围是0～4261412864。</p>
+</li>
+<li><p><strong>tag</strong> <em>tag</em>：指定发布的缺省路由的标记值。只有当IS-IS的开销类型为wide、wide-compatible或compatible时，发布的LSP中才会携带tag值。整数形式，取值范围为1～4294967295。</p>
+</li>
+<li><p><strong>level-1</strong>：指定发布的缺省路由级别为Level-1。如果不指定级别，则默认为生成Level-2级别的缺省路由。</p>
+</li>
+<li><p><strong>level-2</strong>：指定发布的缺省路由级别为Level-2。如果不指定级别，则默认为生成Level-2级别的缺省路由。</p>
+</li>
+<li><p><strong>level-1-2</strong>：指定发布的缺省路由级别为Level-1-2。如果不指定级别，则默认为生成Level-2级别的缺省路由。</p>
+</li>
+<li><p><strong>avoid-learning</strong>：避免IS-IS进程学到其他路由协议或其它IS-IS进程生成的缺省路由并添加到路由表。如果路由表中已存在学到的缺省路由为活跃状态，则将此路由置为不活跃状态。</p>
+</li>
+</ul>
+<p>•配置该命令后，IS-IS域内所有去往外部的流量将首先会被转发到该设备来进行转发。相比于在每台设备上配置静态缺省路由，使用该命令可以简化操作，即只需在边界设备配置即可。此外，该命令是动态发布缺省路由，使用更加灵活，有多种发布缺省路由的方式可供选择。</p>
+<p>•如果在Level-1设备上配置了该命令，那么该设备只会向Level-1区域发布缺省路由，不会将缺省路由发布到Level-2区域。</p>
+</blockquote>
+<h2 id="缺省路由配置举例"><a href="#缺省路由配置举例" class="headerlink" title="缺省路由配置举例"></a>缺省路由配置举例</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/52.png"></p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/53.png"></p>
+<h2 id="IS-IS多实例和多进程"><a href="#IS-IS多实例和多进程" class="headerlink" title="IS-IS多实例和多进程"></a>IS-IS多实例和多进程</h2><p>•IS-IS多实例是指在同一台路由器上，可以配置多个VPN实例与多个IS-IS进程相关联。</p>
+<p>•IS-IS多进程指在同一个VPN下（或者同在公网下）可以创建多个IS-IS进程，每个进程之间互不影响，彼此独立。不同进程之间的路由交互相当于不同路由协议之间的路由交互。</p>
+<p>•网络中可能需要同时承载不同的业务，为保证各业务的安全性，需要将业务进行隔离，此时，可以配置与VPN实例绑定。</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/54.png"></p>
+<blockquote>
+<p>•IS-IS多实例和多进程的特点如下：</p>
+<ul>
+<li><p>IS-IS多进程共用同一个全局路由表。而IS-IS多实例使用VPN中的路由表，并且每个VPN都有自己单独的路由表。</p>
+</li>
+<li><p>IS-IS多进程允许为一个指定的IS-IS进程关联一组接口，从而保证该进程进行的所有协议操作都仅限于这一组接口。这样，就可以实现一台路由器有多个IS-IS协议进程，每个进程负责唯一的一组接口。</p>
+</li>
+<li><p>IS-IS进程在创建时可以选择绑定一个VPN实例，于是这个IS-IS进程就与此VPN实例相关联，并且只接收和处理此VPN实例内的事件。当VPN实例删除时，IS-IS进程也会跟着被删除。</p>
+</li>
+</ul>
+<p>•命令：[Huawei] <strong>isis</strong> [ <em>process-id</em> ] [ <strong>vpn-instance</strong> <em>vpn-instance-name</em> ]</p>
+<ul>
+<li><p><em>process-id</em>：指定IS-IS进程号。如果不指定进程，则启动进程号为1的IS-IS进程。整数形式，取值范围是1～65535。缺省值是1。</p>
+</li>
+<li><p><strong>vpn-instance</strong> <em>vpn-instance-name</em>：指定VPN实例名。如果不指定此参数，则就不会配置VPN实例与相应的IS-IS进程相关联。字符串形式，区分大小写，不支持空格，长度范围是1～31。当输入的字符串两端使用双引号时，可在字符串中输入空格。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="LSP分片"><a href="#LSP分片" class="headerlink" title="LSP分片"></a>LSP分片</h2><p>•当IS-IS要发布的PDU中信息量太大时，IS-IS路由器将会生成多个LSP分片，用来携带更多的IS-IS信息。</p>
+<p>•LSP的报文格式为：</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/55.png"></p>
+<p>•IS-IS LSP分片由LSP ID中的分片号（LSP Number）字段进行标识，这个字段的长度是1Byte。因此，一个IS-IS进程最多可产生256个LSP分片，携带的信息量有限。</p>
+<h2 id="LSP分片扩展基本概念"><a href="#LSP分片扩展基本概念" class="headerlink" title="LSP分片扩展基本概念"></a>LSP分片扩展基本概念</h2><p>•IS-IS可以配置虚拟的系统ID ，并生成虚拟IS-IS的LSP报文来携带路由等信息。</p>
+<ul>
+<li><p>初始系统（Originating System）：初始系统是实际运行IS-IS的路由器。允许一个单独的IS-IS进程像多个虚拟路由器一样发布LSP，而“Originating System”指的是那个“真正”的IS-IS进程。</p>
+</li>
+<li><p>系统ID（Normal System-ID）：初始系统的系统ID。</p>
+</li>
+<li><p>虚拟系统（Virtual System）：由附加系统ID标识的系统，生成扩展LSP分片。这些分片在其LSP ID中携带附加系统ID。</p>
+</li>
+<li><p>附加系统ID（Additional System-ID）：虚拟系统的系统ID，由网络管理器统一分配。每个附加系统ID都允许生成256个扩展的LSP分片。</p>
+</li>
+<li><p>24号TLV（IS Alias ID TLV）：LSP分片携带该TLV信息，用来表示初始系统与虚拟系统的关系。</p>
+</li>
+</ul>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/56.png"></p>
+<p>•使能分片扩展功能之后，如果存在由于报文装满而丢失的信息，系统会提醒重启IS-IS。重启之后，初始系统会尽最大能力装载路由信息，装不下的信息将放入虚拟系统的LSP中发送出去，并通过24号TLV来告知其他路由器此虚拟系统和自己的关系。</p>
+<blockquote>
+<p>•附加系统ID和系统ID都必须在整个路由域中唯一。</p>
+</blockquote>
+<h2 id="LSP分片扩展工作原理"><a href="#LSP分片扩展工作原理" class="headerlink" title="LSP分片扩展工作原理"></a>LSP分片扩展工作原理</h2><p>•在IS-IS中，每个系统ID都标识一个系统，每个系统都最多可生成256个LSP分片。通过增加附加系统ID，可以最多配置50个虚拟系统，从而使得IS-IS进程最多可生成13056个LSP分片。</p>
+<p>•IS-IS路由器可以在两种模式下运行LSP分片扩展特性：</p>
+<p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/57.png"></p>
+<blockquote>
+<p>•Mode-1工作原理：</p>
+<ul>
+<li>虚拟系统参与路由SPF计算，初始系统发布的LSP中携带了到每个虚拟系统的链路信息。类似地，虚拟系统发布的LSP也包含到初始系统的链路信息。这样，在网络中虚拟系统看起来与初始系统相连的真实路由器是一样的。</li>
+<li>这种方式是为了兼容不支持分片扩展的老版本所做的一个过渡模式。在老版本中，IS-IS无法识别24号TLV，所以虚拟系统的LSP必须表现的像一个普通IS-IS发出的报文。</li>
+<li>注意事项：<ul>
+<li>虚拟系统的LSP中包含和原LSP中相同的区域地址和过载标志位。如果还有其它特性的TLV，也必须保持一致。</li>
+<li>虚拟系统的邻居信息指向初始系统，metric为最大值减1；初始系统的邻居信息指向虚拟系统，metric必须为0。这样就保证了其它路由器在进行路由计算的时候，虚拟系统一定会成为初始系统的下游节点。</li>
+</ul>
+</li>
+</ul>
+<p>•Mode-2工作原理：</p>
+<ul>
+<li><p>虚拟系统不参与路由SPF计算，网络中所有路由器都知道虚拟系统生成的LSP实际属于初始系统。</p>
+</li>
+<li><p>在该模式下工作的IS-IS，可以识别24号TLV的内容，并作为计算树和路由的依据。</p>
+</li>
+</ul>
+<p>•注意：无论在哪种方式下，初始系统和虚拟系统的LSP零分片中，都必须包含IS Alias ID TLV来表示初始系统是谁。</p>
+</blockquote>
+<h2 id="LSP分片扩展的基本配置命令"><a href="#LSP分片扩展的基本配置命令" class="headerlink" title="LSP分片扩展的基本配置命令"></a>LSP分片扩展的基本配置命令</h2><p><img src="/2021/05/31/IPadv-IGP%E9%AB%98%E7%BA%A7%E7%89%B9%E6%80%A7/58.png"></p>
+<blockquote>
+<p>•命令：[Huawei-isis-1] <strong>lsp-fragments-extend</strong> [ [ <strong>level-1</strong> | <strong>level-2</strong> | <strong>level-1-2</strong> ] | [ <strong>mode-1</strong> | <strong>mode-2</strong> ] ] </p>
+<p>​    ▫<strong>level-1</strong>：指定在Level-1级别使能分片扩展。</p>
+<p>​    ▫<strong>level-2</strong>：指定在Level-2级别使能分片扩展。</p>
+<p>​    ▫<strong>level-1-2</strong>：指定在Level-1-2级别使能分片扩展。</p>
+<p>​    ▫<strong>mode-1</strong>：该模式可以兼容以前老版本不支持LSP分片扩展特性的情况。</p>
+<p>​    ▫<strong>mode-2</strong>：该模式要求所有路由器都支持LSP分片扩展特性。</p>
+<p>•命令：[Huawei-isis-1] <strong>virtual-system</strong> <em>virtual-system-id</em> </p>
+<p>​    ▫<em>virtual-system-id</em>：指定IS-IS进程的虚拟系统ID。长度是6字节（48比特），格式是XXXX.XXXX.XXXX。</p>
+</blockquote>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）OSPF有哪些快速收敛机制？(   )</p>
+<p>A.I-SPF</p>
+<p>B.LSP快速扩散</p>
+<p><strong>C.智能定时器</strong></p>
+<p><strong>D.OSPF IP FRR</strong></p>
+<p>2.（判断题）OSPF的Type5 LSA中FA字段一定为0.0.0.0。(   )</p>
+<p>A.正确</p>
+<p><strong>B.错误</strong></p>
+<p>3.（判断题）在IS-IS网络中，若设备运行Mode-2的LSP分片扩展，则虚拟系统不参与路由SPF计算，网络中所有路由器都知道虚拟系统生成的LSP实际属于初始系统。(   )</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•为了更好的适应网络拓扑的变化，OSPF和IS-IS支持多种快速收敛方式。通过I-SPF和PRC算法加速路由的计算，通过FRR可以实现备份链路的快速切换，还可以设置智能定时器控制链路状态信息的生成和路由计算的速度。</p>
+<p>•为了控制路由表的规模以及提高网络性能，OSPF和IS-IS支持路由信息的过滤，支持等价路由，还支持下发缺省路由。</p>
+<p>•为了实现协议路由表隔离，OSPF和IS-IS支持在同一台设备上部署多进程，进程之间的协议路由表互不影响。</p>
+<p>•为了避免在外部路由引入时出现次优路径，OSPF通过Type5 LSA或Type7 LSA中的FA指导数据包转发。</p>
+<p>•IS-IS为了能够携带更多的路由信息，支持LSP分片扩展。</p>
+<p>•OSPF和IS-IS对以上各种特性的支持，使它们在现网中都被广泛灵活应用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/18/IP-%E4%BC%81%E4%B8%9A%E6%95%B0%E9%80%9A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%A6%82%E8%BF%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3152,379 +3814,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/" itemprop="url">IP-华为防火墙技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T19:42:33+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•“防火墙”一词起源于建筑领域，用来隔离火灾，阻止火势从一个区域蔓延到另一个区域。引入到通信领域，防火墙这一具体设备通常用于两个网络之间有针对性的、逻辑意义上的隔离。这种隔离是选择性的，隔离“火”的蔓延，而又保证“人”可以穿墙而过。这里的“火”是指网络中的各种攻击，而“人”是指正常的通信报文。</p>
-<p>•本课程将介绍在通信领域中什么是防火墙，为什么需要防火墙，以及防火墙的基本工作原理和配置。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述防火墙的定义、类型和发展历史</p>
-<p>▫区分防火墙与路由器和交换机</p>
-<p>▫阐明防火墙的基本概念，例如安全区域、安全策略、会话表和Server-map等</p>
-<p>▫实现防火墙的基本配置</p>
-<h1 id="1-防火墙概述"><a href="#1-防火墙概述" class="headerlink" title="1.防火墙概述"></a>1.防火墙概述</h1><h2 id="为什么需要防火墙？"><a href="#为什么需要防火墙？" class="headerlink" title="为什么需要防火墙？"></a>为什么需要防火墙？</h2><p>•安全无处不在。路由器和交换机构建了互联互通的网络，带来便利的同时也带来了安全隐患。</p>
-<p>•例如在网络边界，企业有了如下安全诉求：</p>
-<p>▫外部网络安全隔离</p>
-<p>▫内部网络安全管控</p>
-<p>▫内容安全过滤</p>
-<p>▫入侵防御</p>
-<p>▫防病毒</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/1.png"></p>
-<h2 id="什么是防火墙？"><a href="#什么是防火墙？" class="headerlink" title="什么是防火墙？"></a>什么是防火墙？</h2><p>•在通信领域，防火墙是一种安全设备。它用于保护一个网络区域免受来自另一个网络区域的攻击和入侵，通常被应用于网络边界，例如企业互联网出口、企业内部业务边界、数据中心边界等。</p>
-<p>•防火墙根据设备形态分为，框式防火墙、盒式防火墙和软件防火墙，支持在云上云下灵活部署。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/2.png"></p>
-<blockquote>
-<p>•严格意义上，防火墙还有更多的部署形态，例如桌面型防火墙（盒式防火墙的一种）。桌面型防火墙适用于小型企业、行业分支、连锁商业机构等场景。华为盒式防火墙同时支持传统模式和云管理模式。云管理模式由云端统一管理分支机构的安全接入，支持设备即插即用、业务配置自动化、运维可视化和网络大数据分析。</p>
-<p>•本课程不过多介绍桌面型防火墙和软件防火墙，后续内容聚焦的框式/盒式硬件防火墙。</p>
-</blockquote>
-<h2 id="防火墙与交换机、路由器功能对比"><a href="#防火墙与交换机、路由器功能对比" class="headerlink" title="防火墙与交换机、路由器功能对比"></a>防火墙与交换机、路由器功能对比</h2><p>•以园区网为例，交换机作用是接入终端和汇聚内部路由，组建内部互联互通的局域网。</p>
-<p>•路由器作用是路由的分发、寻址和转发，构建外部连接网络。</p>
-<p>•防火墙作用是流量控制和安全防护，区分和隔离不同安全区域。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/3.png"></p>
-<h2 id="防火墙与路由器转发流程对比"><a href="#防火墙与路由器转发流程对比" class="headerlink" title="防火墙与路由器转发流程对比"></a>防火墙与路由器转发流程对比</h2><p>•防火墙的转发流程比路由器复杂。以框式设备为例，硬件上除了接口、LPU（Line Processing Unit）、交换网板等外，防火墙还特有SPU（Service Processing Unit），用于实现防火墙的安全功能。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/4.png"></p>
-<h2 id="防火墙的典型应用场景"><a href="#防火墙的典型应用场景" class="headerlink" title="防火墙的典型应用场景"></a>防火墙的典型应用场景</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/5.png"></p>
-<blockquote>
-<p>•DMZ（Demilitarized Zone）起源于军方，是介于严格的军事管制区和松散的公共区域之间的一种有着部分管制的区域。防火墙设备引用了这一术语，指代一个逻辑上和物理上都与内部网络和外部网络分离的安全区域。在企业中一般用于服务器的放置。</p>
-<p>•数据中心网络一般采用Spine-Leaf架构。Spine为骨干节点负责流量高速转发，Leaf为叶子节点负责服务器、防火墙或其他设备接入。Spine-Leaf之间全三层互联。</p>
-</blockquote>
-<h2 id="防火墙的发展历程"><a href="#防火墙的发展历程" class="headerlink" title="防火墙的发展历程"></a>防火墙的发展历程</h2><p>•纵观防火墙的发展历史，防火墙经历了从低级到高级、从功能简单到功能复杂的过程。网络技术的不断发展和新需求的不断提出，推动着防火墙的发展。</p>
-<p>•防火墙从包过滤防火墙发展起经历了状态检测、统一威胁管理、NGFW等到AI防火墙，有以下特点：</p>
-<ul>
-<li><p>访问控制越来越精细</p>
-</li>
-<li><p>防护能力越来越强</p>
-</li>
-<li><p>性能越来越高</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/6.png"></p>
-<blockquote>
-<p>•更多防火墙发展历史，请参考《强叔侃墙》</p>
-</blockquote>
-<h2 id="包过滤防火墙"><a href="#包过滤防火墙" class="headerlink" title="包过滤防火墙"></a>包过滤防火墙</h2><p>•包过滤是指基于五元组对每个数据包进行检测，根据配置的安全策略转发或丢弃数据包。</p>
-<p>•包过滤防火墙的基本原理是：通过配置访问控制列表（Access Control List，ACL）实施数据包的过滤。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/7.png"></p>
-<blockquote>
-<p>•包过滤防火墙主要基于数据包中的源/目的IP地址、源/目的端口号、IP 标识和报文传递的方向等信息。</p>
-<p>•包过滤防火墙的设计简单，非常易于实现，而且价格便宜。</p>
-<p>•包过滤防火墙的缺点主要表现以下几点：</p>
-<ul>
-<li><p>随着ACL复杂度和长度的增加，其过滤性能呈指数下降；</p>
-</li>
-<li><p>静态的ACL规则难以适应动态的安全要求；</p>
-</li>
-<li><p>包过滤不检查会话状态也不分析数据，这很容易让黑客蒙混过关。例如，攻击者可以使用假冒地址进行欺骗，通过把自己主机IP地址设成一个合法主机IP地址，就能很轻易地通过报文过滤器。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="状态检测防火墙"><a href="#状态检测防火墙" class="headerlink" title="状态检测防火墙"></a>状态检测防火墙</h2><p>•状态检测是包过滤技术的发展，它考虑报文前后的关联性，检测的是连接状态而非单个报文。</p>
-<p>•状态检测防火墙就是支持状态检测功能的防火墙。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/8.png"></p>
-<blockquote>
-<p>•状态检测防火墙通过对连接的首个数据包（后续简称首包）检测而确定一条连接的状态。后续数据包根据所属连接的状态进行控制（转发或阻塞）。</p>
-</blockquote>
-<h2 id="AI防火墙"><a href="#AI防火墙" class="headerlink" title="AI防火墙"></a>AI防火墙</h2><p>•AI防火墙是结合AI技术的新一代防火墙。它通过结合AI算法或AI芯片等多种方式，进一步提高了防火墙的安全防护能力和性能。</p>
-<p>•华为AI防火墙，内置的恶意文件检测引擎CDE、诱捕Sensor、APT检测引擎和探针，支持与沙箱和华为大数据分析平台CIS联动检测，打造智能防御体系。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/9.png"></p>
-<blockquote>
-<p>•华为HiSecEngine USG6000E系列是业界首批推出的AI防火墙。AI防火墙没有统一的标准，例如通过用大量数据和算法“训练”防火墙，让其学会自主识别威胁；通过内置AI芯片，提高应用识别和转发性能，都可以被称为AI防火墙。</p>
-<p>•APT（Advanced Persistent Threat，高级持续性威胁）是指用先进的攻击手段对特定目标进行长期持续性攻击的攻击形式。</p>
-<p>•沙箱（Sandbox）是一个用于检测病毒的安全设备，它为疑似病毒构建虚拟环境，通过观察其后续行为检测病毒。沙箱是APT检测的重要设备。华为的沙箱产品为Firehunter。</p>
-<p>•CIS（Cybersecurity Intelligence System）能够对网络中的流量及各类设备的网络、安全日志等海量网络基础数据执行有效采集，通过大数据实时及离线分析，结合机器学习技术、专家信誉、情报驱动，有效的发现网络中的潜在威胁和高级威胁，实现企业内部的全网安全态势感知，同时可以结合华为HiSec解决方案高效地完成威胁的处置闭环，防患未然。</p>
-<p>•自研恶意文件检测引擎（CDE）引入PE Class 2.0 AI算法，对全文件进行还原，对文件内容进行深度检测。（业界主流基于流检测。流检测的检测速度快，但只还原文件头，不对文件内容进行检查。</p>
-<p>•华为独创的AIE APT检测引擎，引入AI算法，持续防御最新威胁。</p>
-<p>•更多AI防火墙相关内容请参考<a target="_blank" rel="noopener" href="https://e.huawei.com/cn/products/enterprise-networking/security%E5%92%8Chttps://e.huawei.com/cn/material/networking/e1869bfff9ca42c1b4f6a83f69118215%E3%80%82">https://e.huawei.com/cn/products/enterprise-networking/security和https://e.huawei.com/cn/material/networking/e1869bfff9ca42c1b4f6a83f69118215。</a></p>
-</blockquote>
-<h2 id="本节小结"><a href="#本节小结" class="headerlink" title="本节小结"></a>本节小结</h2><p>•本章节主要介绍防火墙的基本概念、应用场景和发展历史：</p>
-<p>▫防火墙是一种安全设备，有灵活的设备形态包括框式、盒式、桌面型和软件防火墙。</p>
-<p>▫防火墙可被用于但不仅限于企业边界防护、内网管控与安全隔离、数据中心边界防护和数据中心安全联动。</p>
-<p>▫防火墙技术不断的发展，从早期的包过滤防火墙发展到当前的AI防火墙。</p>
-<h1 id="2-防火墙的基本概念"><a href="#2-防火墙的基本概念" class="headerlink" title="2.防火墙的基本概念"></a>2.防火墙的基本概念</h1><h2 id="防火墙基本概念：安全区域"><a href="#防火墙基本概念：安全区域" class="headerlink" title="防火墙基本概念：安全区域"></a>防火墙基本概念：安全区域</h2><p>•安全区域（Security Zone），简称为区域（Zone），是防火墙的重要概念。防火墙大部分的安全策略都基于安全区域实施。</p>
-<p>•一个安全区域是防火墙若干接口所连网络的集合，一个区域内的用户具有相同的安全属性。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/10.png"></p>
-<h2 id="默认安全区域"><a href="#默认安全区域" class="headerlink" title="默认安全区域"></a>默认安全区域</h2><p>•华为防火墙确认已创建四个区域，untrust、dmz、trust和local区域。安全区域有以下特性：</p>
-<ul>
-<li><p>默认的安全区域不能删除，也不允许修改安全优先级。</p>
-</li>
-<li><p>每个Zone都必须设置一个安全优先级（Priority），值越大，则Zone的安全优先级越高。</p>
-</li>
-<li><p>用户可根据自己的需求创建自定义的Zone。</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/11.png"></p>
-<blockquote>
-<p>防火墙默认安全区域均为小写字母，且大小写敏感，包括：</p>
-<p>•非受信区域（untrust）：通常用于定义Internet等不安全的网络。</p>
-<p>•非军事化区域（dmz）：通常用于定义内网服务器所在区域。因为这种设备虽然部署在内网，但是经常需要被外网访问，存在较大安全隐患，同时一般又不允许其主动访问外网，所以将其部署一个优先级比trust低，但是比untrust高的安全区域中。</p>
-<ul>
-<li><p>DMZ（Demilitarized Zone）起源于军方，是介于严格的军事管制区和松散的公共区域之间的一种有着部分管制的区域。防火墙设备引用了这一术语，指代一个逻辑上和物理上都与内部网络和外部网络分离的安全区域。</p>
-</li>
-<li><p>DMZ安全区域很好地解决了服务器的放置问题。该安全区域可以放置需要对外提供网络服务的设备，如WWW服务器、FTP服务器等。上述服务器如果放置于内部网络，外部恶意用户则有可能利用某些服务的安全漏洞攻击内部网络；如果放置于外部网络，则无法保障它们的安全。</p>
-</li>
-</ul>
-<p>•受信区域（trust）：通常用于定义内网终端用户所在区域。</p>
-<p>•本地区域（local）：local区域定义的是设备本身，包括设备的各接口本身。凡是由设备构造并主动发出的报文均可认为是从Local区域中发出，凡是需要设备响应并处理（而不仅是检测或直接转发）的报文均可认为是由local区域接收。用户不能改变local区域本身的任何配置，包括向其中添加接口。</p>
-<ul>
-<li>由于local区域的特殊性，在很多需要设备本身进行报文收发的应用中，需要开放对端所在安全区域与local区域之间的安全策略。</li>
-</ul>
-</blockquote>
-<h2 id="区域间（Interzone）示例"><a href="#区域间（Interzone）示例" class="headerlink" title="区域间（Interzone）示例"></a>区域间（Interzone）示例</h2><p>流量的源、目的地址决定了互访的区域。本例1中PC访问防火墙的接口的流量实际上是从trust zone到达local zone；本例2中PC访问Internet的流量实际上是从trust zone到达untrust zone。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/12.png"></p>
-<h2 id="防火墙基本概念：安全策略"><a href="#防火墙基本概念：安全策略" class="headerlink" title="防火墙基本概念：安全策略"></a>防火墙基本概念：安全策略</h2><p>•安全策略是控制防火墙对流量转发以及对流量进行内容安全一体化检测的策略。</p>
-<p>•当防火墙收到流量后，对流量的属性（五元组、用户、时间段等）进行识别，然后与安全策略的条件进行匹配。如果条件匹配，则此流量被执行对应的动作。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/13.png"></p>
-<h2 id="安全策略组成"><a href="#安全策略组成" class="headerlink" title="安全策略组成"></a>安全策略组成</h2><p>•安全策略的组成有匹配条件、动作和安全配置文件（可选）。安全配置文件实现内容安全。</p>
-<p>•安全策略动作如果为“允许”则可配置安全配置文件，如果为“禁止”则可配置反馈报文。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/14.png"></p>
-<blockquote>
-<p>•动作说明：</p>
-<p>▫允许：如果动作为“允许”，则对流量进行如下处理：</p>
-<ul>
-<li><p>如果没有配置内容安全检测，则允许流量通过。</p>
-</li>
-<li><p>如果配置内容安全检测，最终根据内容安全检测的结论来判断是否对流量进行放行。内容安全检测包括反病毒、入侵防御等，它是通过在安全策略中引用安全配置文件实现的。如果其中一个安全配置文件阻断该流量，则防火墙阻断该流量。如果所有的安全配置文件都允许该流量转发，则防火墙允许该流量转发。</p>
-</li>
-</ul>
-<p>▫禁止：表示拒绝符合条件的流量通过。</p>
-<ul>
-<li>如果动作为“禁止”，防火墙不仅可以将报文丢弃，还可以针对不同的报文类型选择发送对应的反馈报文。发起连接请求的客户端/服务器收到防火墙发送的阻断报文后，可以快速结束会话并让用户感知到请求被阻断。<ul>
-<li>Reset客户端：防火墙向TCP客户端发送TCP reset报文。</li>
-<li>Reset服务器：防火墙向TCP服务器发送TCP reset报文。</li>
-<li>ICMP不可达：FW向报文客户端发送ICMP不可达报文。</li>
-</ul>
-</li>
-</ul>
-<p>•更多详细信息，可以参考文档，“安全策略”章节，<a target="_blank" rel="noopener" href="https://support.huawei.com/hedex/hdx.do?docid=EDOC1100084128&amp;lang=zh&amp;idPath=24030814%7C9856724%7C21430823%7C22984765%7C23176238%E3%80%82">https://support.huawei.com/hedex/hdx.do?docid=EDOC1100084128&amp;lang=zh&amp;idPath=24030814%7C9856724%7C21430823%7C22984765%7C23176238。</a></p>
-</blockquote>
-<h2 id="安全策略的匹配过程"><a href="#安全策略的匹配过程" class="headerlink" title="安全策略的匹配过程"></a>安全策略的匹配过程</h2><p>•当配置多条安全策略规则时，安全策略的匹配按照策略列表的顺序执行，即从策略列表顶端开始逐条向下匹配。如果流量匹配了某个安全策略，将不再进行下一个策略的匹配。</p>
-<p>•安全策略的配置顺序很重要，需要先配置条件精确的策略，再配置宽泛的策略。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/15.png"></p>
-<blockquote>
-<p>•系统默认存在一条缺省安全策略default。缺省安全策略位于策略列表的最底部，优先级最低，所有匹配条件均为any，动作默认为禁止。如果所有配置的策略都未匹配，则将匹配缺省安全策略default。</p>
-</blockquote>
-<h2 id="防火墙基本概念：会话表"><a href="#防火墙基本概念：会话表" class="headerlink" title="防火墙基本概念：会话表"></a>防火墙基本概念：会话表</h2><p>•会话表是用来记录TCP、UDP、ICMP等协议连接状态的表项，是防火墙转发报文的重要依据。</p>
-<p>•防火墙采用了基于“状态”的报文控制机制：只对首包或者少量报文进行检测就确定一条连接的状态，大量报文直接根据所属连接的状态进行控制。这种状态检测机制迅速提高了防火墙的检测和转发效率。会话表就是为了记录连接的状态而存在的。设备在转发TCP、UDP和ICMP报文时都需要查询会话表，来判断该报文所属的连接并采取相应的处理措施。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/16.png"></p>
-<blockquote>
-<p>•本例中PC1向PC2发起HTTP连接，所以在防火墙会话表中标示出“http”协议和连接信息，并识别出此流量在公共路由表中被转发（图中VPN:public）。</p>
-</blockquote>
-<h2 id="会话表的创建和包处理过程"><a href="#会话表的创建和包处理过程" class="headerlink" title="会话表的创建和包处理过程"></a>会话表的创建和包处理过程</h2><p>•防火墙状态检测开启情况下，流量的首包会创建会话表项，后续包即可直接匹配会话表项。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/17.png"></p>
-<blockquote>
-<p>•本流程只是一个示意图，展示了华为防火墙各个模块的基本处理顺序。实际不同的报文处理并非严格按照此流程图依次进行（若无对应配置），且与具体产品实现相关。</p>
-<p>•更多详细信息，可以参考指定型号防火墙产品文档，“报文转发流程”章节。</p>
-</blockquote>
-<h2 id="会话表的老化时间与长连接"><a href="#会话表的老化时间与长连接" class="headerlink" title="会话表的老化时间与长连接"></a>会话表的老化时间与长连接</h2><p>•防火墙为各种协议设定了会话老化机制。当一条会话在老化时间内没有被任何报文匹配，则会被从会话表中删除。这种机制可以避免防火墙的设备资源被大量无用、陈旧的会话表项消耗。</p>
-<p>•但是对于某些特殊业务中，一条会话的两个连续报文可能间隔时间很长。例如：</p>
-<ul>
-<li><p>用户通过FTP下载大文件，需要间隔很长时间才会在控制通道继续发送控制报文。</p>
-</li>
-<li><p>用户需要查询数据库服务器上的数据，这些查询操作的时间间隔远大于TCP的会话老化时间。</p>
-</li>
-</ul>
-<p>•此时如果其会话表项被删除，则该业务会中断。长连接（Long Link）机制可以给部分连接设定超长的老化时间，有效解决这个问题。</p>
-<h2 id="多通道协议在防火墙上的问题"><a href="#多通道协议在防火墙上的问题" class="headerlink" title="多通道协议在防火墙上的问题"></a>多通道协议在防火墙上的问题</h2><p>•如果在防火墙上配置严格的单向安全策略，那么防火墙将只允许业务单方向发起访问。这会导致一些特殊的协议无法工作，例如FTP。</p>
-<p>•FTP主动模式传输文件时，首先需要客户端主动向服务器端发起控制连接，然后需要服务器端向客户端发起数据连接。如果设备上配置的安全策略仅允许客户端报文单方向通过，则FTP文件传输不能成功。</p>
-<p>•同FTP，通信过程中需占用两个或两个以上端口的协议被称为多通道协议。多通道协议都需要考虑此类问题。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/18.png"></p>
-<blockquote>
-<p>•单通道协议：通信过程中只需占用一个端口的协议。如：WWW只需占用80端口。</p>
-<p>•多通道协议：通信过程中需占用两个或两个以上端口的协议。</p>
-<p>•FTP协议是一个典型的多通道协议，在其工作过程中，FTP Client和FTP Server之间将会建立两条连接：控制连接和数据连接。控制连接用来传输FTP指令和参数，其中就包括建立数据连接所需要的信息。数据连接用来获取服务器目录及传输数据。数据连接使用的端口号是在控制连接中临时协商的。根据数据连接的发起方式FTP协议分为两种工作模式：主动模式（PORT模式）和被动模式（PASV模式）。主动模式中，FTP Server 20号端口主动向FTP Client随机端口发起数据连接；被动模式中，FTP Server被动接收FTP Client发起的数据连接。模式在一般的FTP客户端中都是可以设置的，这里我们以主动模式为例。</p>
-<p>•多通道协议存在时，防火墙配置较为宽泛的安全策略也可以解决协议不可用问题，但是存在安全隐患。</p>
-</blockquote>
-<h2 id="多通道协议-–-FTP过程详解"><a href="#多通道协议-–-FTP过程详解" class="headerlink" title="多通道协议 – FTP过程详解"></a>多通道协议 – FTP过程详解</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/19.png"></p>
-<blockquote>
-<p>•大部分多媒体应用协议（如H.323、SIP）、FTP、netmeeting等协议使用约定的固定端口来初始化一个控制连接，再动态的协商出端口用于数据传输。端口的选择是不可预测的。其中的某些应用甚至可能要同时用到多个端口。传统的包过滤防火墙可以通过配置ACL过滤规则匹配单通道协议的应用传输，保障内部网络不受攻击，但只能阻止一些使用固定端口的应用，无法匹配使用协商出随机端口传输数据的多通道协议应用，留下了许多安全隐患。</p>
-</blockquote>
-<h2 id="ASPF与Server-map"><a href="#ASPF与Server-map" class="headerlink" title="ASPF与Server-map"></a>ASPF与Server-map</h2><p>•为了解决多通道协议的问题，防火墙需要识别协议在应用层协商的地址和端口。这需要开启ASPF （Application Specific Packet Filter，针对应用层的包过滤）功能。</p>
-<p>•ASPF也称作基于状态的报文过滤，ASPF功能可以自动检测某些报文的应用层信息并根据应用层信息放开相应的访问规则，即生成Server-map表。</p>
-<p>•Server-map表也记录了类似会话表中连接的状态。Server-map表中的信息相对简单，是简化的会话表，在真实流量到达前生成。在流量真实到达防火墙时，防火墙会基于Server-map表生成会话表，然后执行转发。</p>
-<p>•开启ASPF解决多通道协议问题，是生成Server-map表的一种方式。</p>
-<blockquote>
-<p>•在防火墙配置了ASPF、NAT Server和No-PAT方式的源NAT时，都会生成相应的Server-map表项。</p>
-</blockquote>
-<h2 id="ASPF与Server-map示例"><a href="#ASPF与Server-map示例" class="headerlink" title="ASPF与Server-map示例"></a>ASPF与Server-map示例</h2><p>•防火墙上配置了ASPF功能后，会检测FTP控制连接中协商的数据连接端口信息，然后生成Server-map表项。Server-map表项包含了FTP控制通道中协商的数据通道的信息。防火墙为命中Server-map表的数据创建会话表。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/20.png"></p>
-<blockquote>
-<p>Server-map表与会话表的关系如下：</p>
-<p>▫Server-map表记录了应用层数据中的关键信息，报文命中该表后，不再受安全策略的控制；</p>
-<p>▫会话表是通信双方连接状态的具体体现；</p>
-<p>▫Server-map表不是当前的连接信息，而是防火墙对当前连接分析后得到的即将到来报文的预测；</p>
-<p>▫防火墙收到报文先检查是否命中会话表；</p>
-<p>▫如果没有命中则检查是否命中Server-map表；</p>
-<p>▫命中Server-map表的报文不受安全策略控制；</p>
-<p>▫防火墙最后为命中Server-map表的数据创建会话表。</p>
-</blockquote>
-<h2 id="Server-map表与简化的包转发过程"><a href="#Server-map表与简化的包转发过程" class="headerlink" title="Server-map表与简化的包转发过程"></a>Server-map表与简化的包转发过程</h2><p>•当防火墙接收到一个报文且没有命中会话表时，防火墙进入首包处理流程，查询是否有命中的Server-map表。如果有，则会生成会话表转发报文；如果没有，则执行其他包处理过程。</p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/21.png"></p>
-<h2 id="本节小结-1"><a href="#本节小结-1" class="headerlink" title="本节小结"></a>本节小结</h2><p>•本章节主要介绍防火墙的基本概念和基础特性，它们有：</p>
-<p>​    ▫安全区域</p>
-<p>​    ▫安全策略</p>
-<p>​    ▫防火墙的会话表</p>
-<p>​    ▫防火墙的Server-map</p>
-<h1 id="3-防火墙的基础配置"><a href="#3-防火墙的基础配置" class="headerlink" title="3.防火墙的基础配置"></a>3.防火墙的基础配置</h1><h2 id="防火墙基础配置-接口"><a href="#防火墙基础配置-接口" class="headerlink" title="防火墙基础配置 - 接口"></a>防火墙基础配置 - 接口</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/22.png"></p>
-<h2 id="防火墙基础配置-安全区域"><a href="#防火墙基础配置-安全区域" class="headerlink" title="防火墙基础配置 - 安全区域"></a>防火墙基础配置 - 安全区域</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/23.png"></p>
-<h2 id="防火墙基础配置-安全策略"><a href="#防火墙基础配置-安全策略" class="headerlink" title="防火墙基础配置 - 安全策略"></a>防火墙基础配置 - 安全策略</h2><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/24.png"></p>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/25.png"></p>
-<blockquote>
-<p>•安全策略规则视图中指定源、目的IP地址可以有很多的可选参数，例如IP地址组、地区和地区组等，本课程不做过多介绍。更多详细内容请参考产品文档。</p>
-</blockquote>
-<h2 id="防火墙配置案例"><a href="#防火墙配置案例" class="headerlink" title="防火墙配置案例"></a>防火墙配置案例</h2><p>案例描述：</p>
-<p>防火墙将网络隔离为三个安全区域，trust、untrust和OM，其中OM区域优先级为95。现有需求如下：</p>
-<ul>
-<li><p>允许防火墙接口GE1/0/1响应Ping请求。</p>
-</li>
-<li><p>允许OM区域ICMP流量访问untrust区域。</p>
-</li>
-</ul>
-<p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/26.png"></p>
-<h3 id="配置案例-接口"><a href="#配置案例-接口" class="headerlink" title="配置案例 - 接口"></a>配置案例 - 接口</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/27.png"></p>
-<h3 id="配置案例-安全区域"><a href="#配置案例-安全区域" class="headerlink" title="配置案例 - 安全区域"></a>配置案例 - 安全区域</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/28.png"></p>
-<h3 id="配置案例-安全策略"><a href="#配置案例-安全策略" class="headerlink" title="配置案例 - 安全策略"></a>配置案例 - 安全策略</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/29.png"></p>
-<h3 id="配置案例-结果验证-1"><a href="#配置案例-结果验证-1" class="headerlink" title="配置案例 - 结果验证 (1)"></a>配置案例 - 结果验证 (1)</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/30.png"></p>
-<h3 id="配置案例-结果验证-2"><a href="#配置案例-结果验证-2" class="headerlink" title="配置案例 - 结果验证 (2)"></a>配置案例 - 结果验证 (2)</h3><p><img src="/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/31.png"></p>
-<h2 id="本节小结-2"><a href="#本节小结-2" class="headerlink" title="本节小结"></a>本节小结</h2><p>•本小结主要介绍防火墙的基础配置命令。通过学习你已实现使用命令行：</p>
-<p>​    ▫配置防火墙接口</p>
-<p>​    ▫划分防火墙安全区域</p>
-<p>​    ▫配置安全策略</p>
-<p>​    ▫查看防火墙会话信息</p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）缺省情况下，防火墙有几个安全区域？（  ）</p>
-<p>A. 1</p>
-<p>B. 2      </p>
-<p>C. 3     </p>
-<p><strong>D. 4</strong></p>
-<p>2.（判断题）防火墙在生产会话表之前，都需要先生成Server-map。 （  ）</p>
-<p>A.对</p>
-<p><strong>B.错</strong></p>
-<p>3.（多选题）以下对于华为AI防火墙说法正确的是？ （  ）</p>
-<p><strong>A. 内置恶意文件检测引擎（CDE)</strong></p>
-<p><strong>B. 内置探针</strong></p>
-<p><strong>C. 内置APT检测引擎（AIE）</strong></p>
-<p><strong>D. 内置独创诱捕Sensor</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•防火墙是通信领域极为重要的安全设备之一，本章帮助您初步学习防火墙的基本概念、发展历史和基础配置。</p>
-<p>•安全区域、安全策略、会话表和Server-map是防火墙基础的、重要的概念，是进一步学习防火墙技术的必要前提。</p>
-<p>•防火墙有更多的安全功能，例如内容安全过滤、反病毒和入侵防御等。更多防火墙技术学习请参考华为安全认证。</p>
-<h1 id="更多信息"><a href="#更多信息" class="headerlink" title="更多信息"></a>更多信息</h1><p>•华为HiSecEngine USG6000E系列AI防火墙相关文档。</p>
-<p>•<a target="_blank" rel="noopener" href="https://support.huawei.com/enterprise/zh/security/usg6600e-pid-23176231">https://support.huawei.com/enterprise/zh/security/usg6600e-pid-23176231</a></p>
-<p>•更多相关教材和视频请关注<a target="_blank" rel="noopener" href="https://e.huawei.com/cn/talent/#/home">https://e.huawei.com/cn/talent/#/home</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3579,7 +3868,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">75</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3592,7 +3881,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-111-MPLS BGP VPN跨域," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="引入： 随着MPLS VPN解决方案的广泛应用，大型企业不同的分支站点之间，或相互协作的企业网络之间都存在着跨越不同自治域的情况。 举例： 一般的MPLS VPN体系结构都是在一个自治系统内运行，任何VPN的路由信息都是只能在一个自治系统内按需扩散，没有提供自治系统内的VPN信息向其他自治系统扩散的功能。 如上图，基于MPLS的VPN可以将私有网络的不同Site连接起来，形成一个统一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-MPLS-BGP-VPN跨域">
+<meta property="og:url" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="引入： 随着MPLS VPN解决方案的广泛应用，大型企业不同的分支站点之间，或相互协作的企业网络之间都存在着跨越不同自治域的情况。 举例： 一般的MPLS VPN体系结构都是在一个自治系统内运行，任何VPN的路由信息都是只能在一个自治系统内按需扩散，没有提供自治系统内的VPN信息向其他自治系统扩散的功能。 如上图，基于MPLS的VPN可以将私有网络的不同Site连接起来，形成一个统一">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/1.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/2.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/3.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/4.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/5.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/6.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/7.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/8.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/9.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/10.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/11.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/12.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/13.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/14.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/15.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/16.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/17.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/18.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/19.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/20.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/21.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/22.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/23.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/24.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/25.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/26.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/27.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/28.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/29.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/30.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/31.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/32.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/33.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/34.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/35.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/36.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/37.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/38.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/39.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/40.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/41.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/42.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/43.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/44.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/45.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/46.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/47.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/48.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/49.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/50.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/51.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/52.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/53.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/54.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/55.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/56.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/57.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/58.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/59.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/60.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/61.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/62.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/63.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/64.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/65.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/66.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/67.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/68.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/69.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/70.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/71.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/72.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/73.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/74.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/75.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/76.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/77.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/78.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/79.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/80.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/81.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/82.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/83.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/84.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/85.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/86.png">
+<meta property="og:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/87.png">
+<meta property="article:published_time" content="2021-08-23T02:20:47.000Z">
+<meta property="article:modified_time" content="2021-08-23T02:46:54.199Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-111-MPLS BGP VPN跨域">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/08/23/IE-MPLS-BGP-VPN跨域/"/>
+
+
+
+
+
+  <title>IE-MPLS-BGP-VPN跨域 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-MPLS-BGP-VPN跨域</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-23T10:20:47+08:00">
+                2021-08-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/1.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/2.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/3.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/4.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/5.png"></p>
+<blockquote>
+<ul>
+<li>引入：</li>
+<li>随着MPLS VPN解决方案的广泛应用，大型企业不同的分支站点之间，或相互协作的企业网络之间都存在着跨越不同自治域的情况。</li>
+<li>举例：</li>
+<li>一般的MPLS VPN体系结构都是在一个自治系统内运行，任何VPN的路由信息都是只能在一个自治系统内按需扩散，没有提供自治系统内的VPN信息向其他自治系统扩散的功能。</li>
+<li>如上图，基于MPLS的VPN可以将私有网络的不同Site连接起来，形成一个统一的网络，基于MPLS的VPN还支持对不同VPN间的互通控制。CE（Customer Edge）是用户边缘设备；PE（Provider Edge）是服务商边缘路由器，位于骨干网络；P（Provider），是服务提供商网络中的骨干路由器，不与CE直接相连。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/6.png"></p>
+<blockquote>
+<ul>
+<li>如果同一VPN的两个站点位于不同的AS，那么普通的MPLS BGP VPN是否还合适于业务的部署？</li>
+<li>答案是否定的。因为此时连接VPN的PE路由器已经无法简单地建立IBGP邻居关系了，或是与RR建立邻居关系。因此，需要一些手段通过建立EBGP邻居关系来传递VPNv4路由。</li>
+<li>为了支持不同AS之间的VPN路由信息交换，就需要扩展现有的协议和修改MPLS VPN体系框架，提供一个不同于基本的MPLS VPN体系结构所提供的互连模型——跨域（Inter-AS）的MPLS VPN，以便可以穿过AS间的链路来发布路由前缀和标签信息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/7.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/8.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/9.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/10.png"></p>
+<blockquote>
+<ul>
+<li>在本方案中，ASBR-PE之间直接相连。两台ASBR-PE之间用多个接口(包括子接口)互连，每个接口关联一个VPN，每个ASBR-PE都把对端当成CE。因此，ASBR-PE相连的接口(包括子接口)需要绑定VRF，并通过eBGP邻居关系把VPNv4路由转变成普通IPv4路由从一个AS传递到另一个AS。因此，两个ASBR相连，但不需要启用MPLS。此方案在MPLS BGP VPN业务属性上没有做扩展。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/11.png"></p>
+<blockquote>
+<p>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接，如上图，现在需要把Client1这条路由从CE1穿过AS100和AS200传递到CE2：</p>
+<p>1.在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1。</p>
+<p>2.在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR-PE1。</p>
+<p>3.在AS200中，同样通过运行LDP协议，ASBR-PE2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T3给P2。</p>
+<p>4.在AS200中，通过运行LDP协议，P2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T4给PE2。</p>
+<p>5.CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址。</p>
+<p>6.PE1将IPv4路由Client1通过MP-BGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，然后通告给ASBR-PE1。</p>
+<p>7.ASBR-PE1将VPNv4路由变为IPv4路由，把IPv4路由Client1通告给ASBR-PE2，并且下一跳指向ASBR-PE1。</p>
+<p>8.ASBR-PE2将IPv4路由Client1通过MP-BGP重发布为VPNv4路由，并且下一跳为ASBR-PE2，为该路由分配一个VPN标签V2，将其通告给PE2。</p>
+<p>9.PE2将VPNv4路由转变为IPv4路由Client1，把路由Client1通告给CE2，并且下一跳指向PE2。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/12.png"></p>
+<blockquote>
+<p>通过前文的过程分析，我们从反向来分析转发平面的工作过程，即CE2要发送一个目的地为Client1的IP报文给CE1，如上图所示：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V2，再封装外层标签T4，然后将此报文发送给P2。</p>
+<p>3.P2进行标签交换，把外层标签T4换成T3，然后将此报文发送给ASBR-PE2。</p>
+<p>4.ASBR-PE2去掉所有标签，将报文(普通IP报文)转发给ASBR-PE1。</p>
+<p>5.ASBR-PE1收到IP报文后进行MPLS标签的封装，先封装VPN标签V1，再封装外层标签T2，然后将此报文发送给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/13.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/14.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/15.png"></p>
+<blockquote>
+<ul>
+<li>此例中，为方便描述，采用不带RR的方式。带RR的实现方式可参考下文OptionB配置章节。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/16.png"></p>
+<blockquote>
+<ul>
+<li>在此方案中，PE通过MP-iBGP将VPNv4路由通告给ASBR-PE或是VPN RR(其中ASBR-PE是其客户机)。ASBR-PE再通过MP-eBGP将VPNv4通告给另一个AS的ASBR-PE，再由这个ASBR-PE将VPNv4路由通告给该AS内的PE。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/17.png"></p>
+<blockquote>
+<p>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接：</p>
+<p>1、在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1</p>
+<p>2、在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR-PE1</p>
+<p>3、在AS200中，同样通过运行LDP协议，ASBR-PE2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T3给P2</p>
+<p>4、在AS200中，通过运行LDP协议，P2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T4给PE2</p>
+<p>5、CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址</p>
+<p>6、PE1将IPv4路由Client1通过MP-IBGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，然后通告给ASBR-PE1</p>
+<p>7、ASBR-PE1通过MP-EBGP将Client1的VPNv4路由通告给ASBR-PE2，将下一跳改为ASBR-PE1，并重新分配一个VPN标签V2</p>
+<p>8、ASBR-PE2将收到的Client1的VPNv4路由通过MP-IBGP通告给PE2，将下一跳指向自己，并重新分配一个VPN标签V3</p>
+<p>9、PE2将Client1的VPNv4路由变为IPv4路由，把路由Client1通告给CE2，并且下一跳改为PE2</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/18.png"></p>
+<blockquote>
+<ul>
+<li><p>当VPN实例数量较多时，可以部署专门的RR设备。如图，AS内的PE和ASBR设备只与RR设备建立MP-BGP邻居关系，由RR负责路由的反射传递，PE和ASBR之间无需建立BGP邻居。</p>
+</li>
+<li><p>RR只负责控制平面的VPNv4路由传递，数据转发时，流量不经过RR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/19.png"></p>
+<blockquote>
+<p>通过上文的过程分析，我们从反向来分析转发平面的工作过程：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V3，再封装外层标签T4，然后将此报文发送给P2。</p>
+<p>3.P2进行标签交换，把外层标签T4换成T3，然后将此报文发送给ASBR-PE2。</p>
+<p>4.ASBR-PE2去掉外层标签，将VPN标签V3交换为V2，再将其转发给ASBR-PE1（此时报文仅带有一层私网标签）。</p>
+<p>5.ASBR-PE交换VPN标签V2成V1，再加一个外层标签T2，并将报文转发给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/20.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/21.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/22.png"></p>
+<blockquote>
+<ul>
+<li>此例中，为方便描述，采用不带RR的方式。带RR的实现方式可参考下文OptionC配置章节。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/23.png"></p>
+<blockquote>
+<ul>
+<li>在此方案中，ASBR不再维护或是通告VPNv4路由（所以如上图，此处将ASBR-PE路由器改名为ASBR）。ASBR只需要维护所有去往PE的带标签路由，并通过EBGP通告给对端AS。在transit AS内的ASBR也同样需要使用EBGP通告这些带标签的IPv4路由。这样在不同AS的PE之间给会建立一条LSP，从而可以建立起PE之间的多跳MP-EBGP连接并进行VPNv4路由的通告。</li>
+<li>如果每个AS的P路由器都能够知道去往其他AS的PE路由器的路由，那情况会比较简单。但是如果P不知道，那么当PE收到从CE收到VPN数据时，就要加上三层标签，底层标签是由对端PE分配的与VPN路由相关联的VPN标签，中间的标签是ASBR分配的与去往对端PE的路由相关联的标签，外层标签则是与去往下一跳ASBR的路由相关联的标签。</li>
+<li>为了进一步扩展性能，多跳MP-EBGP会话可以建立在不同的AS的VPN RR之间。并且当这些VPN RR通告VPNv4路由时不改变下一跳信息。PE只与VPN RR建立MP-iBGP会话。</li>
+<li>注意：为了方便，如上图，使用的是对称的LSP进行示意，但是实际上在控制平面和数据平面的工作过程上，两端AS的LSP结构是不对称的。下文将会详细讲解。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/24.png"></p>
+<blockquote>
+<ul>
+<li>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接，并且P1与P2路由器都没有去往另一个AS的PE的路由，以上图为例：<ul>
+<li>在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1</li>
+<li>在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR-PE1</li>
+<li>在AS200中，同样通过运行LDP协议，ASBR-PE2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T3给P2</li>
+<li>在AS200中，通过运行LDP协议，P2分配一个与去往ASBR-PE2的路由相关联的隧道标签(外层标签)T4给PE2</li>
+<li>ASBR1通过EBGP会话通告一条去往PE1的带标签的IPv4路由给ASBR2，其中下一跳为ASBR1，标签为BGP标签，值为B1</li>
+<li>ASBR2通过BGP会话通告一条去往PE1的带标签的IPv4路由给PE2，其中下一跳为ASBR2，标签为BGP标签，值为B2。<ul>
+<li>注意：这里假设PE2与ASBR1所在的AS已经为去往它们的路由分配了隧道标签(公网标签)，并且去往PE2的带标签路由也已经被通告。</li>
+</ul>
+</li>
+<li>PE1与PE2建立起MP-EBGP会话</li>
+<li>CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址</li>
+<li>PE1将IPv4路由Client1通过MP-EBGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，将其通告给PE2</li>
+<li>PE2将VPNv4路由变为IPv4路由，把IPv4路由Client1通告给CE2，并且下一跳改为PE2</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/25.png"></p>
+<blockquote>
+<ul>
+<li><p>VPNv4邻居：</p>
+<ul>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</li>
+<li><p>ASBR,PE同RR建立BGP单播IPv4邻居：</p>
+<ul>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR的loopback，传递给本端RR，用于本端RR与对端RR建立vpnv4邻居。</li>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR和PE的loopback，传递给本端RR，本端RR再将其反射给PE，用于跨域之间的PE建立BGP LSP。</li>
+</ul>
+</li>
+<li><p>带RR场景中，RR负责控制平面IPv4的路由反射、VPNv4路由的传递，转发平面的流量不经过RR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/26.png"></p>
+<blockquote>
+<p>通过上文的过程分析，我们从反向来分析转发平面的工作过程：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V1，由于去往Client1的下一跳PE1不是直连邻居，通过查表发现去往PE1的BGP路由是带标签的路由，因此加上分配的BGP标签B2做为中间标签，最后，由于去往PE1的路由的下一跳ASBR2也不是直连邻居，通过查表发现去往ASBR2也有关联的标签T4，因此，封装上外层标签T4。</p>
+<p>3.P2进行标签交换，把外层标签T4换成T3，然后将此报文发送给ASBR-PE2。</p>
+<p>4.ASBR2去掉外层标签，将BGP标签B2交换为B1，再将其转发给ASBR1。</p>
+<p>5.当ASBR1收到报文后，发现B1是它分配的，所以去掉B1进一步查表转发，发现此时去往PE1的路由有一个关联的标签T2，因此，ASBR1将其加在栈顶，并转发给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/27.png"></p>
+<blockquote>
+<p>此例中，为方便描述，采用不带RR的方式。带RR的实现方式可参考下文OptionC配置章节。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/28.png"></p>
+<blockquote>
+<ul>
+<li>在此方案中，ASBR不再维护或是通告VPNv4路由。ASBR只需要维护所有去往PE的带标签路由，并通过EBGP通告给对端ASBR。</li>
+<li>对端ASBR收到带BGP标签路由后，MPLS LDP会触发为该BGP标签路由产生标签，并在AS内的LDP邻居间传递。因此，在PE上可以看到去往对端PE的LDP LSP。</li>
+<li>为了进一步扩展性能，多跳MP-EBGP会话可以建立在不同的AS的VPN RR之间，本AS内的PE只需要与RR建立MP-IBGP即可。这些VPN RR通告VPNv4路由时不改变下一跳信息，进而当对端PE转发流量时，可以迭代至正确的隧道。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/29.png"></p>
+<blockquote>
+<p>我们只通过单方向来解释控制平面的工作过程，同时假设在站点Site1有一VPN路由Client1连接，并且P1与P2路由器都没有去往另一个AS的PE的路由，以上图为例：</p>
+<p>1.在AS100中，通过运行LDP协议，PE1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T1给P1。</p>
+<p>2.在AS100中，通过运行LDP协议，P1分配一个与去往PE1的路由相关联的隧道标签(外层标签)T2给ASBR1。</p>
+<p>3.在AS200中，同样通过运行LDP协议，ASBR2分配一个与去往ASBR2的路由相关联的隧道标签(外层标签)T3给P2。</p>
+<p>4.在AS200中，通过运行LDP协议，P2分配一个与去往ASBR2的路由相关联的隧道标签(外层标签)T4给PE2。</p>
+<p>5.ASBR1通过EBGP会话通告一条去往PE1的带标签的IPv4路由给ASBR2，其中下一跳为ASBR1，标签为BGP标签，值为B1。</p>
+<p>6.ASBR2为这条BGP标签路由触发建立LSP，分发LDP标签T5至P2，P2进而分发T6至PE2。</p>
+<p>7.PE1与PE2建立起MP-EBGP会话。</p>
+<p>8.CE1 通告路由Client1给PE1，路由的下一跳为CE1的接口地址。</p>
+<p>9.PE1将IPv4路由Client1通过MP-EBGP重发布为VPNv4路由，并且下一跳改为PE1，分配一个VPN标签V1，将其通告给PE2。</p>
+<p>10.PE2将VPNv4路由变为IPv4路由，把IPv4路由Client1通告给CE2，并且下一跳改为PE2。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/30.png"></p>
+<blockquote>
+<ul>
+<li><p>VPNv4邻居：</p>
+<ul>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</li>
+<li><p>带RR场景中，RR只负责控制平面VPNv4路由的传递，转发平面的流量不经过RR。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/31.png"></p>
+<blockquote>
+<p>通过上文的过程分析，我们从反向来分析转发平面的工作过程：</p>
+<p>1.CE2发送一个目的地为Client1的IP报文给PE2。</p>
+<p>2.PE2收到IP报文后进行MPLS标签的封装，先封装VPN标签V1，由于去往Client1的下一跳PE1不是直连邻居，通过查表发现去往PE1的标签为T6，打上T6。</p>
+<p>3.P2进行标签交换，把外层标签T6换成T5，然后将此报文发送给ASBR2。</p>
+<p>4.ASBR2去掉外层标签，将T5交换为B1，再将其转发给ASBR1。</p>
+<p>5.当ASBR1收到报文后，发现B1是它分配的，所以去掉B1进一步查转发表，发现此时去往PE1的路由有一个关联的标签T2，因此，ASBR1将其加在栈顶，并转发给P1。</p>
+<p>6.P1进行标签交换，把外层标签T2换成T1，然后将此报文发送给PE1。</p>
+<p>7.PE1收到后去掉所有标签，将报文(普通IP报文)转发给CE1。</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/32.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/33.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/34.png"></p>
+<blockquote>
+<ul>
+<li>如上图所示，共分为4个AS，AS100和AS200作为ISP，PE1和ASBR1属于AS100，PE2和ASBR2属于AS200。CE1和CE2属于同一个VPN，CE1通过AS100的PE1接入，CE2通过AS200的PE2接入。</li>
+<li>每台路由器的IP地址规划详见拓扑图。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/35.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/36.png"></p>
+<blockquote>
+<p>1.搭建拓扑，配置IP：按照拓扑要求搭建试验拓扑，并配置IP地址。</p>
+<ul>
+<li>CE1需要配置Loopback 0，GE0/0/1；</li>
+<li>PE1需要配置Loopback 0，GE0/0/0；</li>
+<li>P1需要配置Loopback 0，GE0/0/0，GE0/0/1；</li>
+<li>ASBR1需要配置Loopback 0，GE0/0/1；</li>
+<li>ASBR2需要配置Loopback 0，GE0/0/1；</li>
+<li>P2需要配置Loopback 0，GE0/0/0，GE0/0/1；</li>
+<li>PE2需要配置Loopback 0，GE0/0/0；</li>
+<li>CE2需要配置：Loopback 0，GE0/0/1。</li>
+</ul>
+<p>2.配置OSPF路由协议：在PE1、P1和ASBR1，PE2、P2和ASBR2上配置OSPF协议</p>
+<ul>
+<li>在PE1上宣告网络1.1.1.1/32， 12.12.12.0/30；</li>
+<li>在P1上宣告网络2.2.2.2/32，12.12.12.0/30，23.23.23.0/30；</li>
+<li>在ASBR1上宣告网络3.3.3.3/32，23.23.23.0/30；</li>
+<li>在ASBR2上宣告网络4.4.4.4/32，45.45.45.0/30；</li>
+<li>在P2上宣告网络5.5.5.5/32，45.45.45.0/30，56.56.56.0/30；</li>
+<li>在PE2上宣告网络6.6.6.6/32， 56.56.56.0/30。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/37.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/38.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/39.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/40.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/41.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/42.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/43.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/44.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/45.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/46.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/47.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/48.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/49.png"></p>
+<blockquote>
+<ul>
+<li>本实例RR1和RR2分别作为AS100与200的RR，PE与ASBR与RR建立BGP邻居，由RR负责VPN路由的反射。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/50.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/51.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/52.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/53.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/54.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/55.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/56.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/57.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/58.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/59.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/60.png"></p>
+<blockquote>
+<ul>
+<li>如上图所示，共分为4个AS，AS100和AS200作为ISP，PE1，P1，RR1和ASBR1属于AS100，PE2，P2，RR2和ASBR2属于AS200。CE1和CE2属于同一个VPN，CE1通过AS100的PE1接入，CE2通过AS200的PE2接入。</li>
+<li>每台路由器的IP地址规划详见拓扑图。</li>
+<li>本例为OptionC方式实现方案一，可以采用PE1与PE2直接建立MP-EBGP（不带RR）来传递跨域VPN路由，也可以采用RR1与RR2建立MP-EBGP邻居（PE1与RR1，PE2与RR2建立MP-IBGP邻居）传递跨域VPN路由，两者相似，本例采用RR方式实现OptionC方案一。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/61.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/62.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/63.png"></p>
+<blockquote>
+<ul>
+<li>步骤4，RR2的配置参考RR1。PE，ASBR的配置参考普通BGP邻居配置。</li>
+<li>步骤5，ASBR2的配置参考ASBR1。</li>
+<li>ASBR之间建立单播EBGP邻居，并将本端RR和PE的loopback发布给对方。</li>
+<li>ASBR在向对端ASBR发布RR ,PE的loopback时，为其分配MPLS标签；向本AS的RR传递的对端的RR和PE的loopback路由时，为其分配新的MPLS标签。</li>
+<li>ASBR,PE同本端RR建立邻居时使能交换标签能力。</li>
+<li>ASBR,P,PE同RR建立ipv4邻居：<ul>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR的loopback，传递给本端RR，用于本端RR与对端建立vpnv4邻居。</li>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR和PE的loopback，传递给本端RR，本端RR再将其反射给P，用于跨域bgp路由的递归查询。</li>
+<li>ASBR通过ipv4邻居学习将从对端ASBR学到的RR和PE的loopback，传递给本端RR，本端RR再将其反射给PE，用于跨域之间的PE建立BGP LSP。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/64.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/65.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/66.png"></p>
+<blockquote>
+<ul>
+<li>PE2与RR2的MP-IBGP配置参考PE1与RR1的配置。</li>
+<li>配置“undo policy vpn-target”原理与Opiton B中相同，即RR上不用RT来过滤路由。</li>
+<li>配置“peer X.X.X.X next-hop-invariable”，保证对端PE可以在流量传输时迭代到通往本端PE的BGP LSP。</li>
+<li>RR之间建立vpnv4邻居，向对端传递路由时不改变下一跳。即对端PE学到的VPNv4路由的下一跳是本端PE。</li>
+<li>RR与本端PE建立vpnv4邻居，RR向本端PE传递路由时不改变下一跳，即本端PE学到的VPNv4路由的下一跳是对端PE。</li>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/67.png"></p>
+<blockquote>
+<ul>
+<li>PE2,RR2,ASBR2的配置分别参考PE1,RR1和ASBR1。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/68.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/69.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/70.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/71.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/72.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/73.png"></p>
+<blockquote>
+<ul>
+<li>如上图所示，共分为4个AS，AS100和AS200作为ISP，PE1，P1，RR1和ASBR1属于AS100，PE2，P2，RR2和ASBR2属于AS200。CE1和CE2属于同一个VPN，CE1通过AS100的PE1接入，CE2通过AS200的PE2接入。</li>
+<li>每台路由器的IP地址规划详见拓扑图。</li>
+<li>本例为OptionC方式实现方案二。方案二的实现与方案一大致相似，主要区别在于，当本端ASBR收到对端ASBR传递来的labeled-IPv4-Route后，触发LDP为BGP标签路由分标签。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/74.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/75.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/76.png"></p>
+<blockquote>
+<ul>
+<li>在OSPF进程中引入BGP路由，是为了让RR1与RR2能够顺利建立EBGP邻居关系，进而传递VPN路由。建议在OSPF中引入BGP路由时配置路由策略，做好精确的明细引入，减少不必要的路由进入IGP域。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/77.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/78.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/79.png"></p>
+<blockquote>
+<ul>
+<li>PE2与RR2的MP-IBGP配置参考PE1与RR1的配置。</li>
+<li>配置“undo policy vpn-target”原理与Opiton B中相同，即RR上不用RT来过滤路由。</li>
+<li>配置“peer X.X.X.X next-hop-invariable”，保证对端PE可以在流量传输时迭代到通往本端PE的BGP LSP。</li>
+<li>RR之间建立vpnv4邻居，向对端传递路由时不改变下一跳。即对端PE学到的VPNv4路由的下一跳是本端PE。</li>
+<li>RR与本端PE建立vpnv4邻居，RR向本端PE传递路由时不改变下一跳，即本端PE学到的VPNv4路由的下一跳是对端PE。</li>
+<li>本端PE只与本端RR建立VPNv4邻居，本端RR与对端RR建立VPNv4邻居，实现了跨域VPN路由的传递。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/80.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/81.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/82.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/83.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/84.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/85.png"></p>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/86.png"></p>
+<blockquote>
+<p>1.C</p>
+<p>2.C</p>
+</blockquote>
+<p><img src="/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/87.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-111-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/" rel="tag"># HCRSE-111-MPLS BGP VPN跨域</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/18/IE-PIM%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/" rel="next" title="IE-PIM双栈原理">
+                <i class="fa fa-chevron-left"></i> IE-PIM双栈原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
