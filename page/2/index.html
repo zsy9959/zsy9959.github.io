@@ -241,6 +241,475 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/" itemprop="url">IE-WAN技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-20T22:22:43+08:00">
+                2021-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/1.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/2.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/3.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/4.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/5.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/6.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/7.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/8.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/9.png"></p>
+<blockquote>
+<p>lT: 表示双绞线；</p>
+<p>lTX：表示2对高质量的双绞线；</p>
+<p>lFX：表示2根光纤。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/10.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/11.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/12.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/13.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/14.png"></p>
+<blockquote>
+<p>lOC-n: Optical Carrier level n（光载体等级）是光纤传输的一种单位，最小的单位为OC-1，其传输数据量约为51.84 Mbps。</p>
+<p>lSTM: Synchronous Transport Module，同步传输模块。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/15.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/16.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/17.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/18.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/19.png"></p>
+<blockquote>
+<ul>
+<li><p>PPP共定义了三个协议组件，分别是数据封装方式，链路控制协议（Link Control Protocol，LCP）和网络层控制协议（Network Control Protocol，NCP）。</p>
+</li>
+<li><p>数据封装方式定义了如何封装多种类型的上层协议数据包。</p>
+</li>
+<li><p>为了能适应多种多样的链路类型，PPP定义了链路控制协议LCP。LCP可以自动检测链路环境，如是否存在环路；协商链路参数，如最大数据包长度，使用何种认证协议等等。与其他数据链路层协议相比，PPP协议的一个重要特点是可以提供认证功能，链路两端可以协商使用何种认证协议并实施认证过程，只有认证成功才会建立连接。这个特点使PPP协议适合运营商用来接入分散的用户。</p>
+</li>
+<li><p>PPP定义了一组网络层控制协议NCP，每一个协议对应一种网络层协议，用于协商网络层地址等参数，例如IPCP用于协商控制IP，IPXCP用于协商控制IPX协议等。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/20.png"></p>
+<blockquote>
+<p>PPP报文封转格式</p>
+<ul>
+<li><p>Flag域</p>
+<ul>
+<li>Flag域标识一个物理帧的起始和结束，该字节为0x7E。</li>
+</ul>
+</li>
+<li><p>Address域</p>
+<ul>
+<li>Address域可以唯一标识对端。PPP协议是被运用在点对点的链路上，因此，使用PPP协议互连的两个通信设备无须知道对方的数据链路层地址。按照协议的规定将该字节填充为全1的广播地址，对于PPP协议来说，该字段无实际意义。</li>
+</ul>
+</li>
+<li><p>Control域</p>
+<ul>
+<li>该字段默认值为0x03，表明为无序号帧，PPP默认没有采用序列号和确认来实现可靠传输。</li>
+<li>Address和Control域一起标识此报文为PPP报文，即PPP报文头为FF03。</li>
+</ul>
+</li>
+<li><p>Protocol域</p>
+<ul>
+<li>协议域可用来区分PPP数据帧中信息域所承载的数据报类型。</li>
+</ul>
+</li>
+<li><p>Code域</p>
+<ul>
+<li>代码域的长度为一个字节，主要是用来标识LCP数据报文的类型。</li>
+</ul>
+</li>
+<li><p>Identifier域</p>
+<ul>
+<li>标识域为1个字节，用来匹配请求和响应，当标识域值为非法时，该报文将被丢弃。</li>
+<li>通常一个配置请求报文的ID是从0x01开始逐步加1的。当对端接收到该配置请求报文后，无论使用何种报文回应对方，但必须要求回应报文中的ID要与接收报文中的ID一致。</li>
+</ul>
+</li>
+<li><p>Length域</p>
+<ul>
+<li>长度域的值就是该LCP报文的总字节数据。它是代码域、标志域、长度域和数据域四个域长度的总和。</li>
+<li>长度域所指示字节数之外的字节将被当作填充字节而忽略掉，而且该域的内容不能超过MRU的值。</li>
+</ul>
+</li>
+<li><p>Data域</p>
+<ul>
+<li>Type为协商选项类型。</li>
+<li>Length为协商选项长度，它是指Data域的总长度，也就是包含Type、Length和Data。</li>
+<li>Data为协商的选项具体内容。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/22.png"></p>
+<blockquote>
+<p>建链过程</p>
+<ul>
+<li>Dead：这是PPP工作开始和结束的阶段。当物理层变为可用状态（UP）之后，PPP进入Establish阶段。</li>
+<li>Establish：PPP在此阶段使用LCP协商链路层参数。如果链路层参数协商不成功（FAIL），则PPP连接建立不成功，PPP退回到Dead阶段。如果链路层参数协商成功（OPENED），则PPP进入Authenticate阶段。</li>
+<li>Authenticate：PPP在此阶段认证对端，如果认证失败（FAIL），则PPP进入Terminate阶段；如果认证成功（SUCCESS）或者没配置认证（NONE），则PPP进入Network阶段。</li>
+<li>Network：PPP在此阶段使用NCP进行网络层参数协商，协商成功则PPP连接建立成功，开始传输网络层数据包。当上层协议认为应当关闭此连接（例如按需电路）或者管理员手工关闭PPP连接（CLOSING），则PPP进入Terminate阶段。</li>
+<li>Terminate：PPP在此阶段使用LCP关闭PPP连接。PPP连接关闭（Down）后，PPP进入Dead阶段。</li>
+</ul>
+<p>注意：此处列出的是PPP的工作阶段，并非PPP的协议状态。由于PPP是由一组协议组成的，因此PPP本身没有协议状态。只有特定的的协议如LCP和NCP等才有协议状态和状态转换（协议状态机）。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/23.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/24.png"></p>
+<blockquote>
+<ul>
+<li><p>LCP协议有3大类报文：</p>
+<p>1.链路配置包，用于建立和配置链路：Configure-Request（匹配请求），Configure-Ack（匹配确认），Configure-Nak（匹配否认），和Configure-Reject（匹配拒绝）。</p>
+<p>2.链路结束包，用于结束一个链路：Terminate-Request（终止请求） 和 Terminate-Ack（终止确认）。</p>
+<p>3.链路维修包，用于管理和调试一个链路：Code-Reject（代码拒绝）, Protocol-Reject（协议拒绝）, Echo-Request（回波请求）, Echo-Reply（回波应答）, 和 Discard-Request（抛弃请求）。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/25.png"></p>
+<blockquote>
+<ul>
+<li>用于协商的参数<ul>
+<li>在VRP平台上，MRU参数使用接口上配置的最大传输单元（MTU）值来表示的。</li>
+<li>常用的PPP认证协议有PAP和CHAP（后续章节介绍），一条PPP链路的两端可以使用不同的认证协议认证对端，但是被认证方必须支持认证方使用的认证协议并正确配置用户名和密码等认证信息。</li>
+<li>LCP使用魔术字（Magic-Number）检测链路环路和其它异常情况。魔术字为随机产生的一个数字，随机机制需要保证两端产生相同魔术字的可能性几乎为0。</li>
+<li>收到一个Configure-Request报文之后，其包含的魔术字需要和本地产生的魔术字做比较，如果不同，表示链路无环路，则使用Confugure-Ack报文确认（其他参数也协商成功），表示魔术字协商成功。在后续发送的报文中，如果报文含有魔术字字段，则该字段设置为协商成功的魔术字，LCP不再产生新的魔术字。</li>
+<li>如果收到的Configure-Request报文和自身产生的魔术字相同，则发送一个Configure-Nak报文，携带一个新的魔术字。然后，不管新收到的Configure-Nak报文中是否携带相同的魔术字，LCP都发送一个新的Configure-Request报文，携带一个新的魔术字。如果链路有环路，则这个过程会不停的持续下去，如果链路没有环路，则报文交互会很快恢复正常。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/26.png"></p>
+<blockquote>
+<ul>
+<li><p>链路协商成功</p>
+<ul>
+<li>如图所示，R1和R2使用串行链路相连，运行PPP。当物理层链路变为可用状态之后，R1和R2使用LCP协商链路参数。本例中，R1首先发送一个LCP报文。</li>
+<li>R1向R2发送Configure-Request报文，此报文包含在发送者（R1）上配置的链路层参数，每个链路层参数使用“类型，长度，取值”的结构表示。</li>
+<li>当R2收到此Configure-Request报文之后，如果R2能识别此报文中的所有链路层参数，并且认为每个参数的取值都是可以接受的，则向R1回应一个Configure-Ack报文。</li>
+<li>在没有收到Configure-Ack报文的情况下，每隔3秒重传一次Configure-Request报文，如果连续10次发送Configure-Request报文仍然没有收到Configure-Ack报文，则认为对端不可用，停止发送Configure-Request报文。</li>
+</ul>
+</li>
+<li><p>注：完成上述过程只是表明R2认为R1上的链路参数配置是可接受的。R2也需要向R1发送Configure-Request报文，使R1检测R2上的链路参数配置是不是可接受的。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/27.png"></p>
+<blockquote>
+<ul>
+<li>链路协商参数不成功</li>
+<li>当R2收到R1发送的Configure-Request报文之后，如果R2能识别此报文中携带的所有链路层参数，但是认为部分或全部参数的取值不能接受，即参数的取值协商不成功，则R2需要向R1回应一个Configure-Nak报文。</li>
+<li>在这个Configure-Nak报文中，只包含不能接受的那部分链路层参数列表，每一个包含在此报文中链路层参数的取值均被修改为此报文的发送者（R2）上可以接受的取值（或取值范围）。</li>
+<li>在收到Configure-Nak报文之后，R1需要根据此报文中的链路层参数重新选择本地使用的相关参数，并重新发送一个Configure-Request。</li>
+<li>连续五次协商仍然不成功的参数将被禁用，不再继续协商。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/28.png"></p>
+<blockquote>
+<ul>
+<li>链路参数协商参数不能识别<ul>
+<li>当R2收到R1发送的Configure-Request报文之后，如果R2不能识别此报文中携带的部分或全部链路层参数，则R2需要向R1回应一个Configure-Reject报文。</li>
+<li>在此Configure-Reject报文中，只包含不被识别的那部分链路层参数列表。</li>
+<li>在收到Configure-Reject报文之后，R1需要向R2重新发送一个Configure-Request报文，在新的Configure-Request报文中，不再包含不被对端（R2）识别的参数。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/29.png"></p>
+<blockquote>
+<ul>
+<li>检测链路状态<ul>
+<li>LCP建立连接之后，可以使用Echo-Request报文和Echo-Reply报文检测链路状态，收到一个Echo-Request报文之后应当回应一个Echo-Reply报文，表示链路状态正常。</li>
+<li>VRP平台默认每隔10秒发送一次Echo-Request报文。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/30.png"></p>
+<blockquote>
+<ul>
+<li>连接关闭<ul>
+<li>认证不成功或者管理员手工关闭等原因可以使LCP关闭已经建立的连接。</li>
+<li>LCP关闭连接使用Terminate-Request报文和Terminate-Ack报文，Terminate-Request报文用于请求对端关闭连接，一旦收到一个Terminate-Request报文，LCP必须回应一个Terminate-Ack报文确认连接关闭。</li>
+<li>在没有收到Terminate-Ack报文的情况下，每隔3秒重传一次Terminate-Request报文，连续两次重传没有收到Terminate-Ack报文，则认为对端不可用，连接关闭。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/31.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/32.png"></p>
+<blockquote>
+<p>lPAP报文直接封装在PPP报文中。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/33.png"></p>
+<blockquote>
+<ul>
+<li>PAP工作模式<ul>
+<li>被认证方将配置的用户名和密码信息使用Authenticate-Request报文以明文方式发送给认证方，本例中，用户名为“huawei”，密码为“hello”；</li>
+<li>认证方收到被认证方发送的用户名和密码信息之后，根据本地配置的用户名和密码数据库检查用户名和密码信息是否正确匹配，如果正确，则返回Authenticate-Ack报文，表示认证成功，如果不能正确匹配，则返回Authenticate-Nak报文，表示认证失败。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/34.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/35.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/36.png"></p>
+<blockquote>
+<ul>
+<li><p>CHAP的认证过程需要三次报文的交互。为了匹配请求报文和回应报文，报文中含有Identifier字段，一次认证过程所使用的报文均使用相同的Identifier信息。CHAP单向验证过程分为两种情况：验证方配置了用户名和验证方没有配置用户名。推荐使用验证方配置用户名的方式，这样可以对验证方的用户名进行确认。</p>
+</li>
+<li><p>验证方配置了用户名的验证过程（即接口配置命令ppp chap user username）：</p>
+<ul>
+<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge），并同时将本端的用户名附带上一起发送给被验证方。</li>
+<li>被验证方接到验证方的验证请求后，先检查本端接口上是否配置了ppp chap password命令，如果配置了该命令，则被验证方将生成的密文（（Identifier＋密码＋随机数）的MD5）和自己的用户名发回验证方（Response）。如果接口上未配置ppp chap password命令，则根据此报文中验证方的用户名在本端的用户表查找该用户对应的密码，将密文（（Identifier＋密码＋随机数）的MD5）和被验证方自己的用户名发回验证方（Response）。</li>
+<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
+</ul>
+</li>
+<li><p>验证方没有配置用户名（即接口没有配置命令ppp chap user username）：</p>
+<ul>
+<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge）。</li>
+<li>被验证方接到验证方的验证请求后，利用Identifier、ppp chap password命令配置的CHAP密码和随机数进行MD5算法，将生成的密文和自己的用户名发回验证方（Response）。</li>
+<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/37.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/38.png"></p>
+<blockquote>
+<ul>
+<li><p>IPCP，用于协商控制IP参数，使PPP可用于传输IP数据包。</p>
+</li>
+<li><p>IPCP使用和LCP相同的协商机制、报文类型，但IPCP并非调用LCP，只是工作过程、报文等和LCP相同。</p>
+<ul>
+<li>两端配置的IP地址分别为12.1.1.1/24和12.1.1.2/24（两端IP地址即使不在同一网段也会通过IPCP协商）。</li>
+<li>两端静态配置IP地址的时候协商过程如下：<ul>
+<li>R1和R2都要发送Configure-Request报文，在此报文中包含本地配置的IP地址。</li>
+<li>R1和R2接收到对端的Configure-Request报文之后，检查其中的IP地址，如果IP地址是一个合法的单播IP地址，而且和本地配置的IP地址不同（没有IP冲突），则认为对端可以使用该地址，回应一个Configure-Ack报文。</li>
+<li>通过IPCP发送的信息，PPP链路的两端都可以知道对端使用的32位IP地址。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/39.png"></p>
+<blockquote>
+<ul>
+<li><p>如图所示，R1配置为请求对端分配IP地址，R2配置IP地址12.1.1.2/24，并且启用R2给对端分配IP地址的能力，给R1分配IP地址12.1.1.1。</p>
+</li>
+<li><p>两端动态协商IP地址的过程如下：</p>
+<ul>
+<li>R1向R2发送一个Configure-Request报文，此报文中含有IP地址0.0.0.0，一个含有0.0.0.0的IP地址的Configure-Request报文表示向对端请求IP地址；</li>
+<li>R2收到上述Configure-Request报文后，认为其中包含的地址（0.0.0.0）不合法，使用Configure-Nak回应一个新的IP地址12.1.1.1；</li>
+<li>R1收到此Configure-Nak报文之后，更新本地IP地址，并重新发送一个Configure-Request报文，包含新的IP地址12.1.1.1；</li>
+<li>R2收到Configure-Request报文后，认为其中包含的IP地址为合法地址，回应一个Configure-Ack报文；</li>
+<li>同时，R2也要向R1发送Configure-Request报文请求使用地址12.1.1.2，R1认为此地址合法，回应Configure-Ack报文。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/40.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/41.png"></p>
+<blockquote>
+<p>MultiLink PPP允许将报文分片，分片将从多个点对点链路上送到同一个目的地。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/42.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/43.png"></p>
+<blockquote>
+<ul>
+<li><p>命令含义</p>
+<ul>
+<li>ppp authentication-mode命令用来设置本端PPP协议对对端设备的认证方式。</li>
+<li>ppp chap user命令用来配置CHAP验证的用户名。</li>
+<li>ppp chap password命令用来配置CHAP验证的口令。</li>
+<li>ip address ppp-negotiate命令用来为本端接口配置IP地址可协商属性，使本端接口接受PPP协商产生的由对端分配的IP地址。</li>
+<li>remote address命令用来配置为对端分配IP地址或指定地址池。</li>
+</ul>
+</li>
+<li><p>ppp authentication-mode { chap | pap }</p>
+<ul>
+<li>chap：采用CHAP认证方式。</li>
+<li>pap：采用PAP认证方式。</li>
+</ul>
+</li>
+<li><p>ppp chap user username</p>
+<ul>
+<li>username：设置CHAP验证的用户名。</li>
+</ul>
+</li>
+<li><p>ppp chap password { cipher | simple } password</p>
+<ul>
+<li>cipher：表示密码为密文显示。</li>
+<li>simple：表示密码为明文显示。</li>
+<li>password：设置CHAP认证的口令。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/44.png"></p>
+<blockquote>
+<ul>
+<li>命令含义<ul>
+<li>interface mp-group命令用来创建一个MP-Group类型的接口并进入MP-Group接口视图。</li>
+<li>ppp mp mp-group命令用来将接口加入指定的MP-group，使该接口工作在MP方式。</li>
+<li>restart命令用来重新启动当前接口。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/45.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/46.png"></p>
+<blockquote>
+<ul>
+<li>Trunk接口分为Eth-Trunk和IP-Trunk两种。<ul>
+<li>Eth-Trunk只能由以太网链路构成。</li>
+<li>IP-Trunk一般由POS接口构成。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/47.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/48.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/49.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/50.png"></p>
+<blockquote>
+<ul>
+<li>PPPoE概述<ul>
+<li>PPPoE利用以太网将大量主机组成网络，通过一个远端接入设备连入因特网，并运用PPP协议对接入的每个主机进行控制，具有适用范围广、安全性高、计费方便的特点。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/51.png"></p>
+<blockquote>
+<ul>
+<li><p>PPPoE可分为三个阶段，即Discovery阶段、Session阶段和Terminate阶段。</p>
+</li>
+<li><p>Discovery阶段：</p>
+<ul>
+<li>PPPoE Client广播发送一个PADI（PPPoE Active Discovery Initial）报文，在此报文中包含PPPoE Client想要得到的服务类型信息。</li>
+<li>所有的PPPoE Server收到PADI报文之后，将其中请求的服务与自己能够提供的服务进行比较，如果可以提供，则单播回复一个PADO（PPPoE Active Discovery Offer）报文。</li>
+<li>根据网络的拓扑结构，PPPoE Client可能收到多个PPPoE Server发送的PADO报文，PPPoE Client选择最先收到的PADO报文对应的PPPoE Server做为自己的PPPoE Server，并单播发送一个PADR（PPPoE Active Discovery Request）报文。</li>
+<li>PPPoE Server产生一个唯一的会话ID（Session ID），标识和PPPoE Client的这个会话，通过发送一个PADS（PPPoE Active Discovery Session-confirmation）报文把会话ID发送给PPPoE Client，会话建立成功后便进入PPPoE Session阶段。</li>
+<li>完成后通信双方都会知道PPPoE的Session_ID及对方MAC，它们共同确定唯一的PPPoE Session。</li>
+</ul>
+</li>
+<li><p>Seesion阶段：</p>
+<ul>
+<li>PPPoE Session上的PPP协商和普通的PPP协商方式一致。PPPoE Session的PPP协商成功后，就可以承载PPP数据报文。在PPPoE Session阶段所有的以太网数据包都是单播发送的。</li>
+</ul>
+</li>
+<li><p>Terminate阶段：</p>
+<ul>
+<li>进入PPPoE Session阶段后，PPPoE Client和PPPoE Server都可以通过发送PADT报文的方式来结束PPPoE连接。PADT数据包可以在会话建立以后的任意时刻单播发送。在发送或接收到PADT后，就不允许再使用该会话发送PPP流量了。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/52.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/53.png"></p>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/54.png"></p>
+<blockquote>
+<p>此例中，R1模拟PPPoE客户机PC进行PPPoE拨号上网，R4作为PPPoE Server对其进行验证和地址分配。</p>
+</blockquote>
+<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/55.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-LAN%E6%8A%80%E6%9C%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3588,294 +4057,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IPadv-MPLS原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T13:09:54+08:00">
-                2021-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•90年代中期，互联网流量的快速增长。传统IP报文依赖路由器查询路由表转发，但由于硬件技术存在限制导致转发性能低，路由器的查表转发成为了网络数据转发的瓶颈。 </p>
-<p>•因此，旨在提高路由器转发速度的MPLS（Multi-Protocol Label Switching，多协议标签交换）被提出。与传统IP路由方式相比，MPLS在数据转发时，只在网络边缘分析IP报文头，在网络内部采用更为高效的标签（Label）转发，节约了处理时间。</p>
-<p>•随着设备硬件性能不断提升，MPLS在提高数据转发速度上的优势逐渐弱化，但其支持多层标签嵌套和设备内转控分离的特点，使其在VPN（Virtual Private Network，虚拟私有网络）、QoS（Quality of Service，服务质量）等新兴应用中得到广泛应用。</p>
-<p>•本课程主要介绍MPLS的工作原理以及标签的转发流程，静态标签交换路径的配置方法等。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MPLS的基本概念及术语</p>
-<p>▫描述MPLS的工作原理</p>
-<p>▫实现静态LSP的配置</p>
-<p>▫描述MPLS的转发流程</p>
-<h1 id="1-MPLS基础"><a href="#1-MPLS基础" class="headerlink" title="1.MPLS基础"></a>1.MPLS基础</h1><h2 id="MPLS概述"><a href="#MPLS概述" class="headerlink" title="MPLS概述"></a>MPLS概述</h2><h3 id="传统IP路由转发"><a href="#传统IP路由转发" class="headerlink" title="传统IP路由转发"></a>传统IP路由转发</h3><p>•传统的IP转发采用的是逐跳转发。数据报文经过每一台路由器，都要被解封装查看报文网络层信息，然后根据路由最长匹配原则查找路由表指导报文转发。各路由器重复进行解封装查找路由表和再封装的过程，所以转发性能低。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<h3 id="MPLS基本概念"><a href="#MPLS基本概念" class="headerlink" title="MPLS基本概念"></a>MPLS基本概念</h3><p>•MPLS位于TCP/IP协议栈中的数据链路层和网络层之间，可以向所有网络层提供服务。</p>
-<p>•通过在数据链路层和网络层之间增加额外的MPLS头部，基于MPLS头部实现数据快速转发。</p>
-<p>•本课程仅介绍MPLS在IP网络中的应用。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<blockquote>
-<p>•MPLS起源于IPv4（Internet Protocol version 4），其核心技术可扩展到多种网络协议，包括IPv6（Internet Protocol version 6）、IPX（Internet Packet Exchange）、Appletalk、DECnet、CLNP（Connectionless Network Protocol）等。MPLS中的“Multiprotocol”指的就是支持多种网络协议。</p>
-<p>•MPLS以标签交换替代IP转发。标签是一个短而定长的、只具有本地意义的标识符。</p>
-</blockquote>
-<h2 id="MPLS术语"><a href="#MPLS术语" class="headerlink" title="MPLS术语"></a>MPLS术语</h2><h3 id="MPLS术语介绍-LSR与MPLS域"><a href="#MPLS术语介绍-LSR与MPLS域" class="headerlink" title="MPLS术语介绍 - LSR与MPLS域"></a>MPLS术语介绍 - LSR与MPLS域</h3><p>•MPLS域（MPLS Domain）：一系列连续的运行MPLS的网络设备构成了一个MPLS域。</p>
-<p>•LSR（Label Switching Router，标签交换路由器）：支持MPLS的路由器（实际上也指支持MPLS的交换机或其他网络设备）。位于MPLS域边缘、连接其它网络的LSR称为边沿路由器LER（Label Edge Router），区域内部的LSR称为核心LSR（Core LSR）。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<h3 id="MPLS术语介绍-LSR分类"><a href="#MPLS术语介绍-LSR分类" class="headerlink" title="MPLS术语介绍 - LSR分类"></a>MPLS术语介绍 - LSR分类</h3><p>•除了根据LSR在MPLS域中的位置进行分类之外，还可以根据对数据处理方式的不同进行分类：</p>
-<p>▫入站LSR（Ingress LSR）：通常是向IP报文中压入MPLS头部并生成MPLS报文的LSR。</p>
-<p>▫中转LSR（Transit LSR）：通常是将MPLS报文进行例如标签置换操作，并将报文继续在MPLS域中转发的LSR。</p>
-<p>▫出站LSR（Egress LSR）：通常是将MPLS报文中MPLS头部移除，还原为IP报文的LSR。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<h3 id="MPLS术语介绍-FEC"><a href="#MPLS术语介绍-FEC" class="headerlink" title="MPLS术语介绍 - FEC"></a>MPLS术语介绍 - FEC</h3><p>•FEC（Forwarding Equivalence Class，转发等价类）是一组具有某些共性的数据流的集合，这些数据流在转发过程中被网络节点以相同方式处理。</p>
-<ul>
-<li>在MPLS网络中，FEC可以通过多种方式划分，例如基于目的IP地址及网络掩码、DSCP等特征来划分。</li>
-<li>数据属于哪一个LSP，由数据进入MPLS域时的Ingress LSR决定。</li>
-<li>MPLS标签通常是与FEC相对应的，必须有某种机制使得网络中的LSR获得关于某FEC的标签信息。</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
-<blockquote>
-<p>•在传统的采用最长匹配算法的IP转发中，匹配到同一条路由的所有报文就是一个转发等价类。</p>
-<p>•在MPLS中，关于FEC最常见的例子是：目的IP地址匹配同一条IP路由的报文被认为属于同一个FEC。</p>
-</blockquote>
-<h3 id="MPLS术语介绍-LSP"><a href="#MPLS术语介绍-LSP" class="headerlink" title="MPLS术语介绍 - LSP"></a>MPLS术语介绍 - LSP</h3><p>•LSP（Label Switched Path，标签交换路径）是标签报文穿越MPLS网络到达目的地所走的路径。</p>
-<p>•同一个FEC的报文通常采用相同的LSP穿越MPLS域，所以对同一个FEC，LSR总是用相同的标签转发。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<blockquote>
-<p>•一条LSP包含一台入站LSR、一台出站LSR以及数量可变的中转LSR，因此LSP也可以看做是这些LSR的有序集合。</p>
-<p>•LSP需要在数据转发开始前建立完成，只有这样报文才能顺利穿越MPLS域。</p>
-<p>•LSP可通过静态和动态两种方式建立。</p>
-<p>•需要注意的是，LSP是一个从“起点”到“终点”的单向路径，若需要双向数据互通，则需要在双方之间建立双向的LSP。</p>
-</blockquote>
-<h2 id="MPLS标签"><a href="#MPLS标签" class="headerlink" title="MPLS标签"></a>MPLS标签</h2><h3 id="MPLS标签-1"><a href="#MPLS标签-1" class="headerlink" title="MPLS标签"></a>MPLS标签</h3><p>•IP报文进入MPLS域之前，会被入站LSR压入MPLS头部（又叫MPLS标签），形成一个MPLS标签报文。一个标签报文可以包含一个或多个MPLS标签。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<blockquote>
-<p>•EXP字段在早期的MPLS标准中被定义，意为试验性的字段，但实际上该字段主要被用于CoS。为了避免歧义，RFC5462重新定义了该字段，命名为流分类（Traffic Class）。</p>
-</blockquote>
-<h3 id="MPLS标签栈"><a href="#MPLS标签栈" class="headerlink" title="MPLS标签栈"></a>MPLS标签栈</h3><p>•MPLS支持一层或多层标签头部，这些标签头部的有序集合被称为标签栈（Label Stack）。</p>
-<p>•当标签栈中存在多个标签时，这些标签的顺序是非常讲究的：</p>
-<p>​    ▫最靠近二层头部的标签是栈顶标签，标签中的S字段为0。</p>
-<p>​    ▫最靠近IP头部的标签是栈底标签，标签中的S字段为1。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<blockquote>
-<p>•当上层为MPLS标签栈时，以太网头部中的Type字段为0x8847，PPP头部中的Protocol字段为0x8281。</p>
-</blockquote>
-<h3 id="标签空间"><a href="#标签空间" class="headerlink" title="标签空间"></a>标签空间</h3><p>•标签是一个短而定长的、只具有本地意义的标识符。标签空间就是指标签的取值范围。标签值的范围及规划如下：</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<h3 id="MPLS标签的处理"><a href="#MPLS标签的处理" class="headerlink" title="MPLS标签的处理"></a>MPLS标签的处理</h3><p>LSR对标签的操作类型包括标签压入（Push）、标签交换（Swap）和标签弹出（Pop）。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<h1 id="2-MPLS转发"><a href="#2-MPLS转发" class="headerlink" title="2.MPLS转发"></a>2.MPLS转发</h1><h2 id="MPLS转发概述"><a href="#MPLS转发概述" class="headerlink" title="MPLS转发概述"></a>MPLS转发概述</h2><p>•MPLS转发的本质就是将数据归到对应的FEC并按照提前建立好的LSP进行转发。</p>
-<ul>
-<li><p>对于整个MPLS域，LSP是某一给定的FEC进入域和离开域的路径，可以看成是LSR的有序集合。</p>
-</li>
-<li><p>对于单台LSR，需要建立标签转发表，用标签来标识FEC，并绑定相应的标签处理和转发等行为。</p>
-</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<blockquote>
-<p>•同一个FEC，若进入MPLS域的Ingress LSR（入站LSR）不同，转发时的LSP也不相同。</p>
-<p>•同一个FEC，LSR的处理方式相同，不论这个FEC来自哪里（进入设备的接口）。</p>
-<p>•LSR的转发动作决定了LSP，而标签转发表确定转发动作，所以建立标签转发表也可以理解为建立LSP。</p>
-<p>•如图所示，因为有着相同的目的地，所以这三份数据属于同一个转发等价类FEC1。同时由于入站LSR不同，这些数据将分别在LSP1、LSP2和LSP3上被转发。因为标签仅具有本地意义，所以每台LSR上给同一FEC分配的标签，可以相同，也可以不同。</p>
-</blockquote>
-<h2 id="MPLS体系结构"><a href="#MPLS体系结构" class="headerlink" title="MPLS体系结构"></a>MPLS体系结构</h2><p>MPLS的体系结构由控制平面 (Control Plane)和转发平面 (Forwarding Plane)组成。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<blockquote>
-<p>•控制平面：</p>
-<ul>
-<li><p>控制平面是无连接的，主要功能是负责产生和维护路由信息以及标签信息。</p>
-</li>
-<li><p>控制平面包括：</p>
-<ul>
-<li>路由信息表RIB（Routing Information Base）：由IP路由协议（IP Routing Protocol）、静态路由和直连路由共同生成，用于选择路由。</li>
-<li>标签信息表LIB（Label Information Base）：用于管理标签信息，LIB中的表项可由标签交换协议（LDP、RSVP等协议）或静态配置生成。</li>
-</ul>
-</li>
-</ul>
-<p>•转发平面：</p>
-<ul>
-<li><p>转发平面也称为数据平面，是面向连接的， 主要功能是负责普通IP报文的转发以及带MPLS标签报文的转发。</p>
-</li>
-<li><p>转发平面包括：</p>
-<ul>
-<li>转发信息表FIB（Forwarding Information Base）：从RIB提取必要的路由信息生成，负责普通IP报文的转发。</li>
-<li>标签转发信息表LFIB（Label Forwarding Information Base）：简称标签转发表，负责带MPLS标签报文的转发。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<h2 id="控制平面与转发平面"><a href="#控制平面与转发平面" class="headerlink" title="控制平面与转发平面"></a>控制平面与转发平面</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<h2 id="LSP建立原则"><a href="#LSP建立原则" class="headerlink" title="LSP建立原则"></a>LSP建立原则</h2><p>•当网络层协议为IP协议时，FEC所对应的路由必须存在于LSR的IP路由表中，否则该FEC的标签转发表项不生效。</p>
-<p>•LSR用标签标识指定FEC，所以该FEC的数据被发送至LSR时，必须携带正确的标签，才能被LSR正确的处理。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<h2 id="LSP建立方式"><a href="#LSP建立方式" class="headerlink" title="LSP建立方式"></a>LSP建立方式</h2><p>•MPLS需要为报文事先分配好标签，建立一条LSP，才能进行报文转发。LSP分为静态LSP和动态LSP两种。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<blockquote>
-<p>•静态LSP：</p>
-<ul>
-<li>由于静态LSP各节点上不能相互感知到整个LSP的情况，因此静态LSP是一个本地的概念。</li>
-</ul>
-<p>•动态LSP：</p>
-<ul>
-<li>其他标签分布协议：<ul>
-<li>RSVP-TE：Resource Reservation Protocol Traffic Engineering，它是对RSVP的扩展，用于建立基于约束的LSP。它拥有普通LDP LSP没有的功能，如发布带宽预留请求、带宽约束、链路颜色和显式路径等。</li>
-<li>MP-BGP：Multiprotocol Border Gateway Protocol，MP-BGP是在BGP协议基础上扩展的协议。MP-BGP支持为MPLS VPN业务中私网路由和跨域VPN的标签路由分配标签。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<h2 id="MPLS标签转发"><a href="#MPLS标签转发" class="headerlink" title="MPLS标签转发"></a>MPLS标签转发</h2><p>LSR处理报文时主要根据FTN、 NHLFE和ILM。</p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
-<blockquote>
-<p>•Tunnel ID：为了给使用隧道的上层应用（如VPN、路由管理）提供统一的接口，系统自动为隧道分配了一个ID，也称为Tunnel ID。该Tunnel ID的长度为32比特，只是本地有效。在MPLS转发过程中，FIB、ILM和NHLFE表项是通过Tunnel ID关联的。</p>
-</blockquote>
-<h2 id="Ingress-LSR的处理"><a href="#Ingress-LSR的处理" class="headerlink" title="Ingress LSR的处理"></a>Ingress LSR的处理</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
-<blockquote>
-<p>•在Ingress LSR，通过查询FIB表（得到FTN信息）和NHLFE表指导报文的转发。</p>
-<p>•当IP报文进入MPLS域时，首先查看FIB表，检查目的IP地址对应的Tunnel ID值是否为0x0。</p>
-<p>​    ▫如果Tunnel ID值为0x0，则进入正常的IP转发流程。</p>
-<p>​    ▫如果Tunnel ID值不为0x0，则进入MPLS转发流程。</p>
-</blockquote>
-<h2 id="Transit-LSR的处理"><a href="#Transit-LSR的处理" class="headerlink" title="Transit LSR的处理"></a>Transit LSR的处理</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
-<blockquote>
-<p>•在Transit LSR，通过查询ILM表和NHLFE表指导MPLS报文的转发。</p>
-</blockquote>
-<h2 id="Egress-LSR的处理"><a href="#Egress-LSR的处理" class="headerlink" title="Egress LSR的处理"></a>Egress LSR的处理</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
-<blockquote>
-<p>•在Egress LSR，通过查询ILM表指导MPLS报文的转发。</p>
-</blockquote>
-<h2 id="MPLS详细转发过程"><a href="#MPLS详细转发过程" class="headerlink" title="MPLS详细转发过程"></a>MPLS详细转发过程</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
-<h1 id="3-静态LSP配置"><a href="#3-静态LSP配置" class="headerlink" title="3.静态LSP配置"></a>3.静态LSP配置</h1><h2 id="MPLS基本配置命令"><a href="#MPLS基本配置命令" class="headerlink" title="MPLS基本配置命令"></a>MPLS基本配置命令</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<h2 id="静态LSP配置命令-1"><a href="#静态LSP配置命令-1" class="headerlink" title="静态LSP配置命令 (1)"></a>静态LSP配置命令 (1)</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<blockquote>
-<p>•out-label占用的是下游LSR的标签空间，而下游空间采用的标签分发方式不确定，所以out-label的标签空间为16~1048575。</p>
-<p>•in-label占用的是当前LSR的标签空间，采用静态LSP时，标签空间为16~1023。</p>
-</blockquote>
-<h2 id="静态LSP配置命令-2"><a href="#静态LSP配置命令-2" class="headerlink" title="静态LSP配置命令 (2)"></a>静态LSP配置命令 (2)</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
-<h2 id="静态LSP配置案例"><a href="#静态LSP配置案例" class="headerlink" title="静态LSP配置案例"></a>静态LSP配置案例</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<h2 id="静态LSP配置案例-检查配置"><a href="#静态LSP配置案例-检查配置" class="headerlink" title="静态LSP配置案例 - 检查配置"></a>静态LSP配置案例 - 检查配置</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<h2 id="静态LSP配置案例-抓包分析"><a href="#静态LSP配置案例-抓包分析" class="headerlink" title="静态LSP配置案例 - 抓包分析"></a>静态LSP配置案例 - 抓包分析</h2><p><img src="/2021/06/23/IPadv-MPLS%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选）下面对MPLS头部的描述正确的是 （   )</p>
-<p><strong>A.MPLS头部的长度为32比特</strong></p>
-<p>B.MPLS头部中的Label字段取值范围为0~65535</p>
-<p><strong>C.MPLS可以实现多层MPLS头部的嵌套</strong></p>
-<p>D.可以通过MPLS头部中的max_hop字段防止标签报文被无限制转发</p>
-<p>2.（单选）在配置Transit LSR上的静态LSP时，入标签和出标签的取值均为16~1023 </p>
-<p>A.正确</p>
-<p><strong>B.错误</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS最初是为了解决传统IP路由器查表转发速度慢而被提出的，是一种通过标签头部实现快速转发的技术。</p>
-<p>•MPLS标签是一个短而定长的、只具有本地意义的标识符，用于唯一标识一个分组所属的FEC。LSR对标签的操作类型包括标签压入、标签交换和标签弹出。</p>
-<p>•MPLS包含控制平面和数据平面，控制平面主要负责路由信息的传递和标签的分发，数据平面主要负责数据的转发。</p>
-<p>•随着技术的发展，MPLS在数据转发速度上的优势逐渐弱化，但其特性使其在VPN领域得到广泛应用。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3930,7 +4111,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3943,7 +4124,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

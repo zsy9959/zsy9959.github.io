@@ -241,6 +241,230 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/" itemprop="url">IP-流量过滤与转发路径控制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:09:21+08:00">
+                2021-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•传统的路由转发原理是首先根据报文的目的地址查找路由表，然后进行报文转发。随着业务的发展，用户更加希望能够在传统路由转发的基础上根据自己定义的策略进行报文转发和选路。</p>
+<p>•为提高网络安全性，用户希望能够控制进入网络的报文，将没有权限进入网络或存在安全隐患的报文隔离在网络边界。</p>
+<p>•本课程将会学习流量过滤技术、策略路由以及使用MQC（Modular QoS Command-Line Interface，模块化QoS命令行）的方式控制报文的转发路径和进行流量过滤。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述策略路由的使用场景</p>
+<p>▫阐明策略路由的分类</p>
+<p>▫描述如何使用MQC配置策略路由</p>
+<p>▫描述如何使用MQC过滤报文</p>
+<h1 id="1-策略路由"><a href="#1-策略路由" class="headerlink" title="1.策略路由"></a>1.策略路由</h1><h2 id="策略路由技术背景"><a href="#策略路由技术背景" class="headerlink" title="策略路由技术背景"></a>策略路由技术背景</h2><p>在某些场景中我们希望一些特定用户、特定业务的流量走指定的转发路径，而其余用户或业务的流量则依旧根据路由表进行转发。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/1.png"></p>
+<h2 id="PBR介绍-基本概念"><a href="#PBR介绍-基本概念" class="headerlink" title="PBR介绍 - 基本概念"></a>PBR介绍 - 基本概念</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/2.png"></p>
+<p>•PBR（Policy-Based Routing，策略路由）：PBR使得网络设备不仅能够基于报文的目的IP地址进行数据转发，更能基于其他元素进行数据转发，例如源IP地址、源MAC地址、目的MAC地址、源端口号、目的端口号、VLAN-ID等等。</p>
+<p>•用户还可以使用ACL匹配特定的报文，然后针对该ACL进行PBR部署。</p>
+<p>•若设备部署了PBR，则被匹配的报文优先根据PBR的策略进行转发，即PBR策略的优先级高于传统路由表。</p>
+<h2 id="PBR介绍-结构"><a href="#PBR介绍-结构" class="headerlink" title="PBR介绍 - 结构"></a>PBR介绍 - 结构</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/3.png"></p>
+<p>•PBR与Route-Policy类似，由多个节点组成，每个节点由匹配条件（条件语句）和执行动作（执行语句）组成。</p>
+<p>•每个节点内可包含多个条件语句。</p>
+<p>•节点内的多个条件语句之间的关系为“与”，即匹配所有条件语句才会执行本节点内的动作。</p>
+<p>•节点之间的关系为“或”，PBR根据节点编号从小到大顺序执行，匹配当前节点将不会继续向下匹配。</p>
+<h2 id="PBR介绍-命令语法"><a href="#PBR介绍-命令语法" class="headerlink" title="PBR介绍 - 命令语法"></a>PBR介绍 - 命令语法</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/4.png"></p>
+<blockquote>
+<p>•PBR的节点匹配模式：</p>
+<p>​    ▫permit表示对满足匹配条件的报文进行策略路由</p>
+<p>​    ▫deny表示对满足匹配条件的报文不进行策略路由</p>
+</blockquote>
+<h2 id="PBR与路由策略区别"><a href="#PBR与路由策略区别" class="headerlink" title="PBR与路由策略区别"></a>PBR与路由策略区别</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/5.png"></p>
+<h2 id="PBR的分类"><a href="#PBR的分类" class="headerlink" title="PBR的分类"></a>PBR的分类</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/6.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/7.png"></p>
+<h2 id="PBR典型应用场景-1"><a href="#PBR典型应用场景-1" class="headerlink" title="PBR典型应用场景 (1)"></a>PBR典型应用场景 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/8.png"></p>
+<p>•内网防火墙旁挂部署在核心交换机，为防护内网在核心交换机的三层接口上部署PBR，将来自外部网络的流量牵引到防火墙上进行安全检查，检查完的流量再发送回核心交换机，由核心交换机依据路由表转发到内网。</p>
+<p>•将流量牵引到别的设备进行安全检查等类似的行为我们称之为“引流”，PBR是一种常见的引流工具。</p>
+<h2 id="PBR典型应用场景-2"><a href="#PBR典型应用场景-2" class="headerlink" title="PBR典型应用场景 (2)"></a>PBR典型应用场景 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/9.png"></p>
+<p>当企业存在多个网络出口时，若想指定部分网段访问Internet时的网络出口，可以使用PBR：在出口设备的内网接口配置PBR，匹配来自内网的流量，为其指定不同的下一跳公网地址。</p>
+<h2 id="配置介绍-1"><a href="#配置介绍-1" class="headerlink" title="配置介绍 (1)"></a>配置介绍 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/10.png"></p>
+<blockquote>
+<p>•当ACL的rule配置为permit时，设备会对匹配该规则的报文执行本地策略路由的动作：</p>
+<ul>
+<li><p>本地策略路由中策略点为permit时对满足匹配条件的报文进行策略路由；</p>
+</li>
+<li><p>本地策略路由中策略点为deny时对满足匹配条件的报文不进行策略路由，即根据目的地址查找路由表转发报文。</p>
+</li>
+</ul>
+<p>•当ACL配置了rule，如果报文未匹配上任何规则，则根据目的地址查找路由表转发报文。</p>
+<p>•当ACL的rule配置为deny或ACL未配置规则时，应用该ACL的本地策略路由不生效，即根据目的地址查找路由表转发报文。</p>
+</blockquote>
+<h2 id="配置介绍-2"><a href="#配置介绍-2" class="headerlink" title="配置介绍 (2)"></a>配置介绍 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png"></p>
+<blockquote>
+<p>•除了该方式之外，接口策略路由还可以使用MQC的方式进行配置。</p>
+</blockquote>
+<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/12.png"></p>
+<p>需求：</p>
+<p>▫内网存在两个网段，网段1：10.1.1.0/24，网段2：10.1.2.0/24，在RTA的GE0/0/0接口部署PBR，实现网段1访问Internet通过ISP1、网段2访问Internet通过ISP2。</p>
+<p>▫RTA上旁挂了一台服务器，要求在RTA上部署的策略路由不影响内网用户访问该服务器。</p>
+<h2 id="配置案例-2"><a href="#配置案例-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/13.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/14.png"></p>
+<h2 id="配置案例-3"><a href="#配置案例-3" class="headerlink" title="配置案例 (3)"></a>配置案例 (3)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/15.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/16.png"></p>
+<h1 id="2-MQC"><a href="#2-MQC" class="headerlink" title="2.MQC"></a>2.MQC</h1><h2 id="MQC介绍-1"><a href="#MQC介绍-1" class="headerlink" title="MQC介绍 (1)"></a>MQC介绍 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/17.png"></p>
+<p>•MQC（Modular QoS Command-Line Interface，模块化QoS命令行）是指通过将具有某类共同特征的数据流划分为一类，并为同一类数据流提供相同的服务，也可以对不同类的数据流提供不同的服务。</p>
+<p>•MQC包含三个要素：流分类（traffic classifier）、流行为（traffic behavior）和流策略（traffic policy）。</p>
+<p>•MQC的流行为支持重定向报文，因此可以使用MQC实现IP单播策略路由。</p>
+<h2 id="MQC介绍-2"><a href="#MQC介绍-2" class="headerlink" title="MQC介绍 (2)"></a>MQC介绍 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/18.png"></p>
+<p>•流策略：将流分类和流行为绑定，对分类后的报文执行对应流行为中定义的动作。</p>
+<p>•一个流策略可以绑定多个流分类和流行为。</p>
+<h2 id="MQC-流分类"><a href="#MQC-流分类" class="headerlink" title="MQC - 流分类"></a>MQC - 流分类</h2><p>流分类：定义一组流量匹配规则，以对报文进行分类。流分类支持的匹配项如下所示。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/19.png"></p>
+<blockquote>
+<p>•流分类中各规则之间的关系分为：and或or，缺省情况下的关系为or。</p>
+<ul>
+<li><p>and：当流分类中包含ACL规则时，报文必须匹配其中一条ACL规则以及所有非ACL规则；当流分类中没有ACL规则时，报文必须匹配所有非ACL规则。</p>
+</li>
+<li><p>or：报文只要匹配了流分类中的一个规则，设备就认为报文匹配中该流分类。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="MQC-流行为"><a href="#MQC-流行为" class="headerlink" title="MQC - 流行为"></a>MQC - 流行为</h2><p>流行为：用来定义执行的动作，支持报文过滤、重标记优先级、重定向、流量统计等动作。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/20.png"></p>
+<h2 id="MQC-流策略"><a href="#MQC-流策略" class="headerlink" title="MQC - 流策略"></a>MQC - 流策略</h2><p>•流策略：流策略支持在接口上调用。</p>
+<p>•流策略存在方向(inbound、outbound)的概念，策略中的流行为匹配入、出方向的报文，对匹配中的报文执行相应的流动作。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/21.png"></p>
+<blockquote>
+<p>•流策略不同于PBR，PBR只能调用在三层接口，而流策略支持调用在二层接口。</p>
+</blockquote>
+<h2 id="使用MQC实现策略路由"><a href="#使用MQC实现策略路由" class="headerlink" title="使用MQC实现策略路由"></a>使用MQC实现策略路由</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/22.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/23.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/24.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/25.png"></p>
+<h1 id="3-流量过滤"><a href="#3-流量过滤" class="headerlink" title="3.流量过滤"></a>3.流量过滤</h1><h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>为提高网络安全性，管理人员需要控制进入网络的流量，将不信任的报文丢弃在网络边界。所谓的不信任报文是指对用户来说存在安全隐患或者不愿意接收的报文。同时保证数据访问安全性，企业网络中经常会要求一些部门之间不能相互访问。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/26.png"></p>
+<h2 id="流量过滤工具"><a href="#流量过滤工具" class="headerlink" title="流量过滤工具"></a>流量过滤工具</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/27.png"></p>
+<h2 id="Traffic-Filter部署位置"><a href="#Traffic-Filter部署位置" class="headerlink" title="Traffic-Filter部署位置"></a>Traffic-Filter部署位置</h2><p>使用Traffic-Filter过滤流量可以灵活地选择部署位置，在流量进入设备或者离开设备的接口上执行过滤动作，双向访问的业务禁止其中一个方向即可实现阻断业务的需求。</p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/28.png"></p>
+<blockquote>
+<p>•Traffic-Filter部署的位置不同，其调用的ACL内容也不相同。</p>
+</blockquote>
+<h2 id="使用Traffic-Filter过滤流量"><a href="#使用Traffic-Filter过滤流量" class="headerlink" title="使用Traffic-Filter过滤流量"></a>使用Traffic-Filter过滤流量</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/29.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/30.png"></p>
+<h2 id="使用MQC过滤流量-1"><a href="#使用MQC过滤流量-1" class="headerlink" title="使用MQC过滤流量 (1)"></a>使用MQC过滤流量 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/31.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/32.png"></p>
+<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/33.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）本地策略路由与接口策略路由的区别在于？</p>
+<p><strong>本地策略路由对本地始发的流量生效，而接口策略路由只会对接口入方向的流量生效。</strong></p>
+<p>2.（简答题）使用MQC方式过滤流量时，流分类中匹配的ACL与Traffic-Filter调用的ACL有何区别？</p>
+<p><strong>MQC调用的ACL里permit、deny只代表是否匹配流量，不代表是否放通、拒绝流量，而Traffic-Filter调用的ACL里permit、deny代表放通、拒绝流量。</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本课程介绍了PBR的应用场景、PBR的分类以及如何配置本地策略路由、接口策略路由。</p>
+<p>•MQC支持多种灵活的流量匹配方式以及执行动作，同时还可以在多种视图下调用，使用MQC可以完成策略路由、流量过滤的功能。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E8%B7%AF%E7%94%B1%E7%AD%96%E7%95%A5%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A7%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3614,372 +3838,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/" itemprop="url">IP-IP路由基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-06T17:14:01+08:00">
-                2021-05-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫识别IP路由表和FIB表</p>
-<p>▫分析路由转发流程</p>
-<p>▫描述路由引入的原理</p>
-<p>▫描述路由引入的使用场景</p>
-<h1 id="IP路由基础"><a href="#IP路由基础" class="headerlink" title="IP路由基础"></a><strong>IP路由基础</strong></h1><h2 id="IP路由概述"><a href="#IP路由概述" class="headerlink" title="IP路由概述"></a><strong>IP路由概述</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/1.png"></p>
-<p>当路由器收到一个IP报文时，路由器根据该IP报文的目的地址匹配路由条目（或路由表项）。</p>
-<p>▫若有匹配的路由条目，则依据该条目中的出接口或下一跳等信息进行报文转发；</p>
-<p>▫若无匹配的路由条目，则路由器没有相关路由信息用于指导报文转发，此时会丢弃该报文。</p>
-<h2 id="RIB与FIB"><a href="#RIB与FIB" class="headerlink" title="RIB与FIB"></a><strong>RIB与FIB</strong></h2><p>具有路由功能的网络设备都维护两种重要的数据表：一是路由表RIB（Routing Information Base，路由信息库）；二是转发表FIB。</p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/2.png"></p>
-<blockquote>
-<p>•路由表：</p>
-<p>​    ▫可以将路由表视为位于路由器的控制平面，实际上路由表并不直接指导数据转发。路由器在执行路由查询时，并不是在路由表中进行报文目的地址的查询，真正指导数据转发的是FIB表，路由器将路由表中的最优路由下载到FIB表，此后如果路由表中的相关表项发生变化，FIB表也将立即同步。</p>
-<p>​    ▫由于两张表的一致性，且路由表阅读起来更直观，因此在绝大多数场合，在阐述路由器数据转发过程时，会用“路由表”这个说法，实际上，路由器查询的是FIB表，位于控制层面的路由表只是提供路由信息。</p>
-<p>•FIB表：</p>
-<p>​    ▫FIB表位于路由器的数据平面，亦被称为转发表项，每条转发表项都指定要到达某个目的地所需通过的出接口及下一跳IP地址等信息。</p>
-<p>•注意：</p>
-<p>​    ▫具有路由功能的华为数通产品包括路由器、三层交换机等，本课程以路由器为例进行讲解。</p>
-<p>​    ▫OSPF（Open Shortest Path First，开放式最短路径优先）和IS-IS（Intermediate System to Intermediate System，中间系统到中间系统），均基于链路状态信息，使用最短路径优先算法进行路由计算。OSPF及IS-IS的详细内容，将在后续课程介绍。</p>
-<p>​    ▫路由进程：路由器支持OSPF和IS-IS多进程，可以根据业务类型划分不同的进程，不同的进程之间相互独立。进程号是本地概念，不影响与其它路由器之间的报文交换。因此，不同的路由器之间，即使进程号不同也可以进行报文交换。</p>
-</blockquote>
-<h2 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a><strong>路由表</strong></h2><p>每个路由器都有路由表，而路由表又分为本地核心路由表和协议路由表。</p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/3.png"></p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/4.png"></p>
-<blockquote>
-<p>•路由表中的关键字段：</p>
-<ul>
-<li><p>Destination：表示此路由的目的地址。用来标识IP包的目的地址或目的网络。</p>
-</li>
-<li><p>Mask：表示此目的地址的子网掩码长度。与目的地址一起来标识目的主机或路由器所在的网段的地址。</p>
-</li>
-<li><p>Proto（Protocol）：表示学习此路由的路由协议。</p>
-</li>
-<li><p>Pre（Preference）：表示此路由的路由协议优先级。</p>
-<ul>
-<li>路由器分别定义了外部优先级和内部优先级。外部优先级是指用户可以手工为各路由协议配置的优先级，内部优先级则不能被用户手工修改。</li>
-<li>选择路由时先比较路由的外部优先级，当不同的路由协议配置了相同的优先级后，系统会通过内部优先级决定哪个路由协议发现的路由将成为最优路由。</li>
-</ul>
-</li>
-<li><p>Cost：路由开销。</p>
-</li>
-<li><p>NextHop：表示转发到此目的网络的下一跳。指明数据转发的下一个设备。</p>
-</li>
-<li><p>Interface：表示转发到此目的网络的出接口。指明数据将从本地路由器哪个接口转发出去。</p>
-</li>
-<li><p>Preference用于不同路由协议间路由优先级的比较，Cost用于同一种路由协议内部不同路由的优先级的比较。</p>
-</li>
-<li><p>注意：正文内的路由表为截取版，非完整路由表。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="IP路由查找的最长匹配原则"><a href="#IP路由查找的最长匹配原则" class="headerlink" title="IP路由查找的最长匹配原则"></a><strong>IP路由查找的最长匹配原则</strong></h2><p>•路由器查找FIB表时，将报文的目的IP地址和FIB表中各表项的掩码进行按位“逻辑与”，得到的地址符合FIB表中的网络地址则匹配。</p>
-<p>•最终选择一个掩码最长的FIB表项转发报文。</p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/5.png"></p>
-<blockquote>
-<p>•FIB表中每条转发项都指明到达某网段或某主机的报文应通过路由器的哪个物理接口或逻辑接口发送，然后就可到达该路径的下一个路由器，或者不再经过别的路由器而传送到直接相连的网络中的目的主机。</p>
-<p>•FIB表信息查看命令：<strong>display fib</strong> [ <em>slot-id</em> ]</p>
-<ul>
-<li><em>slot-id</em>：显示指定槽位号的FIB表信息。整数形式，取值范围请根据设备实际配置选取。</li>
-</ul>
-<p>•FIB表中的字段说明：</p>
-<ul>
-<li><p>Total number of Routes：路由表总数。</p>
-</li>
-<li><p>Destination/Mask：目的地址/掩码长度。</p>
-</li>
-<li><p>Nexthop：下一跳。</p>
-</li>
-<li><p>Flag：当前标志，G、H、U、S、D、B的组合。</p>
-<ul>
-<li>G（Gateway）：网关路由，表示下一跳是网关。</li>
-<li>H（Host）：主机路由，表示该路由为主机路由。</li>
-<li>U（Up）：可用路由，表示该路由状态是Up。</li>
-<li>S（Static）：静态路由。</li>
-<li>D（Dynamic）：动态路由。</li>
-<li>B（Black Hole）：黑洞路由，表示下一跳是空接口。</li>
-</ul>
-</li>
-<li><p>TimeStamp：时间戳，表示该表项存在的时间，单位是秒。</p>
-</li>
-<li><p>Interface：到目的地址的出接口。</p>
-</li>
-<li><p>TunnelID：表示转发表项索引。该值不为0时，表示匹配该项的报文通过隧道转发（如：MPLS隧道转发）。该值为0时，表示报文不通过隧道转发。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="路由的来源"><a href="#路由的来源" class="headerlink" title="路由的来源"></a><strong>路由的来源</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/6.png"></p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/7.png"></p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/8.png"></p>
-<blockquote>
-<p>•直连路由：直连接口所在网段的路由，由设备自动生成。</p>
-<p>•静态路由：由网络管理员手工配置的路由条目。</p>
-<p>•动态路由：路由器通过动态路由协议（如OSPF、IS-IS、BGP等）学习到的路由。</p>
-<p>​    ▫BGP（Border Gateway Protocol，边界网关协议）是一种实现AS（Autonomous System，自治系统）之间的路由可达，并选择最佳路由的距离矢量路由协议。</p>
-<p>​    ▫AS是指在一个实体管辖下的拥有相同选路策略的IP网络。</p>
-</blockquote>
-<h2 id="动态路由协议"><a href="#动态路由协议" class="headerlink" title="动态路由协议"></a><strong>动态路由协议</strong></h2><p>动态路由协议根据作用范围不同，可分为：</p>
-<p>▫内部网关协议IGP（Interior Gateway Protocol）：在一个自治系统内部运行。常见的IGP协议包括OSPF和IS-IS。</p>
-<p>▫外部网关协议EGP（Exterior Gateway Protocol）：运行于不同自治系统之间。BGP是目前最常用的EGP协议。</p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/9.png"></p>
-<h2 id="路由迭代"><a href="#路由迭代" class="headerlink" title="路由迭代"></a><strong>路由迭代</strong></h2><p>路由必须有直连的下一跳才能够指导转发，静态路由或BGP路由的下一跳可能不是直连的邻居，因此需要计算出一个直连的下一跳，这个过程就叫做路由迭代。</p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/10.png"></p>
-<h2 id="数据转发流程"><a href="#数据转发流程" class="headerlink" title="数据转发流程"></a><strong>数据转发流程</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/11.png"></p>
-<blockquote>
-<p>PC1发送数据包到PC2的流程如下：</p>
-<p>1.PC1将报文发往网关设备R1。</p>
-<p>2.R1查找路由表项，确定转发的下一跳、出接口，之后将报文转发给R2。</p>
-<p>3.R2通过查找路由表项转发给R3。</p>
-<p>4.R3收到后查找路由表项，发现IP报文的目的IP地址属于本地接口所在网段，则直接本地转发，最终该报文被发往目的主机PC2。</p>
-</blockquote>
-<h1 id="IP路由高级应用"><a href="#IP路由高级应用" class="headerlink" title="IP路由高级应用"></a><strong>IP路由高级应用</strong></h1><h2 id="IP路由高级应用场景分析-1"><a href="#IP路由高级应用场景分析-1" class="headerlink" title="IP路由高级应用场景分析 (1)"></a><strong>IP路由高级应用场景分析</strong> <strong>(1)</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/12.png"></p>
-<p>场景描述：</p>
-<p>▫假设A公司和B公司各有自己的网络，这两个网络被独立管理及运维，A公司网络使用的路由协议为OSPF，B公司网络使用的路由协议为IS-IS。</p>
-<p>▫现在两家公司合并成一家公司，导致原有的两张网络不得不进行整合，为了使合并后的新公司业务流量能够正常在整合后的网络上交互，最重要的就是实现路由互通。</p>
-<blockquote>
-<p>•OSPF与IS-IS是两种不同的动态路由协议，路由信息无法在路由协议之间直接交互。</p>
-<p>•如图所示，A公司部署OSPF，边界设备为R1和R2；B公司部署IS-IS，边界设备为R3和R4。边界互联部分可以部署OSPF或IS-IS，例如：可以将R1与R3互联网段、R2与R4互联网段部署进A公司的OSPF，此时边界设备仅为R3和R4。</p>
-</blockquote>
-<h2 id="IP路由高级应用场景分析-2"><a href="#IP路由高级应用场景分析-2" class="headerlink" title="IP路由高级应用场景分析 (2)"></a>IP路由高级应用场景分析 (2)</h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/13.png"></p>
-<p>场景描述：</p>
-<p>▫在大型企业网络中，网络规模十分庞大，选用单一的路由协议无法满足网络的需求，因此多种路由协议共存的情况十分常见。</p>
-<p>▫或者出于业务逻辑或行政管理的考虑，会在不同的网络结构中设计和部署不同的路由协议，使路由的层次结构更加清晰可控。</p>
-<p>▫在这样的网络环境下，也需要实现全网路由互通。</p>
-<h2 id="路由引入的基本概念"><a href="#路由引入的基本概念" class="headerlink" title="路由引入的基本概念"></a><strong>路由引入的基本概念</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/14.png"></p>
-<p>路由引入指的是将路由信息从一种路由协议发布到另一种路由协议的操作。</p>
-<p>▫通过路由引入，可以实现路由信息在不同路由协议间传递。</p>
-<p>▫执行路由引入时，还可以部署路由控制，从而实现对业务流量的灵活把控。</p>
-<blockquote>
-<p>•如上图所示，OSPF和IS-IS网络中存在不同的网段，只有R1和R2同时知道所有路由条目。</p>
-<p>•思考：如何让全部设备都能获取到所有的路由呢？</p>
-</blockquote>
-<h2 id="路由引入的方向性"><a href="#路由引入的方向性" class="headerlink" title="路由引入的方向性"></a><strong>路由引入的方向性</strong></h2><p>•路由引入是具有方向性的，将路由信息从路由协议A引入到路由协议B（A-to-B），则路由协议B可获知A中的路由信息，但是此时，A还并不知晓B路由协议中的路由信息，除非配置B-to-A的路由引入。</p>
-<p>•路由引入时需要注意以下几点：</p>
-<p>​    ▫路由优先级</p>
-<p>​    ▫路由回灌</p>
-<p>​    ▫路由度量值</p>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/15.png"></p>
-<h2 id="路由引入：路由优先级"><a href="#路由引入：路由优先级" class="headerlink" title="路由引入：路由优先级"></a><strong>路由引入：路由优先级</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/16.png"></p>
-<p>场景描述：</p>
-<ol>
-<li><p>R1将直连路由10.1.1.0/24引入到OSPF中。</p>
-</li>
-<li><p>R3通过OSPF学习到10.1.1.0/24网段路由（OSPF外部路由，路由优先级为150）。</p>
-</li>
-<li><p>R2在IS-IS进程中引入OSPF路由。</p>
-</li>
-<li><p>R3也会通过IS-IS学习到10.1.1.0/24网段路由（路由优先级为15）。</p>
-</li>
-<li><p>对R3而言，IS-IS路由优于OSPF外部路由，因此优选来自R4的IS-IS路由。</p>
-</li>
-</ol>
-<p>后续R3访问10.1.1.0/24网段的路径为：R3-&gt;R4-&gt;R2-&gt;R1，这是次优路径。</p>
-<blockquote>
-<p>•华为定义的路由优先级：</p>
-<p>▫Direct：0</p>
-<p>▫OSPF：10</p>
-<p>▫IS-IS：15</p>
-<p>▫Static：60</p>
-<p>▫OSPF ASE：150</p>
-<p>▫OSPF NSSA：150</p>
-<p>▫IBGP：255</p>
-<p>▫EBGP：255</p>
-<p>•注意：不同的厂商路由优先级的协定可能不同。</p>
-</blockquote>
-<h2 id="路由引入：路由回灌"><a href="#路由引入：路由回灌" class="headerlink" title="路由引入：路由回灌"></a><strong>路由引入：路由回灌</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/17.png"></p>
-<p>场景描述：</p>
-<ol>
-<li><p>R1将直连路由10.1.1.0/24引入到OSPF中。</p>
-</li>
-<li><p>10.1.1.0/24网段路由全OSPF域内通告。</p>
-</li>
-<li><p>R2在IS-IS进程中引入OSPF路由。</p>
-</li>
-<li><p>10.1.1.0/24网段路由全IS-IS域内通告。</p>
-</li>
-<li><p>R3在OSPF进程中引入IS-IS路由。</p>
-</li>
-<li><p>10.1.1.0/24网段路由再次被通告进OSPF域内，形成路由回灌。</p>
-</li>
-</ol>
-<h2 id="路由引入：路由度量值"><a href="#路由引入：路由度量值" class="headerlink" title="路由引入：路由度量值"></a><strong>路由引入：路由度量值</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/18.png"></p>
-<p>场景描述：</p>
-<ol>
-<li><p>在IS-IS中引入OSPF路由。</p>
-</li>
-<li><p>在OSPF中引入IS-IS路由。</p>
-</li>
-</ol>
-<p>不同的路由协议对路由度量值的定义不同，那么在路由协议之间进行路由引入时，被引入的路由的度量值该如何定义？定义成多少？</p>
-<h2 id="路由引入场景"><a href="#路由引入场景" class="headerlink" title="路由引入场景"></a><strong>路由引入场景</strong></h2><p>路由引入主要涉及以下几种场景：</p>
-<ol>
-<li><p>动态路由协议之间的路由引入</p>
-</li>
-<li><p>引入直连路由到动态路由协议</p>
-</li>
-<li><p>引入静态路由到动态路由协议</p>
-</li>
-</ol>
-<p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/19.png"></p>
-<h2 id="路由引入的基础配置命令"><a href="#路由引入的基础配置命令" class="headerlink" title="路由引入的基础配置命令"></a><strong>路由引入的基础配置命令</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/20.png"></p>
-<blockquote>
-<p>•说明：当OSPF网络中的设备需要访问运行其他协议的网络中的设备时，需要将其他协议的路由引入到OSPF网络中。</p>
-</blockquote>
-<h2 id="案例1：引入直连路由到OSPF"><a href="#案例1：引入直连路由到OSPF" class="headerlink" title="案例1：引入直连路由到OSPF"></a><strong>案例1：引入直连路由到OSPF</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/21.png"></p>
-<p>•可以通过使用<strong>import-route direct</strong>命令，将路由表中所有直连路由引入到动态路由协议。</p>
-<p>•引入后的路由会作为OSPF外部路由，在整个OSPF网络内通告。</p>
-<blockquote>
-<p>•在设备上部署动态路由协议，如果希望该设备的直连接口路由能够被发布到动态路由协议中，则需要激活该端口相应的动态路由协议。除此之外，也可以通过将直连路由引入到动态路由协议实现该目的。</p>
-<p>•如图所示：</p>
-<ul>
-<li>R1、R2及R3运行OSPF，R1存在一个直连网段192.168.11.0/24，为了让R2和R3生成192.168.11.0/24的路由，可以在R1上将直连路由引入到OSPF。</li>
-</ul>
-<p>•说明：在OSPF网络中，若路由表的协议字段显示为O_ASE，表明该路由为OSPF的外部路由。</p>
-</blockquote>
-<h2 id="案例2：引入静态路由到OSPF"><a href="#案例2：引入静态路由到OSPF" class="headerlink" title="案例2：引入静态路由到OSPF"></a><strong>案例2：引入静态路由到OSPF</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/22.png"></p>
-<p>•可以通过使用<strong>import-route</strong> <strong>static</strong>命令，将路由表中所有静态路由引入到动态路由协议。</p>
-<p>•引入后的路由会作为OSPF外部路由，在整个OSPF网络内通告。</p>
-<blockquote>
-<p>•对于动态路由协议而言，静态路由被视为域外的路由信息，这些路由并不被动态路由协议直接感知。如果希望动态路由协议域内所有设备都能学习到该静态路由，则需要将静态路由引入到动态路由协议中。</p>
-<p>•如图所示：</p>
-<ul>
-<li>R2及R3运行了OSPF，而R1不支持OSPF。在R2上添加静态路由指向192.168.11.0/24网段，并且在R2上将静态路由引入到OSPF，从而使R2和R3均能生成192.168.11.0/24的路由。</li>
-</ul>
-</blockquote>
-<h2 id="案例3：将IS-IS路由引入到OSPF"><a href="#案例3：将IS-IS路由引入到OSPF" class="headerlink" title="案例3：将IS-IS路由引入到OSPF"></a><strong>案例3：将IS-IS路由引入到OSPF</strong></h2><p><img src="/2021/05/06/IP%E8%B7%AF%E7%94%B1%E5%9F%BA%E7%A1%80/23.png"></p>
-<p>•可以通过使用<strong>import-route</strong> <strong>isis</strong> <strong>1</strong>命令，将路由表中所有IS-IS路由引入到动态路由协议。</p>
-<p>•引入后的路由会作为OSPF外部路由，在整个OSPF网络内通告。</p>
-<blockquote>
-<p>•在两个动态路由协议域的边界执行路由引入操作，是最常见的场景之一，就是将路由信息从一个动态路由协议引入另一个动态路由协议中。</p>
-<p>•如图所示：</p>
-<ul>
-<li>R1及R2运行了IS-IS，R2及R3运行了OSPF，两个协议维护的路由信息是完全隔离的。因此，此时R1有IS-IS网络内全部路由，但无法访问到OSPF网络；R3有OSPF网络内全部路由，但无法访问到IS-IS网络。在R2上执行路由引入，将IS-IS路由引入到OSPF中。</li>
-</ul>
-</blockquote>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.(单选题) 在某路由器的FIB表中存在以下4条路由转发表项，那么该路由器对于目的IP地址为10.0.1.1的IP报文将根据哪条路由进行转发？（  ）</p>
-<p>A.0.0.0.0/0</p>
-<p>B.10.0.0.0.0/16</p>
-<p><strong>C.10.0.1.0/24</strong></p>
-<p>D.10.0.2.0/24</p>
-<p>2.(多选题) 以下关于路由引入的说法，<strong>错误</strong>的有（  ）。</p>
-<p>A.在某路由器的OSPF进程中，执行<strong>import-route direct</strong>命令，则该路由器会把路由表中的所有直连路由都引入OSPF</p>
-<p>B.在某路由器的OSPF进程中，执行<strong>import-route</strong> <strong>static</strong>命令，则该路由器会把路由表中的所有静态路由都引入OSPF</p>
-<p><strong>C.在某路由器上，将路由表中来源于X路由协议的路由引入Y路由协议，需要在X路由协议视图下执行</strong>import-route<strong>命令</strong></p>
-<p><strong>D.在某路由器上执行了</strong>import-route<strong>命令并成功将其GE0/0/1的直连路由引入OSPF，该接口也就激活了OSPF，并开始周期性地发送Hello报文</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•由于不同路由协议工作原理不同，因此到达同一目的网段可能会生成多个路由条目，路由器根据路由协议的优先级以及路由开销选择最优路由，并且把最优路由放入FIB表。路由器根据FIB表执行数据转发。</p>
-<p>•当网络规模较大且使用多种路由协议时，路由协议间通过路由引入的方式实现路由的相互通告。由于路由引入可能会引入大量路由，并导致部分性能较低的设备无法承受，因此在进行路由引入时需要进行路由控制来实现路由的按需分发。</p>
-<p>•本课程所列举的OSPF路由协议，IS-IS路由协议以及路由控制将在后续课程中详细介绍。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4034,7 +3892,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4047,7 +3905,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -241,6 +241,293 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/" itemprop="url">IP-网络设备安全特性</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:03:25+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•由于IP网络规模庞大，导致网络设备数量众多、通信协议层出不穷。同时，IP网络的管理也变得极其复杂，安全性和业务灵活性以及安全性和管理维护便利性之间存在着矛盾。不同技术能力、管理水平的管理人员，对这些矛盾的处理能力也参差不齐。管理员往往追求业务可用性，而忽略了安全防御能力，导致必要的安全措施没有得到妥善的配置，设备本身的安全能力无法发挥。</p>
+<p>•本课程主要介绍常见的网络设备安全加固策略，对一些常见的安全配置进行了举例说明。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述常见的设备安全加固策略。</p>
+<p>▫实现Stelnet的配置。</p>
+<p>▫实现本机防攻击的配置。</p>
+<h1 id="1-常见设备安全加固策略"><a href="#1-常见设备安全加固策略" class="headerlink" title="1.常见设备安全加固策略"></a>1.<strong>常见设备安全加固策略</strong></h1><h2 id="为什么需要网络设备安全"><a href="#为什么需要网络设备安全" class="headerlink" title="为什么需要网络设备安全"></a>为什么需要网络设备安全</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/1.png"></p>
+<h2 id="常见设备安全加固策略"><a href="#常见设备安全加固策略" class="headerlink" title="常见设备安全加固策略"></a>常见设备安全加固策略</h2><p>常见的设备安全加固策略主要可以从以下方面部署：</p>
+<p>​    ▫关闭不使用的业务和协议端口</p>
+<p>​    ▫废弃不安全的访问通道</p>
+<p>​    ▫基于可信路径的访问控制</p>
+<p>​    ▫本机防攻击</p>
+<h2 id="关闭不使用的业务和协议端口"><a href="#关闭不使用的业务和协议端口" class="headerlink" title="关闭不使用的业务和协议端口"></a>关闭不使用的业务和协议端口</h2><p>在分析业务需求的基础上，按照最小授权原则，关闭不使用的业务和协议端口。</p>
+<ul>
+<li><p>不使用的物理端口，应该默认配置为关闭，即使插上网线也不能通信</p>
+</li>
+<li><p>不使用的协议端口，应该默认配置为关闭，不对外提供访问。如常见的telnet、FTP、HTTP等端口。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/2.png"></p>
+<h2 id="废弃不安全的访问通道"><a href="#废弃不安全的访问通道" class="headerlink" title="废弃不安全的访问通道"></a>废弃不安全的访问通道</h2><p>在业务需求分析的基础上，优先满足业务的访问需求。在同一个访问需求有多种访问通道服务的情况下，废弃不安全的访问通道，而选择安全的访问通道。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/3.png"></p>
+<blockquote>
+<p>•通过命令行、WEB、网管等方式登录设备时，建议采用安全加密的通道SSH、HTTPS、SNMPv3。</p>
+<p>•设备之间，以及设备和终端之间数据传输，也建议采用加密的数据传输协议SFTP。</p>
+</blockquote>
+<h2 id="安全的数据访问通道"><a href="#安全的数据访问通道" class="headerlink" title="安全的数据访问通道"></a>安全的数据访问通道</h2><p>•为保证设备安全，尽量选择安全的访问通道。</p>
+<p>•设备数据传输安全常见场景及采用协议：</p>
+<p>▫用户远程登录：</p>
+<ul>
+<li><p>Telnet：采用TCP协议进行明文传输。</p>
+</li>
+<li><p>STelnet：基于SSH协议，提供安全的信息保障和强大的认证功能。</p>
+</li>
+</ul>
+<p>▫设备文件操作：</p>
+<ul>
+<li>FTP：支持文件传输以及文件目录的操作，具有授权和认证功能，明文传输数据。</li>
+<li>TFTP：只支持文件传输，不支持授权和认证，明文传输数据。</li>
+<li>SFTP：支持文件传输及文件目录的操作，数据进行了严格加密和完整性保护。</li>
+</ul>
+<h2 id="SSH概述"><a href="#SSH概述" class="headerlink" title="SSH概述"></a>SSH概述</h2><p>•SSH(Secure Shell，安全外壳协议)，在非安全网络上提供了安全的远程登录、安全文件传输以及TCP/IP安全隧道。不仅在登陆过程中对密码进行加密传送，而且对登陆后执行的命令的数据也进行加密。</p>
+<p>•合法用户通过客户端登录，完成用户名以及对应的密码验证后，客户端会尝试和服务端建立会话，每个会话是一个独立的逻辑通道，可以提供给不同的上层应用使用。</p>
+<p>•STelnet和SFTP各自利用了其中的一个逻辑通道，通过SSH对数据进行加密，从而实现数据的安全传输。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/4.png"></p>
+<blockquote>
+<p>•SSH协议由IETF制订，最新版本是V2.0，1.3和1.5版本存在安全隐患，已经逐步被淘汰。</p>
+<p>•SSH支持服务端和客户端的双向认证，提供保密性和完整性等安全服务。</p>
+</blockquote>
+<h2 id="SSH协议结构"><a href="#SSH协议结构" class="headerlink" title="SSH协议结构"></a>SSH协议结构</h2><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/5.png"></p>
+<p>SSH协议框架中最主要的部分是三个协议：传输层协议、用户认证协议和连接协议。</p>
+<ul>
+<li><p>传输层协议：提供版本协商，加密算法协商，密钥交换，服务端认证以及信息完整性支持。</p>
+</li>
+<li><p>用户认证协议：为服务器提供客户端的身份鉴别。</p>
+</li>
+<li><p>连接协议：将加密的信息隧道复用为多个逻辑通道，提供给高层的应用协议（STelnet、SFTP）使用；各种高层应用协议可以相对地独立于SSH基本体系之外，并依靠这个基本框架，通过连接协议使用SSH的安全机制。</p>
+</li>
+</ul>
+<blockquote>
+<p>•SSH中用到的算法主要有几类：</p>
+<ul>
+<li><p>用于数据完整性保护的MAC算法，如hmac-md5、hmac-md5-96等；</p>
+</li>
+<li><p>用于数据信息加密的算法，如3des-cbc、aes128-cbc、des-cbc等；</p>
+</li>
+<li><p>用于产生会话密钥的密钥交换算法，如diffle-hellman-group-exchange-sha1等；</p>
+</li>
+<li><p>用于进行数字签名和认证的主机公钥算法，如RSA、DSA等；</p>
+</li>
+</ul>
+<p>•RSA（Rivest-Shamir-Adleman）加密算法，一种非对称加密算法。RSA是1977年由罗纳德·李维斯特（Ron Rivest）、阿迪·萨莫尔（Adi Shamir）和伦纳德·阿德曼（Leonard Adleman）一起提出的。RSA就是他们三人姓氏开头字母拼在一起组成的。</p>
+<p>•DES（Data Encryption Standard）数据加密标准。DES使用一个56比特的密钥。</p>
+<p>•3DES（Triple Data Encryption Standard），是DES的一个更安全的变形。它使用3条56位的密钥对数据进行三次加密。</p>
+<p>•DSA（Digital Signature Algorithm）数字签名算法。</p>
+<p>•对称密钥技术：</p>
+<ul>
+<li>对称密钥加密又叫专用密钥加密，即发送和接收数据的双方必使用相同的密钥对明文进行加密和解密运算。对称密钥加密算法主要包括：DES、3DES等。</li>
+</ul>
+<p>•公开密钥技术：</p>
+<ul>
+<li>公钥加密算法也称非对称密钥算法，用两对密钥：一个公共密钥和一个专用密钥。用户要保障专用密钥的安全；公共密钥则可以发布出去。公共密钥与专用密钥是有紧密关系的，用公共密钥加密的信息只能用专用密钥解密，反之亦然。由于公钥算法不需要联机密钥服务器，密钥分配协议简单，所以极大简化了密钥管理。除加密功能外，公钥系统还可以提供数字签名。</li>
+</ul>
+<p>•机密性（Confidentiality）：指信息在存储、传输、使用的过程中，不会被泄漏给非授权用户或实体；</p>
+<p>•完整性（Integrity）：指信息在存储、传输、使用的过程中，不会被非授权用户篡改或防止授权用户对信息进行不恰当的篡改；</p>
+<p>•可用性（Availability）：指确保授权用户或实体对信息资源的正常使用不会被异常拒绝，允许其可靠而及时地访问信息资源。</p>
+</blockquote>
+<h2 id="基于可信路径的访问控制"><a href="#基于可信路径的访问控制" class="headerlink" title="基于可信路径的访问控制"></a>基于可信路径的访问控制</h2><p>•可以在设备上部署基于可信路径的访问控制策略，以提升网络的安全性。</p>
+<p>•部署URPF，可以判定某个报文的源地址是否合法，如果该报文的路径与URPF学习的路径不符，丢弃该报文，用URPF可以有效防范IP地址欺骗。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/6.png"></p>
+<blockquote>
+<p>•IP网络的开放性决定了，只要路由可达，任何人都可以对目标主机进行访问或者攻击。</p>
+<p>•对于某一个主机而言，访问它的客户端的报文历经的路径通常是固定的，尤其是在网络边缘，这种路径的固定特性表现得更加明显。</p>
+<p>•URPF（Unicast Reverse Path Forwarding，单播逆向路径转发）分为严格模式和松散模式以及允许匹配缺省路由的方式。其原理是当设备转发IP报文时，检查数据报文的源IP地址是否合法，检查的原理是根据数据包的源IP地址查路由表。</p>
+<ul>
+<li>对于严格模式：如果报文能匹配明细路由，并且入接口跟匹配路由的出接口一致，则允许报文上送，否则丢弃报文。</li>
+<li>对于松散模式：如果报文匹配上明细路由，则运行报文上送，否则丢弃报文，不检查接口是否匹配。默认情况下，会认为缺省路由不存在，不会去匹配缺省路由，只有进行了配置时候，才会去匹配缺省路由的。</li>
+<li>对允许匹配缺省路由的模式，必须和严格模式一起配置，报文匹配明细路由或者缺省路由，并且报文入接口跟匹配路由的出接口一致才上送，否则丢弃。不支持缺省路由与松散模式一起配置，因为这样无法达到防攻击的效果。松散模式和严格模式互斥，只能配置一种模式。</li>
+</ul>
+</blockquote>
+<h2 id="本机防攻击"><a href="#本机防攻击" class="headerlink" title="本机防攻击"></a>本机防攻击</h2><p>•在网络中，存在着大量针对CPU的恶意攻击报文以及需要正常上送CPU的各类报文。针对CPU的恶意攻击报文会导致CPU长时间繁忙的处理攻击报文，从而引发其他业务的断续甚至系统的中断；大量正常的报文也会导致CPU占用率过高，性能下降，从而影响正常的业务。</p>
+<p>•为了保护CPU，保证CPU对正常业务的处理和响应，设备提供了本机防攻击功能。本机防攻击针对的是上送CPU的报文，主要用于保护设备自身安全，保证已有业务在发生攻击时的正常运转，避免设备遭受攻击时各业务的相互影响。</p>
+<p>•本机防攻击包括CPU防攻击和攻击溯源两部分。</p>
+<ul>
+<li><p>CPU防攻击针对上送CPU的报文进行限制和约束，使单位时间内上送CPU报文的数量限制在一定的范围之内，从而保护CPU的安全，保证CPU对业务的正常处理。</p>
+</li>
+<li><p>攻击溯源针对DoS（Denial of Service，拒绝服务）攻击进行防御。设备通过对上送CPU的报文进行分析统计，然后对统计的报文设置一定的阈值，将超过阈值的报文判定为攻击报文，再对这些攻击报文根据报文信息找出攻击源用户或者攻击源接口，最后通过日志、告警等方式提醒管理员以便管理员采用一定的措施来保护设备，或者直接丢弃攻击报文以对攻击源进行惩罚。</p>
+</li>
+</ul>
+<h2 id="CPU防攻击"><a href="#CPU防攻击" class="headerlink" title="CPU防攻击"></a>CPU防攻击</h2><p>•多级安全机制，保证设备的安全，实现了对设备的分级保护。设备通过以下策略实现对设备的分级保护：</p>
+<ul>
+<li><p>第一级：通过黑名单来过滤上送CPU的非法报文。</p>
+</li>
+<li><p>第二级：CPCAR（Control Plane Committed Access Rate）。对上送CPU的报文按照协议类型进行速率限制，保证每种协议上送CPU的报文不会过多。</p>
+</li>
+<li><p>第三级：对上送CPU的报文，按照协议优先级进行调度，保证优先级高的协议先得到处理。</p>
+</li>
+<li><p>第四级：对上送CPU的报文统一限速，对超过统一限速值的报文随机丢弃，保证整体上送CPU的报文不会过多，保护CPU安全。 </p>
+</li>
+</ul>
+<p>•动态链路保护功能的CPU报文限速，是指当设备检测到SSH Session数据、Telnet Session数据、HTTP Session数据、FTP Session数据以及BGP Session数据建立时，会启动对此Session的动态链路保护功能，后续上送报文如匹配此Session特征信息，此类数据将会享受高速率上送的权利，由此保证了此Session相关业务的运行可靠性、稳定性。</p>
+<h2 id="攻击溯源原理"><a href="#攻击溯源原理" class="headerlink" title="攻击溯源原理"></a>攻击溯源原理</h2><p>•攻击溯源包括报文解析、流量分析、攻击源识别和发送日志告警通知管理员以及实施惩罚四个过程。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/7.png"></p>
+<p>•通过图中所示的四个过程，找出攻击源，然后管理员通过ACL或配置黑名单的方式限制攻击源，以保护设备CPU。 </p>
+<h1 id="2-网络设备安全加固部署示例"><a href="#2-网络设备安全加固部署示例" class="headerlink" title="2.网络设备安全加固部署示例"></a>2.网络设备安全加固部署示例</h1><h2 id="STelnet配置"><a href="#STelnet配置" class="headerlink" title="STelnet配置"></a>STelnet配置</h2><h3 id="SSH基本配置-1"><a href="#SSH基本配置-1" class="headerlink" title="SSH基本配置 (1)"></a>SSH基本配置 (1)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/8.png"></p>
+<h3 id="SSH基本配置-2"><a href="#SSH基本配置-2" class="headerlink" title="SSH基本配置 (2)"></a>SSH基本配置 (2)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/9.png"></p>
+<h3 id="SSH配置示例"><a href="#SSH配置示例" class="headerlink" title="SSH配置示例"></a>SSH配置示例</h3><p>•用户希望安全的远程登录设备，因此配置STelnet方式进行远程的安全登录。</p>
+<p>•在R3上配置两个登录用户client001和client002，R1使用client001通过password认证方式登录R3，R2使用client002通过RSA认证方式登录R3。配置安全策略，保证只有R1和R2才能登录设备。</p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/10.png"></p>
+<h3 id="SSH配置命令-1"><a href="#SSH配置命令-1" class="headerlink" title="SSH配置命令 (1)"></a>SSH配置命令 (1)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/11.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/12.png"></p>
+<h3 id="SSH配置命令-2"><a href="#SSH配置命令-2" class="headerlink" title="SSH配置命令 (2)"></a>SSH配置命令 (2)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/13.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/14.png"></p>
+<h3 id="SSH配置命令-3"><a href="#SSH配置命令-3" class="headerlink" title="SSH配置命令 (3)"></a>SSH配置命令 (3)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/15.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/16.png"></p>
+<h3 id="SSH配置命令-4"><a href="#SSH配置命令-4" class="headerlink" title="SSH配置命令 (4)"></a>SSH配置命令 (4)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/15.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/17.png"></p>
+<h3 id="SSH配置命令-5"><a href="#SSH配置命令-5" class="headerlink" title="SSH配置命令 (5)"></a>SSH配置命令 (5)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/15.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/18.png"></p>
+<h3 id="SSH配置验证"><a href="#SSH配置验证" class="headerlink" title="SSH配置验证"></a>SSH配置验证</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/19.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/20.png"></p>
+<h2 id="本机防攻击配置"><a href="#本机防攻击配置" class="headerlink" title="本机防攻击配置"></a>本机防攻击配置</h2><h3 id="本机防攻击基本配置-1"><a href="#本机防攻击基本配置-1" class="headerlink" title="本机防攻击基本配置 (1)"></a>本机防攻击基本配置 (1)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/21.png"></p>
+<h3 id="本机防攻击基本配置-2"><a href="#本机防攻击基本配置-2" class="headerlink" title="本机防攻击基本配置 (2)"></a>本机防攻击基本配置 (2)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/22.png"></p>
+<blockquote>
+<p>•缺省情况下，SSH报文、Telnet报文、SSHv6报文、Telnetv6报文、HTTP报文、BGP报文的动态链路保护功能的限制速率是512pps，FTP报文的动态链路保护功能的限制速率是1024pps。</p>
+</blockquote>
+<h3 id="本机防攻击配置示例"><a href="#本机防攻击配置示例" class="headerlink" title="本机防攻击配置示例"></a>本机防攻击配置示例</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/23.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/24.png"></p>
+<blockquote>
+<p>•Net：Network。</p>
+</blockquote>
+<h3 id="本机防攻击配置命令-1"><a href="#本机防攻击配置命令-1" class="headerlink" title="本机防攻击配置命令 (1)"></a>本机防攻击配置命令 (1)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/25.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/26.png"></p>
+<h3 id="本机防攻击配置命令-2"><a href="#本机防攻击配置命令-2" class="headerlink" title="本机防攻击配置命令 (2)"></a>本机防攻击配置命令 (2)</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/27.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/28.png"></p>
+<blockquote>
+<p>•应用层联动不需要使能，只要关闭Router的Telnet服务器功能，Router会丢弃收到的Telnet报文。</p>
+</blockquote>
+<h3 id="本机防攻击配置验证"><a href="#本机防攻击配置验证" class="headerlink" title="本机防攻击配置验证"></a>本机防攻击配置验证</h3><p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/29.png"></p>
+<p><img src="/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/30.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（判断题）当远程登录设备时，采用Stelnet的方式比Telnet的方式更加安全，因为Stelnet的方式登录采用TCP封装，而Telnet的方式登录设备采用UDP封装。</p>
+<p>A 对</p>
+<p><strong>B 错</strong></p>
+<p>2.（判断题）本机防攻击包括CPU防攻击和攻击溯源两部分。</p>
+<p><strong>A 对</strong></p>
+<p>B 错</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•设备的安全加固，需要从管理平面、控制平面和转发平面多个维度进行考虑。从设备本身的脆弱点出发，进行网络安全风险的评估，从而梳理出设备整体的安全架构和安全加固策略。</p>
+<p>•在设备支持的情况下，尽量采用SSH、SFTP等安全协议进行设备访问和数据传输。设备的CPU容易成为被攻击的对象，本机防攻击的部署至关重要。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E5%8D%8E%E4%B8%BA%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3467,230 +3754,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/" itemprop="url">IP-流量过滤与转发路径控制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:09:21+08:00">
-                2021-05-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•传统的路由转发原理是首先根据报文的目的地址查找路由表，然后进行报文转发。随着业务的发展，用户更加希望能够在传统路由转发的基础上根据自己定义的策略进行报文转发和选路。</p>
-<p>•为提高网络安全性，用户希望能够控制进入网络的报文，将没有权限进入网络或存在安全隐患的报文隔离在网络边界。</p>
-<p>•本课程将会学习流量过滤技术、策略路由以及使用MQC（Modular QoS Command-Line Interface，模块化QoS命令行）的方式控制报文的转发路径和进行流量过滤。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述策略路由的使用场景</p>
-<p>▫阐明策略路由的分类</p>
-<p>▫描述如何使用MQC配置策略路由</p>
-<p>▫描述如何使用MQC过滤报文</p>
-<h1 id="1-策略路由"><a href="#1-策略路由" class="headerlink" title="1.策略路由"></a>1.策略路由</h1><h2 id="策略路由技术背景"><a href="#策略路由技术背景" class="headerlink" title="策略路由技术背景"></a>策略路由技术背景</h2><p>在某些场景中我们希望一些特定用户、特定业务的流量走指定的转发路径，而其余用户或业务的流量则依旧根据路由表进行转发。</p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/1.png"></p>
-<h2 id="PBR介绍-基本概念"><a href="#PBR介绍-基本概念" class="headerlink" title="PBR介绍 - 基本概念"></a>PBR介绍 - 基本概念</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/2.png"></p>
-<p>•PBR（Policy-Based Routing，策略路由）：PBR使得网络设备不仅能够基于报文的目的IP地址进行数据转发，更能基于其他元素进行数据转发，例如源IP地址、源MAC地址、目的MAC地址、源端口号、目的端口号、VLAN-ID等等。</p>
-<p>•用户还可以使用ACL匹配特定的报文，然后针对该ACL进行PBR部署。</p>
-<p>•若设备部署了PBR，则被匹配的报文优先根据PBR的策略进行转发，即PBR策略的优先级高于传统路由表。</p>
-<h2 id="PBR介绍-结构"><a href="#PBR介绍-结构" class="headerlink" title="PBR介绍 - 结构"></a>PBR介绍 - 结构</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/3.png"></p>
-<p>•PBR与Route-Policy类似，由多个节点组成，每个节点由匹配条件（条件语句）和执行动作（执行语句）组成。</p>
-<p>•每个节点内可包含多个条件语句。</p>
-<p>•节点内的多个条件语句之间的关系为“与”，即匹配所有条件语句才会执行本节点内的动作。</p>
-<p>•节点之间的关系为“或”，PBR根据节点编号从小到大顺序执行，匹配当前节点将不会继续向下匹配。</p>
-<h2 id="PBR介绍-命令语法"><a href="#PBR介绍-命令语法" class="headerlink" title="PBR介绍 - 命令语法"></a>PBR介绍 - 命令语法</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/4.png"></p>
-<blockquote>
-<p>•PBR的节点匹配模式：</p>
-<p>​    ▫permit表示对满足匹配条件的报文进行策略路由</p>
-<p>​    ▫deny表示对满足匹配条件的报文不进行策略路由</p>
-</blockquote>
-<h2 id="PBR与路由策略区别"><a href="#PBR与路由策略区别" class="headerlink" title="PBR与路由策略区别"></a>PBR与路由策略区别</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/5.png"></p>
-<h2 id="PBR的分类"><a href="#PBR的分类" class="headerlink" title="PBR的分类"></a>PBR的分类</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/6.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/7.png"></p>
-<h2 id="PBR典型应用场景-1"><a href="#PBR典型应用场景-1" class="headerlink" title="PBR典型应用场景 (1)"></a>PBR典型应用场景 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/8.png"></p>
-<p>•内网防火墙旁挂部署在核心交换机，为防护内网在核心交换机的三层接口上部署PBR，将来自外部网络的流量牵引到防火墙上进行安全检查，检查完的流量再发送回核心交换机，由核心交换机依据路由表转发到内网。</p>
-<p>•将流量牵引到别的设备进行安全检查等类似的行为我们称之为“引流”，PBR是一种常见的引流工具。</p>
-<h2 id="PBR典型应用场景-2"><a href="#PBR典型应用场景-2" class="headerlink" title="PBR典型应用场景 (2)"></a>PBR典型应用场景 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/9.png"></p>
-<p>当企业存在多个网络出口时，若想指定部分网段访问Internet时的网络出口，可以使用PBR：在出口设备的内网接口配置PBR，匹配来自内网的流量，为其指定不同的下一跳公网地址。</p>
-<h2 id="配置介绍-1"><a href="#配置介绍-1" class="headerlink" title="配置介绍 (1)"></a>配置介绍 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/10.png"></p>
-<blockquote>
-<p>•当ACL的rule配置为permit时，设备会对匹配该规则的报文执行本地策略路由的动作：</p>
-<ul>
-<li><p>本地策略路由中策略点为permit时对满足匹配条件的报文进行策略路由；</p>
-</li>
-<li><p>本地策略路由中策略点为deny时对满足匹配条件的报文不进行策略路由，即根据目的地址查找路由表转发报文。</p>
-</li>
-</ul>
-<p>•当ACL配置了rule，如果报文未匹配上任何规则，则根据目的地址查找路由表转发报文。</p>
-<p>•当ACL的rule配置为deny或ACL未配置规则时，应用该ACL的本地策略路由不生效，即根据目的地址查找路由表转发报文。</p>
-</blockquote>
-<h2 id="配置介绍-2"><a href="#配置介绍-2" class="headerlink" title="配置介绍 (2)"></a>配置介绍 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/11.png"></p>
-<blockquote>
-<p>•除了该方式之外，接口策略路由还可以使用MQC的方式进行配置。</p>
-</blockquote>
-<h2 id="配置案例-1"><a href="#配置案例-1" class="headerlink" title="配置案例 (1)"></a>配置案例 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/12.png"></p>
-<p>需求：</p>
-<p>▫内网存在两个网段，网段1：10.1.1.0/24，网段2：10.1.2.0/24，在RTA的GE0/0/0接口部署PBR，实现网段1访问Internet通过ISP1、网段2访问Internet通过ISP2。</p>
-<p>▫RTA上旁挂了一台服务器，要求在RTA上部署的策略路由不影响内网用户访问该服务器。</p>
-<h2 id="配置案例-2"><a href="#配置案例-2" class="headerlink" title="配置案例 (2)"></a>配置案例 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/13.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/14.png"></p>
-<h2 id="配置案例-3"><a href="#配置案例-3" class="headerlink" title="配置案例 (3)"></a>配置案例 (3)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/15.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/16.png"></p>
-<h1 id="2-MQC"><a href="#2-MQC" class="headerlink" title="2.MQC"></a>2.MQC</h1><h2 id="MQC介绍-1"><a href="#MQC介绍-1" class="headerlink" title="MQC介绍 (1)"></a>MQC介绍 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/17.png"></p>
-<p>•MQC（Modular QoS Command-Line Interface，模块化QoS命令行）是指通过将具有某类共同特征的数据流划分为一类，并为同一类数据流提供相同的服务，也可以对不同类的数据流提供不同的服务。</p>
-<p>•MQC包含三个要素：流分类（traffic classifier）、流行为（traffic behavior）和流策略（traffic policy）。</p>
-<p>•MQC的流行为支持重定向报文，因此可以使用MQC实现IP单播策略路由。</p>
-<h2 id="MQC介绍-2"><a href="#MQC介绍-2" class="headerlink" title="MQC介绍 (2)"></a>MQC介绍 (2)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/18.png"></p>
-<p>•流策略：将流分类和流行为绑定，对分类后的报文执行对应流行为中定义的动作。</p>
-<p>•一个流策略可以绑定多个流分类和流行为。</p>
-<h2 id="MQC-流分类"><a href="#MQC-流分类" class="headerlink" title="MQC - 流分类"></a>MQC - 流分类</h2><p>流分类：定义一组流量匹配规则，以对报文进行分类。流分类支持的匹配项如下所示。</p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/19.png"></p>
-<blockquote>
-<p>•流分类中各规则之间的关系分为：and或or，缺省情况下的关系为or。</p>
-<ul>
-<li><p>and：当流分类中包含ACL规则时，报文必须匹配其中一条ACL规则以及所有非ACL规则；当流分类中没有ACL规则时，报文必须匹配所有非ACL规则。</p>
-</li>
-<li><p>or：报文只要匹配了流分类中的一个规则，设备就认为报文匹配中该流分类。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="MQC-流行为"><a href="#MQC-流行为" class="headerlink" title="MQC - 流行为"></a>MQC - 流行为</h2><p>流行为：用来定义执行的动作，支持报文过滤、重标记优先级、重定向、流量统计等动作。</p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/20.png"></p>
-<h2 id="MQC-流策略"><a href="#MQC-流策略" class="headerlink" title="MQC - 流策略"></a>MQC - 流策略</h2><p>•流策略：流策略支持在接口上调用。</p>
-<p>•流策略存在方向(inbound、outbound)的概念，策略中的流行为匹配入、出方向的报文，对匹配中的报文执行相应的流动作。</p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/21.png"></p>
-<blockquote>
-<p>•流策略不同于PBR，PBR只能调用在三层接口，而流策略支持调用在二层接口。</p>
-</blockquote>
-<h2 id="使用MQC实现策略路由"><a href="#使用MQC实现策略路由" class="headerlink" title="使用MQC实现策略路由"></a>使用MQC实现策略路由</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/22.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/23.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/24.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/25.png"></p>
-<h1 id="3-流量过滤"><a href="#3-流量过滤" class="headerlink" title="3.流量过滤"></a>3.流量过滤</h1><h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>为提高网络安全性，管理人员需要控制进入网络的流量，将不信任的报文丢弃在网络边界。所谓的不信任报文是指对用户来说存在安全隐患或者不愿意接收的报文。同时保证数据访问安全性，企业网络中经常会要求一些部门之间不能相互访问。</p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/26.png"></p>
-<h2 id="流量过滤工具"><a href="#流量过滤工具" class="headerlink" title="流量过滤工具"></a>流量过滤工具</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/27.png"></p>
-<h2 id="Traffic-Filter部署位置"><a href="#Traffic-Filter部署位置" class="headerlink" title="Traffic-Filter部署位置"></a>Traffic-Filter部署位置</h2><p>使用Traffic-Filter过滤流量可以灵活地选择部署位置，在流量进入设备或者离开设备的接口上执行过滤动作，双向访问的业务禁止其中一个方向即可实现阻断业务的需求。</p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/28.png"></p>
-<blockquote>
-<p>•Traffic-Filter部署的位置不同，其调用的ACL内容也不相同。</p>
-</blockquote>
-<h2 id="使用Traffic-Filter过滤流量"><a href="#使用Traffic-Filter过滤流量" class="headerlink" title="使用Traffic-Filter过滤流量"></a>使用Traffic-Filter过滤流量</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/29.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/30.png"></p>
-<h2 id="使用MQC过滤流量-1"><a href="#使用MQC过滤流量-1" class="headerlink" title="使用MQC过滤流量 (1)"></a>使用MQC过滤流量 (1)</h2><p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/31.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/32.png"></p>
-<p><img src="/2021/05/16/IP-%E6%B5%81%E9%87%8F%E8%BF%87%E6%BB%A4%E4%B8%8E%E8%BD%AC%E5%8F%91%E8%B7%AF%E5%BE%84%E6%8E%A7%E5%88%B6/33.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）本地策略路由与接口策略路由的区别在于？</p>
-<p><strong>本地策略路由对本地始发的流量生效，而接口策略路由只会对接口入方向的流量生效。</strong></p>
-<p>2.（简答题）使用MQC方式过滤流量时，流分类中匹配的ACL与Traffic-Filter调用的ACL有何区别？</p>
-<p><strong>MQC调用的ACL里permit、deny只代表是否匹配流量，不代表是否放通、拒绝流量，而Traffic-Filter调用的ACL里permit、deny代表放通、拒绝流量。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本课程介绍了PBR的应用场景、PBR的分类以及如何配置本地策略路由、接口策略路由。</p>
-<p>•MQC支持多种灵活的流量匹配方式以及执行动作，同时还可以在多种视图下调用，使用MQC可以完成策略路由、流量过滤的功能。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3745,7 +3808,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3758,7 +3821,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

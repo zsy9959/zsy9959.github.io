@@ -241,6 +241,716 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/" itemprop="url">IE-QoS技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-31T15:08:57+08:00">
+                2021-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/QoS%E6%8A%80%E6%9C%AF.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/76.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/77.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/78.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/79.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/80.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/81.png"></p>
+<blockquote>
+<ul>
+<li>流分类用来定义一组流量匹配规则，以对报文进行分类。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/82.png"></p>
+<blockquote>
+<ul>
+<li><strong>traffic classifier</strong> <em>classifier*</em>-name* [ <strong>operator</strong> { <strong>and</strong> | <strong>or</strong> } ]<ul>
+<li><strong>classifier-name*</strong>：*指定流分类名称。</li>
+<li>**Operator:**指定流分类下各规则之间的逻辑运算符。如果没有指定operator，则各规则之间缺省为逻辑“或”的关系。</li>
+<li>**And:**指定流分类下各规则之间是逻辑“与”的关系。</li>
+<li>**Or:**指定流分类下各规则之间是逻辑“或”的关系。指定该逻辑关系后，报文只需匹配流分类下的一个或多个规则就属于该类。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/83.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/84.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/85.png"></p>
+<blockquote>
+<ul>
+<li>这是一个基于类的QoS的配置示例。在RTA上执行流分类；在RTB上执行带宽限制、重新标记等策略。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/86.png"></p>
+<blockquote>
+<ul>
+<li>RTA上主要是执行流量分类。根据源地址的不同，分别把流量标记为AF11、AF21和EF。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/87.png"></p>
+<blockquote>
+<ul>
+<li>在RTB上根据数据包的标记执行不同的QoS策略。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/88.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/89.png"></p>
+<blockquote>
+<ul>
+<li>要实现流量的控制，必须有一种机制可以对通过设备的流量进行度量。令牌桶是目前最常采用的一种流量测量方法，用来评估流量速率是否超过了规定值。</li>
+<li>当数据流到达设备时首先会根据数据的大小从令牌桶中取出与数据大小相当的令牌数量用来传输数据。也就是说要使数据被传输必须保证令牌桶里有足够多的令牌，如果令牌数量不够，则数据会被丢弃或缓存。这就可以限制报文的流量只能小于等于令牌生成的速度，达到限制流量的目的。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/90.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/91.png"></p>
+<blockquote>
+<ul>
+<li>对于单速率标记算法的实现，华为路由器采用双桶结构。</li>
+<li>双桶结构由两个桶实现，为方便将两个令牌桶称为C桶和E桶。C桶容量为CBS，E桶容量为EBS，总容量是CBS+EBS。如果不允许有突发流量，EBS则设置成0。</li>
+<li>当EBS≠0时，称为单速双桶。当EBS=0，E桶的令牌数始终为0，相当于只使用了一个令牌桶——C桶，这种情况也称为单速单桶。单速单桶中，报文只标记为绿、红两色。</li>
+<li>CIR CBS EBS的单位 :<ul>
+<li>CIR（Committed Information Rate）：承诺信息速率，单位是bit/s，表示向令牌桶中投放令牌的速率。</li>
+<li>CBS（Committed Burst Size）：承诺突发尺寸，单位为bit，用来定义在部分流量超过CIR之前的最大突发流量，即为令牌桶的容量（深度）。承诺突发尺寸必须大于报文的最大长度（最大时一个分组可以领取桶中的全部令牌）。CBS越大，表示所允许的突发量越大。</li>
+<li>EBS（Extended burst size）：超额突发尺寸，用来定义在所有流量超过CIR之前的最大突发量。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/92.png"></p>
+<blockquote>
+<ul>
+<li><p><strong>单速率令牌添加方式</strong></p>
+<ul>
+<li>单速率标记算法中，初始状态时两桶是满的。先往C桶中添加令牌，等C桶满了，再往E桶中添加令牌（E桶的令牌用做以后临时超过CIR的突发流量），当两桶都被填满时，新产生的令牌将会被丢弃。 </li>
+</ul>
+</li>
+<li><p><strong>单速率流量评估规则</strong></p>
+<ul>
+<li><p>当报文到来后，直接与桶中的令牌数相比较，如果有足够的令牌就转发（通常用一个令牌关联一个比特的转发权限），如果没有足够的令牌则丢弃或缓存。</p>
+</li>
+<li><p>为方便用Tc和Te表示桶中的令牌数量，Tc和Te初始化等于CBS和EBS。</p>
+</li>
+<li><p>色盲模式下，在对到达报文（假设报文大小为B）进行评估时，遵循以下规则：</p>
+</li>
+<li><p>对于单速单桶：</p>
+<ul>
+<li>如果报文长度不超过C桶中的令牌数Tc，则报文被标记为绿色，且Tc=Tc-B，</li>
+<li>如果报文长度超过C桶中的令牌数Tc，报文被标记为红色，Tc值不变。</li>
+</ul>
+</li>
+<li><p>对于单速双桶：</p>
+<ul>
+<li>如果报文长度不超过C桶中的令牌数Tc，则报文被标记为绿色，且Tc=Tc-B，</li>
+<li>如果报文长度超过C桶中的令牌数Tc但不超过E桶中的令牌数Te，则报文被标记为黄色，且Te=Te-B，</li>
+<li>如果报文长度超过E桶中的令牌数Te，报文被标记为红色，但Tc和Te不变。</li>
+</ul>
+</li>
+<li><p>色敏模式下，在对到达报文（假设报文大小为B）进行评估时，遵循以下规则：</p>
+</li>
+<li><p>对于单速单桶：</p>
+<ul>
+<li>如果报文已被标记为绿色但报文长度不超过C桶中的令牌数Tc，则报文被标记为绿色，且Tc=Tc-B；</li>
+<li>如果报文已被标记为绿色且报文长度超过C桶中的令牌数Tc，则报文被标记为红色，Tc保持不变；</li>
+<li>如果报文已被标记为黄色或红色，都直接将报文标记为红色，Tc保持不变。</li>
+</ul>
+</li>
+<li><p>对于单速双桶：</p>
+<ul>
+<li>如果报文已被标记为绿色且报文长度不超过C桶中的令牌数Tc，则报文被标记为绿色，且Tc=Tc-B，</li>
+<li>如果报文已被标记为绿色且报文长度超过C桶中的令牌数Tc但不超过E桶中的令牌数Te，则报文被标记为黄色，且Te=Te-B，</li>
+<li>如果报文已被标记为黄色但报文长度不超过E桶中的令牌数Te，则报文被标记为黄色，且Te=Te-B，</li>
+<li>如果报文已被标记为黄色且报文长度超过E桶中的令牌数Te，则报文被标记为红色，且Te保持不变，</li>
+<li>如果报文已被标记为红色，直接将报文标记为红色，Tc和Te不变。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/93.png"></p>
+<blockquote>
+<ul>
+<li>CIR（Committed Information Rate）：承诺信息速率，表示端口允许的信息流平均速率，单位是bit/s。</li>
+<li>CBS（Committed Burst Size）：承诺突发尺寸，用来定义在部分流量超过CIR之前的最大突发流量，单位为bit。承诺突发尺寸必须不小于报文的最大长度。</li>
+<li>PIR（Peak Information Rate）：表示峰值信息速率，表示端口允许的突发流量的最大速率，单位是bit/s。该值必须不小于CIR的设置值。</li>
+<li>PBS（Peak Burst Size）：表示峰值突发尺寸，用来定义每次突发所允许的最大的流量尺寸。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/94.png"></p>
+<blockquote>
+<ul>
+<li><p>双速率三色标记算法业界都使用两个令牌桶，但它关注的是速率的突发，所以不像单速率三色标记算法那样把第一个桶中未使用的令牌放到第二个桶中，而是使用两个独立的令牌桶，存在两个令牌填充速率。为方便将两个令牌桶称为C桶和P桶，C桶容量为CBS，令牌填充速率为CIR，P桶容量为PBS，令牌填充速率为PIR。</p>
+</li>
+<li><p>说明： “双速率”是指该算法中两个令牌桶中的令牌填充速率不同。</p>
+</li>
+<li><p><strong>双速率令牌添加方式</strong></p>
+<ul>
+<li>初始状态时两桶是满的。往C桶和P桶分别以CIR和PIR的速率填充令牌。因这两个令牌桶是相互独立的，当其中一个桶被填满时，这个桶新产生的令牌将会被丢弃，另一个桶继续填令牌。</li>
+</ul>
+</li>
+<li><p><strong>双速率流量评估规则</strong></p>
+<ul>
+<li>双速率三色标记算法关注的是速率的突发，首先评估的是数据流的速率是否符合规定的突发要求，其规则是先比较P桶，再比较C桶。</li>
+<li>双速率三色标记算法也有色盲模式和色敏模式两种。为方便用Tc和Tp表示桶中的令牌数量，Tc和Tp初始化等于CBS和PBS。</li>
+<li>色盲模式下，在对到达报文（假设数据包大小为B）进行评估时，遵循以下规则：<ul>
+<li>如果报文长度超过P桶中的令牌数Tp，则报文被标记为红色，且Tc和Tp保持不变，</li>
+<li>如果报文长度不超过P桶中的令牌数Tp但超过C桶中的令牌数Tc，则报文被标记为黄色，且Tp=Tp-B，</li>
+<li>如果报文长度不超过C桶中的令牌数Tc，报文被标记为绿色，且Tp=Tp-B，Tc=Tc-B。</li>
+</ul>
+</li>
+<li>色敏模式下，在对到达报文（假设报文大小为B）进行评估时，遵循以下规则：<ul>
+<li>如果报文已被标记为绿色且报文长度超过P桶中的令牌数Tp，则报文被标记为红色，且Tp和Tc不变。</li>
+<li>如果报文已被标记为绿色且报文长度不超过P桶中的令牌数Tp但超过C桶中的令牌数Tc，则报文被标记为黄色，且Tp=Tp-B，Tc不变</li>
+<li>如果报文已被标记为绿色且报文长度不超过C桶中的令牌数Tc，则报文被标记为绿色，且Tp=Tp-B，Tc=Tc-B。</li>
+<li>如果报文已被标记为黄色，则只比较P桶，如果报文长度超过P桶中的令牌数Tp，则报文被标记为红色，且Tp和Tc不变。</li>
+<li>如果报文已被标记为黄色，且报文长度不超过P桶的令牌数，则报文被标记为黄色，且Tp=Tp-B，Tc不变。</li>
+<li>如果报文已被标记为红色，直接将报文标记为红色，Tc和Tp不变。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CIR PIR CBS PBS的单位 :</p>
+<ul>
+<li><strong>cir</strong> <em>cir-value</em> 指定承诺信息速率，即保证能够通过的速率。 整数形式，取值范围是0～4294967295，单位是kbit/s。</li>
+<li><strong>pir</strong> <em>pir-value</em> 指定峰值速率，即最大能够通过的速率。 整数形式，取值范围是0～4294967295，单位是kbit/s。参数<em>pir*</em>-value<em>的值不应小于已经配置的</em>cir-value*的值。</li>
+<li><strong>cbs</strong> <em>cbs-value</em> 指定承诺突发尺寸（Committed Burst Size），即瞬间能够通过的承诺流量，即第一个令牌桶的深度（假定该桶为C桶）。 整数形式，0～4294967295，单位是byte。 CBS的取值必须大于已经配置的CIR的值。缺省值与配置的<em>cir-value</em>有关。</li>
+<li><strong>pbs</strong> <em>pbs-value</em> 指定超出突发尺寸（Peak Burst Size），即瞬间能够通过的峰值流量，即第二个令牌桶的深度（假定该桶为P桶）。 整数形式，0～4294967295单位是byte。 缺省值与<em>pir*</em>-value*有关</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/95.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/96.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/97.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/98.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/99.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/0.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/1.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/2.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/3.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/4.png"></p>
+<blockquote>
+<ul>
+<li><p>传统的IP网络无区别地对待所有的报文，网络设备处理报文采用的策略是先入先出FIFO（First In First Out），它依照报文到达时间的先后顺序分配转发所需要的资源。所有报文共享网络和设备的带宽等资源，然而最终得到资源的多少完全取决于报文到达的时机。</p>
+</li>
+<li><p>FIFO尽最大的努力将报文送到目的地，但对报文的延迟、抖动、丢包率和可靠性等需求不提供任何承诺和保证，故对于一些关键业务（如语音、视频等）的通信质量无法进行保证。</p>
+</li>
+<li><p>那该如何提升端到端的通信质量呢？影响通信质量的因素都有哪些？</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/5.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/6.png"></p>
+<blockquote>
+<ul>
+<li>我们已经知道影响端到端通信质量的因素，所以从这些因素入手就可以达到我们的目的。那这些因素各自都有什么特点呢？他们影响通信质量的具体表现是什么呢？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/7.png"></p>
+<blockquote>
+<ul>
+<li><p>网络带宽是指在单位时间（一般指的是1秒钟）内能传输的数据量。</p>
+</li>
+<li><p>如图所示，尽管传输途径上的最大的一段链路带宽是1Gbps，但是数据从一个用户传到另一个用户的最大传输速率只能是256kbps，因为传输的最大带宽是由传输路径上的最小链路带宽决定的。正是因为这样，带宽小的链路是影响传输速率的关键。</p>
+</li>
+<li><p>如果网络上存在多个数据流，它们互相竞争带宽，可以通过增大带宽来获得更好的网络体验，但是提升了带宽之后又会催生新的应用，故不能无限地增加网络带宽，且增加带宽还需要提高成本，那么我们是否可以先保证重要业务的带宽呢？</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/8.png"></p>
+<blockquote>
+<ul>
+<li><p>时延是指一个报文从一个网络的一端传送到另一端所需要的时间。</p>
+</li>
+<li><p>实时应用通信质量都比较关注时延大小，如语音、视频等。以语音传输为例，时延是指从说话者开始说话到对方听到所说内容的时间。若时延太大，会引起通话声音不清晰、不连贯或破碎。</p>
+</li>
+<li><p>单个网络设备的时延包括传输时延、串行化时延、处理时延、以及队列时延。</p>
+<ul>
+<li>传输时延：一个数据位从发送方到达接收方所需要的时间。该时延取决于传输距离和传输介质，与带宽无关。</li>
+<li>串行化时延：指发送节点在传输链路上开始发送报文的第一个比特至发完该报文的最后一个比特所需的时间。该时延取决于链路带宽以及报文大小。</li>
+<li>处理时延：指路由器把报文从入接口放到出接口队列需要的时间。它的大小跟路由器的处理性能有关。</li>
+<li>队列时延：指报文在队列中等待的时间。它的大小跟队列中报文的大小和数量、带宽以及队列机制有关。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/9.png"></p>
+<blockquote>
+<ul>
+<li>由于每个报文的端到端时延不一样，就会导致这些报文不能等间隔到达目的端，这种现象叫做抖动。一般来说，时延越小则时延抖动的范围越小。</li>
+<li>某些业务类型（特别是语音和视频等实时业务）是极其不能容忍抖动的。报文到达时间的差异将在语音或视频中造成断续；另外，抖动也会影响一些网络协议的处理，有些协议是按固定的时间间隔发送交互性报文，抖动过大就会导致协议震荡，而实际上所有传输系统都有抖动，但只要抖动在规定容差之内就不会影响服务质量，另外，可利用缓存来克服过量的抖动，但这将会增加时延。</li>
+<li>抖动的大小跟时延的大小直接相关，时延小则抖动的范围也小，时延大则可能抖动的范围也大。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/10.png"></p>
+<blockquote>
+<ul>
+<li><p>丢包率是指在网络传输过程中丢失报文占传输报文的百分比。丢包可用于衡量网络的可靠性。</p>
+</li>
+<li><p>丢包（packet loss）可能在所有环节中发生，例如：</p>
+<ul>
+<li>处理过程：路由器在收到报文的时候可能由于CPU繁忙，无法处理报文而导致丢包；</li>
+<li>排队过程：在把报文调度到队列的时候可能由于队列被装满而导致丢包；</li>
+<li>传输过程：报文在链路上传输的过程中，可能由于种种原因（如链路故障等）导致的丢包。</li>
+</ul>
+</li>
+<li><p>少量的丢包对业务的影响并不大，例如，在语音传输中，丢失一个比特或一个报文的信息，通话双方往往注意不到；在视频广播期间，丢失一个比特或一个报文可能造成屏幕上瞬间的波形干扰，但视频很快就会恢复正常。即使使用传输控制协议（TCP）传送数据也能处理少量的丢包，但大量的丢包就会严重影响到传输效率。</p>
+</li>
+<li><p>了解完这些影响通信质量因素的特点之后，请思考在进行实际网络部署时，具体该采用什么方法来提升通信质量呢？</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/11.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/12.png"></p>
+<blockquote>
+<ul>
+<li><p>传统的先进先出转发即Best-Effort（尽力而为）服务模型：</p>
+<ul>
+<li>Best-Effort是一个单一的服务模型，也是最简单的服务模型。应用程序可以在任何时候，发出任意数量的报文，而且不需要事先获得批准，也不需要通知网络。</li>
+<li>应用Best-Effort服务模型的网络尽最大的可能性来发送报文，但对时延、可靠性等性能不提供任何保证，但它适用于绝大多数网络应用，如FTP、E-Mail等。</li>
+<li>Best-Effort服务是现在Internet的缺省服务模型，它是通过先入先出（FIFO）队列来实现的。</li>
+</ul>
+</li>
+<li><p>在尽力而为的服务模型下，可通过增大网络带宽和升级网络设备来提高端到端通信质量：</p>
+<ul>
+<li>增大网络带宽：可以增大单位时间内传输的数据量，使其按照传统先进先出的方式在单位时间内传输更多的数据，改善网络拥塞问题。</li>
+<li>升级网络设备：可以增大数据处理能力，使其按照传统先进先出的方式在单位时间内能够处理更多的数据，改善网络拥塞问题。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/13.png"></p>
+<blockquote>
+<ul>
+<li>RSVP协议工作过程：在应用程序发送报文前，需要向网络申请特定的带宽和所需的特定服务质量的请求，等收到确认信息后才发送报文。</li>
+<li>综合服务模型（Integrated Services Model）：<ul>
+<li>IntServ是一种最为复杂的服务模型，它需要用到RSVP（Resource Reservation Protocol）协议。该服务模型在发送报文前，需要向网络申请特定的服务。这个请求是通过信令（signal）来完成的，应用程序首先通知网络它自己的流量参数和所需的特定服务质量的请求，包括带宽、时延等。应用程序一般在收到网络的确认信息后，即认为网络已经为这个应用程序的报文发送预留了资源，然后立即发送报文。</li>
+<li>IntServ模型要求端到端网络的所有节点都支持RSVP协议，且每个节点都需要周期性地同相邻节点交换状态信息，这样就会加大协议报文导致的开销。更关键的是，所有网络节点都需要为每个数据流保存状态信息，而当前在Internet骨干网上有着成千上万条数据流，因此IntServ模型在Internet骨干网上无法得到广泛应用。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/14.png"></p>
+<blockquote>
+<ul>
+<li>DiffServ区分服务工作过程：首先将网络中的流量分成多个类，然后为每个类定义相应的处理行为，使其拥有不同的优先转发、丢包率、时延等。</li>
+<li>Diffserv服务模型概述：<ul>
+<li>业务流分类和标记由边缘路由器来完成。边界路由器可以通过多种条件（比如报文的源地址和目的地址、ToS域中的优先级、协议类型等）灵活地对报文进行分类，然后对不同类型的报文设置不同的标记字段，而其他路由器只需要简单地识别报文中的这些标记，然后对其进行相应的资源分配和流量控制即可。因此，DiffServ是一种基于报文流的QoS模型。</li>
+<li>它只包含有限数量的服务等级，少量的状态信息来提供有差别的流量控制和转发。</li>
+<li>DS节点：实现DiffServ功能的网络节点称为DS节点。</li>
+<li>DS边界节点：负责连接另一个DS域或者连接一个没有DS功能的域的节点。DS边界节点负责将进入此DS域的业务流进行分类和流量调整。</li>
+<li>DS内部节点：用于在同一个DS域中连接DS边界节点和其他内部节点。DS内部节点仅需基于报文中的EXP、802.1p、IPP等字段值进行简单的流分类以及对相应的流进行流量控制。</li>
+<li>DS域（DS Domain）：一组采用相同的服务提供策略和实现了相同PHB（Per Hop Behaviors）的相连DS节点组成。一个DS域由相同管理部门的一个或多个网络组成，如一个DS域可以是一个ISP，也可以是一个企业的内部网络。</li>
+<li>DiffServ模型充分考虑了IP网络本身所具有的灵活性、可扩展性强等特点，将复杂的服务质量保证通过报文自身携带的信息转换为单跳行为，从而大大减少了信令的工作。该模型是目前应用最广的服务模型。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/15.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/16.png"></p>
+<blockquote>
+<p>1、答案：ABC。</p>
+<p>2、答案：带宽、时延、抖动、丢包率。</p>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/17.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/18.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/19.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/20.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/21.png"></p>
+<blockquote>
+<ul>
+<li>报文分类的依据都有哪些呢？先前我们学过利用ACL可以匹配五元组来进行分类，那QoS都支持哪些分类方式呢？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/22.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/23.png"></p>
+<blockquote>
+<ul>
+<li>根据IEEE 802.1Q定义，VLAN TAG中的PRI字段用于标识QoS服务等级。</li>
+<li>对于MPLS报文，通常将标签信息中的EXP域作为MPLS报文的CoS域，与IP网络的ToS域等效，用来区分数据流量的服务等级。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/24.png"></p>
+<blockquote>
+<ul>
+<li><p>D bit代表延迟（Delay），T bit代表吞吐量（Throughput），R bit代表可靠性（Reliability）。</p>
+</li>
+<li><p>根据RFC791定义，IP报文头ToS（Type of Service）域中的Precedence字段标识了该报文的优先级。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/25.png"></p>
+<blockquote>
+<ul>
+<li>在RFC2474中对IPv4报文头的ToS字段进行了重新定义，称为DS（Differentiated Services）字段。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/26.png"></p>
+<blockquote>
+<ul>
+<li>AFxy中，x代表不同的类别，根据不同的分类后续可以定义进入相对应的队列，y代表当队列被装满的时候丢包的概率，例如AF1类中的报文，其中丢包概率由小到大排序为AF11&lt;AF12&lt;AF13。</li>
+<li>不同关键字常用于标识不同报文（可自行定义）：<ul>
+<li>CS6和CS7默认用于协议报文，而且是大多数厂商设备的硬件队列里最高优先级的报文，因为如果这些报文无法接收的话会引起协议中断。</li>
+<li>EF常用于承载语音的流量，因为语音要求低延迟，低抖动，低丢包率，是仅次于协议报文的最重要的报文。</li>
+<li>AF4用来承载语音的信令流量，这里大家可能会有疑问为什么这里语音要优先于信令呢？ 其实是这样的，这里的信令是电话的呼叫控制，你是可以忍受在接通的时候等待几秒钟的，但是绝对不能允许在通话的时候的中断。所以语音要优先于信令。</li>
+<li>AF3可以用来承载IPTV的直播流量，直播的实时性很强，需要连续性和大吞吐量的保证。</li>
+<li>AF2可以用来承载VOD（Video on Demand：视频点播）的流量，相对于直播流量来说，VOD对实时性要求没那么强烈，允许有时延或者缓冲。</li>
+<li>AF1可以用来承载普通上网业务。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/27.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/28.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/29.png"></p>
+<blockquote>
+<ul>
+<li>复杂流分类：<ul>
+<li>复杂流分类是指根据五元组（源地址、目的地址、源端口号、目的端口号、协议号码）等报文信息对报文进行精细的分类（一般的分类依据都局限在封装报文的头部信息，使用报文内容作为分类的标准比较少见）。</li>
+<li>缺省应用于网络的边缘位置。报文进入边缘节点时，网络管理者可以灵活配置分类规则。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/30.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/31.png"></p>
+<blockquote>
+<ul>
+<li>一般在DS边界节点对报文进行分类（如图SWA、SWB）。</li>
+<li>下游（downstream）设备可以选择接收上游（upstream）设备的分类结果，也可以按照自己的分类标准对报文进行重新分类。</li>
+<li>端到端进行QoS部署时，如果需要每台设备都对报文进行分类，那么就会导致耗费大量地设备处理资源，为此提出了对报文进行标记的方法，这样下游设备只需要对标记进行识别即可提供差分服务。那标记是如何实现的呢？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/32.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/33.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/34.png"></p>
+<blockquote>
+<ul>
+<li>一般在DS边界节点（如图SWA、SWB）对报文进行标记，DS节点对标记进行识别并提供差分服务即可。</li>
+<li>像语音电话、视频终端等设备一般发送的报文都是携带设备默认标识的优先级值。若想通过自定义的值来提供差分服务，可以通过remark操作对报文进行重新标记。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/35.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/36.png"></p>
+<blockquote>
+<ul>
+<li>在DS边界节点SWA上对报文重新进行remark，为DS域提供一个可信任的标记值。DS域内节点可根据此标记值进行QoS调度服务。</li>
+<li>在此例中，边界节点SWA被称为可信任边界。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/37.png"></p>
+<blockquote>
+<p>1、答案：简单流分类和复杂流分类。</p>
+<p>2、答案：端到端进行QoS部署时，就需要每台设备都对报文进行分类，这样就会导致耗费大量地设备处理资源，为此提出了对报文进行标记的方法，这样下游设备只需要对标记进行识别即可提供差分服务。</p>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/38.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/39.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/40.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/41.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/42.png"></p>
+<blockquote>
+<ul>
+<li><p>拥塞发生的主要场景：</p>
+<ul>
+<li>速率不匹配：报文从高速链路进入设备，再由低速链路转发出去。</li>
+<li>汇聚问题：报文从多个接口同时进入设备，由一个没有足够带宽的接口转发出去。</li>
+</ul>
+</li>
+<li><p>拥塞可能会引发一系列的负面影响：</p>
+<ul>
+<li>增加了报文传输的时延和抖动。</li>
+<li>过高的延迟会引起报文重传。</li>
+<li>使网络的有效吞吐率降低，造成网络资源的损害。</li>
+<li>加剧耗费大量的网络资源（特别是存储资源），不合理的资源分配甚至可能导致系统陷入资源死锁而崩溃。</li>
+</ul>
+</li>
+</ul>
+<p>由此可见，拥塞使流量不能及时获得资源，是造成服务性能下降的源头。然而在报文交换以及多用户业务并存的复杂环境下，拥塞又是常见的。因此采取有效的避免拥塞以及防止拥塞加剧的方法是必需的，那具体实现的方法是怎样的呢？</p>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/43.png"></p>
+<blockquote>
+<ul>
+<li>LP（本地优先级，又称为内部优先级）：优先级映射实现从数据原始携带的QoS优先级到内部优先级或从内部优先级到QoS优先级的映射。<ul>
+<li>对于进入设备的报文，设备将报文携带的优先级或者端口优先级映射为内部优先级，然后根据内部优先级与队列之间的映射关系确定报文进入的队列。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/44.png"></p>
+<blockquote>
+<ul>
+<li>具体差分服务是如何通过队列调度来体现的呢？每种队列调度算法又是如何工作的？各自都有什么优缺点？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/45.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/46.png"></p>
+<blockquote>
+<ul>
+<li>FIFO队列不对报文进行分类，当报文进入接口的速度大于出接口能发送的速度时，FIFO按报文到达接口的先后顺序让报文进入队列，同时，FIFO在队列的出口让报文按进队的顺序出队，先进的报文将先出队，后进的报文将后出队。</li>
+<li>FIFO队列具有处理简单，开销小的优点。但FIFO不区分报文类型，采用尽力而为的服务模型，使得对时延敏感的实时应用的延迟得不到保证，关键业务的带宽也不能得到保证。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/47.png"></p>
+<blockquote>
+<ul>
+<li>PQ队列是针对关键业务应用设计的，且关键业务有一个重要特点，就是需要在拥塞发生时要求优先获得服务以减少响应的延迟。</li>
+<li>PQ调度机制：分为4个队列，分别为高优先队列、中优先队列、正常优先队列和低优先队列，它们的优先级依次降低。在报文出队的时候，PQ会首先让高优先队列中的报文出队并发送，直到高优先队列中的报文发送完，然后发送中优先队列中的报文，同样，直到发送完，然后是正常优先队列和低优先队列。如此的话，将关键业务的报文放入较高优先级的队列，将非关键业务（如E-Mail）的报文放入较低优先级的队列，可以保证关键业务的报文被优先传送，非关键业务的报文在处理关键业务数据的空闲间隙被传送。</li>
+<li>如果高优先级队列中持续有报文等待被发送，那么后面较低优先级队列中的报文就迟迟不能得到发送，出现“饿死”现象。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/48.png"></p>
+<blockquote>
+<ul>
+<li>WRR（Weight Round Robin）加权循环调度在RR（Round Robin）调度的基础上演变而来，根据每个队列的权重来轮流调度各队列中的报文流。实际上，RR调度相当于权值为1的WRR调度。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/49.png"></p>
+<blockquote>
+<ul>
+<li>WFQ对报文按流特征进行分类，对于IP网络，相同源IP地址、目的IP地址、源端口号、目的端口号、协议号、ToS的报文属于同一个流，而对于MPLS网络，具有相同的标签和EXP域值的报文属于同一个流。每一个流被分配到一个队列，该过程称为散列，采用HASH算法来自动完成，这种方式会尽量将不同特征的流分入不同的队列中。WFQ允许的队列数目是有限的，用户可以根据需要配置该值。 </li>
+<li>在出队的时候，WFQ按流的优先级来分配每个流应占有的出口带宽。优先级的数值越小，所得的带宽越少。优先级的数值越大，所得的带宽越多。这样就保证了相同优先级业务之间的公平，体现了不同优先级业务之间的权值。</li>
+<li>WFQ优点在于配置简单，但由于流是自动分类，无法手工干预，故缺乏一定的灵活性；且受资源限制，当多个流进入同一个队列时无法提供精确服务，无法保证每个流获得的实际资源量。WFQ均衡各个流的延迟与抖动，同样也不适合延迟敏感的业务应用。 </li>
+<li>通过以上分析，会发现如果所有队列都应用一种调度算法都存在各自的优缺点，且不能很好地满足业务需求，但通过分析会发现有些调度算法之间的优缺点正好是互补的，试想：是否可以设置不同的队列应用不同的调度算法，这样是否就能很大程度满足业务需求呢？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/50.png"></p>
+<blockquote>
+<ul>
+<li><p>PQ+WFQ调度过程：</p>
+<ul>
+<li>如图，在进行调度时，首先按照PQ方式优先调度Queue7、Queue6和Queue5队列中的报文流，只有这些队列中的报文流全部调度完毕后，才开始以WFQ方式调度Queue4、Queue3、Queue2、Queue1和Queue0队列中的报文流。其中，Queue4、Queue3、Queue2、Queue1和Queue0队列包含自己的权值。</li>
+<li>重要的协议报文以及有低时延需求的业务报文应放入PQ调度队列中，得到优先调度的机会，其他报文则可放入以WFQ方式调度的各队列中。</li>
+</ul>
+</li>
+<li><p>PQ+WFQ优缺点：</p>
+<ul>
+<li>其集合了PQ调度和WFQ调度各自的优缺点。单纯采用PQ调度时，低优先级队列中的报文流可能会长期得不到带宽，而单纯采用WFQ调度时，低延时需求业务可能得不到及时调度，而如果将两种调度方式结合起来形成PQ+WFQ调度方式，其不仅能发挥两种调度的优势，而且能互补一些各自特有的缺点。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/51.png"></p>
+<blockquote>
+<ul>
+<li>CBQ（Class-based Queueing）基于类的加权公平队列是对WFQ功能的扩展，为用户提供了自定义类的支持。CBQ首先根据IP优先级或者DSCP优先级、入接口、IP报文的五元组等规则来对报文进行分类，然后让不同类别的报文进入不同的队列。对于不匹配任何类别的报文，会送入系统定义的缺省类。</li>
+<li>CBQ提供三类队列：<ul>
+<li>EF队列：满足低时延业务。<ul>
+<li>EF队列拥有绝对优先级，仅当EF队列中的报文调度完毕后，才会调度其他队列中的报文。 </li>
+</ul>
+</li>
+<li>AF队列：满足需要带宽保证的关键数据业务。<ul>
+<li>每个AF队列分别对应一类报文，用户可以设定每类报文占用的带宽。当系统调度报文出队的时候，会按用户为各类报文设定的带宽将报文进行出队发送，可实现各个类的队列的公平调度。</li>
+</ul>
+</li>
+<li>BE队列：满足不需要严格QoS保证的尽力发送业务。<ul>
+<li>当报文不匹配用户设定的所有类别时，报文会被送入系统定义的缺省BE（Best Effort，尽力传送）类。BE队列使用接口剩余带宽和WFQ调度方式进行发送。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/52.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/53.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/54.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/55.png"></p>
+<blockquote>
+<ul>
+<li>此页配置参数与前文标题为“拥塞管理实现的第一步”的一页内容相对应。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/56.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/57.png"></p>
+<blockquote>
+<ul>
+<li>思考：尾丢弃这种方式有什么利弊？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/58.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/59.png"></p>
+<blockquote>
+<ul>
+<li>TCP全局同步：对于TCP报文，如果大量的报文被丢弃，将造成TCP超时，从而引发TCP慢启动，使得TCP减少报文的发送。当队列同时丢弃多个TCP连接的报文时，将造成多个TCP连接同时进入拥塞避免和慢启动状态以调整并降低流量，这就被称为TCP全局同步现象。这样多个TCP连接发往队列的报文将同时减少，而后又会在某个时间同时出现流量高峰，如此反复，使网络资源利用率低。</li>
+<li>思考：该如何来避免TCP全局同步现象？问题的核心是什么？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/60.png"></p>
+<blockquote>
+<ul>
+<li><p>为避免TCP全局同步现象，出现了RED（Random Early Detection）技术。RED通过随机地丢弃数据报文，让多个TCP连接不同时降低发送速度，从而避免了TCP的全局同步现象。使TCP速率及网络流量都趋于稳定。</p>
+</li>
+<li><p>RED为每个队列的长度都设定了阈值门限，并规定： </p>
+<ul>
+<li>当队列的长度小于低门限时，不丢弃报文。 </li>
+<li>当队列的长度大于高门限时，丢弃所有收到的报文。 </li>
+<li>当队列的长度在低门限和高门限之间时，开始随机丢弃到来的报文。方法是为每个到来的报文赋予一个随机数，并用该随机数与当前队列的丢弃概率比较，如果大于丢弃概率则报文被丢弃。队列越长，报文被丢弃的概率越高。</li>
+</ul>
+</li>
+<li><p>思考：尾丢弃对于丢弃TCP报文造成全局同步现象，还会对其造成其他的影响么？</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/61.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/62.png"></p>
+<blockquote>
+<ul>
+<li>RED技术是否可以解决尾丢弃的缺点二和三？为什么？</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/63.png"></p>
+<blockquote>
+<ul>
+<li>基于RED技术，又实现了WRED（Weighted Random Early Detection）技术，可实现每一种优先级都能独立设置报文的丢包的高门限、低门限及丢包率，报文到达低门限时，开始丢包，到达高门限时丢弃所有的报文，随着门限的增高，丢包率不断增加，最高丢包率不超过设置的最大丢包率，直至到达高门限，报文全部丢弃。这样按照一定的丢弃概率主动丢弃队列中的报文，从一定程度上避免了尾丢弃带来的所有缺点。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/64.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/65.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/66.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/67.png"></p>
+<blockquote>
+<p>1、答案：拥塞管理机制的实现过程分为：</p>
+<ul>
+<li>第一步：将准备从一个接口发出的所有报文放入不同的队列中；</li>
+<li>第二步：根据各队列间的调度机制实现不同报文的差分转发。</li>
+</ul>
+<p>2、答案：FIFO、PQ、WFQ、PQ+WFQ、CBQ等。</p>
+<p>3、答案：A。</p>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/68.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/69.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/70.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/71.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/72.png"></p>
+<blockquote>
+<ul>
+<li>流量监管功能可对接收或发送的流量进行限速控制，限制进入网络的突发流量，为网络提供了基本的QoS功能。</li>
+<li>流量监管TP（Traffic Policing）的典型应用是监督进入网络的某一流量的规格，把它限制在一个合理的范围之内，并对超出部分的流量进行“惩罚”，以保护网络资源和运营商的利益。</li>
+<li>流量监管通常使用承诺访问速率CAR（Committed Access Rate）来限制某类报文的流量。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/73.png"></p>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/74.png"></p>
+<blockquote>
+<ul>
+<li>流量整形TS（Traffic Shaping）的典型作用是限制流出某一网络的某一连接的正常流量与突发流量，使这类报文以比较均匀的速度向外发送，是一种主动调整流量输出速率的措施，故只能对输出的流量进行速率控制。常用GTS（Generic Traffic Shaping）技术来限制某类流量。</li>
+<li>应用场景：当网络中上下游的接口带宽不匹配，尤其是上游接口的带宽资源大于下游的带宽资源时，容易在下游网络形成拥塞。如果不希望下游网络因为上游发送数据流量过大造成拥塞，可在上游的出接口配置流量整形，使上游发送的流量与下游接收的能力相匹配。报文可以均匀向外发送，而且部分超出规格的报文不直接丢弃，而是进行缓存，等待链路空闲的时候再发送出去。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/75.png"></p>
+<blockquote>
+<p>1、答案：在进行报文流量控制时，流量监管是对超过流量限制的报文进行丢弃；而流量整形则将超过流量限制的报文缓存在队列中，等待链路空闲的时候再发送。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/23/IE-MPLS-BGP-VPN%E8%B7%A8%E5%9F%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -5833,475 +6543,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/" itemprop="url">IE-WAN技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-20T22:22:43+08:00">
-                2021-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/1.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/2.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/3.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/4.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/5.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/6.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/7.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/8.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/9.png"></p>
-<blockquote>
-<p>lT: 表示双绞线；</p>
-<p>lTX：表示2对高质量的双绞线；</p>
-<p>lFX：表示2根光纤。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/10.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/11.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/12.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/13.png"><br><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/14.png"></p>
-<blockquote>
-<p>lOC-n: Optical Carrier level n（光载体等级）是光纤传输的一种单位，最小的单位为OC-1，其传输数据量约为51.84 Mbps。</p>
-<p>lSTM: Synchronous Transport Module，同步传输模块。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/15.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/16.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/17.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/18.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/19.png"></p>
-<blockquote>
-<ul>
-<li><p>PPP共定义了三个协议组件，分别是数据封装方式，链路控制协议（Link Control Protocol，LCP）和网络层控制协议（Network Control Protocol，NCP）。</p>
-</li>
-<li><p>数据封装方式定义了如何封装多种类型的上层协议数据包。</p>
-</li>
-<li><p>为了能适应多种多样的链路类型，PPP定义了链路控制协议LCP。LCP可以自动检测链路环境，如是否存在环路；协商链路参数，如最大数据包长度，使用何种认证协议等等。与其他数据链路层协议相比，PPP协议的一个重要特点是可以提供认证功能，链路两端可以协商使用何种认证协议并实施认证过程，只有认证成功才会建立连接。这个特点使PPP协议适合运营商用来接入分散的用户。</p>
-</li>
-<li><p>PPP定义了一组网络层控制协议NCP，每一个协议对应一种网络层协议，用于协商网络层地址等参数，例如IPCP用于协商控制IP，IPXCP用于协商控制IPX协议等。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/20.png"></p>
-<blockquote>
-<p>PPP报文封转格式</p>
-<ul>
-<li><p>Flag域</p>
-<ul>
-<li>Flag域标识一个物理帧的起始和结束，该字节为0x7E。</li>
-</ul>
-</li>
-<li><p>Address域</p>
-<ul>
-<li>Address域可以唯一标识对端。PPP协议是被运用在点对点的链路上，因此，使用PPP协议互连的两个通信设备无须知道对方的数据链路层地址。按照协议的规定将该字节填充为全1的广播地址，对于PPP协议来说，该字段无实际意义。</li>
-</ul>
-</li>
-<li><p>Control域</p>
-<ul>
-<li>该字段默认值为0x03，表明为无序号帧，PPP默认没有采用序列号和确认来实现可靠传输。</li>
-<li>Address和Control域一起标识此报文为PPP报文，即PPP报文头为FF03。</li>
-</ul>
-</li>
-<li><p>Protocol域</p>
-<ul>
-<li>协议域可用来区分PPP数据帧中信息域所承载的数据报类型。</li>
-</ul>
-</li>
-<li><p>Code域</p>
-<ul>
-<li>代码域的长度为一个字节，主要是用来标识LCP数据报文的类型。</li>
-</ul>
-</li>
-<li><p>Identifier域</p>
-<ul>
-<li>标识域为1个字节，用来匹配请求和响应，当标识域值为非法时，该报文将被丢弃。</li>
-<li>通常一个配置请求报文的ID是从0x01开始逐步加1的。当对端接收到该配置请求报文后，无论使用何种报文回应对方，但必须要求回应报文中的ID要与接收报文中的ID一致。</li>
-</ul>
-</li>
-<li><p>Length域</p>
-<ul>
-<li>长度域的值就是该LCP报文的总字节数据。它是代码域、标志域、长度域和数据域四个域长度的总和。</li>
-<li>长度域所指示字节数之外的字节将被当作填充字节而忽略掉，而且该域的内容不能超过MRU的值。</li>
-</ul>
-</li>
-<li><p>Data域</p>
-<ul>
-<li>Type为协商选项类型。</li>
-<li>Length为协商选项长度，它是指Data域的总长度，也就是包含Type、Length和Data。</li>
-<li>Data为协商的选项具体内容。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/22.png"></p>
-<blockquote>
-<p>建链过程</p>
-<ul>
-<li>Dead：这是PPP工作开始和结束的阶段。当物理层变为可用状态（UP）之后，PPP进入Establish阶段。</li>
-<li>Establish：PPP在此阶段使用LCP协商链路层参数。如果链路层参数协商不成功（FAIL），则PPP连接建立不成功，PPP退回到Dead阶段。如果链路层参数协商成功（OPENED），则PPP进入Authenticate阶段。</li>
-<li>Authenticate：PPP在此阶段认证对端，如果认证失败（FAIL），则PPP进入Terminate阶段；如果认证成功（SUCCESS）或者没配置认证（NONE），则PPP进入Network阶段。</li>
-<li>Network：PPP在此阶段使用NCP进行网络层参数协商，协商成功则PPP连接建立成功，开始传输网络层数据包。当上层协议认为应当关闭此连接（例如按需电路）或者管理员手工关闭PPP连接（CLOSING），则PPP进入Terminate阶段。</li>
-<li>Terminate：PPP在此阶段使用LCP关闭PPP连接。PPP连接关闭（Down）后，PPP进入Dead阶段。</li>
-</ul>
-<p>注意：此处列出的是PPP的工作阶段，并非PPP的协议状态。由于PPP是由一组协议组成的，因此PPP本身没有协议状态。只有特定的的协议如LCP和NCP等才有协议状态和状态转换（协议状态机）。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/23.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/24.png"></p>
-<blockquote>
-<ul>
-<li><p>LCP协议有3大类报文：</p>
-<p>1.链路配置包，用于建立和配置链路：Configure-Request（匹配请求），Configure-Ack（匹配确认），Configure-Nak（匹配否认），和Configure-Reject（匹配拒绝）。</p>
-<p>2.链路结束包，用于结束一个链路：Terminate-Request（终止请求） 和 Terminate-Ack（终止确认）。</p>
-<p>3.链路维修包，用于管理和调试一个链路：Code-Reject（代码拒绝）, Protocol-Reject（协议拒绝）, Echo-Request（回波请求）, Echo-Reply（回波应答）, 和 Discard-Request（抛弃请求）。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/25.png"></p>
-<blockquote>
-<ul>
-<li>用于协商的参数<ul>
-<li>在VRP平台上，MRU参数使用接口上配置的最大传输单元（MTU）值来表示的。</li>
-<li>常用的PPP认证协议有PAP和CHAP（后续章节介绍），一条PPP链路的两端可以使用不同的认证协议认证对端，但是被认证方必须支持认证方使用的认证协议并正确配置用户名和密码等认证信息。</li>
-<li>LCP使用魔术字（Magic-Number）检测链路环路和其它异常情况。魔术字为随机产生的一个数字，随机机制需要保证两端产生相同魔术字的可能性几乎为0。</li>
-<li>收到一个Configure-Request报文之后，其包含的魔术字需要和本地产生的魔术字做比较，如果不同，表示链路无环路，则使用Confugure-Ack报文确认（其他参数也协商成功），表示魔术字协商成功。在后续发送的报文中，如果报文含有魔术字字段，则该字段设置为协商成功的魔术字，LCP不再产生新的魔术字。</li>
-<li>如果收到的Configure-Request报文和自身产生的魔术字相同，则发送一个Configure-Nak报文，携带一个新的魔术字。然后，不管新收到的Configure-Nak报文中是否携带相同的魔术字，LCP都发送一个新的Configure-Request报文，携带一个新的魔术字。如果链路有环路，则这个过程会不停的持续下去，如果链路没有环路，则报文交互会很快恢复正常。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/26.png"></p>
-<blockquote>
-<ul>
-<li><p>链路协商成功</p>
-<ul>
-<li>如图所示，R1和R2使用串行链路相连，运行PPP。当物理层链路变为可用状态之后，R1和R2使用LCP协商链路参数。本例中，R1首先发送一个LCP报文。</li>
-<li>R1向R2发送Configure-Request报文，此报文包含在发送者（R1）上配置的链路层参数，每个链路层参数使用“类型，长度，取值”的结构表示。</li>
-<li>当R2收到此Configure-Request报文之后，如果R2能识别此报文中的所有链路层参数，并且认为每个参数的取值都是可以接受的，则向R1回应一个Configure-Ack报文。</li>
-<li>在没有收到Configure-Ack报文的情况下，每隔3秒重传一次Configure-Request报文，如果连续10次发送Configure-Request报文仍然没有收到Configure-Ack报文，则认为对端不可用，停止发送Configure-Request报文。</li>
-</ul>
-</li>
-<li><p>注：完成上述过程只是表明R2认为R1上的链路参数配置是可接受的。R2也需要向R1发送Configure-Request报文，使R1检测R2上的链路参数配置是不是可接受的。</p>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/27.png"></p>
-<blockquote>
-<ul>
-<li>链路协商参数不成功</li>
-<li>当R2收到R1发送的Configure-Request报文之后，如果R2能识别此报文中携带的所有链路层参数，但是认为部分或全部参数的取值不能接受，即参数的取值协商不成功，则R2需要向R1回应一个Configure-Nak报文。</li>
-<li>在这个Configure-Nak报文中，只包含不能接受的那部分链路层参数列表，每一个包含在此报文中链路层参数的取值均被修改为此报文的发送者（R2）上可以接受的取值（或取值范围）。</li>
-<li>在收到Configure-Nak报文之后，R1需要根据此报文中的链路层参数重新选择本地使用的相关参数，并重新发送一个Configure-Request。</li>
-<li>连续五次协商仍然不成功的参数将被禁用，不再继续协商。</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/28.png"></p>
-<blockquote>
-<ul>
-<li>链路参数协商参数不能识别<ul>
-<li>当R2收到R1发送的Configure-Request报文之后，如果R2不能识别此报文中携带的部分或全部链路层参数，则R2需要向R1回应一个Configure-Reject报文。</li>
-<li>在此Configure-Reject报文中，只包含不被识别的那部分链路层参数列表。</li>
-<li>在收到Configure-Reject报文之后，R1需要向R2重新发送一个Configure-Request报文，在新的Configure-Request报文中，不再包含不被对端（R2）识别的参数。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/29.png"></p>
-<blockquote>
-<ul>
-<li>检测链路状态<ul>
-<li>LCP建立连接之后，可以使用Echo-Request报文和Echo-Reply报文检测链路状态，收到一个Echo-Request报文之后应当回应一个Echo-Reply报文，表示链路状态正常。</li>
-<li>VRP平台默认每隔10秒发送一次Echo-Request报文。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/30.png"></p>
-<blockquote>
-<ul>
-<li>连接关闭<ul>
-<li>认证不成功或者管理员手工关闭等原因可以使LCP关闭已经建立的连接。</li>
-<li>LCP关闭连接使用Terminate-Request报文和Terminate-Ack报文，Terminate-Request报文用于请求对端关闭连接，一旦收到一个Terminate-Request报文，LCP必须回应一个Terminate-Ack报文确认连接关闭。</li>
-<li>在没有收到Terminate-Ack报文的情况下，每隔3秒重传一次Terminate-Request报文，连续两次重传没有收到Terminate-Ack报文，则认为对端不可用，连接关闭。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/31.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/32.png"></p>
-<blockquote>
-<p>lPAP报文直接封装在PPP报文中。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/33.png"></p>
-<blockquote>
-<ul>
-<li>PAP工作模式<ul>
-<li>被认证方将配置的用户名和密码信息使用Authenticate-Request报文以明文方式发送给认证方，本例中，用户名为“huawei”，密码为“hello”；</li>
-<li>认证方收到被认证方发送的用户名和密码信息之后，根据本地配置的用户名和密码数据库检查用户名和密码信息是否正确匹配，如果正确，则返回Authenticate-Ack报文，表示认证成功，如果不能正确匹配，则返回Authenticate-Nak报文，表示认证失败。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/34.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/35.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/36.png"></p>
-<blockquote>
-<ul>
-<li><p>CHAP的认证过程需要三次报文的交互。为了匹配请求报文和回应报文，报文中含有Identifier字段，一次认证过程所使用的报文均使用相同的Identifier信息。CHAP单向验证过程分为两种情况：验证方配置了用户名和验证方没有配置用户名。推荐使用验证方配置用户名的方式，这样可以对验证方的用户名进行确认。</p>
-</li>
-<li><p>验证方配置了用户名的验证过程（即接口配置命令ppp chap user username）：</p>
-<ul>
-<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge），并同时将本端的用户名附带上一起发送给被验证方。</li>
-<li>被验证方接到验证方的验证请求后，先检查本端接口上是否配置了ppp chap password命令，如果配置了该命令，则被验证方将生成的密文（（Identifier＋密码＋随机数）的MD5）和自己的用户名发回验证方（Response）。如果接口上未配置ppp chap password命令，则根据此报文中验证方的用户名在本端的用户表查找该用户对应的密码，将密文（（Identifier＋密码＋随机数）的MD5）和被验证方自己的用户名发回验证方（Response）。</li>
-<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
-</ul>
-</li>
-<li><p>验证方没有配置用户名（即接口没有配置命令ppp chap user username）：</p>
-<ul>
-<li>验证方主动发起验证请求，验证方向被验证方发送一些随机产生的报文（Challenge）。</li>
-<li>被验证方接到验证方的验证请求后，利用Identifier、ppp chap password命令配置的CHAP密码和随机数进行MD5算法，将生成的密文和自己的用户名发回验证方（Response）。</li>
-<li>验证方将自己本身保存的密码、Identifier和随机数进行MD5算法，和收到respone中的密文进行比较，以验证认证是否正确。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/37.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/38.png"></p>
-<blockquote>
-<ul>
-<li><p>IPCP，用于协商控制IP参数，使PPP可用于传输IP数据包。</p>
-</li>
-<li><p>IPCP使用和LCP相同的协商机制、报文类型，但IPCP并非调用LCP，只是工作过程、报文等和LCP相同。</p>
-<ul>
-<li>两端配置的IP地址分别为12.1.1.1/24和12.1.1.2/24（两端IP地址即使不在同一网段也会通过IPCP协商）。</li>
-<li>两端静态配置IP地址的时候协商过程如下：<ul>
-<li>R1和R2都要发送Configure-Request报文，在此报文中包含本地配置的IP地址。</li>
-<li>R1和R2接收到对端的Configure-Request报文之后，检查其中的IP地址，如果IP地址是一个合法的单播IP地址，而且和本地配置的IP地址不同（没有IP冲突），则认为对端可以使用该地址，回应一个Configure-Ack报文。</li>
-<li>通过IPCP发送的信息，PPP链路的两端都可以知道对端使用的32位IP地址。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/39.png"></p>
-<blockquote>
-<ul>
-<li><p>如图所示，R1配置为请求对端分配IP地址，R2配置IP地址12.1.1.2/24，并且启用R2给对端分配IP地址的能力，给R1分配IP地址12.1.1.1。</p>
-</li>
-<li><p>两端动态协商IP地址的过程如下：</p>
-<ul>
-<li>R1向R2发送一个Configure-Request报文，此报文中含有IP地址0.0.0.0，一个含有0.0.0.0的IP地址的Configure-Request报文表示向对端请求IP地址；</li>
-<li>R2收到上述Configure-Request报文后，认为其中包含的地址（0.0.0.0）不合法，使用Configure-Nak回应一个新的IP地址12.1.1.1；</li>
-<li>R1收到此Configure-Nak报文之后，更新本地IP地址，并重新发送一个Configure-Request报文，包含新的IP地址12.1.1.1；</li>
-<li>R2收到Configure-Request报文后，认为其中包含的IP地址为合法地址，回应一个Configure-Ack报文；</li>
-<li>同时，R2也要向R1发送Configure-Request报文请求使用地址12.1.1.2，R1认为此地址合法，回应Configure-Ack报文。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/40.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/41.png"></p>
-<blockquote>
-<p>MultiLink PPP允许将报文分片，分片将从多个点对点链路上送到同一个目的地。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/42.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/43.png"></p>
-<blockquote>
-<ul>
-<li><p>命令含义</p>
-<ul>
-<li>ppp authentication-mode命令用来设置本端PPP协议对对端设备的认证方式。</li>
-<li>ppp chap user命令用来配置CHAP验证的用户名。</li>
-<li>ppp chap password命令用来配置CHAP验证的口令。</li>
-<li>ip address ppp-negotiate命令用来为本端接口配置IP地址可协商属性，使本端接口接受PPP协商产生的由对端分配的IP地址。</li>
-<li>remote address命令用来配置为对端分配IP地址或指定地址池。</li>
-</ul>
-</li>
-<li><p>ppp authentication-mode { chap | pap }</p>
-<ul>
-<li>chap：采用CHAP认证方式。</li>
-<li>pap：采用PAP认证方式。</li>
-</ul>
-</li>
-<li><p>ppp chap user username</p>
-<ul>
-<li>username：设置CHAP验证的用户名。</li>
-</ul>
-</li>
-<li><p>ppp chap password { cipher | simple } password</p>
-<ul>
-<li>cipher：表示密码为密文显示。</li>
-<li>simple：表示密码为明文显示。</li>
-<li>password：设置CHAP认证的口令。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/44.png"></p>
-<blockquote>
-<ul>
-<li>命令含义<ul>
-<li>interface mp-group命令用来创建一个MP-Group类型的接口并进入MP-Group接口视图。</li>
-<li>ppp mp mp-group命令用来将接口加入指定的MP-group，使该接口工作在MP方式。</li>
-<li>restart命令用来重新启动当前接口。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/45.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/46.png"></p>
-<blockquote>
-<ul>
-<li>Trunk接口分为Eth-Trunk和IP-Trunk两种。<ul>
-<li>Eth-Trunk只能由以太网链路构成。</li>
-<li>IP-Trunk一般由POS接口构成。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/47.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/48.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/49.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/50.png"></p>
-<blockquote>
-<ul>
-<li>PPPoE概述<ul>
-<li>PPPoE利用以太网将大量主机组成网络，通过一个远端接入设备连入因特网，并运用PPP协议对接入的每个主机进行控制，具有适用范围广、安全性高、计费方便的特点。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/51.png"></p>
-<blockquote>
-<ul>
-<li><p>PPPoE可分为三个阶段，即Discovery阶段、Session阶段和Terminate阶段。</p>
-</li>
-<li><p>Discovery阶段：</p>
-<ul>
-<li>PPPoE Client广播发送一个PADI（PPPoE Active Discovery Initial）报文，在此报文中包含PPPoE Client想要得到的服务类型信息。</li>
-<li>所有的PPPoE Server收到PADI报文之后，将其中请求的服务与自己能够提供的服务进行比较，如果可以提供，则单播回复一个PADO（PPPoE Active Discovery Offer）报文。</li>
-<li>根据网络的拓扑结构，PPPoE Client可能收到多个PPPoE Server发送的PADO报文，PPPoE Client选择最先收到的PADO报文对应的PPPoE Server做为自己的PPPoE Server，并单播发送一个PADR（PPPoE Active Discovery Request）报文。</li>
-<li>PPPoE Server产生一个唯一的会话ID（Session ID），标识和PPPoE Client的这个会话，通过发送一个PADS（PPPoE Active Discovery Session-confirmation）报文把会话ID发送给PPPoE Client，会话建立成功后便进入PPPoE Session阶段。</li>
-<li>完成后通信双方都会知道PPPoE的Session_ID及对方MAC，它们共同确定唯一的PPPoE Session。</li>
-</ul>
-</li>
-<li><p>Seesion阶段：</p>
-<ul>
-<li>PPPoE Session上的PPP协商和普通的PPP协商方式一致。PPPoE Session的PPP协商成功后，就可以承载PPP数据报文。在PPPoE Session阶段所有的以太网数据包都是单播发送的。</li>
-</ul>
-</li>
-<li><p>Terminate阶段：</p>
-<ul>
-<li>进入PPPoE Session阶段后，PPPoE Client和PPPoE Server都可以通过发送PADT报文的方式来结束PPPoE连接。PADT数据包可以在会话建立以后的任意时刻单播发送。在发送或接收到PADT后，就不允许再使用该会话发送PPP流量了。</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/52.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/53.png"></p>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/54.png"></p>
-<blockquote>
-<p>此例中，R1模拟PPPoE客户机PC进行PPPoE拨号上网，R4作为PPPoE Server对其进行验证和地址分配。</p>
-</blockquote>
-<p><img src="/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/55.png"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -6356,7 +6597,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -6369,7 +6610,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">78</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
