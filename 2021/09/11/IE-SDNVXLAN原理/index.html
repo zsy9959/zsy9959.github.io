@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE-115-SDN VXLAN原理," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概括来说，SDN2006年诞生于园区网，2012年可谓是SDN商用元年,发生了google部署sdn等重要事件将SDN推向了全球瞩目的焦点；同时2012年延展到电信网络。  下面我们结合重大事件加以介绍（内容较多，每一事件需记住关键点）。  2006年，SDN诞生于美国GENI项目资助的斯坦福大学Clean Slate课题，斯坦福大学Nick McKeown（尼克 麦吉翁）教授为首的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-SDNVXLAN原理">
+<meta property="og:url" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="概括来说，SDN2006年诞生于园区网，2012年可谓是SDN商用元年,发生了google部署sdn等重要事件将SDN推向了全球瞩目的焦点；同时2012年延展到电信网络。  下面我们结合重大事件加以介绍（内容较多，每一事件需记住关键点）。  2006年，SDN诞生于美国GENI项目资助的斯坦福大学Clean Slate课题，斯坦福大学Nick McKeown（尼克 麦吉翁）教授为首的">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/1.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/2.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/3.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/4.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/5.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/6.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/7.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/8.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/9.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/10.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/11.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/12.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/13.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/14.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/15.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/16.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/17.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/18.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/19.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/20.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/21.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/22.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/23.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/24.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/25.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/26.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/27.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/28.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/29.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/30.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/31.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/32.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/33.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/34.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/35.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/36.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/37.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/38.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/39.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/40.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/41.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/42.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/43.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/44.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/45.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/46.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/47.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/48.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/49.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/50.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/51.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/52.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/53.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/54.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/55.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/56.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/57.png">
+<meta property="article:published_time" content="2021-09-11T08:37:34.000Z">
+<meta property="article:modified_time" content="2021-09-11T08:58:02.496Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE-115-SDN VXLAN原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/09/11/IE-SDNVXLAN原理/"/>
+
+
+
+
+
+  <title>IE-SDNVXLAN原理 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-SDNVXLAN原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-09-11T16:37:34+08:00">
+                2021-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/2.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/3.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li><p>概括来说，SDN2006年诞生于园区网，2012年可谓是SDN商用元年,发生了google部署sdn等重要事件将SDN推向了全球瞩目的焦点；同时2012年延展到电信网络。</p>
+</li>
+<li><p>下面我们结合重大事件加以介绍（内容较多，每一事件需记住关键点）。</p>
+</li>
+<li><p>2006年，SDN诞生于美国GENI项目资助的斯坦福大学Clean Slate课题，斯坦福大学Nick McKeown（尼克 麦吉翁）教授为首的研究团队提出了Openflow的概念用于校园网络的试验创新，后续基于Openflow给网络带来可编程的特性，SDN的概念应运而生。Clean Slate项目的最终目的是要重新发明英特网，旨在改变设计已略显不合时宜，且难以进化发展的现有网络基础架构。</p>
+</li>
+<li><p>2007年，斯坦福大学的学生Martin Casado（马丁 卡萨多） 领导了一个关于网络安全与管理的项目Ethane，该项目试图通过一个集中式的控制器，让网络管理员可以方便地定义基于网络流的安全控制策略，并将这些安全策略应用到各种网络设备中，从而实现对整个网络通讯的安全控制。</p>
+</li>
+<li><p>2008年，基于Ethane 及其前续项目Sane的启发， Nick McKeown 教授等人提出了OpenFlow 的概念，并于当年在ACM SIGCOMM 发表了题为《OpenFlow: Enabling Innovation in Campus Networks》的论文，首次详细地介绍了OpenFlow 的概念。该篇论文除了阐述OpenFlow 的工作原理外，还列举了OpenFlow 几大应用场景。</p>
+</li>
+<li><p>基于OpenFlow 为网络带来的可编程的特性，Nick McKeown教授和他的团队进一步提出了SDN（Software Defined Network，软件定义网络）的概念。2009年，SDN 概念入围Technology Review年度十大前沿技术，自此获得了学术界和工业界的广泛认可和大力支持。</p>
+</li>
+<li><p>2009年12月，OpenFlow规范发布了具有里程碑意义的可用于商业化产品的1.0版本。如OpenFlow在Wireshark抓包分析工具上的支持插件、OpenFlow的调试工具（liboftrace ）、OpenFlow虚拟计算机仿真（OpenFlowVMS）等也已日趋成熟。OpenFlow规范已经经历了1.1、1.2以及1.3等版本。OpenFlow 1.4标准已经在ONF内部审阅，预计2013年8月初将获得批准发布。</p>
+</li>
+<li><p>2011年3月，在Nick Mckeown教授等人的推动下，开放网络基金会ONF成立，主要致力于推动SDN架构、技术的规范和发展工作。ONF成员96家，其中创建该组织的核心会员有7家，分别是Google、Facebook、NTT、、Verizon、德国电信、微软、雅虎。</p>
+</li>
+<li><p>2011年5月，NEC推出第一台可商用的OpenFlow交换机</p>
+</li>
+<li><p>2012年4月，谷歌宣布其主干网络已经全面运行在OpenFlow上，并且通过10G网络链接分布在全球各地的12个数据中心，使广域线路的利用率从30%提升到接近饱和。从而证明了OpenFlow不再仅仅是停留在学术界的一个研究模型，而是已经完全具备了可以在产品环境中应用的技术成熟度。</p>
+</li>
+<li><p>2012年7月，软件定义网络(SDN)先驱者、开源政策网络虚拟化私人控股企业Nicira以12.6亿被VMware收购。 Nicira是一家颠覆数据中心的创业公司，它基于开源技术OpenFlow创建了网络虚拟平台（NVP）。OpenFlow是Nicira联合创始人Martin Casado在斯坦福攻读博士学位期间创建的开源项目，Martin Casado的两位斯坦福大学教授Nick McKeown和Scott Shenker同时也成为了Nicira的创始人。VMware的收购将Casado十几年来所从事的技术研发全部变成了现实——把网络软件从硬件服务器中剥离出来，也是SDN走向市场的第一步。</p>
+</li>
+<li><p>2012年底，AT&amp;T、英国电信(BT)、德国电信、Orange、意大利电信、西班牙电信公司和Verizon联合发起成立了网络功能虚拟化产业联盟(Network Functions Virtualisation，NFV)，旨在将SDN的理念引入电信业。由52家网络运营商、电信设备供应商、IT设备供应商以及技术供应商组建。</p>
+</li>
+<li><p>2013年4月，思科和IBM联合微软、Big Switch、博科、思杰、戴尔、爱立信、富士通、英特尔、瞻博网络、微软、NEC、惠普、红帽和VMware等发起成立了Open Daylight，与LINUX基金会合作，开发SDN控制器、南向/北向API等软件，旨在打破大厂商对网络硬件的垄断，驱动网络技术创新力，使网络管理更容易、更廉价。这个组织中只有SDN的供应商，没有SDN的用户——互联网或者运营商。Open Daylight项目的范围包括SDN控制器，API专有扩展等，并宣布要推出工业级的开源SDN控制器。</p>
+</li>
+<li><p>简单再补充点背景知识</p>
+</li>
+<li><p>Clean Slate计划</p>
+<ul>
+<li>痛点：现有网络架构不断修补，难以解决根本问题，重新定义网络架构也许是根本解决方案，推倒重来可行么？</li>
+<li>CleanSlate项目的最终目的是要重新发明因特网，旨在改变设计已略显不合时宜，且难以进化发展的现有网络基础架构。</li>
+<li>引出广义和狭义Clean Slate项目概念<ul>
+<li>广义：泛指各种各样的下一代网络（NGN）项目</li>
+<li>狭义：斯坦福大学尼克 麦吉翁（Nick McKeown）教授牵头的实验室研究计划（SDN诞生处）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Ethane项目（CleanSlate项目计划的子课题）</p>
+<ul>
+<li>斯坦福的学生马丁.卡萨多（尼克-麦吉翁是马丁的老师）领导了一个关于网络安全与管理的项目Ethane，该项目试图通过一个集中式的控制器，让网络管理员可以方便地定义基于网络流的安全控制策略，并将这些安全策略应用到各种网络设备中，从而实现对整个网络通讯的安全控制。</li>
+<li>受此项目启发，Martin和他的导师Nick McKeown教授提出了OpenFlow的概念。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/6.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/7.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/8.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/9.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/10.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/11.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/12.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/13.png"></p>
+<blockquote>
+<ul>
+<li>虚拟机规模受网络规格限制<ul>
+<li>在大二层网络环境下，数据报文是通过查询MAC地址表进行二层转发，而MAC地址表的容量限制了虚拟机的数量。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/14.png"></p>
+<blockquote>
+<ul>
+<li>网络隔离能力限制<ul>
+<li>当前主流的网络隔离技术是VLAN或VPN（Virtual Private Network），在大规模的虚拟化网络中部署存在如下限制： 由于IEEE 802.1Q中定义的VLAN Tag域只有12比特，仅能表示4096个VLAN，无法满足大二层网络中标识大量用户群的需求。</li>
+<li>传统二层网络中的VLAN/VPN无法满足网络动态调整的需求。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/15.png"></p>
+<blockquote>
+<ul>
+<li>Google是大规模服务器集群的实践者，服务器间的大量通信要求网络是无阻塞的；</li>
+<li>Google服务器单集群的规模已经达到了1万台左右；</li>
+<li>国内的互连网厂家也在考虑规划2万台服务器的集群；</li>
+<li>网络接口数量和容量是决定集群规模的核心因素；</li>
+<li>构建跨地理区域的服务器集群，提高系统容灾能力。</li>
+<li>大二层网络:<ul>
+<li>大规模的二层网络；</li>
+<li>要求网络横向流量提供无阻塞能力。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/16.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/17.png"></p>
+<blockquote>
+<ul>
+<li>IT+CT形成合力；</li>
+<li>TRILL是革命性的技术，Vxlan是改良的技术。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/18.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/19.png"></p>
+<blockquote>
+<ul>
+<li><p>物理网路</p>
+<ul>
+<li>物理网络，带宽高，容量大；</li>
+<li>大二层网络需要STP解决环路问题；</li>
+<li>二层网络隔离受限，仅4k VLAN；</li>
+<li>虚机迁移不够灵活，需要改变物理网络配置。</li>
+</ul>
+</li>
+<li><p>Overlay网络：</p>
+<ul>
+<li>Overlay实现了某种程度的IP和位置信息的分离, 有更好的移动性, 满足二层网络弹性需求；</li>
+<li>Overlay按需部署业务网络, 业务变化的时候Underlay网络不需要改变；</li>
+<li>兼容性好，通过Overlay实现与物理网络解耦。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/20.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/21.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/22.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/23.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/24.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/25.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/26.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/27.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/28.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/29.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/30.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/31.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/32.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/33.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/34.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/35.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/36.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/37.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/38.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/39.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/40.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/41.png"></p>
+<blockquote>
+<ul>
+<li>HOST A发送单播数据报文给HOST E。</li>
+<li>注：NVE5作为三层网关，HOST A属于VNI 1，HOST E属于VNI 2，默认主机与网关都互相学习到ARP表, 各个节点MAC都已学习。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/42.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/43.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/44.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/45.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/46.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/47.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/48.png"></p>
+<blockquote>
+<ul>
+<li><p>软件方案：</p>
+<ul>
+<li>不改造现有物理设备，与具体厂商硬件设备解耦，无需配置物理网络，实现大规模逻辑二层网络的自动创建。</li>
+</ul>
+</li>
+<li><p>硬件方案：</p>
+<ul>
+<li>新建物理网络，通过VXLAN Overlay网络，实现自动化业务发放。</li>
+</ul>
+</li>
+<li><p>混合方案：</p>
+<ul>
+<li>通过SDN实现对虚拟网络及物理网络（交换机、防火墙及F5）的配置管理和自动化业务发放。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/49.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/50.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/51.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/52.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/53.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/54.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/55.png"></p>
+<blockquote>
+<ul>
+<li>参考答案：<ul>
+<li>AB</li>
+<li>ABC</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/56.png"></p>
+<p><img src="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/57.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE-115-SDN-VXLAN%E5%8E%9F%E7%90%86/" rel="tag"># HCRSE-115-SDN VXLAN原理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/31/IE-QoS%E6%8A%80%E6%9C%AF/" rel="next" title="IE-QoS技术">
+                <i class="fa fa-chevron-left"></i> IE-QoS技术
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/" rel="prev" title="IE-BGPEVPN原理">
+                IE-BGPEVPN原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

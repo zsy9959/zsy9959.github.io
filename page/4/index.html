@@ -241,6 +241,528 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/" itemprop="url">IP-VRF基本概念及应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:33:30+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/VRF.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•回顾前面学习的课程，您还记得几个名字中带“V”的协议或技术？这些协议或技术又有哪些特点或共同点？</p>
+<p>•VRF（Virtual Routing and Rorwarding，虚拟路由转发）技术通过在一台三层转发设备上创建多张路由表实现数据或业务的隔离，常用于MPLS VPN、防火墙等一些需要实现隔离的应用场景。</p>
+<p>•本课程将介绍VRF的基本概念及其基本配置方法。</p>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述VRF的基本概念</p>
+<p>▫描述VRF的典型应用</p>
+<p>▫实现VRF的基本配置</p>
+<h1 id="1-VRF基本概念"><a href="#1-VRF基本概念" class="headerlink" title="1.VRF基本概念"></a>1.VRF基本概念</h1><h2 id="网络需求"><a href="#网络需求" class="headerlink" title="网络需求"></a>网络需求</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/1.png"></p>
+<h2 id="通过部署ACL实现"><a href="#通过部署ACL实现" class="headerlink" title="通过部署ACL实现"></a>通过部署ACL实现</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/2.png"></p>
+<h2 id="通过增加核心交换机实现"><a href="#通过增加核心交换机实现" class="headerlink" title="通过增加核心交换机实现"></a>通过增加核心交换机实现</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/3.png"></p>
+<h2 id="通过VRF技术实现"><a href="#通过VRF技术实现" class="headerlink" title="通过VRF技术实现"></a>通过VRF技术实现</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/4.png"></p>
+<h2 id="VRF的实现过程"><a href="#VRF的实现过程" class="headerlink" title="VRF的实现过程"></a>VRF的实现过程</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/5.png"></p>
+<p>•VRF是对物理设备的一个逻辑划分，每个逻辑单元都被称为一个VPN实例，实例之间在路由层面是隔离的。VRF实现过程如下：</p>
+<ol>
+<li><p>创建实例，并将三层接口（可以是路由器的物理接口或者子接口，也可以是VLANIF接口）绑定到实例；</p>
+</li>
+<li><p>（可选）配置与实例绑定的路由协议或静态路由；</p>
+</li>
+<li><p>基于与实例绑定的接口和路由协议等建立实例路由表并基于实例路由表转发数据，实现实例间隔离。</p>
+</li>
+</ol>
+<blockquote>
+<p>•缺省时，一个网络设备的所有接口都属于同一个转发实例——设备的根实例。</p>
+<p>当前路由器会有几张路由表呢？</p>
+</blockquote>
+<h2 id="举例：部署VRF前"><a href="#举例：部署VRF前" class="headerlink" title="举例：部署VRF前"></a>举例：部署VRF前</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/6.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/7.png"></p>
+<h2 id="举例：创建VPN实例"><a href="#举例：创建VPN实例" class="headerlink" title="举例：创建VPN实例"></a>举例：创建VPN实例</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/8.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/9.png"></p>
+<h2 id="举例：部署动态路由协议"><a href="#举例：部署动态路由协议" class="headerlink" title="举例：部署动态路由协议"></a>举例：部署动态路由协议</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/10.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/11.png"></p>
+<h2 id="常见应用场景"><a href="#常见应用场景" class="headerlink" title="常见应用场景"></a>常见应用场景</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/12.png"></p>
+<blockquote>
+<p>•更多BGP/MPLS IP VPN相关内容，请参考HCIP-Datacom-Advance相关课程。</p>
+</blockquote>
+<h1 id="2-VRF典型配置案例"><a href="#2-VRF典型配置案例" class="headerlink" title="2.VRF典型配置案例"></a>2.VRF典型配置案例</h1><h2 id="VRF基本配置命令"><a href="#VRF基本配置命令" class="headerlink" title="VRF基本配置命令"></a>VRF基本配置命令</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/13.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/14.png"></p>
+<h2 id="配置案例-背景介绍与需求分析"><a href="#配置案例-背景介绍与需求分析" class="headerlink" title="配置案例 - 背景介绍与需求分析"></a>配置案例 - 背景介绍与需求分析</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/15.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/16.png"></p>
+<h2 id="配置案例-配置过程-1"><a href="#配置案例-配置过程-1" class="headerlink" title="配置案例 - 配置过程 (1)"></a>配置案例 - 配置过程 (1)</h2><p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/17.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/18.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/19.png"></p>
+<p><img src="/2021/05/17/IP-VRF%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%BA%94%E7%94%A8/20.png"></p>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选题）VRF技术可以实现（  ）的隔离。</p>
+<p>A.物理层</p>
+<p><strong>B.网络层</strong></p>
+<p>C.数据链路层</p>
+<p>D.应用层</p>
+<p>2.（判断题）缺省情况下，华为数通产品上所有三层接口都属于根实例。</p>
+<p><strong>A.正确</strong></p>
+<p>B.错误</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VRF技术实现了同一物理设备上不同网络之间的逻辑隔离，当在物理设备上部署多个VRF实例时，每一个VRF实例就相当于一个虚拟的网络设备。VRF实例之间的接口和路由天然隔离，当同一个物理设备连接到多个相同的网段时，也不用担心IP地址冲突的问题。</p>
+<p>•VRF技术广泛应用在防火墙虚拟系统、BGP/MPLS IP VPN等多个场景中。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/" itemprop="url">IP-VPN技术概述</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T20:19:55+08:00">
+                2021-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0.png"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、办事处、出差员工、合作单位等也需要访问公司总部的网络资源，可以采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。</p>
+<p>•VPN是一类技术的统称，不同的VPN技术拥有不同的特性和实现方式，常见的VPN技术包括IPSec VPN、GRE VPN、L2TP VPN、MPLS VPN等。</p>
+<p>•本课程将从VPN的定义、常见的VPN类型与应用场景等几个方面对VPN进行一个简单而又全面的介绍。</p>
+<blockquote>
+<p>•IPSec：Internet Protocol Security， 因特网协议安全协议。</p>
+<p>•GRE：Generic Routing Encapsulation， 通用路由封装协议。</p>
+<p>•L2TP：Layer 2 Tunneling Protocol， 二层隧道协议。</p>
+<p>•MPLS：Multiprotocol Label Switching，多协议标签交换协议。</p>
+</blockquote>
+<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述VPN的分类</p>
+<p>▫描述VPN的实现方式</p>
+<h1 id="1-什么是VPN"><a href="#1-什么是VPN" class="headerlink" title="1.什么是VPN"></a>1.什么是VPN</h1><h2 id="技术背景"><a href="#技术背景" class="headerlink" title="技术背景"></a>技术背景</h2><p>•在VPN出现之前，企业分支之间的数据传输只能依靠现有物理网络（例如Internet）。由于Internet中存在多种不安全因素，报文容易被网络中的黑客窃取或篡改，最终造成数据泄密、重要数据被破坏等后果。</p>
+<p>•除了通过Internet，还可以通过搭建一条物理专网连接保证数据的安全传输，但其费用会非常昂贵，且专网的搭建和维护十分困难。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/1.png"></p>
+<h2 id="VPN简介"><a href="#VPN简介" class="headerlink" title="VPN简介"></a>VPN简介</h2><p>VPN即虚拟专用网，泛指通过VPN技术在公用网络上构建的虚拟专用网络。VPN用户在此虚拟网络中传输私网流量，在不改变网络现状的情况下实现安全、可靠的连接。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/2.png"></p>
+<blockquote>
+<p>•VPN和传统的数据专网相比具有如下优势：</p>
+<ul>
+<li><p>安全：在远端用户、驻外机构、合作伙伴、供应商与公司总部之间建立可靠的连接，保证数据传输的安全性。这对于实现电子商务或金融网络与通讯网络的融合特别重要。</p>
+</li>
+<li><p>廉价：利用公共网络进行信息通讯，企业可以用更低的成本连接远程办事机构、出差人员和业务伙伴。</p>
+</li>
+<li><p>支持移动业务：支持驻外VPN用户在任何时间、任何地点的移动接入，能够满足不断增长的移动业务需求。</p>
+</li>
+<li><p>可扩展性：由于VPN为逻辑上的网络，物理网络中增加或修改节点，不影响VPN的部署。</p>
+</li>
+</ul>
+<p>•公共网络又经常被称为VPN骨干网（VPN Backbone），公共网络可以是Internet，也可以是企业自建专网或运营商租赁专网。</p>
+</blockquote>
+<h2 id="VPN分类-根据建设单位不同"><a href="#VPN分类-根据建设单位不同" class="headerlink" title="VPN分类 - 根据建设单位不同"></a>VPN分类 - 根据建设单位不同</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/3.png"></p>
+<h2 id="VPN分类-根据组网方式不同"><a href="#VPN分类-根据组网方式不同" class="headerlink" title="VPN分类 - 根据组网方式不同"></a>VPN分类 - 根据组网方式不同</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/4.png"></p>
+<h2 id="VPN分类-根据实现的网络层次"><a href="#VPN分类-根据实现的网络层次" class="headerlink" title="VPN分类 - 根据实现的网络层次"></a>VPN分类 - 根据实现的网络层次</h2><p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/5.png"></p>
+<blockquote>
+<p>•工作在网络层和数据链路层的VPN又被称为三层VPN和二层VPN。</p>
+</blockquote>
+<h2 id="VPN关键技术-隧道技术"><a href="#VPN关键技术-隧道技术" class="headerlink" title="VPN关键技术 - 隧道技术"></a>VPN关键技术 - 隧道技术</h2><p>•VPN技术的基本原理是利用隧道（Tunnel）技术，对传输报文进行封装，利用VPN骨干网建立专用数据传输通道，实现报文的安全传输。</p>
+<p>•位于隧道两端的VPN网关，通过对原始报文的“封装”和“解封装”，建立一个点到点的虚拟通信隧道。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/6.png"></p>
+<blockquote>
+<p>•隧道的功能就是在两个网络节点之间提供一条通路，使数据能够在这个通路上透明传输。VPN隧道一般是指在VPN骨干网的VPN节点之间建立的用来传输VPN数据的虚拟连接。隧道是构建VPN不可或缺的部分，用于把VPN数据从一个VPN节点透明传送到另一个上。</p>
+<p>•隧道通过隧道协议实现。目前已存在不少隧道协议，如GRE（Generic Routing Encapsulation）、L2TP（Layer 2 Tunneling Protocol）等。隧道协议通过在隧道的一端给数据加上隧道协议头，即进行封装，使这些被封装的数据能都在某网络中传输，并且在隧道的另一端去掉该数据携带的隧道协议头，即进行解封装。报文在隧道中传输前后都要通过封装和解封装两个过程。</p>
+<p>•部分隧道可以混合使用，如GRE Over IPSec隧道。</p>
+</blockquote>
+<h2 id="VPN关键技术-身份认证、数据加密与验证"><a href="#VPN关键技术-身份认证、数据加密与验证" class="headerlink" title="VPN关键技术 - 身份认证、数据加密与验证"></a>VPN关键技术 - 身份认证、数据加密与验证</h2><p>身份认证、数据加密和认证技术可以有效保证VPN网络与数据的安全性：</p>
+<ul>
+<li><p>身份认证：可用于部署了远程接入VPN的场景，VPN网关对用户的身份进行认证，保证接入网络的都是合法用户而非恶意用户。也可以用于VPN网关之间对对方身份的认证。</p>
+</li>
+<li><p>数据加密：将明文通过加密变成密文，使得数据即使被黑客截获，黑客也无法获取其中的信息。</p>
+</li>
+<li><p>数据验证：通过数据验证技术对报文的完整性和真伪进行检查，丢弃被伪造和被篡改的报文。</p>
+</li>
+</ul>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/7.png"></p>
+<h1 id="2-常见VPN技术"><a href="#2-常见VPN技术" class="headerlink" title="2.常见VPN技术"></a>2.常见VPN技术</h1><h2 id="IPSec概述"><a href="#IPSec概述" class="headerlink" title="IPSec概述"></a>IPSec概述</h2><p>IPSec（IP Security） VPN一般部署在企业出口设备之间，通过加密与验证等方式，实现了数据来源验证、数据加密、数据完整性保证和抗重放等功能。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/8.png"></p>
+<blockquote>
+<p>•数据来源验证：接收方验证发送方身份是否合法。</p>
+<p>•数据加密：发送方对数据进行加密，以密文的形式在Internet上传送，接收方对接收的加密数据进行解密后处理或直接转发。</p>
+<p>•数据完整性：接收方对接收的数据进行验证，以判定报文是否被篡改。</p>
+<p>•抗重放：接收方拒绝旧的或重复的数据包，防止恶意用户通过重复发送捕获到的数据包所进行的攻击。</p>
+</blockquote>
+<h2 id="IPSec协议体系"><a href="#IPSec协议体系" class="headerlink" title="IPSec协议体系"></a>IPSec协议体系</h2><p>IPSec不是一个单独的协议，它给出了IP网络上数据安全的一整套体系结构，包括AH（Authentication Header）、ESP（Encapsulating Security Payload）、IKE（Internet Key Exchange）等协议。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/9.png"></p>
+<blockquote>
+<p>•IPSec使用认证头AH（Authentication Header）和封装安全载荷ESP（Encapsulating Security Payload）两种安全协议来传输和封装数据，提供认证或加密等安全服务。</p>
+<ul>
+<li><p>AH和ESP协议提供的安全功能依赖于协议采用的验证、加密算法。</p>
+</li>
+<li><p>AH仅支持认证功能，不支持加密功能。ESP支持认证和加密功能。</p>
+</li>
+<li><p>安全协议提供认证或加密等安全服务需要有秘钥的存在。</p>
+</li>
+</ul>
+<p>•秘钥交换的方式有两种：</p>
+<ul>
+<li><p>带外共享密钥：在发送、接收设备上手工配置静态的加密、验证密钥。双方通过带外共享的方式（例如通过电话或邮件方式）保证密钥一致性。这种方式的缺点是可扩展性差，在点到多点组网中配置密钥的工作量成倍增加。另外，为提升网络安全性需要周期性修改密钥，这种方式下也很难实施。</p>
+</li>
+<li><p>通过IKE协议自动协商密钥：IKE建立在Internet安全联盟和密钥管理协议ISAKMP定义的框架上，采用DH（Diffie-Hellman）算法在不安全的网络上安全地分发密钥。这种方式配置简单，可扩展性好，特别是在大型动态的网络环境下此优点更加突出。同时，通信双方通过交换密钥交换材料来计算共享的密钥，即使第三方截获了双方用于计算密钥的所有交换数据，也无法计算出真正的密钥。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="IPSec基本原理"><a href="#IPSec基本原理" class="headerlink" title="IPSec基本原理"></a>IPSec基本原理</h2><p>IPSec隧道建立过程中需要协商IPSec SA（Security Association，安全联盟），IPSec SA一般通过IKE协商生成。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/10.png"></p>
+<blockquote>
+<p>•SA由一个三元组来唯一标识，这个三元组包括安全参数索引SPI（Security Parameter Index）、目的IP地址和使用的安全协议号（AH或ESP）。其中，SPI是为唯一标识SA而生成的一个32位比特的数值，它在AH和ESP头中传输。在手工配置SA时，需要手工指定SPI的取值。使用IKE协商产生SA时，SPI将随机生成。</p>
+<p>•SA是单向的逻辑连接，因此两个IPSec对等体之间的双向通信，最少需要建立两个SA来分别对两个方向的数据流进行安全保护。</p>
+<p>•IKE作为秘钥协商协议，存在两个版本：IKEv1和IKEv2，本课程采用IKEv1为例进行介绍，IKEv2内容可参考产品文档对应内容。</p>
+<ul>
+<li><p>IKEv1协商阶段1的目的是建立IKE SA。IKE SA建立后对等体间的所有ISAKMP消息都将通过加密和验证，这条安全通道可以保证IKEv1第二阶段的协商能够安全进行。IKE SA是一个双向的逻辑连接，两个IPSec对等体间只建立一个IKE SA。</p>
+</li>
+<li><p>IKEv1协商阶段2的目的就是建立用来安全传输数据的IPSec SA，并为数据传输衍生出密钥。该阶段使用IKEv1协商阶段1中生成的密钥对ISAKMP消息的完整性和身份进行验证，并对ISAKMP消息进行加密，故保证了交换的安全性。</p>
+</li>
+</ul>
+<p>•IKE协商成功意味着双向的IPSec隧道已经建立，可以通过ACL方式或者安全框架方式定义IPSec“感兴趣流”，符合感兴趣流流量特征的数据都将被送入IPSec隧道进行处理。</p>
+<p>•感兴趣流：需要被IPSec保护的数据流。</p>
+</blockquote>
+<h2 id="GRE概述"><a href="#GRE概述" class="headerlink" title="GRE概述"></a>GRE概述</h2><p>通用路由封装协议（General Routing Encapsulation，GRE）是一种三层VPN封装技术。GRE可以对某些网络层协议（如IPX、IPv4、IPv6等）的报文进行封装，使封装后的报文能够在另一种网络中（如IPv4）传输，从而解决了跨越异种网络的报文传输问题。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/11.png"></p>
+<blockquote>
+<p>•如图所示，通过在IPv4网络上建立GRE隧道，解决了两个IPv6网络的通信问题。</p>
+<p>•GRE还具备封装组播报文的能力。由于动态路由协议中会使用组播报文，因此更多时候GRE会在需要传递组播路由数据的场景中被用到，这也是GRE被称为通用路由封装协议的原因。</p>
+</blockquote>
+<h2 id="GRE基本原理"><a href="#GRE基本原理" class="headerlink" title="GRE基本原理"></a>GRE基本原理</h2><p>•GRE构成要素分为3个部分：乘客协议、封装协议和运输协议。</p>
+<p>▫乘客协议是指用户在传输数据时所使用的原始网络协议。</p>
+<p>▫封装协议的作用就是用来“包装”乘客协议对应的报文，使原始报文能够在新的网络中传输。</p>
+<p>▫运输协议是指被封装以后的报文在新网络中传输时所使用的网络协议。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/12.png"></p>
+<blockquote>
+<p>•隧道接口（Tunnel Interface）是为实现报文的封装而提供的一种点对点类型的虚拟接口，与Loopback接口类似，都是一种逻辑接口。</p>
+<p>•如图所示，乘客协议为IPv6，封装协议为GRE，运输协议为IPv4。整体转发流程如下：</p>
+<ol>
+<li><p>当R1收到IP1发来的IPv6数据包，查询设备路由表，发现出接口是隧道接口，则将此报文发给隧道接口处理。</p>
+</li>
+<li><p>隧道接口给原始报文添加GRE头部，然后根据配置信息，给报文加上IP头。该IP头的源地址就是隧道源地址，IP头的目的地址就是隧道目的地址。</p>
+</li>
+<li><p>封装后的报文在IPv4网络中进行普通的IPv4路由转发，最终到达目的地R2。</p>
+</li>
+<li><p>解封装过程和封装过程相反，这里不再赘述。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="GRE-Over-IPSec"><a href="#GRE-Over-IPSec" class="headerlink" title="GRE Over IPSec"></a>GRE Over IPSec</h2><p>•GRE的主要缺点是不支持加密和认证，数据的安全传输得不到很好的保障。</p>
+<p>•IPSec的主要缺点是只支持IP协议，且不支持组播。</p>
+<p>•可通过部署GRE Over IPSec结合两种VPN技术的优点。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/13.png"></p>
+<h2 id="L2TP概述"><a href="#L2TP概述" class="headerlink" title="L2TP概述"></a>L2TP概述</h2><p>•L2TP是虚拟私有拨号网VPDN（Virtual Private Dial-up Network）隧道协议的一种，它扩展了点到点协议PPP的应用，是一种在远程办公场景中为出差员工或企业分支远程访问企业内网资源提供接入服务的VPN。</p>
+<p>•L2TP组网架构中包括LAC（L2TP Access Concentrator，L2TP访问集中器）和LNS（L2TP Network Server，L2TP网络服务器）</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/14.png"></p>
+<blockquote>
+<p>•VPDN是指利用公共网络（如ISDN和PSTN）的拨号功能及接入网来实现虚拟专用网，为企业、小型ISP、移动办公人员提供接入服务。VPDN采用专用的网络加密通信协议，在公共网络上为企业建立安全的虚拟专网。企业驻外机构和出差人员可从远程经由公共网络，通过虚拟加密隧道实现和企业总部之间的网络连接，而公共网络上其它用户则无法穿过虚拟隧道访问企业网内部的资源。VPDN隧道协议有多种，目前使用最广泛的是L2TP。</p>
+<p>•LAC是网络上具有PPP和L2TP协议处理能力的设备。LAC负责和LNS建立L2TP隧道连接。在不同的组网环境中，LAC可以是不同的设备，可以是一台网关设备，也可以是一台终端设备。LAC可以发起建立多条L2TP隧道使数据流之间相互隔离。</p>
+<p>•LNS是LAC的对端设备，即LAC和LNS建立了L2TP隧道；LNS位于企业总部私网与公网边界，通常是企业总部的网关设备。</p>
+</blockquote>
+<h2 id="L2TP消息"><a href="#L2TP消息" class="headerlink" title="L2TP消息"></a>L2TP消息</h2><p>L2TP协议包含两种类型的消息，控制消息和数据消息，消息的传输在LAC和LNS之间进行。</p>
+<p>​    ▫控制消息用于L2TP隧道和会话连接的建立、维护和拆除。</p>
+<p>​    ▫数据消息用于封装PPP数据帧并在隧道上传输。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/15.png"></p>
+<blockquote>
+<p>•控制消息</p>
+<ul>
+<li><p>用于L2TP隧道和会话连接的建立、维护和拆除。在控制消息的传输过程中，使用消息丢失重传和定时检测隧道连通性等机制来保证控制消息传输的可靠性，支持对控制消息的流量控制和拥塞控制。</p>
+</li>
+<li><p>控制消息承载在L2TP控制通道上，控制通道实现了控制消息的可靠传输，将控制消息封装在L2TP报头内，再经过IP网络传输。</p>
+</li>
+</ul>
+<p>•数据消息</p>
+<ul>
+<li><p>用于封装PPP数据帧并在隧道上传输。数据消息是不可靠的传输，不重传丢失的数据报文，不支持对数据消息的流量控制和拥塞控制。</p>
+</li>
+<li><p>数据消息携带PPP帧承载在不可靠的数据通道上，对PPP帧进行L2TP封装，再经过IP网络传输。</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="L2TP工作过程"><a href="#L2TP工作过程" class="headerlink" title="L2TP工作过程"></a>L2TP工作过程</h2><p>L2TP主要可分为以下三种工作场景，其工作过程并不相同：</p>
+<p>​    ▫NAS-Initiated场景：拨号用户通过NAS访问企业内网</p>
+<p>​    ▫Client-Initiated场景：移动办公用户访问企业内网</p>
+<p>​    ▫Call-LNS场景：通过LAC自主拨号实现企业内网互连</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/16.png"></p>
+<blockquote>
+<p>•NAS-Initiated场景：由远程拨号用户发起，远程系统通过PSTN/ISDN拨入LAC，由LAC通过Internet向LNS发起建立隧道连接请求。拨号用户地址由LNS分配；对远程拨号用户的验证与计费既可由LAC侧的代理完成，也可在LNS完成。</p>
+<ul>
+<li><p>用户必须采用PPP的方式接入到Internet，也可以是PPPoE等协议。</p>
+</li>
+<li><p>运营商的接入设备（主要是BAS设备）需要开通相应的VPN服务。用户需要到运营商处申请该业务。</p>
+</li>
+<li><p>L2TP隧道两端分别驻留在LAC侧和LNS侧，且一个L2TP隧道可以承载多个会话。</p>
+</li>
+</ul>
+<p>•Client-Initialized场景：直接由LAC客户（指可在本地支持L2TP协议的用户）发起。客户需要知道LNS的IP地址。LAC客户可直接向LNS发起隧道连接请求，无需再经过一个单独的LAC设备。在LNS设备上收到了LAC客户的请求之后，根据用户名、密码进行验证，并且给LAC客户分配私有IP地址。</p>
+<ul>
+<li>用户需要安装L2TP的拔号软件。部分操作系统自带L2TP客户端软件。</li>
+<li>用户上网的方式和地点没有限制，不需ISP介入。</li>
+<li>L2TP隧道两端分别驻留在用户侧和LNS侧，一个L2TP隧道承载一个L2TP会话。</li>
+<li>该场景建立过程如下：</li>
+</ul>
+<ol>
+<li><p>移动办公用户与LNS建立L2TP隧道。</p>
+</li>
+<li><p>移动办公用户与LNS建立L2TP会话：移动办公用户在第3步会与LNS间建立PPP连接，L2TP会话用来记录和管理它们之间的PPP连接状态。因此，在建立PPP连接以前，隧道双方需要为PPP连接预先协商出一个L2TP会话。会话中携带了移动办公用户的LCP协商信息和用户认证信息，LNS对收到的信息认证通过后，通知移动办公用户会话建立成功。L2TP会话连接由会话ID进行标识。</p>
+</li>
+<li><p>移动办公用户与LNS建立PPP连接。移动办公用户通过与LNS建立PPP连接获取LNS分配的企业内网IP地址。</p>
+</li>
+<li><p>移动办公用户发送业务报文访问企业总部服务器。</p>
+</li>
+</ol>
+<p>•Call-LNS场景：L2TP除了可以为出差员工提供远程接入服务以外，还可以进行企业分支与总部的内网互联，实现分支用户与总部用户的互访。一般是由分支路由器充当LAC与LNS建立L2TP隧道，这样就可实现分支与总部网络之间的数据通过L2TP隧道互通。</p>
+</blockquote>
+<h2 id="L2TP-Over-IPSec"><a href="#L2TP-Over-IPSec" class="headerlink" title="L2TP Over IPSec"></a>L2TP Over IPSec</h2><p>当企业对数据和网络的安全性要求较高时，L2TP无法为报文传输提供足够的保护。这时可以和IPSec功能结合使用，保护传输的数据，有效避免数据被截取或攻击。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/17.png"></p>
+<blockquote>
+<p>•企业出差用户和总部通信，使用L2TP功能建立VPN连接，总部部署为LNS对接入的用户进行认证。当出差用户需要向总部传输高机密信息时，L2TP无法为报文传输提供足够的保护，这时可以和IPSec功能结合使用，保护传输的数据。在出差用户的PC终端上运行拨号软件，将数据报文先进行L2TP封装，再进行IPSec封装，发往总部。在总部网关，部署IPSec策略，最终还原数据。这种方式IPSec功能会对所有源地址为LAC、目的地址为LNS的报文进行保护。</p>
+</blockquote>
+<h2 id="MPLS-VPN概述"><a href="#MPLS-VPN概述" class="headerlink" title="MPLS VPN概述"></a>MPLS VPN概述</h2><p>•MPLS是一种利用标签（Label）进行转发的技术，最初为了提高IP报文转发速率而被提出，现主要应用于VPN和流量工程、QoS等场景。 </p>
+<p>•根据部署的不同，MPLS VPN可分为MPLS L2 VPN或者MPLS L3 VPN。</p>
+<p>•企业可以自建MPLS专网也可以通过租用运营商MPLS专网的方式获得MPLS VPN接入服务。</p>
+<p><img src="/2021/05/17/IP-VPN%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0/18.png"></p>
+<blockquote>
+<p>•MPLS VPN网络一般由运营商搭建，VPN用户购买VPN服务来实现用户网络之间（图中的分公司和总公司）的路由传递、数据互通等。</p>
+<p>•基本的MPLS VPN网络架构由CE（Customer Edge）、PE（Provider Edge）和P（Provider）三部分组成：</p>
+<ul>
+<li><p>CE：用户网络边缘设备，有接口直接与运营商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。</p>
+</li>
+<li><p>PE：运营商边缘路由器，是运营商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。</p>
+</li>
+<li><p>P：运营商网络中的骨干路由器，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN相关信息。</p>
+</li>
+</ul>
+<p>•更多MPLS及MPLS VPN的相关内容，参考HCIP-Datacom-Advance相应课程。</p>
+</blockquote>
+<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（判断题）L2TP VPN工作在网络层。</p>
+<p>A. 正确</p>
+<p><strong>B. 错误</strong></p>
+<p>2.（多选题）IPSec SA包含以下哪些内容？</p>
+<p><strong>A. SPI</strong></p>
+<p><strong>B. 安全协议</strong></p>
+<p>C. 源地址</p>
+<p><strong>D. 目的地址</strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•VPN技术拥有安全、廉价、支持移动业务、灵活等一系列优势，已经成为现网中部署最为广泛的一类技术。</p>
+<p>•本课程从VPN基本概念与分类出发，简单介绍了如下几类常见VPN技术：</p>
+<ul>
+<li><p>IPSec VPN：是一系列为IP网络提供安全性的协议和服务的集合，为IP网络提供安全的传输。</p>
+</li>
+<li><p>GRE VPN：提供了将一种协议的报文封装在另一种协议报文中的机制，解决异种网络的传输问题。</p>
+</li>
+<li><p>L2TP VPN：是一种能够提供移动用户远程接入服务的二层VPN技术。</p>
+</li>
+<li><p>MPLS VPN：一种通过标签交换技术，实现站点与站点之间互联的VPN技术。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%AE%89%E5%85%A8%E7%89%B9%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2997,763 +3519,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/" itemprop="url">IP-交换机堆叠与集群</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-17T11:17:56+08:00">
-                2021-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•随着企业的发展，企业网络的规模越来越大，这对企业网络提出了更高的要求：更高的可靠性、更低的故障恢复时间、设备更加易于管理等。</p>
-<p>•传统的园区网高可靠性技术出现故障时切换时间很难做到毫秒级别、实现可靠性的方案通常为一主一备，存在着严重的资源浪费。同时随着网络设备的越来越多，管理将会变得越加复杂。为构建可靠、易管理、资源利用率高、易于扩展的交换网络，引入了交换机堆叠、集群技术。</p>
-<p>•本章节中将介绍交换机堆叠、集群技术的技术原理、组网方式等。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述交换机堆叠、集群的基本概念</p>
-<p>▫阐述堆叠、集群的建立过程</p>
-<p>▫阐述堆叠、集群的分裂检测技术原理</p>
-<h1 id="1-堆叠、集群技术概述"><a href="#1-堆叠、集群技术概述" class="headerlink" title="1.堆叠、集群技术概述"></a>1.堆叠、集群技术概述</h1><h2 id="堆叠、集群简介"><a href="#堆叠、集群简介" class="headerlink" title="堆叠、集群简介"></a>堆叠、集群简介</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/1.png"></p>
-<blockquote>
-<p>•堆叠（iStack），将多台支持堆叠特性的交换机通过堆叠线缆连接在一起，从逻辑上虚拟成一台交换设备，作为一个整体参与数据转发。</p>
-<p>•集群（Cluster Switch System，CSS），将两台支持集群特性的交换机设备组合在一起，从逻辑上虚拟成一台交换设备。</p>
-<p>•集群只支持两台设备，一般高端框式交换机支持CSS、盒式设备支持iStack。</p>
-<p>•通过使用堆叠、集群技术结合链路聚合技术可以简单构建高可靠、无环的园区网络。</p>
-</blockquote>
-<h2 id="堆叠、集群架构"><a href="#堆叠、集群架构" class="headerlink" title="堆叠、集群架构"></a>堆叠、集群架构</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/2.png"></p>
-<p>•使用堆叠、集群技术将独立的交换机虚拟化成一台逻辑的交换机，一般接入、汇聚层盒式交换机采用堆叠技术，汇聚、核心层交换机采用集群技术。</p>
-<p>•在逻辑交换机之间使用链路聚合技术，无需部署STP、VRRP实现高可靠性。</p>
-<p>•实现高可靠性的同时设备之间的链路可以同时传输流量，链路利用率得以提升。</p>
-<h2 id="堆叠、集群的优势-1"><a href="#堆叠、集群的优势-1" class="headerlink" title="堆叠、集群的优势 (1)"></a>堆叠、集群的优势 (1)</h2><p>使用堆叠、集群可有效提高资源利用率，获得更高的转发性能、链路带宽。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/3.png"></p>
-<h2 id="堆叠、集群的优势-2"><a href="#堆叠、集群的优势-2" class="headerlink" title="堆叠、集群的优势 (2)"></a>堆叠、集群的优势 (2)</h2><p>使用堆叠、集群可以降低网络规划的复杂度，方便对于网络的管理。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/4.png"></p>
-<h2 id="堆叠、集群的优势-3"><a href="#堆叠、集群的优势-3" class="headerlink" title="堆叠、集群的优势 (3)"></a>堆叠、集群的优势 (3)</h2><p>使用堆叠、集群可以大大降低故障导致的业务中断时间。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/5.png"></p>
-<h1 id="2-堆叠技术原理"><a href="#2-堆叠技术原理" class="headerlink" title="2.堆叠技术原理"></a>2.堆叠技术原理</h1><h2 id="堆叠基本概念"><a href="#堆叠基本概念" class="headerlink" title="堆叠基本概念"></a>堆叠基本概念</h2><p>•堆叠系统中所有的单台交换机都称为成员交换机，按照功能不同，可以分为三种角色：</p>
-<ul>
-<li><p>主交换机（Master）：主交换机负责管理整个堆叠。堆叠系统中只有一台主交换机。</p>
-</li>
-<li><p>备交换机（Standby）：备交换机是主交换机的备份交换机。堆叠系统中只有一台备交换机。当主交换机故障时，备交换机会接替原主交换机的所有业务。</p>
-</li>
-<li><p>从交换机（Slave）：从交换机用于业务转发，堆叠系统中可以有多台从交换机。从交换机数量越多，堆叠系统的转发带宽越大。除主交换机和备交换机外，堆叠中其他所有的成员交换机都是从交换机。当备交换机不可用时，从交换机承担备交换机的角色。</p>
-</li>
-</ul>
-<p>•堆叠优先级：堆叠优先级是成员交换机的一个属性，主要用于角色选举过程中确定成员交换机的角色，优先级值越大表示优先级越高，优先级越高当选为主交换机的可能性越大。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/6.png"></p>
-<h2 id="堆叠ID"><a href="#堆叠ID" class="headerlink" title="堆叠ID"></a>堆叠ID</h2><p>•堆叠ID，即成员交换机的槽位号（Slot ID），用来标识和管理成员交换机，堆叠中所有成员交换机的堆叠ID都是唯一的。</p>
-<p>•设备堆叠ID缺省为0。堆叠时由堆叠主交换机对设备的堆叠ID进行管理，当堆叠系统有新成员加入时，如果新成员与已有成员堆叠ID冲突，则堆叠主交换机从0～最大的堆叠ID进行遍历，找到第一个空闲的ID分配给该新成员。</p>
-<p>•在建立堆叠时，建议提前规划好设备的堆叠ID。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/7.png"></p>
-<h2 id="堆叠逻辑接口"><a href="#堆叠逻辑接口" class="headerlink" title="堆叠逻辑接口"></a>堆叠逻辑接口</h2><p>•堆叠逻辑接口：交换机之间用于建立堆叠的逻辑接口，每台交换机支持两个逻辑堆叠端口，分别为stack-port n/1和stack-port n/2，其中n为成员交换机的堆叠ID。</p>
-<p>•一个逻辑堆叠端口可以绑定多个物理成员端口，用来提高堆叠的可靠性和堆叠带宽。</p>
-<p>•堆叠成员设备之间，本端设备的逻辑堆叠端口stack-port n/1必须与对端设备的逻辑堆叠端口stack-port m/2相连。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/8.png"></p>
-<blockquote>
-<p>•如果两端设备对应的逻辑堆叠端口（本端的stack-port n/1与对端的stack-port m/2）内包含多个物理成员端口，对物理成员端口的连接无对应端口号的要求。</p>
-</blockquote>
-<h2 id="堆叠系统组建过程"><a href="#堆叠系统组建过程" class="headerlink" title="堆叠系统组建过程"></a>堆叠系统组建过程</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/9.png"></p>
-<h2 id="堆叠方式"><a href="#堆叠方式" class="headerlink" title="堆叠方式"></a>堆叠方式</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/10.png"></p>
-<blockquote>
-<p>•每台交换机支持两个逻辑堆叠端口，分别为stack-port n/1和stack-port n/2，其中n为成员交换机的堆叠ID。</p>
-</blockquote>
-<h2 id="堆叠连接拓扑"><a href="#堆叠连接拓扑" class="headerlink" title="堆叠连接拓扑"></a>堆叠连接拓扑</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/11.png"></p>
-<h2 id="主交换机选举"><a href="#主交换机选举" class="headerlink" title="主交换机选举"></a>主交换机选举</h2><p>•确定出堆叠的连接方式和连接拓扑，完成成员交换机之间的物理连接之后，所有成员交换机上电。此时，堆叠系统开始进行主交换机的选举。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/12.png"></p>
-<h2 id="备交换机选举"><a href="#备交换机选举" class="headerlink" title="备交换机选举"></a>备交换机选举</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/13.png"></p>
-<h2 id="软件、配置同步"><a href="#软件、配置同步" class="headerlink" title="软件、配置同步"></a>软件、配置同步</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/14.png"></p>
-<h2 id="堆叠管理与配置文件"><a href="#堆叠管理与配置文件" class="headerlink" title="堆叠管理与配置文件"></a>堆叠管理与配置文件</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/15.png"></p>
-<blockquote>
-<p>•堆叠系统的配置文件包括：</p>
-<p>​    ▫全局配置：例如IP地址、STP、VLAN、SNMP等，适用于所有堆叠成员交换机。新加入堆叠系统的交换机使用堆叠系统的全局配置，不再使用交换机自己的全局配置。交换机离开堆叠系统时，将继续使用堆叠系统的配置直到加入新的堆叠系统。</p>
-<p>​    ▫接口配置：适用于接口所在成员交换机。接口上的配置和堆叠ID有关，当堆叠ID改变时：</p>
-<p>▪如果新ID在配置文件中不存在对应的接口配置，则新ID的接口配置使用默认配置。</p>
-<p>▪如果新ID在配置文件中存在对应的接口配置，则新ID的接口配置使用对应的配置。</p>
-<p>•堆叠相关配置不会丢失，即从设备离开堆叠之后，堆叠相关配置仍会继续存在，同样会进行堆叠的选举，如果需要彻底清除堆叠配置需要通过命令手动清除，清除的配置内容包括：</p>
-<p>​    ▫交换机槽位号</p>
-<p>​    ▫堆叠优先级</p>
-<p>​    ▫堆叠保留VLAN</p>
-<p>​    ▫系统MAC切换时间</p>
-<p>​    ▫堆叠口配置</p>
-<p>​    ▫堆叠口速率配置</p>
-<p>​    执行该命令会导致设备重启</p>
-</blockquote>
-<h2 id="堆叠成员退出"><a href="#堆叠成员退出" class="headerlink" title="堆叠成员退出"></a>堆叠成员退出</h2><p>堆叠成员退出是指成员交换机从堆叠系统中离开。根据退出成员交换机角色的不同，对堆叠系统的影响也有所不同：</p>
-<p>▫当主交换机退出，备份交换机升级为主交换机，重新计算堆叠拓扑并同步到其他成员交换机，指定新的备交换机，之后进入稳定运行状态。</p>
-<p>▫当备交换机退出，主交换机重新指定备交换机，重新计算堆叠拓扑并同步到其他成员交换机，之后进入稳定运行状态。</p>
-<p>▫当从交换机退出，主交换机重新计算堆叠拓扑并同步到其他成员交换机，之后进入稳定运行状态。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/16.png"></p>
-<blockquote>
-<p>•堆叠成员交换机退出的过程，主要就是拆除堆叠线缆和移除交换机的过程：</p>
-<ul>
-<li><p>对于环形堆叠：成员交换机退出后，为保证网络的可靠性还需要把退出交换机连接的两个端口通过堆叠线缆进行连接。</p>
-</li>
-<li><p>对于链形堆叠：拆除中间交换机会造成堆叠分裂。这时需要在拆除前进行业务分析，尽量减少对业务的影响。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="堆叠成员加入"><a href="#堆叠成员加入" class="headerlink" title="堆叠成员加入"></a>堆叠成员加入</h2><p>堆叠成员加入是指向已经稳定运行的堆叠系统添加一台新的交换机：</p>
-<p>▫将未上电的交换机连线加入堆叠之后再上电启动，新加入的交换机会选举为从交换机，堆叠系统中原有主备从角色不变。</p>
-<p>▫角色选举结束后，主交换机更新堆叠拓扑信息，同步到其他成员交换机上，并向新加入的交换机分配堆叠ID（新加入的交换机没有配置堆叠ID或配置的堆叠ID与原堆叠系统的冲突时）。</p>
-<p>▫新加入的交换机更新堆叠ID，并同步主交换机的配置文件和系统软件，之后进入稳定运行状态。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/17.png"></p>
-<blockquote>
-<p>•未上电的交换机加入堆叠：</p>
-<p>​    ▫如果是链形连接，新加入的交换机建议添加到链形的两端，这样对现有的业务影响最小。</p>
-<p>​    ▫如果是环形连接，需要把当前环形拆成链形，然后在链形的两端添加设备。</p>
-</blockquote>
-<h2 id="堆叠合并"><a href="#堆叠合并" class="headerlink" title="堆叠合并"></a>堆叠合并</h2><p>•堆叠合并是指稳定运行的两个堆叠系统合并成一个新的堆叠系统。</p>
-<p>•例如：已上电的一台交换机并且配置了堆叠（已形成单机堆叠），通过堆叠线缆与已经在运行的堆叠系统连接。该过程为堆叠合并，与堆叠加入不同。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/18.png"></p>
-<blockquote>
-<p>•单机堆叠：单机堆叠就是一台交换机使能了堆叠功能，整个堆叠系统中只有一台主交换机。只有使能了堆叠功能的交换机才可以加入堆叠系统或与其他使能了堆叠功能的交换机组建堆叠。</p>
-<p>•堆叠合并过程如下：</p>
-<p>▫两个堆叠系统的主交换机通过竞争，选举出一个更优的作为新堆叠系统的主交换机。</p>
-<p>▫竞争成功的主交换机所在的堆叠系统将保持原有主备从角色和配置不变，业务也不会受到影响</p>
-<p>▫而另外一个堆叠系统的所有成员交换机将重新启动，以从交换机的角色加入到新堆叠系统，其堆叠ID将由新主交换机重新分配，并将同步新主交换机的配置文件和系统软件，该堆叠系统的原有业务也将中断。</p>
-</blockquote>
-<h2 id="堆叠分裂"><a href="#堆叠分裂" class="headerlink" title="堆叠分裂"></a>堆叠分裂</h2><p>堆叠分裂是指稳定运行的堆叠系统中带电移出部分成员交换机，或者堆叠线缆多点故障导致一个堆叠系统变成多个堆叠系统。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/19.png"></p>
-<h2 id="堆叠分裂引起的问题"><a href="#堆叠分裂引起的问题" class="headerlink" title="堆叠分裂引起的问题"></a>堆叠分裂引起的问题</h2><p>由于堆叠系统中所有成员交换机都使用同一个IP地址（VLANIF接口地址）和MAC地址（堆叠系统MAC），一个堆叠系统分裂后，可能产生多个具有相同IP地址和MAC地址的堆叠系统，从而引起网络故障，为此必须进行IP地址和MAC地址的冲突检查。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/20.png"></p>
-<blockquote>
-<p> •堆叠系统作为一台设备与网络中其他设备通信，具有唯一的MAC地址，称为堆叠系统MAC地址。通常情况下使用主交换机的MAC地址作为堆叠系统MAC地址。</p>
-<p>•当堆叠系统的MAC地址是主交换机的MAC地址，主交换机故障或者离开堆叠系统，在默认情况下堆叠系统MAC地址会延时10分钟切换，即在10分钟内两个分裂的堆叠系统的MAC相同。</p>
-</blockquote>
-<h2 id="MAD"><a href="#MAD" class="headerlink" title="MAD"></a>MAD</h2><p>•多主检测MAD（Multi-Active Detection）：一种检测和处理堆叠分裂的协议，链路故障导致堆叠系统分裂后，MAD可以实现堆叠分裂的检测、冲突处理和故障恢复，降低堆叠分裂对业务的影响。</p>
-<p>•MAD检测方式有两种：直连检测方式和代理检测方式。在同一个堆叠系统中，两种检测方式互斥，不可以同时配置。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/21.png"></p>
-<blockquote>
-<p>•分裂后的堆叠系统通过MAD检测线缆（普通线缆，手动配置为MAD检测链路）发送MAD检测报文进行竞选，竞选失败的堆叠系统会关闭所有的物理端口（手动配置的保留端口除外）以保证不会因IP、MAC冲突对业务产生影响。</p>
-<p>•MAD检测过程如下：</p>
-<p>▫堆叠分裂之后，分裂后的堆叠系统存在相同的IP地址、MAC地址（堆叠系统MAC），将会导致网络中表项错误，如下游设备的ARP表项、MAC地址表项，从而导致业务异常。</p>
-<p>▫为此分类后的堆叠系统会通过MAC检测线缆进行竞选。</p>
-<p>▫竞选失败者关闭自身物理接口，从而不会和竞选成功地堆叠系统产生IP地址、MAC地址冲突。</p>
-</blockquote>
-<h2 id="MAD检测-直连检测"><a href="#MAD检测-直连检测" class="headerlink" title="MAD检测 - 直连检测"></a>MAD检测 - 直连检测</h2><p>直连检测方式是指堆叠成员交换机间通过普通线缆直连的专用链路进行多主检测。在直连检测方式中，堆叠系统正常运行时，不发送MAD报文；堆叠系统分裂后，分裂后的两台交换机以1秒为周期通过检测链路发送MAD报文进行多主冲突处理。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/22.png"></p>
-<blockquote>
-<p>•通过中间设备直连可以实现通过中间设备缩短堆叠成员交换机之间的检测链路长度，适用于成员交换机相距较远的场景。与通过中间设备直连相比，Full-mesh方式直连可以避免由中间设备故障导致的MAD检测失败，但是每两台成员交换机之间都建立全连接会占用较多的接口，所以该方式适用于成员交换机数目较少的场景。</p>
-</blockquote>
-<h2 id="MAD检测-代理检测"><a href="#MAD检测-代理检测" class="headerlink" title="MAD检测 - 代理检测"></a>MAD检测 - 代理检测</h2><p>代理检测方式是在堆叠系统Eth-Trunk上启用代理检测，在代理设备上启用MAD检测功能。此种检测方式要求堆叠系统中的所有成员交换机都与代理设备连接，并将这些链路加入同一个Eth-Trunk内。与直连检测方式相比，代理检测方式无需占用额外的接口，Eth-Trunk接口可同时运行MAD代理检测和其他业务。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/23.png"></p>
-<blockquote>
-<p>•在代理检测方式中，堆叠系统正常运行时，堆叠成员交换机以30s为周期通过检测链路发送MAD报文。堆叠成员交换机对在正常工作状态下收到的MAD报文不做任何处理；堆叠分裂后，分裂后的两个堆叠系统以1s为周期通过检测链路发送MAD报文进行多主冲突处理。</p>
-</blockquote>
-<h2 id="MAD冲突处理-1"><a href="#MAD冲突处理-1" class="headerlink" title="MAD冲突处理 (1)"></a>MAD冲突处理 (1)</h2><p>堆叠分裂后，MAD冲突处理机制使用MAD报文进行MAD竞争，竞争结果为堆叠系统处于Detect状态或者Recovery状态：</p>
-<p>▫Detect：竞争成功，堆叠系统将处于正常工作状态。</p>
-<p>▫Recovery：竞争失败，堆叠系统将状态处于禁用状态，关闭除手动配置的保留端口以外的其它所有物理端口。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/24.png"></p>
-<h2 id="MAD冲突处理-2"><a href="#MAD冲突处理-2" class="headerlink" title="MAD冲突处理 (2)"></a>MAD冲突处理 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/25.png"></p>
-<h2 id="堆叠主备倒换"><a href="#堆叠主备倒换" class="headerlink" title="堆叠主备倒换"></a>堆叠主备倒换</h2><p>•如果堆叠系统当前的主交换机不是用户期望的，此时可以通过配置主备倒换实现将堆叠备交换机升为堆叠主交换机。</p>
-<p>•除了用户通过命令执行的主备倒换之外，主交换机故障重启也会引起主备倒换。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/26.png"></p>
-<blockquote>
-<p>•原来的备交换机升为主交换机</p>
-<p>•新主交换机重新指定备交换机</p>
-<p>•原来的主交换机重启后重新加入堆叠系统，并被选举为从交换机。</p>
-</blockquote>
-<h2 id="堆叠升级"><a href="#堆叠升级" class="headerlink" title="堆叠升级"></a>堆叠升级</h2><p>堆叠升级方式有三种：智能升级、传统升级和平滑升级。</p>
-<p>▫智能升级：堆叠建立或者新的交换机加入堆叠时会自动和主交换机的版本进行同步。</p>
-<p>▫传统升级：和普通设备升级一样，指定下次启动版本，重启整个堆叠系统进行升级，会造成较长时间的业务中断。</p>
-<p>▫平滑升级：将堆叠系统划分成为active、backup区域，可以分区域升级，整个堆叠系统的上下行采用备份组网，主、备链路分别处于active、backup区域，可以实现升级时的业务不中断。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/27.png"></p>
-<blockquote>
-<p>•Active区域：主交换机所在的区域</p>
-<p>•平滑升级的三个阶段：</p>
-<p>▫主交换机下发命令触发整个堆叠系统进入平滑升级状态，backup区各个成员交换机以新的系统软件进行启动。</p>
-<p>▫backup区以新版本建立一个独立的堆叠系统，并通知active区进入升级阶段，主控权由active区的主交换机转移到backup区的主交换机，backup区负责流量传输，active区进入升级过程。</p>
-<p>▫active区以新系统软件重新启动并加入backup区的堆叠系统，backup区的主交换机根据最终堆叠建立的结果发布升级的结果。</p>
-</blockquote>
-<h2 id="跨设备链路聚合-1"><a href="#跨设备链路聚合-1" class="headerlink" title="跨设备链路聚合 (1)"></a>跨设备链路聚合 (1)</h2><p>•堆叠支持跨设备链路聚合技术，堆叠后成为逻辑上的一台交换机，支持将Eth-Trunk的成员接口分布在不同的成员交换机上。</p>
-<p>•当其中一条聚合链路故障或堆叠中某台成员交换机故障时，Eth-Trunk接口通过堆叠线缆将流量重新分布到其他聚合链路上，实现了链路间和设备间的备份，保证了数据流量的可靠传输。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/28.png"></p>
-<h2 id="跨设备链路聚合-2"><a href="#跨设备链路聚合-2" class="headerlink" title="跨设备链路聚合 (2)"></a>跨设备链路聚合 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/29.png"></p>
-<blockquote>
-<p>•如上图所时，在上行链路出现故障时跨设备链路聚合技术能够通过堆叠线缆将流量负载分担到其他成员交换机上的成员接口，从而提高网络可靠性。</p>
-<p>•跨成员设备的流量会经过堆叠线缆，如果跨成员设备流量较大，将会大大增加堆叠线缆的带宽压力。</p>
-</blockquote>
-<h2 id="流量本地优先转发-1"><a href="#流量本地优先转发-1" class="headerlink" title="流量本地优先转发 (1)"></a>流量本地优先转发 (1)</h2><p>链路聚合的负载分担算法根据流量特征将报文分担在不同的成员链路上，对于跨设备链路聚合极有可能出现报文的出接口和入接口不在同一台成员设备之上的情况，此时堆叠成员之间将会通过堆叠线缆转发流量，这增加了堆叠线缆的流量负担，同时也降低了转发效率。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/30.png"></p>
-<blockquote>
-<p>•如上图所示，当链路聚合将流量分担到其他成员设备上时，部分流量将会经过堆叠线缆转发，这会大大增加堆叠线缆的带宽承载压力。如果通过堆叠线缆需要转发的流量甚至超过了堆叠线缆的带宽，报文将无法及时得到传输。</p>
-</blockquote>
-<h2 id="流量本地优先转发-2"><a href="#流量本地优先转发-2" class="headerlink" title="流量本地优先转发 (2)"></a>流量本地优先转发 (2)</h2><p>为保证流量转发效率、降低堆叠线缆带宽负载，设备可以开启流量本地优先转发，从本设备进入的流量优先从本地转发出去，当本设备无出接口或者出接口全部故障，才会从其它成员交换机的接口转发出去。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/31.png"></p>
-<h1 id="3-集群技术原理"><a href="#3-集群技术原理" class="headerlink" title="3.集群技术原理"></a>3.<strong>集群技术原理</strong></h1><h2 id="集群介绍"><a href="#集群介绍" class="headerlink" title="集群介绍"></a>集群介绍</h2><p>•集群交换机系统CSS（Cluster Switch System），又称为集群，是指将两台支持集群特性的交换机设备组合在一起，从逻辑上虚拟成一台交换设备。</p>
-<p>•CSS与iStack的区别在于，一般框式交换机堆叠称为CSS，盒式交换机称为堆叠，堆叠与集群两者只是叫法和实现有些差异，但是功能是一样的。</p>
-<p>•本小节着重介绍集群与堆叠存在的差异之处。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/32.png"></p>
-<h2 id="集群基本概念"><a href="#集群基本概念" class="headerlink" title="集群基本概念"></a>集群基本概念</h2><p>•集群中的单台交换机称为集群成员交换机，按照功能不同，可以分为两种角色：</p>
-<p>▫主交换机（Master）：主交换机，即Master，负责管理整个集群。</p>
-<p>▫备交换机（Standby）：备交换机，即Standby，是主交换机的备份交换机。</p>
-<p>•集群ID：即CSS ID，用来标识成员交换机，集群中成员交换机的集群ID是唯一的。</p>
-<p>•CSS Link：集群链路，专门用于组建集群，实现主交换机和备交换机之间数据通信。</p>
-<p>•集群优先级：即CSS Priority，主要用于角色选举过程中确定成员交换机的角色。优先级值越大优先级越高。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/33.png"></p>
-<blockquote>
-<p>•备交换机，即Standby，是主交换机的备份交换机。当主交换机故障时，备交换机会接替原主交换机的所有业务。集群中只有一台备交换机。</p>
-<p>•集群链路可以是一条链路，也可以是捆绑在一起的多条链路。</p>
-<p>•缺省情况下，交换机的集群ID为1。相同ID的两台交换机不能建立集群，所以在建立集群前，需要手工配置集群中一台交换机的集群ID为2。</p>
-<p>•交换机的集群优先级越高当选为主交换机的可能性越大，但选举主交换机比较的不止优先级。</p>
-</blockquote>
-<h2 id="集群控制平面"><a href="#集群控制平面" class="headerlink" title="集群控制平面"></a>集群控制平面</h2><p>•两台交换机使用集群线缆连接好，分别使能集群功能并完成配置后重启，集群系统会自动建立。</p>
-<p>•集群系统建立后，在控制平面上，主交换机的主用主控板成为集群系统的控制平面，作为整个系统的管理主角色。备交换机的主用主控板成为集群系统的备用控制平面，作为系统的管理备角色。主交换机和备交换机的备用主控板作为集群系统候选备用主控板。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/34.png"></p>
-<blockquote>
-<p>•集群主交换机选举规则与堆叠选举规则一致，另外一台交换机则是备交换机。</p>
-</blockquote>
-<h2 id="集群物理连接"><a href="#集群物理连接" class="headerlink" title="集群物理连接"></a>集群物理连接</h2><p>根据集群技术发展阶段不同，集群物理连接方式也存在区别：</p>
-<p>▫传统CSS：使用主控板上的集群卡建立集群连接，或者使用业务口建立集群连接。</p>
-<p>▫CSS2：第二代集群交换机系统，专指使用交换网板上的集群卡方式建立集群连接的集群。</p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/35.png"></p>
-<blockquote>
-<p>•使用业务口连接时两端成员接口数量、类型相同，接线顺序无限制。</p>
-<p>•业务口集群按照链路的分布，有两种组网形式：</p>
-<ul>
-<li><p>1+0组网：每台成员交换机配置一个逻辑集群端口，物理成员端口分布在一块业务板上，依靠一块业务板上物理成员端口与对框的物理成员端口实现集群连接。</p>
-</li>
-<li><p>1+1组网：每台成员交换机配置两个逻辑集群端口，物理成员端口分布在两块业务板上，如图所示，不同业务板上的集群链路形成备份。</p>
-</li>
-</ul>
-<p>•CSS2：专指交换网板上通过集群卡方式建立的交换网硬件集群，并且在原有集群技术的基础上，增加了集群主控1+N备份等技术。</p>
-</blockquote>
-<h2 id="传统CSS"><a href="#传统CSS" class="headerlink" title="传统CSS"></a>传统CSS</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/36.png"></p>
-<p>•对于只支持CSS构架的框式交换机，框内接口板之间流量、跨框流量必须经过主控板。</p>
-<p>•单框上没有正常工作的主控板时流量无法从一个接口板转发到另外一个接口板，同时也无法跨框转发到另一个框。</p>
-<h2 id="CSS2"><a href="#CSS2" class="headerlink" title="CSS2"></a>CSS2</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/37.png"></p>
-<p>•支持CSS2构架的框式交换机采用转控分离的构架，单框内接口板之间流量、跨框流量无需经过主控板，集群系统内单台框无能够正常工作的主控板不影响该框的流量转发。</p>
-<p>•CSS2支持任意一个框式交换机内存在一个主控板运行正常，集群的两个框式交换机上的接口板都可以正常转发报文，该特性被称为“集群主控1+N备份”。</p>
-<h1 id="4-基本配置"><a href="#4-基本配置" class="headerlink" title="4.基本配置"></a>4.基本配置</h1><h2 id="堆叠配置-1"><a href="#堆叠配置-1" class="headerlink" title="堆叠配置 (1)"></a>堆叠配置 (1)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/38.png"></p>
-<h2 id="堆叠配置-2"><a href="#堆叠配置-2" class="headerlink" title="堆叠配置 (2)"></a>堆叠配置 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/39.png"></p>
-<h2 id="堆叠配置-3"><a href="#堆叠配置-3" class="headerlink" title="堆叠配置 (3)"></a>堆叠配置 (3)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/40.png"></p>
-<h2 id="堆叠配置-4"><a href="#堆叠配置-4" class="headerlink" title="堆叠配置 (4)"></a>堆叠配置 (4)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/41.png"></p>
-<h2 id="堆叠配置案例"><a href="#堆叠配置案例" class="headerlink" title="堆叠配置案例"></a>堆叠配置案例</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/42.png"></p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/43.png"></p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/44.png"></p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/45.png"></p>
-<h2 id="集群配置-1"><a href="#集群配置-1" class="headerlink" title="集群配置 (1)"></a>集群配置 (1)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/46.png"></p>
-<h2 id="集群配置-2"><a href="#集群配置-2" class="headerlink" title="集群配置 (2)"></a>集群配置 (2)</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/47.png"></p>
-<blockquote>
-<p>•集群的MAD检测功能，配置方式、配置命令与堆叠一致。</p>
-</blockquote>
-<h2 id="集群配置案例"><a href="#集群配置案例" class="headerlink" title="集群配置案例"></a>集群配置案例</h2><p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/48.png"></p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/49.png"></p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/50.png"></p>
-<p><img src="/2021/05/17/IP-%E4%BA%A4%E6%8D%A2%E6%9C%BA%E5%A0%86%E5%8F%A0%E4%B8%8E%E9%9B%86%E7%BE%A4/51.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（简答题）堆叠加入与堆叠合并有什么区别？</p>
-<p><strong>堆叠加入是交换机未上电之前已经通过堆叠线缆连接到了已有的堆叠系统，当上电启动之后因为堆叠系统已经存在主交换机，所以该交换机只会竞选成为从交换机。堆叠合并是两个堆叠系统通过堆叠线缆连在一起，此时两个堆叠系统会竞选新的主交换机并更新拓扑。<br> 一台交换机已经上电之后自身会成为一个堆叠系统并且由于没有竞争者自己会成为主交换机，这种情况下把该交换机通过堆叠线缆与另外一个堆叠系统相连就属于堆叠合并，这是一种典型的堆叠合并与堆叠加入的差异性场景。</strong></p>
-<p>2.（简答题）多主检测的目的是？多主检测失败的一方会采取什么操作？</p>
-<p><strong>防止堆叠、集群分裂之后相同的IP地址、MAC地址造成网络中其他网络设备的表项冲突，从而导致转发异常。检测失败的一方将会关闭除保留端口之外的所有端口，从而避免相同IP地址、相同MAC地址对其他网络设备造成表项冲突。</strong></p>
-<p>3.（简答题） CSS2相比较于传统CSS区别在于？</p>
-<p><strong>CSS2支持1+N主控备份，整个集群系统中只要有一个主控板处于工作状态，整个集群系统的控制平面可以正常工作的情况下，集群系统整体的数据平面就可以正常转发报文。</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•堆叠、集群技术大大简化了网络部署的复杂化、降低了网络管理的复杂度，实现了快速部署高可靠、无环的园区网络，同时也极大地降低了网络故障的影响时间。</p>
-<p>•为防止相同的IP地址、MAC地址造成的转发异常，可以配置MAD检测，MAD检测分为直接连接的检测方式以及代理设备检测，MAD竞争失败的一方会关闭除保留端口之外的所有物理端口。</p>
-<p>•为保证报文的转发效率，在堆叠、集群上部署Eth-Trunk时尽量开启本地优先转发尽量避免跨框流量的产生。</p>
-<p>•CSS2技术通过交换网板上的集群卡进行集群，结合交换机转控分离的构架，可以实现主控的1+N备份。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/" itemprop="url">IP-园区网典型技术应用概述</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T20:09:50+08:00">
-                2021-05-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•工厂、政府机关、商场、写字楼、校园、公园等，这些场所内为了实现数据互通而搭建的网络都可以称之为园区网。园区有大有小，有行业属性的不同，相应地，园区网络也变化多样。但是，无论如何变化，园区网络一般划分为出口层、核心层、汇聚层及接入层。</p>
-<p>•本课程主要介绍园区网络的总体架构、网络各层次中所使用的常用技术及协议、典型的组网场景。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述大型园区网络的典型架构。</p>
-<p>▫描述常用以太网交换技术。</p>
-<p>▫描述WLAN常见应用场景。</p>
-<p>▫描述园区网络可靠性的常用技术。</p>
-<p>▫描述园区网络网络服务与管理的常用技术。</p>
-<p>▫描述园区网络安全的常用技术。</p>
-<p>▫描述园区网络常用的VPN技术。</p>
-<h1 id="1-园区网络架构与常见技术概述"><a href="#1-园区网络架构与常见技术概述" class="headerlink" title="1.园区网络架构与常见技术概述"></a>1.<strong>园区网络架构与常见技术概述</strong></h1><h2 id="“城市，除了马路，都是园区”"><a href="#“城市，除了马路，都是园区”" class="headerlink" title="“城市，除了马路，都是园区”"></a>“城市，除了马路，都是园区”</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/1.png"></p>
-<h2 id="什么是园区网络？"><a href="#什么是园区网络？" class="headerlink" title="什么是园区网络？"></a>什么是园区网络？</h2><p>•园区网络一般是指企业或者机构的内部网络。</p>
-<p>•园区网络的主要目的是使企业或者机构的各项业务运作更有效率。</p>
-<p>•按规模可以将园区网络划分成：</p>
-<p>▫大型园区网络：终端用户数量/个 &gt; 2000；网元数量/个 &gt; 100。</p>
-<p>▫中型园区网络：2000 &gt; 终端用户数量/个 &gt; 200；100 &gt;网元数量/个 &gt; 25。</p>
-<p>▫小型园区网络：终端用户数量/个 &lt; 200；网元数量/个 &lt; 25。</p>
-<p>•有些企业还存在不同地域的办公分支机构，每个分支机构网络可看做一个单园区网络。</p>
-<h2 id="常见的行业园区网"><a href="#常见的行业园区网" class="headerlink" title="常见的行业园区网"></a>常见的行业园区网</h2><p>•企业园区网络</p>
-<p>▫关注网络可靠性、先进性，持续提升员工的办公体验，保障运营生产的效率和质量。</p>
-<p>•校园网络</p>
-<p>▫分为普教园区和高教园区。</p>
-<p>▫高教园区相对复杂，通常存在教研网、学生网，还可能有运营性的宿舍网络。</p>
-<p>▫网络可管理性、安全性要求高；对网络先进性亦有要求。</p>
-<p>•政务园区网络</p>
-<p>▫通常指政府机构的内部网络。</p>
-<p>▫安全要求极高，通常采用内网和外网隔离的措施保障涉密信息的绝对安全。</p>
-<p>•商业园区网络</p>
-<p>▫商场、超市、酒店、公园等。</p>
-<p>▫网络主要用于服务消费者，此外还包含服务内部办公的子网。</p>
-<p>▫提供上网服务，并构建商业智能化系统提升用户体验，降低运维成本，提升商业效率，实现价值转移。</p>
-<blockquote>
-<p>•为了满足不同行业园区的需求，园区网络架构会根据其服务的行业特点进行设计， 最终打造的是带有行业属性的园区网络方案。</p>
-</blockquote>
-<h2 id="园区网络典型架构"><a href="#园区网络典型架构" class="headerlink" title="园区网络典型架构"></a>园区网络典型架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/2.png"></p>
-<p>•<strong>核心层</strong>：是园区网骨干，是园区数据交换的核心，联接园区网的各个组成部分，如数据中心、管理中心、园区出口等。</p>
-<p>•<strong>汇聚层</strong>：处于园区网的中间层次，完成数据汇聚或交换的功能，可以提供一些关键的网络基本功能，如路由、安全等。</p>
-<p>•<strong>接入层</strong>：为终端用户提供园区网接入功能，是园区网的边界。</p>
-<p>•<strong>出口区</strong>：园区内部网络到外部网络的边界，用于实现内部用户接入到公网，外部用户（包括客户、合作伙伴、分支机构、远程用户等）接入到内部网络。</p>
-<p>•<strong>数据中心区</strong>：部署服务器和应用系统的区域，为企业内部和外部用户提供数据和应用服务。</p>
-<h2 id="园区网络主要协议-技术"><a href="#园区网络主要协议-技术" class="headerlink" title="园区网络主要协议/技术"></a>园区网络主要协议/技术</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/3.png"></p>
-<blockquote>
-<p>•NAT：Network Address Translation，网络地址转换。</p>
-<p>•LLDP：Link Layer Discovery Protocol，链路层发现协议。链路层发现协议是IEEE 802.1ab中定义的第二层发现协议。通过采用LLDP技术，在网络规模迅速扩大时，网管系统可以快速掌握二层网络拓扑信息、拓扑变化信息。</p>
-<p>•NETCONF：Network Configuration Protocol，网络配置协议。NETCONF是一种提供网络设备配置管理的协议，采用基于数据编码的可扩展标记语言配置数据以及协议信息，提供了安装、操作和删除网元配置的机制。</p>
-<p>•YANG：Yet Another Next Generation，通过NETCONF网络配置协议发送的数据的数据建模语言，可以用来建模网元的配置数据和状态数据。</p>
-<p>•SNMP：Simple Network Management Protocol，简单网络管理协议。</p>
-<p>•VRRP：Virtual Router Redundancy Protocol，虚拟路由冗余协议。</p>
-<p>•MSTP：Multiple Spanning Tree Protocol，多生成树协议。</p>
-</blockquote>
-<h1 id="2-以太网交换基础"><a href="#2-以太网交换基础" class="headerlink" title="2.以太网交换基础"></a>2.以太网交换基础</h1><h2 id="从TCP-IP对等模型说起"><a href="#从TCP-IP对等模型说起" class="headerlink" title="从TCP/IP对等模型说起"></a>从TCP/IP对等模型说起</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/4.png"></p>
-<p>•将网络的通信过程划分为小一些、简单一些的部件，有助于各个部件的开发、设计和故障排除。</p>
-<p>•通过网络组件的标准化，允许多个供应商进行开发。</p>
-<p>•通过定义在模型的每一层实现什么功能，鼓励产业的标准化。</p>
-<p>•允许各种类型的网络硬件和软件相互通信。</p>
-<h2 id="从园区网络到以太网二层交换"><a href="#从园区网络到以太网二层交换" class="headerlink" title="从园区网络到以太网二层交换"></a>从园区网络到以太网二层交换</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/5.png"></p>
-<p>•接入层为用户提供各种接入方式，是终端接入网络的第一层。</p>
-<p>•接入层通常由接入交换机组成，接入层交换机在网络中数量众多，安装位置分散，通常是简单的二层交换机。</p>
-<p>•如果终端层存在无线终端设备，接入层需要无线接入点AP设备，AP设备通过接入交换机接入网络。</p>
-<h2 id="什么是二层交换"><a href="#什么是二层交换" class="headerlink" title="什么是二层交换"></a>什么是二层交换</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/6.png"></p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/7.png"></p>
-<p>•二层交换是以太网交换机的基本功能。</p>
-<p>•二层交换指的是交换机根据数据帧的第二层头部中的目的MAC地址进行帧转发的行为。</p>
-<p>•每台交换机都维护一个MAC地址表，用于指导数据帧转发。</p>
-<p>•当交换机收到数据帧时，将在其MAC地址表中查询该帧的目的MAC地址，并根据匹配的表项执行相应的操作。此外，交换机收到数据帧时，还会进行源MAC地址学习。</p>
-<blockquote>
-<p>•二层交换设备工作在OSI模型的第二层，即数据链路层，它对数据包的转发是建立在MAC（Media Access Control ）地址基础之上的。</p>
-<p>•二层交换设备通过解析和学习以太网帧的源MAC来维护MAC地址与接口的对应关系（保存MAC与接口对应关系的表称为MAC表），通过其目的MAC来查找MAC表决定向哪个接口转发。</p>
-<p>•二层交换设备不同的接口发送和接收数据独立，各接口属于不同的冲突域，因此有效地隔离了网络中物理层冲突域，使得通过它互连的主机（或网络）之间不必再担心流量大小对于数据发送冲突的影响。</p>
-</blockquote>
-<h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/8.png"></p>
-<p>•VLAN（Virtual Local Area Network）即虚拟局域网，是将一个物理的LAN在逻辑上划分成多个广播域的通信技术。</p>
-<p>•一个VLAN中所有设备都是在同一广播域内，不同的VLAN为不同的广播域。</p>
-<p>•VLAN内的设备间可以直接通信，而VLAN间不能直接互通。</p>
-<p>•VLAN之间互相隔离，不同VLAN间需通过三层设备实现相互通信。</p>
-<p>•一个VLAN一般为一个逻辑子网。</p>
-<p>•VLAN中成员多基于交换机的端口分配，所谓的VLAN划分，通常指的是将交换机的接口添加到特定的VLAN中，从而该接口所连接的设备也加入到了该VLAN。</p>
-<h2 id="以太网二层接口类型概述"><a href="#以太网二层接口类型概述" class="headerlink" title="以太网二层接口类型概述"></a>以太网二层接口类型概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/9.png"></p>
-<p>交换机的以太网二层接口主要存在以下三种类型：</p>
-<p>•<strong>Access</strong>：常用来连接用户PC、服务器等终端设备的接口。Access接口所连接的这些设备的网卡往往只收发无标记帧。Access接口只能加入一个VLAN。</p>
-<p>•<strong>Trunk</strong>：Trunk接口允许多个VLAN的数据帧通过，这些数据帧通过802.1Q Tag实现区分。Trunk接口常用于交换机之间的互联，也用于连接路由器、防火墙等设备的子接口。</p>
-<p>•<strong>Hybrid</strong>：Hybrid接口与Trunk接口类似，也允许多个VLAN的数据帧通过，这些数据帧通过802.1Tag实现区分。用户可以灵活指定Hybrid接口在发送某个（或某些）VLAN的数据帧时是否携带Tag。</p>
-<h3 id="Access接口"><a href="#Access接口" class="headerlink" title="Access接口"></a>Access接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/10.png"></p>
-<blockquote>
-<p>•所有的二层接口无论其类型如何，都有一个缺省VLAN ID，这个缺省VLAN ID被称为PVID（Port Default VLAN ID），在华为的交换机上，PVID缺省为1。另外，出于提高数据帧处理效率的考虑，在交换机内部，数据帧一律携带Tag。 </p>
-</blockquote>
-<h3 id="Trunk接口"><a href="#Trunk接口" class="headerlink" title="Trunk接口"></a>Trunk接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/11.png"></p>
-<h3 id="Hybrid接口"><a href="#Hybrid接口" class="headerlink" title="Hybrid接口"></a>Hybrid接口</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/12.png"></p>
-<p>•Hybrid接口也能承载多个VLAN的数据，它与Trunk接口在数据帧的接收行为上大体相同，这里不再赘述。Trunk接口在发送数据帧时，仅当待发送的数据帧与发送接口的PVID相同时，数据帧的Tag才会被移除，除此之外，该接口发送出去的其他VLAN的数据帧都是携带Tag的。而Hybrid接口发送数据帧的行为则与Trunk接口不同。我们可以通过命令指定Hybrid接口在发送某个，或者某些VLAN的数据帧时不携带Tag。</p>
-<h3 id="VLAN划分方式总览"><a href="#VLAN划分方式总览" class="headerlink" title="VLAN划分方式总览"></a>VLAN划分方式总览</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/13.png"></p>
-<h3 id="实现VLAN之间的IP可达性"><a href="#实现VLAN之间的IP可达性" class="headerlink" title="实现VLAN之间的IP可达性"></a>实现VLAN之间的IP可达性</h3><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/14.png"></p>
-<h2 id="以太网链路聚合"><a href="#以太网链路聚合" class="headerlink" title="以太网链路聚合"></a>以太网链路聚合</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/15.png"></p>
-<p>•<strong>链路聚合（Link Aggregation,LAG）</strong>是将多条物理链路捆绑在一起成为一条逻辑链路，从而增加链路带宽的技术。</p>
-<p>•完成聚合后的链路称为以太网聚合链路。</p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/16.png"></p>
-<blockquote>
-<p>•随着网络规模不断扩大，用户对骨干链路的带宽和可靠性提出越来越高的要求。在传统技术中，常用更换高速率的接口板或更换支持高速率接口板的设备的方式来增加带宽，但这种方案需要付出高额的费用，而且不够灵活。</p>
-<p>•采用链路聚合技术可以在不进行硬件升级的条件下，通过将多个物理接口捆绑为一个逻辑接口，达到增加链路带宽的目的。在实现增大带宽目的的同时，链路聚合采用备份链路的机制，可以有效的提高设备之间链路的可靠性。</p>
-<p>•LAG是指将若干条以太链路捆绑在一起所形成的逻辑链路，简写为Eth-Trunk。每个聚合组唯一对应着一个逻辑接口，这个逻辑接口称之为聚合接口或Eth-Trunk接口。</p>
-<p>•链路聚合技术主要有以下三个优势：</p>
-<p>▫增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</p>
-<p>▫提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</p>
-<p>▫负载分担：在一个链路聚合组内，可以实现在各成员活动链路上的负载分担。</p>
-</blockquote>
-<h2 id="生成树技术：防环-保证二层网络可靠性"><a href="#生成树技术：防环-保证二层网络可靠性" class="headerlink" title="生成树技术：防环+保证二层网络可靠性"></a>生成树技术：防环+保证二层网络可靠性</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/17.png"></p>
-<p>•解决交换网络中的环路问题</p>
-<p>•动态地适应根据网络拓扑变更</p>
-<p>•配合冗余链路，保证二层网络可靠性</p>
-<h1 id="3-无线接入"><a href="#3-无线接入" class="headerlink" title="3.无线接入"></a>3.无线接入</h1><h2 id="WLAN与主要网元"><a href="#WLAN与主要网元" class="headerlink" title="WLAN与主要网元"></a>WLAN与主要网元</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/18.png"></p>
-<h2 id="WLAN组网架构综述"><a href="#WLAN组网架构综述" class="headerlink" title="WLAN组网架构综述"></a>WLAN组网架构综述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/19.png"></p>
-<blockquote>
-<p>无线接入点 (AP, Access Point)</p>
-<p>▫一般支持FAT AP（胖AP）、FIT AP（瘦AP）和云管理AP三种工作模式，根据网络规划的需求，可以灵活地在多种模式下切换。</p>
-<p>▫FAT AP：适用于家庭，独立工作，需单独配置，功能较为单一，成本低。独立完成用户接入、认证、数据安全、业务转发和QoS等功能。</p>
-<p>▫FIT AP：适用于大中型企业，需要配合AC使用，由AC统一管理和配置，功能丰富，对网络维护人员的技能要求高。用户接入、AP上线、认证、路由、AP管理、安全协议、QoS等功能需要同AC配合完成。</p>
-<p>▫云管理：适用于中小型企业，需要配合云管理平台使用，由云管理平台统一管理和配置，功能丰富，即插即用，对网络维护人员的技能要求低。</p>
-<p>无线接入控制器 (AC, Access Controller)</p>
-<p>▫一般位于整个网络的汇聚层，提供高速、安全、可靠的WLAN业务。</p>
-<p>▫提供大容量、高性能、高可靠性、易安装、易维护的无线数据控制业务，具有组网灵活、绿色节能等优势。</p>
-</blockquote>
-<h2 id="AC-FIT-AP架构"><a href="#AC-FIT-AP架构" class="headerlink" title="AC+FIT AP架构"></a>AC+FIT AP架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/20.png"></p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/21.png"></p>
-<blockquote>
-<p>•AC和AP之间使用的通信协议是无线接入点控制和配置（Control And Provisioning of Wireless Access Points，CAPWAP）。CAPWAP协议定义的主要内容有：AP自动发现AC，AC对AP进行安全认证，AP从AC获取软件，AP从AC获得初始和动态配置等。通过该协议，AP和AC之间建立起CAPWAP隧道。CAPWAP隧道有两种：控制隧道和数据隧道。控制隧道主要传输控制报文（也称管理报文，是AC管理控制AP的报文）；数据隧道主要传输数据报文。CAPWAP隧道可以进行数据传输层安全（Datagram Transport Layer Security，DTLS）加密，因此传输的报文更加安全。</p>
-<p>•相比于FAT AP架构，AC+FIT AP架构的优点如下。</p>
-<p>▫配置与部署：通过AC进行集中地网络配置和管理，不再需要对每个AP进行单独配置操作，同时对整网AP进行信道、功率的自动调整，免去了烦琐的人工调整过程。</p>
-<p>▫安全性：由于FAT AP无法进行统一的升级操作，无法保证所有AP版本都有最新的安全补丁，而AC+FIT AP架构主要的安全能力是在AC上的，软件更新和安全配置仅需在AC上进行，从而可以快速进行全局安全设置；同时，为了防止加载恶意代码，设备会对软件进行数字签名认证，增强了更新过程的安全性。AC也实现了FAT AP架构无法支持的一些安全功能，包括病毒检测、统一资源定位地址（Uniform Resource Locater，URL）过滤、状态检测防火墙等高级安全特性。</p>
-<p>▫更新与扩展：架构的集中管理模式使得同一AC下的AP有着相同的软件版本。当需要更新时，先由AC获取更新包或补丁，然后由AC统一更新AP版本。AP和AC的功能拆分也减少了对AP版本的频繁更新，有关用户认证、网管和安全等功能的更新只需在AC上进行。</p>
-</blockquote>
-<h2 id="AC-FIT-AP架构-1"><a href="#AC-FIT-AP架构-1" class="headerlink" title="AC+FIT AP架构"></a>AC+FIT AP架构</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/22.png"></p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/23.png"></p>
-<h1 id="4-网络可靠性"><a href="#4-网络可靠性" class="headerlink" title="4.网络可靠性"></a>4.网络可靠性</h1><h2 id="使用VRRP实现网关冗余"><a href="#使用VRRP实现网关冗余" class="headerlink" title="使用VRRP实现网关冗余"></a>使用VRRP实现网关冗余</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/24.png"></p>
-<blockquote>
-<p>•虚拟路由冗余协议VRRP（Virtual Router Redundancy Protocol）通过把几台路由设备联合组成一台虚拟的路由设备，将虚拟路由设备的IP地址作为用户的默认网关实现与外部网络通信。当网关设备发生故障时，VRRP机制能够选举新的网关设备承担数据流量，从而保障网络的可靠通信。</p>
-<p>•通常，同一网段内的所有主机上都设置一条相同的、以网关为下一跳的缺省路由。主机发往其他网段的报文将通过缺省路由发往网关，再由网关进行转发，从而实现主机与外部网络的通信。当网关发生故障时，本网段内所有以网关为缺省路由的主机将无法与外部网络通信。增加出口网关是提高系统可靠性的常见方法，此时如何在多个出口之间进行选路就成为需要解决的问题。</p>
-<p>•VRRP的出现很好的解决了这个问题。VRRP能够在不改变组网的情况下，将多台路由设备组成一个虚拟路由器，通过配置虚拟路由器的IP地址为默认网关，实现默认网关的备份。</p>
-<ul>
-<li><strong>冗余备份</strong>：VRRP可以将多台路由设备配置为缺省网关路由器，当出现单点故障的时候通过备份链路进行业务传输，从而降低网络故障的可能性，保证用户的各种业务不中断传输。</li>
-<li><strong>负载分担</strong>：VRRP可以实现多台设备同时承担业务流量，从而减轻主用设备上数据流量的承载压力，在路由设备之间更均衡地分担流量。</li>
-<li><strong>联动功能</strong>：VRRP联动可以监视上行链路的故障。当上行接口或链路故障时，VRRP备份组的Master设备降低优先级，重新进行选举，确保Master路由器为最佳的VRRP路由设备，保证流量的正常转发。VRRP与BFD联动可以提高VRRP备份组中主备设备的切换速度。利用BFD检测速度快的特点，在Master设备和Backup设备之间建立BFD会话并与VRRP备份组进行绑定，实现Master设备和Backup设备之间的链路出现故障时，Backup设备迅速切换为Master，承担网络流量。</li>
-</ul>
-</blockquote>
-<h2 id="集群-堆叠简介"><a href="#集群-堆叠简介" class="headerlink" title="集群/堆叠简介"></a>集群/堆叠简介</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/25.png"></p>
-<p>•iStack（Intelligent Stack，智能堆叠），简称堆叠，是指将多台支持堆叠特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。iStack针对华为盒式交换机。</p>
-<p>•CSS（Cluster Switch System，集群交换机系统），又称为集群，是指将两台支持集群特性的交换机设备组合在一起，从逻辑上组合成一台交换设备。CSS针对华为框式交换机。</p>
-<h2 id="堆叠与园区网络树形结构组网形态"><a href="#堆叠与园区网络树形结构组网形态" class="headerlink" title="堆叠与园区网络树形结构组网形态"></a>堆叠与园区网络树形结构组网形态</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/26.png"></p>
-<p>•堆叠iStack（Intelligent Stack），是指将多台支持堆叠特性的交换机设备组合在一起，从逻辑上组合成一台整体交换设备。</p>
-<p>•堆叠系统建立之前，每台交换机都是单独的实体，有自己独立的IP地址和MAC地址，对外体现为多台交换机，用户需要独立的管理所有的交换机；堆叠建立后堆叠成员对外体现为一个统一的逻辑实体，用户使用一个IP地址对堆叠中的所有交换机进行管理和维护，如图所示。通过交换机堆叠，可以实现网络大数据量转发和网络高可靠性，同时简化网络管理。</p>
-<h1 id="5-网络服务与网络管理"><a href="#5-网络服务与网络管理" class="headerlink" title="5.网络服务与网络管理"></a>5.网络服务与网络管理</h1><h2 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/27.png"></p>
-<blockquote>
-<p>•动态主机配置协议DHCP（Dynamic Host Configuration Protocol）是一种用于集中对用户IP地址进行动态管理和配置的技术。即使规模较小的网络，通过DHCP也可以使后续增加网络设备变得简单快捷。</p>
-<p>•DHCP允许计算机动态地获取IP地址，而不是静态为每台主机指定地址。</p>
-<p>•DHCP能够分配其他配置参数，例如客户端的启动配置文件，使客户端仅用一个消息就获取它所需要的所有配置信息。</p>
-<p>•DHCP协议由RFC 2131定义，采用客户端/服务器通信模式，由客户端（DHCP Client）向服务器（DHCP Server）提出配置申请，服务器返回为客户端分配的配置信息。</p>
-<p>•DHCP可以提供两种地址分配机制，网络管理员可以根据网络需求为不同的主机选择不同的分配策略。</p>
-<p>▫动态分配机制：通过DHCP为主机分配一个有使用期限（这个使用期限通常叫做租期）的IP地址。这种分配机制适用于主机需要临时接入网络或者空闲地址数小于网络主机总数且主机不需要永久连接网络的场景。</p>
-<p>▫静态分配机制：网络管理员通过DHCP为指定的主机分配固定的IP地址。相比手工静态配置IP地址，通过DHCP方式静态分配机制避免人工配置发生错误，方便管理员统一维护管理。</p>
-<p>•DHCP受益主要有以下两点：</p>
-<p>▫降低客户端的配置和维护成本</p>
-<p>▫集中管理</p>
-</blockquote>
-<h2 id="NTP"><a href="#NTP" class="headerlink" title="NTP"></a>NTP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/28.png"></p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/29.png"></p>
-<blockquote>
-<p>•网络时间协议NTP（Network Time Protocol）是TCP/IP协议族里面的一个应用层协议。NTP用于在一系列分布式时间服务器与客户端之间同步时钟。NTP的实现基于IP和UDP。NTP报文通过UDP传输，端口号是123。</p>
-<p>•随着网络拓扑的日益复杂，整个网络内设备的时钟同步将变得十分重要。如果依靠管理员手工修改系统时钟，不仅工作量巨大，而且时钟的准确性也无法得到保证。NTP的出现就是为了解决网络内设备系统时钟的同步问题。</p>
-<p>•NTP主要应用于网络中所有设备时钟需要保持一致的场合，比如：网络管理：对从不同路由器采集来的日志信息、调试信息进行分析时，需要以时间作为参照依据。</p>
-<p>▫计费系统：要求所有设备的时钟保持一致。</p>
-<p>▫多个系统协同处理同一个复杂事件：为保证正确的执行顺序，多个系统必须参考同一时钟。</p>
-<p>▫备份服务器和客户机之间进行增量备份：要求备份服务器和所有客户机之间的时钟同步。</p>
-<p>▫系统时间：某些应用程序需要知道用户登录系统的时间以及文件修改的时间。</p>
-<p>•交换机既可以作为NTP的服务器，也可以作为NTP的客户端。</p>
-</blockquote>
-<h2 id="LLDP"><a href="#LLDP" class="headerlink" title="LLDP"></a>LLDP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/30.png"></p>
-<blockquote>
-<p>•LLDP（Link Layer Discovery Protocol）是IEEE 802.1ab中定义的链路层发现协议。LLDP是一种标准的二层发现方式，可以将本端设备的管理地址、设备标识、接口标识等信息组织起来，并发布给自己的邻居设备，邻居设备收到这些信息后将其以标准的管理信息库MIB（Management Information Base）的形式保存起来，以供网络管理系统查询及判断链路的通信状况。</p>
-<p>•随着网络规模越来越大，网络设备种类繁多，并且各自的配置错综复杂，对网络管理能力的要求也越来越高。传统网络管理系统多数只能分析到三层网络拓扑结构，无法确定网络设备的详细拓扑信息、是否存在配置冲突等。因此需要有一个标准的二层信息交流协议。</p>
-<p>•LLDP提供了一种标准的链路层发现方式。通过LLDP获取的设备二层信息能够快速获取相连设备的拓扑状态；显示出客户端、交换机、路由器、应用服务器以及网络服务器之间的路径；检测设备间的配置冲突、查询网络失败的原因。企业网用户可以通过使用网管系统，对支持运行LLDP协议的设备进行链路状态监控，在网络发生故障的时候快速进行故障定位。</p>
-</blockquote>
-<h2 id="SNMP"><a href="#SNMP" class="headerlink" title="SNMP"></a>SNMP</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/31.png"></p>
-<h2 id="NETCONF-YANG"><a href="#NETCONF-YANG" class="headerlink" title="NETCONF/YANG"></a>NETCONF/YANG</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/32.png"></p>
-<h1 id="6-网络安全"><a href="#6-网络安全" class="headerlink" title="6.网络安全"></a>6.网络安全</h1><h2 id="园区网络安全概述"><a href="#园区网络安全概述" class="headerlink" title="园区网络安全概述"></a>园区网络安全概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/33.png"></p>
-<h2 id="基于防火墙的安全区域划分及安全策略"><a href="#基于防火墙的安全区域划分及安全策略" class="headerlink" title="基于防火墙的安全区域划分及安全策略"></a>基于防火墙的安全区域划分及安全策略</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/34.png"></p>
-<p>•安全区域（Security Zone），或者简称为区域（Zone），是一个安全的概念，大部分的安全策略都基于安全区域实施。</p>
-<p>•一个安全区域是防火墙若干接口所连网络的集合，这些网络中的用户具有相同的安全属性。</p>
-<p>•将企业员工网络、公司服务器网络、外部网络划分到不同安全区域，对安全区域间的流量进行检测和保护。</p>
-<blockquote>
-<p>•在一台防火墙上不允许创建两个相同安全级别（Priority）的安全区域；</p>
-<p>•防火墙的接口必须加入一个安全区域，否则不能正常转发流量。</p>
-<p>•防火墙的一个接口只能属于一个安全区域。</p>
-<p>•防火墙的一个安全区域可以拥有多个接口。</p>
-<p>•系统自带的缺省安全区域不能删除，用户可以根据实际需求创建自定义的安全区域。</p>
-</blockquote>
-<h2 id="防火墙双机热备概述"><a href="#防火墙双机热备概述" class="headerlink" title="防火墙双机热备概述"></a>防火墙双机热备概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/35.png"></p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/36.png"></p>
-<h2 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/37.png"></p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/38.png"></p>
-<h1 id="7-VPN"><a href="#7-VPN" class="headerlink" title="7.VPN"></a>7.VPN</h1><h2 id="VPN技术应用场景"><a href="#VPN技术应用场景" class="headerlink" title="VPN技术应用场景"></a>VPN技术应用场景</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/39.png"></p>
-<p>•对于规模较大的企业来说，网络访问需求不仅仅局限于公司总部网络内，分公司、出差员工、合作单位等也需要访问公司总部的网络资源，一般采用VPN（Virtual Private Network，虚拟专用网络）技术来实现这一需求。</p>
-<p>•VPN可以在不改变现有网络结构的情况下，建立虚拟专用连接。因其具有廉价、专用和虚拟等多种优势，在现网中应用非常广泛。</p>
-<p>•VPN是一类技术的统称，不同的VPN技术拥有不同的特性和实现方式，常见的VPN技术包括IPSec VPN、GRE VPN、L2TP VPN、MPLS VPN等。</p>
-<blockquote>
-<p>•IPSec：IP Security， 因特网协议安全协议。</p>
-<p>•GRE：Generic Routing Encapsulation， 通用路由封装协议。</p>
-<p>•L2TP：Layer 2 Tunneling Protocol， 二层隧道协议。</p>
-<p>•MPLS：Multiprotocol Label Switching，多协议标签交换协议。</p>
-</blockquote>
-<h1 id="8-组播"><a href="#8-组播" class="headerlink" title="8.组播"></a>8.组播</h1><h2 id="组播应用场景"><a href="#组播应用场景" class="headerlink" title="组播应用场景"></a>组播应用场景</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/40.png"></p>
-<p>•企业存在一些公告信息，例如天气、值班表、机房注意事项、宣传视频等，为方便公司员工和来访人员及时获取这些信息，通常采用在公司人员密集处布置显示屏的方式。</p>
-<p>•每一块显示屏显示的内容一致，这是典型的点到多点通信的场景。如果采用单播的方式传递信息，网络中的设备性能及链路带宽都会面临一定程度的浪费。</p>
-<p>•组播技术有效地满足了单点发送、多点接收的需求，实现了IP网络中点到多点业务数据的高效传送，能够大量节约网络带宽、降低网络负载。</p>
-<blockquote>
-<p>•单播（Unicast）是在一台源IP主机和一台目的IP主机之间进行。网络上绝大部分的数据都是以单播的形式传输的，例如电子邮件收发、网上银行都是采用单播实现的。</p>
-<ul>
-<li>在单播通信中每一个数据包都有确切的目的IP地址；对于同一份数据，如果存在多个接收者，Server需发送与接收者数目相同的单播数据包；当接收者增加到成百上千时，将极大加重Server创建相同数据和发送多份相同拷贝后所产生的消耗，网络中的设备性能及链路带宽都会面临一定程度的浪费；单播方式较适合用户稀少的网络，当用户量较大时很难保证网络传输质量。</li>
-</ul>
-<p>•广播（Broadcast）是在一台源IP主机和网络中所有其它的IP主机之间进行，属于一对所有的通讯方式，所有主机都可以接收到（不管是否需要）。</p>
-<ul>
-<li>广播数据包被限制在广播域中；一旦有设备发送广播数据，则广播域内所有设备都会收到这个数据包，并且不得不耗费资源去处理，大量的广播数据包将消耗网络的带宽及设备资源；广播方式只适合共享网段，且信息安全性和有偿服务得不到保障。</li>
-</ul>
-<p>•组播（Multicast）是在一台源IP主机和多台（一组）IP主机之间进行，中间的网络设备根据接收者的需要，有选择性地对数据进行复制和转发。</p>
-</blockquote>
-<h2 id="组播网络基本架构"><a href="#组播网络基本架构" class="headerlink" title="组播网络基本架构"></a>组播网络基本架构</h2><p>组播网络大体可以分为三个部分：</p>
-<p>▫源端网络：将组播源产生的组播数据发送至组播网络。</p>
-<p>▫组播转发网络：形成无环的组播转发路径，该转发路径也被称为组播分发树（Multicast Distribution Tree）。</p>
-<p>▫成员端网络：让组播网络感知组播组成员位置与加入的组播组。</p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/41.png"></p>
-<blockquote>
-<p>•组播源（Source）：组播流量的发送者，例如多媒体服务器。组播源无需运行任何组播协议，只需简单 地将组播数据发送出来即可。 </p>
-<p>•组播接收者（Receiver）：也被称为组播组成员，是期望接收特定组播组流量的设备，例如运行多媒体直播客户端软件的PC。</p>
-<p>•组播组（Multicast Group）：用IP组播地址进行标识的一个集合。任何用户主机（或其他接收设备），加入一个组播组，就成为了该组成员，可以识别并接收发往该组播组的组播数据。</p>
-<p>•组播路由器（Multicast Router）：支持组播、运行组播协议的网络设备，实际上不仅仅路由器能够支持 组播，交换机、防火墙等设备也能够支持组播（取决于设备型号），路由器仅是一个代表。</p>
-<p>•第一跳路由器（First-Hop Router）：组播转发路径上，与组播源相连且负责转发该组播源发出的组播数据的PIM路由器。</p>
-<p>•最后一跳路由器（Last-Hop Router）：组播转发路径上，与组播组成员相连且负责向该组成员转发组播数据的PIM路由器。</p>
-<p>•IGMP（Internet Group Management Protocol，因特网组管理协议），是TCP/IP协议族中负责IP组播成员管理的协议，它用来在接收者和与其直接相邻的组播路由器之间建立、维护组播组成员关系。</p>
-</blockquote>
-<h1 id="9-IPv6"><a href="#9-IPv6" class="headerlink" title="9.IPv6"></a>9.IPv6</h1><h2 id="IPv6概述"><a href="#IPv6概述" class="headerlink" title="IPv6概述"></a>IPv6概述</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/42.png"></p>
-<p>•IPv4协议是目前广泛部署的因特网协议。在因特网发展初期，IPv4以其协议简单、易于实现、互操作性好的优势而得到快速发展。但随着因特网的迅猛发展， IPv4地址空间不足的问题日趋明显，IPv6取代IPv4势在必行。</p>
-<p>•IPv6（Internet Protocol Version 6）是网络层协议的第二代标准协议，也被称为IPng（IP Next Generation）。它是Internet工程任务组IETF（Internet Engineering Task Force）设计的一套规范，是IPv4（Internet Protocol Version 4）的升级版本。</p>
-<p>•IPv6地址长度为128 bit，海量的地址空间，满足物联网等新兴业务、有利于业务演进及扩展。</p>
-<h2 id="ICMPv6"><a href="#ICMPv6" class="headerlink" title="ICMPv6"></a>ICMPv6</h2><p>•ICMPv6 （Internet Control Message Protocol for IPv6）是IPv6的基础协议之一。</p>
-<p>•ICMPv6报文被广泛应用于其它协议中，包括NDP、PathMTU发现机制等。</p>
-<p>•ICMPv6控制着IPv6中的地址自动配置、地址解析、地址冲突检测、路由选择、以及差错控制等关键环节。</p>
-<p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/43.png"></p>
-<blockquote>
-<p>•NDP：Neighbor Discovery Protocol，邻居发现协议。</p>
-</blockquote>
-<h2 id="IPv6路由"><a href="#IPv6路由" class="headerlink" title="IPv6路由"></a>IPv6路由</h2><p><img src="/2021/05/16/IP-%E5%9B%AD%E5%8C%BA%E7%BD%91%E5%85%B8%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%BA%94%E7%94%A8%E6%A6%82%E8%BF%B0/44.png"></p>
-<p>IPv6网络支持静态路由和动态路由协议：</p>
-<ul>
-<li><p>静态路由：</p>
-<ul>
-<li>IPv6静态路由的配置方式和IPv4静态路由的配置方式相同。</li>
-</ul>
-</li>
-<li><p>动态路由协议：</p>
-<ul>
-<li>OSPFv3</li>
-<li>IS-IS</li>
-<li>BGP4+</li>
-</ul>
-</li>
-</ul>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（多选题）以下关于交换机二层接口的描述，正确的是？(   )</p>
-<p><strong>A.交换机的二层接口类型有Access、Trunk、Hybrid。</strong></p>
-<p><strong>B.Access接口只能加入一个VLAN。</strong></p>
-<p><strong>C.缺省情况下，Trunk接口允许VLAN1的流量通过，而且在发送时不携带VLAN Tag。</strong></p>
-<p><strong>D.在Hybrid接口上可通过命令指定接口在发送特定VLAN的流量时，是否携带VLAN Tag。</strong></p>
-<p>2.（多选题）以太网链路聚合技术有哪些优势？(   )</p>
-<p><strong>A.增加带宽：链路聚合接口的最大带宽可以达到各成员接口带宽之和。</strong></p>
-<p><strong>B.提高可靠性：当某条活动链路出现故障时，流量可以切换到其他可用的成员链路上。</strong></p>
-<p><strong>C.负载分担：在一个链路聚合组内，可以实现在各成员活动链路上的负载分担。</strong></p>
-<p>D.智能调优：可根据流量大小自动调整活动接口数量。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•本章系统地介绍了园区网络典型技术场景化应用：以太网交换基础、无线接入、网络可靠性、网络服务与网络管理、路由与网络可达性、网络安全、VPN。</p>
-<p>•受限于课程篇幅，本文无法将园区网络中所用的技术一一列举。通过本章的学习，读者已经了解园区网络的典型架构，以及典型技术在园区网络中的应用，有助于读者继续学习后续课程。</p>
-<p>•在后续的课程中，我们将深入探讨园区网络的关键技术，为将来学习园区网络解决方案打下扎实基础。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3808,7 +3573,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3821,7 +3586,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

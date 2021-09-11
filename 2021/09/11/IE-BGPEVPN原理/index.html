@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="HCRSE116-BGP EVPN原理," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="HIS(High Speed Internet) BTV(Broadband TV) Multihoming：当前VPLS只能支持multihoming的single-active冗余不是，不支持多路径多活转发。 组播优化：组播的LSPs可以结合VPLS，但是只能用于P2MP的LSPs。对于MP2MP的LSPs使用场景，VPLS无法支持。 配置复杂度高：当前VPLS提供基于BGP的a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IE-BGPEVPN原理">
+<meta property="og:url" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="zsy&#39;s blog">
+<meta property="og:description" content="HIS(High Speed Internet) BTV(Broadband TV) Multihoming：当前VPLS只能支持multihoming的single-active冗余不是，不支持多路径多活转发。 组播优化：组播的LSPs可以结合VPLS，但是只能用于P2MP的LSPs。对于MP2MP的LSPs使用场景，VPLS无法支持。 配置复杂度高：当前VPLS提供基于BGP的a">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/1.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/2.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/3.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/4.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/5.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/6.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/7.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/8.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/9.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/10.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/11.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/12.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/13.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/14.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/15.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/16.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/17.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/18.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/19.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/20.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/21.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/22.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/23.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/24.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/25.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/26.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/27.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/28.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/29.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/30.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/31.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/32.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/33.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/34.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/35.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/36.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/37.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/38.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/39.png">
+<meta property="og:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/40.png">
+<meta property="article:published_time" content="2021-09-11T08:38:16.000Z">
+<meta property="article:modified_time" content="2021-09-11T09:02:06.957Z">
+<meta property="article:author" content="张思宇">
+<meta property="article:tag" content="HCRSE116-BGP EVPN原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/09/11/IE-BGPEVPN原理/"/>
+
+
+
+
+
+  <title>IE-BGPEVPN原理 | zsy's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">zsy's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">just simple</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/home" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IE-BGPEVPN原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-09-11T16:38:16+08:00">
+                2021-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/2.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/3.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li>HIS(High Speed Internet)</li>
+<li>BTV(Broadband TV)</li>
+<li>Multihoming：当前VPLS只能支持multihoming的single-active冗余不是，不支持多路径多活转发。</li>
+<li>组播优化：组播的LSPs可以结合VPLS，但是只能用于P2MP的LSPs。对于MP2MP的LSPs使用场景，VPLS无法支持。</li>
+<li>配置复杂度高：当前VPLS提供基于BGP的auto-discovery的single-sided接入，但是需要工程师在接入侧以太配置上再配置大量的网络参数。</li>
+<li>多租户的DCI互联：DCI链路之间不仅传统数据中心间二层，也需要扩展租户的的二层网络。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/6.png"></p>
+<blockquote>
+<ul>
+<li>我们提到了VXLAN的不足之处需要引入新的控制面协议，那么这里我们先看看EVPN协议，EVPN协议全称是Ethernet　VPN，RFC7432中有定义，是用来解决VPLS的一些现存问题，比如无法通过多个独立的链路实现multihoming。某些情况可能接收到多份广播报文、或者MAC持续漂移。而且Martini VPLS也存在大量peering配置的困扰。</li>
+<li>那么RFC7432中定义的EVPN协议，则通过使用BGP协议作为控制面协议，MPLS作为转发面数据封装，通过引入一些新的内容，来解决VPLS场景下比如容易产生环路、多份广播报文以及MAC地址学习的问题。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/7.png"></p>
+<blockquote>
+<ul>
+<li>EVPN（Ethernet Virtual Private Network）其实就是一种用于二层网络互联的VPN技术。EVPN技术采用类似于BGP/MPLS IP VPN的机制，在BGP协议的基础上定义了一种新的NLRI（Network Layer Reachability Information，网络层可达信息）即EVPN NLRI，EVPN NLRI定义了几种新的BGP EVPN路由类型，用于处在二层网络的不同站点之间的MAC地址学习和发布。</li>
+<li>同时，VXLAN实现方案没有控制平面，是通过数据平面的流量泛洪进行VTEP发现和主机信息（包括IP地址、MAC地址、VNI、网关VTEP IP地址）学习的。这种方式导致数据中心网络存在很多泛洪流量。为了解决这一问题，VXLAN引入了EVPN作为控制平面，通过在VTEP之间交换BGP EVPN路由实现VTEP的自动发现、主机信息相互通告等特性，从而避免了不必要的数据流量泛洪。</li>
+<li>除了RFC7432以外，之前还有3个相关的草案，其中第一个draft-ietf-bess-evpn-overlay目前已经成为正式的RFC，A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)RFC 8365，另外两个也正在努力成为标准的过程中。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/8.png"></p>
+<blockquote>
+<ul>
+<li>使用VXLAN作为数据平面。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/9.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/10.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/11.png"></p>
+<blockquote>
+<ul>
+<li>水平分割（分发ESI标签）；</li>
+<li>快速收敛（其他PE根据RT1路由实现端口下MAC等明细路由的批量快速切换）；</li>
+<li>别名（任意的多归PE发布MAC等明细路由，其他PE可根据RT1路由形成到所有多归PE的ECMP）；</li>
+<li>使用M-LAG和堆叠技术实现Multihoming可以替代此类路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/12.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/13.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/14.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/15.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/16.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/17.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/18.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/19.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/20.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/21.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/22.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/23.png"></p>
+<blockquote>
+<ul>
+<li> 参考RFC草案，IP Prefix Advertisement in EVPN</li>
+<li> draft-ietf-bess-evpn-prefix-advertisement-11</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/24.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/25.png"></p>
+<blockquote>
+<ul>
+<li>NVO实现每个租户的流量由独立的Overlay隧道承载。</li>
+<li>在一个underlay网络之上可以承载多个Overlay隧道。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/26.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/27.png"></p>
+<blockquote>
+<ul>
+<li>原有的VXLAN实现方案没有控制平面，是通过数据平面的流量泛洪进行VTEP发现和主机信息（包括IP地址、MAC地址、VNI、网关VTEP IP地址）学习的，这种方式导致数据中心网络存在很多泛洪流量。为了解决这一问题，VXLAN引入了EVPN作为控制平面，通过在VTEP之间交换BGP EVPN路由实现VTEP的自动发现、主机信息相互通告等特性，从而避免了不必要的数据流量泛洪。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/28.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/29.png"></p>
+<blockquote>
+<ul>
+<li>EVPN通过扩展BGP协议新定义了几种BGP EVPN路由，这些BGP EVPN路由可以用于传递VTEP地址和主机信息，因此EVPN应用于VXLAN网络中，可以使VTEP发现和主机信息学习从数据平面转移到控制平面。那么接下来，我们就开始，为大家一起揭开BGP EVPN路由的神秘面纱。</li>
+<li>首先VXLAN需要使用EVPN协议规定的Route Type2，又称为MAC/IP Advertisement route，用于发布主机的MAC或MAC+IP的信息。BGP-EVPN会通过BGP协议，将以太端口学习的MAC、ARP，转化为Route Type2路由发布给其他设备，其他设备接收后生成MAC转发表、主机路由转发表。</li>
+<li>这个功能可不简单，传统设备我们学习MAC地址都是通过报文触发，学习报文的源MAC，而BGP-EVPN则通过Route Type2路由携带了MAC信息去发布MAC，可以节省很多的ARP流量。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/30.png"></p>
+<blockquote>
+<ul>
+<li>那么我们来看一下Route Type2的主要应用场景：<ul>
+<li>首先就是MAC路由发布，这里可以看到，当本端主机H1上线后，本端NVE学习到该主机的MAC地址，直接通过BGP-EVPN发送到远端设备；</li>
+<li>远端VTEP学习到MAC路由后，下发到对应的EVPN实例，根据下一跳查找对应的VXLAN隧道，隧道可达，下发MAC转发表。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/31.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/32.png"></p>
+<blockquote>
+<ul>
+<li>这里Type2路由发布的是MAC/IP路由，这里可以看到，当本端主机H1上线后，本端VTEP学习到该主机的MAC地址和ARP，生产EVPN的Type2路由，直接通过BGP-EVPN发送到远端设备。</li>
+<li>远端VTEP学习到MAC/IP路由后，下发到对应的EVPN实例，根据下一跳查找对应的VXLAN隧道，隧道可达，下发MAC转发表和IP路由表。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/33.png"></p>
+<blockquote>
+<ul>
+<li>接着我们看EVPN协议的Type3路由，又称为Inclusive Multicast Ethernet Tag route，该类型路由是由前缀和PMSI属性组成，用于隧道自动建立、VNI广播成员的自动加入。</li>
+<li>该类型路由在VXLAN控制平面中主要用于VTEP的自动发现和VXLAN隧道的动态建立。作为BGP EVPN对等体的VTEP，通过Inclusive Multicast路由互相传递二层VNI和VTEP IP地址信息。</li>
+<li>其中，Originating Router’s IP Address字段为本端VTEP IP地址，MPLS Label字段为二层VNI。如果对端VTEP IP地址是三层路由可达的，则建立一条到对端的VXLAN隧道。同时，如果对端VNI与本端相同，则创建一个头端复制表，用于后续BUM报文转发。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/34.png"></p>
+<blockquote>
+<ul>
+<li>VXLAN隧道可以通过手动创建，通过指定两端的VTEP和VNI信息，静态配置创建隧道。而动态协议BGP EVPN中创建VXLAN隧道，则是通过Type3路由, 可以把本端的VTEP地址、VNI等信息发给远端，远端收到后会用来创建VXLAN隧道，并且创建VXLAN隧道的头端复制列表。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/35.png"></p>
+<blockquote>
+<ul>
+<li>接下来我们再看一种路由，叫做Type5路由，又称IP前缀路由，可用于将EVPN以外的子网网络引入到EVPN，当然可以掩码是32位，用于发布主机的Host路由。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/36.png"></p>
+<blockquote>
+<ul>
+<li>Type5路由可以用来传递网段IP路由，同时可以携带对应VRF的L3 VNI。</li>
+<li>也可以用来传递代表VRF的L3 VNI,这里什么是L3 VNI呢？<ul>
+<li>由于在分布式网关环境下，跨子网要通信，需要代表各自VRF，而报文里面没有VRF，因此我们这边通过一个特定的VNI映射成VRF，这个VNI就是L3 VNI。</li>
+<li>这时，远端的VTEP在学习到网段路由后，可以添加到对应VPN实例中，并根据下一跳驱动创建L3 VXLAN隧道，并下发路由表。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/37.png"></p>
+<blockquote>
+<ul>
+<li>参考答案：<ul>
+<li>MAC/IP通告，分布式网关下虚拟机迁移，MAC通告。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/38.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/39.png"></p>
+<p><img src="/2021/09/11/IE-BGPEVPN%E5%8E%9F%E7%90%86/40.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HCRSE116-BGP-EVPN%E5%8E%9F%E7%90%86/" rel="tag"># HCRSE116-BGP EVPN原理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/11/IE-SDNVXLAN%E5%8E%9F%E7%90%86/" rel="next" title="IE-SDNVXLAN原理">
+                <i class="fa fa-chevron-left"></i> IE-SDNVXLAN原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/mydog.jpg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">81</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zsy9959" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:zsy9959@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张思宇</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

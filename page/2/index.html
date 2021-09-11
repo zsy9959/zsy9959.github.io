@@ -241,6 +241,1413 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/" itemprop="url">IE-OSPF双栈原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-04T14:54:19+08:00">
+                2021-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/1.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/2.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/3.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/4.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/5.png"></p>
+<blockquote>
+<ul>
+<li><p>LSA头部信息，除Hello报文外，其它的OSPF报文都携带LSA信息。</p>
+<ul>
+<li>LS age：此字段表示LSA已经生存的时间，单位是秒。</li>
+<li>Option：该字段指出了部分OSPF域中LSA能够支持的可选性能。</li>
+<li>LS type：此字段标识了LSA的格式和功能。常用的LSA类型有五种。</li>
+<li>Link State ID：根据LSA的不用而不同。</li>
+<li>Advertising Router：始发LSA的路由器的ID。</li>
+<li>Sequence Number：当LSA每次新的实例产生时，这个序列号就会增加。这个更新可以帮助其他路由器识别最新的LSA实例。</li>
+<li>Checksum：关于LSA的全部信息的校验和。因为Age字段，所以校验和会随着老化时间的增大而每次都需要重新进行计算。</li>
+<li>Length：是一个包含LSA头部在内的LSA的长度。</li>
+</ul>
+</li>
+<li><p>Router-LSA，Router-LSA必须描述始发路由器所有接口或链路。</p>
+<ul>
+<li>Link State ID：是指始发路由器的路由器ID。</li>
+<li>Flag：<ul>
+<li>V：设置为1时，说明始发路由器是一条或者多条具有完全邻接关系的虚链路的一个端点。</li>
+<li>E：当始发路由器是一个ASBR路由器时，该为置为1。</li>
+<li>B：当始发路由器是一个ABR路由器时，该为置为1。</li>
+</ul>
+</li>
+<li>Number of links：表明一个LSA所描述的路由器链路数量。</li>
+<li>Link Type：<ul>
+<li>值为1表示为点到点网络，常见的PPP链路需要使用点到点网络描述。</li>
+<li>值为2表示连接一个transit网络，有至少两台路由器的广播型网段或NBMA网段就是一种Transit网段。</li>
+<li>值为3表示连接stubnet网络，一般该网络上不存在邻居关系，如只有一个出口的以太网或回环接口。</li>
+<li>值为4表示虚链路。</li>
+</ul>
+</li>
+<li>Link ID：<ul>
+<li>Link Type为1时该值表示邻居路由器的路由器ID。</li>
+<li>Link Type为2时该值表示DR路由器的接口的IP地址。</li>
+<li>Link Type为3时该值表示IP网络或子网地址。</li>
+<li>Link Type为4时该值表示邻居路由器的路由器ID。</li>
+</ul>
+</li>
+<li>Link Data：<ul>
+<li>Link Type为1时该值表示和网络相连的始发路由器接口的IP地址。</li>
+<li>Link Type为2时该值表示和网络相连的始发路由器接口的IP地址。</li>
+<li>Link Type为3时该值表示网络的子网掩码。</li>
+<li>Link Type为4时该值表示始发路由器的虚链路接口的IP地址。</li>
+</ul>
+</li>
+<li>ToS，暂不支持。</li>
+<li>Metric：是指一条链路或接口的代价。</li>
+</ul>
+</li>
+<li><p>Network-LSA</p>
+<ul>
+<li>Link State ID：是指DR路由器的接口地址。</li>
+<li>Network Mask：指定这个网络上使用的地址或者子网的掩码。</li>
+<li>Attached router：列出该多路访问网络上与DR形成完全邻接关系且包括DR本身的所有路由器的路由器ID。</li>
+</ul>
+</li>
+<li><p>Network-summary-LSA和ASBR-summary-LSA</p>
+<ul>
+<li>Link State ID：对于3类LSA来说，表示所通告的网络或子网的IP地址。对于4类LSA来说表示所通告的ASBR路由器的路由器ID。</li>
+<li>Network Mask：对于3类LSA来说，表示所通告的网络的子网掩码。对于4类LSA来说，该字段没有实际意义，一般置为0.0.0.0。</li>
+<li>Metric：始发路由器到目的地址的路由的代价。</li>
+</ul>
+</li>
+<li><p>AS-external-LSA</p>
+<ul>
+<li>Link State ID：表示所通告的网络或子网的IP地址。</li>
+<li>Network Mask:指所通告的网络的子网掩码。</li>
+<li>E：用来指定这条路由使用的外部度量的类型。如果该E bit设置为1,那么度量类型就是E2;如果该E bit设置为0,那么度量类型就是E1。</li>
+<li>Metric：指路由的代价。由ASBR设定。</li>
+<li>Forwarding Address：是指到达所通告的目的地的数据包应该被转发到的地址。如果转发地址是0.0.0.0,那么数据包将被转发到始发ASBR上。</li>
+<li>External Route Tag:标记外部路由。</li>
+</ul>
+</li>
+<li><p>NSSA LSA</p>
+<ul>
+<li>Forwarding Address：如果所引入外部路由的下一跳在OSPF路由域内，则Forwarding Address直接设置为所引入外部路由的下一跳；如果所引入外部路由的下一跳不在OSPF路由域内，则Forwarding Address设置为该ASBR上某个OSPF路由域内的Stub网段（例如Loopback0接口）的接口IP地址，有多个Stub网段时选IP地址最大者。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/7.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/8.png"></p>
+<blockquote>
+<ul>
+<li>Option字段解释：<ul>
+<li>DN：用来避免在MPLS VPN中出现环路。当PE向CE发送3类、5类和7类LSA时需要设置DN位，其他PE路由器从CE接收到该LSA时，不能够在它的OSPF路由计算中使用该LSA。</li>
+<li>O：该字段指出始发路由器支持Opaque LSA（类型9、类型10和类型11）。</li>
+<li>DC位：当始发路由器支持按需链路上的OSPF的能力时，该位将被设置。</li>
+<li>EA：当始发路由器具有接收和转发External-Attributes-LSA（type8 LSA）的能力时，该位被置位。</li>
+<li>N位：只用在Hello数据包中。N=1表明路由器支持7类LSA。N=0表明该路由器将不接收和发送NSSA LSA。</li>
+<li>P位：只用在NSSA LSA。该位将告诉NSSA区域的ABR路由器将7类LSA转换为5类LSA。</li>
+<li>MC位：当始发路由器支持转发组播数据包的能力时，该位将被置位。</li>
+<li>E位：当始发路由器具有接收AS-external-LSA（type5 LSA）的能力时，该位被置位。在所有5类LSA和始发于骨干区域以及非末节区域的LSA中，该位置为1。而始发于末节区域的LSA中，该位置为0。如果Hello报文中该位被置位则表明该接口具有接收和发送5类LSA的能力。</li>
+<li>MT位：表示始发路由器支持多拓扑OSPF。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/9.png"></p>
+<blockquote>
+<ul>
+<li><p>快速收敛：</p>
+<ul>
+<li>I-SPF改进了这个算法，除了第一次计算时需要计算全部节点外，每次只计算受到影响的节点，而最后生成的最短路径树SPT与原来的算法所计算的结果相同，大大降低了CPU的占用率，提高了网络收敛速度。</li>
+<li>PRC的原理与I-SPF相同，都是只对发生变化的路由进行重新计算。不同的是，PRC不需要计算节点路径，而是根据I-SPF算出来的SPT来更新路由。在路由计算中，叶子代表路由，节点则代表路由器。SPT变化和叶子变化都会引起路由信息的变化，但两者不存在依赖关系，PRC根据SPT或叶子的不同情况进行相应的处理：<ul>
+<li>SPT变化，PRC处理变化节点上的所有叶子的路由信息。</li>
+<li>SPT没有变化，PRC不会处理节点的路由信息。</li>
+<li>叶子变化，PRC处理变化的叶子的路由信息。</li>
+<li>叶子没有变化，PRC不会处理叶子的路由信息。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>智能定时器，OSPF智能定时器分别对路由计算、LSA的产生、LSA的接收进行控制，加速网络收敛。OSPF智能定时器可以通过以下两种方式来加速网络收敛：</p>
+<ul>
+<li><p>在频繁进行路由计算的网络中，OSPF智能定时器根据用户的配置和指数衰减技术动态调整两次路由计算的时间间隔，减少路由计算的次数，从而减少CPU的消耗，待网络拓扑稳定后再进行路由计算。</p>
+</li>
+<li><p>在不稳定网络中，当路由器由于拓扑的频繁变化需要产生或接收LSA时，OSPF智能定时器可以动态调整时间间隔，在时间间隔之内不产生LSA或对接受到的LSA不进行处理，从而减少整个网络无效LSA的产生和传播。</p>
+</li>
+<li><p>智能定时器对路径计算的作用：</p>
+<ul>
+<li><p>根据本地维护的链路状态数据库LSDB，运行OSPF协议的路由器通过SPF算法计算出以自己为根的最短路径树，并根据这一最短路径树决定到目的网络的下一跳。通过调节SPF的计算间隔，可以抑制网络频繁变化可能导致的占用过多带宽资源和路由器资源。</p>
+</li>
+<li><p>在特定组网环境下（例如对路由收敛时间要求较高的环境），可以指定以毫秒为单位的时间间隔，用来增加路由计算的频度，从而加快路由的收敛。</p>
+</li>
+<li><p>当OSPF的链路状态数据库（LSDB）发生改变时，需要重新计算最短路径。如果网络频繁变化，由于不断的计算最短路径，会占用大量系统资源，影响路由器的效率。通过配置智能定时器，设置合理的SPF计算的间隔时间，可以避免占用过多的路由器内存和带宽资源。</p>
+</li>
+<li><p>使能智能定时器后：</p>
+<p>​    初次计算SPF的间隔时间由start-interval参数指定。</p>
+<p>​    第n（n≥2）次计算SPF的间隔时间为hold-interval×2(n-1)。</p>
+<p>当hold-interval×2(n-1)达到指定的最长间隔时间max-interval时，OSPF连续三次计算SPF的时间间隔都是最长间隔时间，之后，再次返回步骤1，按照初始间隔时间start-interval计算SPF。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>按优先级收敛：</p>
+<ul>
+<li>可以通过IP前缀列表等将特定路由过滤出来，通过对不同的路由配置不同的收敛优先级，达到重要的路由先收敛的目的，提高网络的可靠性。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/11.png"></p>
+<blockquote>
+<ul>
+<li><p>通过设置路由器上非缺省外部路由数量的上限，来避免数据库超限。OSPF网络中所有路由器都必须配置相同的上限值。这样，只要路由器上外部路由的数量达到该上限，路由器就进入Overflow状态，并同时启动超限状态定时器（默认超时时间为5秒），路由器在定时器超过5秒后自动退出超限状态。</p>
+</li>
+<li><p>OSPF Database Overflow过程：</p>
+<ul>
+<li>进入Overflow状态时，路由器删除所有自己产生的非缺省外部路由。</li>
+<li>处于Overflow状态中时，路由器不产生非缺省外部路由；丢弃新收到的非缺省外部路由且不回复确认报文；当超限状态定时器超时，检查外部路由数量是否仍然超过上限，如果超限则重启定时器，如果没有则退出超限状态。</li>
+<li>退出Overflow状态时，路由器删除超限状态定时器；产生非缺省外部路由；接收新收到的非缺省外部路由并回复确认报文；准备下一次进入超限状态。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/12.png"></p>
+<blockquote>
+<ul>
+<li><p>OSPF 缺省路由通常应用于下面两种情况：</p>
+<ul>
+<li>由区域边界路由器（ABR）发布 Type3 缺省 Summary LSA，用来指导区域内设备进行区域之间报文的转发。</li>
+<li>由自治系统边界路由器（ASBR）发布 Type5 外部缺省 ASE LSA，或者 Type7 外部缺省NSSA LSA，用来指导自治系统（AS）内设备进行自治系统外报文的转发。</li>
+</ul>
+</li>
+<li><p>OSPF 缺省路由的发布原则如下：</p>
+<ul>
+<li>OSPF 路由器只有具有对外的出口时，才能够发布缺省路由 LSA。</li>
+<li>如果 OSPF 路由器已经发布了缺省路由 LSA，那么不再学习其它路由器发布的相同类型缺省路由。即路由计算时不再计算其它路由器发布的相同类型的缺省路由 LSA，但数据库中存有对应 LSA。</li>
+<li>外部缺省路由的发布如果要依赖于其它路由，那么被依赖的路由不能是本 OSPF 路由域内的路由，即不是本进程 OSPF 学习到的路由。因为外部缺省路由的作用是用于指导报文的域外转发，而本 OSPF 路由域的路由的下一跳都指向了域内，不能满足指导报文域外转发的要求。 </li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/13.png"></p>
+<blockquote>
+<ul>
+<li><p>OSPF 支持使用路由策略对路由信息进行过滤。缺省情况下， OSPF 不进行路由过滤。</p>
+</li>
+<li><p>OSPF 可以使用的路由策略包括 route-policy，filter，filter-policy，filter-lsa-out，访问控制列表（access-list），地址前缀列表（prefix-list）。 </p>
+</li>
+<li><p>OSPF 路由过滤可以应用于以下几个方面： </p>
+<ul>
+<li>路由引入的过滤：<ul>
+<li>OSPF可以引入其它路由协议学习到的路由。在引入时可以通过配置路由策略来过滤路由，只引入满足条件的路由。</li>
+<li>可以在OSPF 路由表中被发布出去</li>
+</ul>
+</li>
+<li>3类LSA学习、发布的过滤：<ul>
+<li>通过filter import、filter export命令在 ABR上对进入或离开本区域的3型LSA 进行过滤。该配置只在ABR上有效（只有ABR才能发布3型LSA）。 </li>
+<li>5、7类LSA生成的过滤：</li>
+<li>OSPF 引入外部路由后会生成5、7型LSA。可以通过filter-policy export来对5、7型LSA的生成进行过滤。该过滤规则只在 ASBR 上配置才有效。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>接口视图下的LSA过滤。通过ospf filter-lsa-out命令， 匹配除Grace LSA外的所有LSA、3、5、7型LSA，并匹配ACL规定的路由前缀时，实现LSA的通告过滤。</p>
+</li>
+<li><p>路由计算的过滤：</p>
+<ul>
+<li>通过filter-policy import过滤规则，可以设置 OSPF对数据库中的区域内、区域间、外部LSA计算为路由条目时进行过滤。<br> 该过滤只作用于路由表项的添加与否，即只有通过过滤的路由才被添加到本地路由表中，产生该路由的LSA仍然会在OSPF自治系统内扩散。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/14.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/15.png"></p>
+<blockquote>
+<ul>
+<li>相关解释如下：<ul>
+<li>OSPF支持的网络类型有P2P网络、P2MP网络、NBMA网络和广播网络；IS-IS仅支持P2P网络和广播网络。</li>
+<li>OSPF工作在IP之上，协议号为89。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/16.png"></p>
+<blockquote>
+<ul>
+<li>相关解释如下：<ul>
+<li>OSPF建立邻居需要检查Hello报文中的掩码、认证、hello/dead时间间隔、区域等信息。而IS-IS形成邻居关系条件比较宽松。</li>
+<li>OSPF P2P链路建立邻居关系需要三次握手。IS-IS则不要三次握手，但是华为设备缺省情况下使能IS-IS P2P网络三次握手功能，以保证邻居建立的可靠性。</li>
+<li>IS-IS邻居关系分为层1和层2。</li>
+<li>OSPF依据优先级和router-id选举DR/BDR，且选举结束后，不可抢占。在OSPF中，所有DRother与DR/BDR形成完全邻接关系，DRother间形成2-way即不完全邻接关系。OSPF中，如果优先级为0，则表示该路由器不参与DR/BDR选举。</li>
+<li>IS-IS选举DIS依据优先级和MAC地址，可以抢占。在IS-IS中，所有路由器均形成邻接关系。IS-IS中，如果优先级为0，则表示该路由器也会参与DIS选举，只是优先级比较低。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/17.png"></p>
+<blockquote>
+<ul>
+<li>相关解释如下：<ul>
+<li>IS-IS LSP种类较少，但是扩展性较强，主要通过LSP携带的TLV字段进行功能扩展。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/18.png"></p>
+<blockquote>
+<ul>
+<li>相关解释如下：<ul>
+<li>OSPF开销是基于带宽的；IS-IS理论上开销类型分为四种，包括缺省开销、时延开销、代价开销、差错开销，但在实现上只采用缺省开销。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/19.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/20.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/21.png"></p>
+<blockquote>
+<p>默认情况下，OSPF不检查DD报文中的MTU。</p>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/22.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/23.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/24.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/25.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/26.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/27.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/28.png"></p>
+<blockquote>
+<ul>
+<li>IPv6中重点强调了一个“链路（link）”的概念，在IPv6中，一个链路上可以分配多个IP子网，也就是IPv6前缀。和IPv4中不同的是，同一个链路上的两个节点即使不具有相同的IPv6前缀，也可以直接通过这个链路通信。这一点极大地改变了OSPF的行为。</li>
+<li>OSPFv3是基于链路运行的，而不是以前的基于IP子网的运行。在OSPFv3中我们更多的是使用“链路”和“前缀”这两个术语。但这两个概念是分离的，没有必然的对应关系。同一链路上的两个节点不必具有相同的前缀。所以在讨论路由协议时，OSPFv2的术语“网络”和“子网”在这里应该用“链路”替换掉。同样，一个OSPF接口现在是连接到一个链路上，而不再是一个IP子网上了。OSPF协议分组的接收以及Hello分组和LSA的格式也因此做出了相应的修改。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/29.png"></p>
+<blockquote>
+<ul>
+<li><p>一个路由器可以学习到这个链路上相连的所有其它路由器的链路本地地址，并使用这些链路本地地址作为下一跳来转发报文。</p>
+</li>
+<li><p>IPv6在RFC2373中定义了链路本地（link-local）地址用于一个单一链路上，其目的是完成邻居发现（neighbor discovery）和自动配置（auto-configuration）等功能。IPv6路由器不转发源地址为link-local类型的分组。Link-local单播地址范围为IPv6地址范围FE80/10。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/30.png"></p>
+<blockquote>
+<ul>
+<li><p>Router A、 Router B、 Router C和Router D连接到同一个广播网上，它们共享同一条链路且都能建立邻居关系，通过在Router A的Eth1/1、 Router B的Eth1/1、Router C的Eth1/2上指定实例1、在Router A的Eth1/1、 Router B的Eth1/1、 RouterD的Eth1/3上指定实例2，实现了Router A、 Router B和Router C可以建立邻居关系， Router A、 Router B和Router D可以建立邻居关系。</p>
+</li>
+<li><p>这是通过在OSPFv3报文头中添加Instance ID字段来实现的。如果接口配置的Instance ID与接收的OSPF v3报文的Instance ID不匹配，则丢弃该报文，从而无法建立起邻居关系。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/31.png"></p>
+<blockquote>
+<ul>
+<li>OSPFv3协议一般自身不再提供认证功能，而是通过使用IPv6提供的安全机制来保证自身报文的合法性。所以， OSPFv2报文中的认证字段，在OSPFv3报文头中被取消。 </li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/32.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/33.png"></p>
+<blockquote>
+<ul>
+<li><p>与OSPFv2一样， OSPFv3的五种报文都有同样的报文头，只是报文中的字段有些不同。</p>
+</li>
+<li><p>OSPFv3的LSU和LSAck报文与OSPFv2相比没有什么变化，但OSPFv3的报文头、 Hello、 DD以及LSR报文中的字段与OSPFv2略有不同，报文的改变包括以下几点：</p>
+<ul>
+<li>版本号从 2 升级到 3。</li>
+<li>报文头的不同：与 OSPFv2 报文头相比， OSPFv3 报文头长度只有 16 字节，去掉了认证字段但加了 Instance ID 字段。 Instance ID 字段用来支持在同一条链路上运行多个实例，且只在链路本地范围内有效，如果路由器接收到的 Hello 报文的 Instance ID 与当前接口配置的 Instance ID 不同，将无法建立邻居关系。 </li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/34.png"></p>
+<blockquote>
+<ul>
+<li><p>Hello 报文的不同：与 OSPFv2 Hello 报文相比， OSPFv3 Hello 报文去掉了网络掩码字段，增加了 Interface ID 字， 用来标识发送该 Hello 报文的接口ID。 </p>
+</li>
+<li><p>Instance ID:  4字节。报文发送者的发送接口标识，仅用来区分同一路由器上的不同接口，不包含地址信息。</p>
+</li>
+<li><p>Rtr Pri:  1字节。路由器优先级，优先级高者成为DR。</p>
+</li>
+<li><p>Options: 3字节。 OSPFv3中将Options字段扩展为24位。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/35.png"></p>
+<blockquote>
+<ul>
+<li><p>在OSPFv2中， Option字段出现在每一个Hello报文、 DD报文以及每一个LSA中。</p>
+</li>
+<li><p>在 OSPFv3中， Option字段只在 Hello报文、 DD报文、 Router LSA、 Network LSA、 Inter Area Router LSA以及Link LSA中出现。 </p>
+</li>
+<li><p>从上图可以看出，与OSPFv2相比， OSPFv3的Option字段增加了R比特、 V比特。</p>
+<ul>
+<li>R 比特：用来标识设备是否是具备转发能力的路由器。如果 R 比特置 0，宣告该节点的路由信息将不会参加路由计算，如果当前设备是一个不想转发非本地地址的报文，可以将 R 比特置 0。</li>
+<li>V6 比特：如果 V6 比特置 0，该路由器或链路也不会参加IPv6路由计算。</li>
+<li>E: 如果为0，不支持AS-External-LSA洪泛；</li>
+<li>MC: 与多播相关；</li>
+<li>N: 是否在NSSA (Not So Stub Area)区域；</li>
+<li>DC: 是否支持按需拨号。</li>
+</ul>
+</li>
+<li><p>Options字段的各位的匹配情况会产生不同影响：</p>
+<ul>
+<li>阻止邻居的建立，例如Hello报文中的选项不匹配。</li>
+<li>阻止LSA的洪泛，例如E-Bit，如果为0，不洪泛AS-External-LSA。</li>
+<li>阻止LSA参加路由计算，例如V6-Bit，如果为0，该Router不参加IPv6路由计算。</li>
+<li>Options字段使OSPF路由器能支持可选的能力，并且与其它路由器互相通告其能力。通过这种机制，具有不同能力的路由器可以在一个OSPF路由域中混合工作。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/36.png"></p>
+<blockquote>
+<ul>
+<li>OSPFv2中的LS Type长度为8比特，指定LSA的类型； OSPFv3的LSA Type字段由OSPFv2的8比特扩充为16比特。<ul>
+<li>U 位：描述了路由器收到一个类型未知的 LSA 时如何处理，取值为 0 表示把类型未知 LSA 当成具有链路本地范围的 LSA 一样处理，取值为 1 表示按照S2/S1 位标识的泛洪范围来处理。 </li>
+<li>S2/S1 位：共同标识 LSA 的泛洪范围，取值 00 表示 LSA 只在产生该 LSA 的本地链路上泛洪；取值 01 表示 LSA 的泛洪范围为产生该 LSA 的路由器所在区域；取值 10 表示 LSA 将在整个自治系统内进行泛洪；取值 11 保留。</li>
+<li>LSA Function Code： LSA 类型编码，描述 LSA 的类型。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/37.png"></p>
+<blockquote>
+<ul>
+<li><p>在OSPFv2中，收到类型未知的LSA将直接丢弃。 </p>
+</li>
+<li><p>OSPFv3在LSA的LS Type字段中增加了一个U比特位来位标识对未知类型LSA的处理方式： </p>
+<ul>
+<li>如果 U 比特置 1，则对于未知类型的 LSA 按照 LSA 中的 LS Type 字段描述的泛洪范围进行泛洪；</li>
+<li>如果 U 比特置 0，对于未知类型的 LSA 仅在链路范围内泛洪。</li>
+</ul>
+</li>
+<li><p>LSA的泛洪范围已经被明确地定义在LSA的LS Type字段，目前，有三种LSA泛洪范围。 </p>
+<ul>
+<li>链路本地范围(Link-local Scope)。<ul>
+<li>LSA 只在本地链路上泛洪，不会超出这个范围， Link-LSA(新增)。</li>
+</ul>
+</li>
+<li>区域范围(Area Scope)。<ul>
+<li> Router-LSA, Network-LSA, Inter-Area-Prefix-LSA, Inter-Area-Router-LSA, Intra-Area-Prefix-LSA(新增)都是区域范围泛洪的 LSA。 </li>
+</ul>
+</li>
+<li>自治系统范围(AS Scope)。<ul>
+<li>LSA 将被泛洪到整个路由域，AS-External-LSA。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/38.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/39.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/40.png"></p>
+<blockquote>
+<ul>
+<li>OSPFv3新增了Link-LSA和Intra Area Prefix LSA。<ul>
+<li>Router LSA 不再包含地址信息，使能 OSPFv3 的路由器为它所连接的每条链路产生单独的 Link-LSA，将当前接口的链路本地地址以及路由器在这条链路上的一系列 IPv6 地址信息向该链路上的所有其它路由器通告。</li>
+<li>Router LSA 和 Network LSA 中不再包含路由信息，这两类 LSA 中所携带的路由信息由 Intra Area Prefix LSA 来描述，该类 LSA 用来公告一个或多个IPv6 地址前缀。 </li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/41.png"></p>
+<blockquote>
+<ul>
+<li><p>在OSPFv2中，使用“IP网段＋掩码”来表示前缀信息，而且两段信息在不同LSA中的位置还各不相同，结构很不清晰。在OSPFv3的LSA中，使用专门的三元组（Prefix-Length, PrefixOptions, Prefix）来表示前缀信息。由LSA公告的每个前缀都拥有一个自己的PrefixOptions 字段。</p>
+</li>
+<li><p>Prefix-Length</p>
+<ul>
+<li>1字节。前缀的bit位长度，对于缺省路由该字段取值为0。</li>
+<li>PrefixOptions，1字节。前缀信息的选项，用来描述前缀的某些特殊属性字段，格式如下：</li>
+<li>NU位：非单播位。如果设置为1，则这个前缀不会纳入IPv6单播路由计算中。</li>
+<li>LA位：本地地址位。如果设置为1，则这个前缀是路由器的一个接口地址。</li>
+<li>MC位：组播位。如果设置为1，则这个前缀应该纳入组播计算中，否则不纳入组播计算。</li>
+<li>P位：传播位。如果一个NSSA区域的前缀需要被ABR传播出去，就需要设置这一位。</li>
+</ul>
+</li>
+<li><p>Prefix</p>
+<ul>
+<li>长度不定，为4字节的倍数。用于表示前缀的IPv6网络地址信息。</li>
+</ul>
+</li>
+<li><p>Prefix-length可变，但必须是32bit（4字节）的整数倍，可用0来填充。因此它的长度可能是0、4、8、12、16字节。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/42.png"></p>
+<blockquote>
+<ul>
+<li>W：用于组播路由；</li>
+<li>V：该路由器为虚连接的一端；</li>
+<li>E：该路由器为ASBR；</li>
+<li>B：该路由器为ABR。</li>
+<li>Type：1字节。路由器的该链路的链路类型；</li>
+<li>Metric：2字节。数据报文从此接口发出时的cost值；</li>
+<li>Interface ID：4字节。接口ID，用于标识接口，无地址含义。</li>
+<li>Neighbor Interface ID：4字节。邻居接口ID。</li>
+<li>Neighbor Router ID：4字节。邻居Router ID。 </li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/43.png"></p>
+<blockquote>
+<ul>
+<li>Router-LSA具有区域泛洪范围，用于描述该路由器在某个区域内的所有连接，而且只描述建立了邻接关系的连接（邻居为full状态）。这意味着Stub类型的链路不在这里描述了（在OSPFv2中用链路类型3描述）。另外，如果是点到多点链路的话，需要为每个邻居都产生一个描述。由于每个链路描述的长度固定，因此可以通过LSA头中的LSA长度来确定Router-LSA中的Link数。</li>
+<li> 一个Router-LSA可以包含多个链路描述（link description）。同一个路由器可以生成多个Router-LSA，通过Link State ID进行区分。在SPF计算时，对于同一个路由器产生的多个Router-LSA必须合在一起参与运算。</li>
+<li>OSPFv3的Router-LSA中不再包含前缀信息，仅仅描述了拓扑连接情况。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/44.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/45.png"></p>
+<blockquote>
+<ul>
+<li><p>Options：3字节。含义见第36页。该字段实际上是该链路上所有路由器的Link-LSA的Options字段的集合，也即是它们的能力集合。</p>
+</li>
+<li><p>Attached Router：</p>
+<ul>
+<li>每个路由器4字节。该链路上所有与DR有Full关系的路由器的Router ID。</li>
+<li>OSPFv3的Network-LSA具有区域泛洪范围，由DR生成。它的Link State ID为DR的Interface ID，而且将OSPFv2中的掩码字段取消了，所以它不再包含前缀信息，而仅仅描述了拓扑连接情况。</li>
+<li>另外，由于其中的Options字段为链路上所有路由器的能力集合，因此DR的能力大小并不会影响其他路由器的LSA传播。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/46.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/47.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/48.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/49.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/50.png"></p>
+<blockquote>
+<ul>
+<li>OSPFv3的Intra-Area-Prefix-LSA具有区域泛洪范围，用于发布区域内前缀信息。根据所参考的LSA不同可分为以下两种情况：<ul>
+<li>参考Router-LSA，由各路由器分别生成，用于发布点到点链路的前缀信息以及Stub网络的前缀信息；</li>
+<li>参考Network-LSA，由DR生成，用于发布该链路对应网络上的所有前缀信息，这些前缀来自链路上所有路由器各自生成的Link-LSA。但是，Link-LSA中的本地链路地址信息、NU或LA位置1的前缀除外。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/51.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/52.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/53.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/54.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/55.png"></p>
+<blockquote>
+<ul>
+<li>Metric：20bit。表示ABR到达该前缀描述的路由的cost值。</li>
+<li>前缀信息：描述前缀的Prefix三元组。</li>
+<li>在OSPFv2中，使用LSA头里面的Link State ID字段来表示网络地址，掩码包含在LSA内容里。</li>
+<li>OSPFv3的Inter-Area-Prefix-LSA中，LSA头里的Link State ID不再包含前缀信息，仅仅是一个32位的编号，用于区分同一路由器产生的不同LSA，所有前缀均通过Prefix三元组来描述。</li>
+<li>Inter-Area-Prefix-LSA具有区域泛洪范围，由ABR生成。每个Inter-Area-Prefix-LSA包含一条地址前缀信息，且不能包含本地链路地址信息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/56.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/57.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/58.png"></p>
+<blockquote>
+<ul>
+<li>Options：3字节，并非生成LSA的路由器的能力描述，而是描述了目的ASBR的能力。</li>
+<li> Metric：3字节，表示ABR到目的ASBR路由器的cost值。</li>
+<li> Destination Router ID：4字节，目的ASBR路由器的Router ID。</li>
+<li>在OSPFv2中，使用LSA头里面的Link State ID字段来表示目的ASBR的Router ID。OSPFv3的Inter-Area-Router-LSA中，LSA头里的Link State ID不再有具体含义，仅仅是一个32位的编号，用于区分同一路由器产生的不同LSA。</li>
+<li>Inter-Area-Router-LSA具有区域泛洪范围，由ABR生成。每个Inter-Area-Router-LSA包含一条目的ASBR信息。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/59.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/60.png"></p>
+<blockquote>
+<ul>
+<li><p>E：外部路由的Metric类型。如果设置为1，表示此为2类外部路由，其Metric不随着路由的传递而增长。如果设置为0，表示此为1类外部路由，其Metric随着路由的传递而增长。</p>
+</li>
+<li><p>F：如果设置为1，则表示后面的Forwarding Address可选字段存在。</p>
+</li>
+<li><p>T：如果设置为1，则表示后面的External Route Tag可选字段存在。</p>
+</li>
+<li><p>前缀信息：描述前缀的Prefix三元组。</p>
+</li>
+<li><p>Ref LS Type：2字节。如果非0，则表示后面的Referenced Link State ID可选字段存在。</p>
+</li>
+<li><p>Forwarding Address：16字节。可选的128位IPv6地址。当前面的F位为1时存在。表示到达目的的数据应该转发到这个地址。在公告路由器不是最优的下一跳的时候可以使用。</p>
+</li>
+<li><p>External Route Tag：4字节。可选的标记位。可以用于ASBR之间的通信。一个比较常见的例子是，在OSPF自治系统的两个边界路由器上进行路由分发时，通过对引入的路由进行标记，可以很方便地进行路由过滤。</p>
+</li>
+<li><p>Referenced Link State ID：4字节。当前面的Ref LS Type字段非0时存在。如果存在，说明此条外部路由有一些相关信息需要参考另外一个LSA。被参考的LSA由以下字段值确定：</p>
+<ul>
+<li>其LS type等于此AS-external-LSA的Referenced LS Type；</li>
+<li>其Link State ID等于此AS-external-LSA的Referenced Link State ID；</li>
+<li>其Advertising Router等于此ASexternal-LSA的Advertising Router。</li>
+<li>这种参考能力是为未来的扩展准备的，目前并没有使用。</li>
+</ul>
+</li>
+<li><p>在OSPFv2中，使用LSA头里面的Link State ID字段来表示网络地址，掩码包含在LSA内容里。</p>
+</li>
+<li><p>OSPFv3的AS-external-LSA中，LSA头里的Link State ID不再包含前缀信息，仅仅是一个32位的编号，用于区分同一路由器产生的不同LSA，所有前缀均通过Prefix三元组来描述。</p>
+</li>
+<li><p>AS-external-LSA具有AS泛洪范围，由ASBR生成。每个AS-external-LSA包含一条地址前缀信息，且不能包含本地链路地址信息。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/61.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/62.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/63.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/64.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/65.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/66.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/67.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/68.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/69.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/70.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/71.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/72.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/73.png"></p>
+<p><img src="/2021/08/04/IE-OSPF%E5%8F%8C%E6%A0%88%E5%8E%9F%E7%90%86/74.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/" itemprop="url">IE-IPv6基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-26T17:30:23+08:00">
+                2021-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/1.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/2.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/3.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/4.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/5.png"></p>
+<blockquote>
+<ul>
+<li><p>ICANN(the Internet Corporation for Assigned Names and Numbers)是Internet的中心管理机构。</p>
+</li>
+<li><p>并不是所有的地址都会被分配。一些地址被预留，用于广播、测试、私有网络使用等。这些地址被称为专用地址(special-use address)。你可以查询RFC5735来了解哪些地址是专用地址。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/6.png"></p>
+<blockquote>
+<ul>
+<li><p>实践证明IPv4是一个非常成功的协议，它本身也经受住了Internet从数目很少的计算机发展到目前上亿台计算机互联的考验。但该协议是几十年前基于当时的网络规模而设计的。在今天看来，IPv4的设计者们对于Internet的估计和预想显得很不充分。随着Internet的扩张和新应用的不断推出，IPv4越来越显示出它的局限性。</p>
+</li>
+<li><p>Internet规模的快速扩大是当时完全没有预料到的，特别是近十年来，更是爆炸式增长，已经走进了千家万户，人们的日常生活已经离不开它了。但也就是这种快速发展，出现了迫在眉睫的IP地址空间耗尽问题。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/7.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/8.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/9.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/10.png"></p>
+<blockquote>
+<p>IPv6特点：</p>
+<ul>
+<li>地址空间，IPv6地址采用128比特标识。128位的地址结构使IPv6理论上可以拥有（43亿×43亿×43亿×43亿）个地址。近乎无限的地址空间是IPv6的最大优势。</li>
+<li>报文结构，IPv6使用了新的协议头格式，也就是说IPv6数据包有全新的报文头，而并不是仅仅简单地将IPv4报文头中的地址部分增加到128bits而已。在IPv6中，报文头包括固定头部和扩展头部，一些非根本性的和可选择的字段被移到了IPv6协议头之后的扩展协议头中。这使得网络中的中间路由器在处理IPv6协议头时，有更高的效率。</li>
+<li>实现自动配置和重新编址，IPv6协议内置支持通过地址自动配置方式使主机自动发现网络并获取IPv6地址，大大提高了内部网络的可管理性。</li>
+<li>支持层次化网络结构，巨大的地址空间使得IPv6可以方便的进行层次化网络部署。层次化的网络结构可以方便的进行路由聚合，提高了路由转发效率。</li>
+<li>支持端对端安全，IPv6中，网络层支持IPSec的认证和加密，支持端到端的安全。</li>
+<li>更好的支持QoS，IPv6在包头中新定义了一个叫做流标签的特殊字段。IPv6的流标签字段使得网络中的路由器可以对属于一个流的数据包进行识别并提供特殊处理。用这个标签，路由器可以不打开传送的内层数据包就可以识别流，这就使得即使数据包有效载荷已经进行了加密，仍然可以实现对QoS的支持。</li>
+<li>支持移动特性，由于采用了Routing header和Destination option header等扩展报头，使得IPv6提供了内置的移动性。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/11.png"></p>
+<blockquote>
+<ul>
+<li><p>IPv6数据包由一个IPv6报头、多个扩展报头和一个上层协议数据单元组成。</p>
+</li>
+<li><p>IPv6基本报头（IPv6 Header）</p>
+<ul>
+<li>每一个IPv6数据包都必须包含报头，其长度固定为40bytes。</li>
+<li>基本报头提供报文转发的基本信息，会被转发路径上面的所有路由器解析。</li>
+</ul>
+</li>
+<li><p>上层协议数据单元（Upper Layer Protocol Data Unit）</p>
+<ul>
+<li>上层协议数据单元一般由上层协议包头和它的有效载荷构成，有效载荷可以是一个ICMPv6报文、一个TCP报文或一个UDP报文。</li>
+</ul>
+</li>
+<li><p>IPv6报头格式中主要字段解释如下：</p>
+<ul>
+<li>Version：版本号，长度为4bit。对于IPv6，该值为6。</li>
+<li>Traffic Class：流类别，长度为8bit。等同于IPv4中的ToS字段，表示IPv6数据报的类或优先级，主要应用于QoS。</li>
+<li>Flow Label：流标签，长度为20bit。IPv6中的新增字段，用于区分实时流量，不同的流标签+源地址可以唯一确定一条数据流，中间网络设备可以根据这些信息更加高效率的区分数据流。</li>
+<li>Payload Length：有效载荷长度，长度为16bit。有效载荷是指紧跟IPv6报头的数据报的其它部分（即扩展报头和上层协议数据单元）。</li>
+<li>Next Header：下一个报头，长度为8bit。</li>
+<li>Hop Limit：跳数限制，长度为8bit。该字段类似于IPv4中的Time to Live字段，它定义了IP数据报所能经过的最大跳数。每经过一个路由器，该数值减去1，当该字段的值为0时，数据报将被丢弃。</li>
+<li>Source Address：源地址，长度为128bit。表示发送方的地址。</li>
+<li>Destination Address：目的地址，长度为128bit。表示接收方的地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/12.png"></p>
+<blockquote>
+<ul>
+<li>在IPv4中，IPv4报头包含可选字段Options，内容涉及security、Timestamp、Record route等，这些Options可以将IPv4报头长度从20字节扩充到60字节。在转发过程中，处理携带这些Options的IPv4报文会占用路由器很大的资源，因此实际中也很少使用。</li>
+<li>IPv6将这些Options从IPv6基本报头中剥离，放到了扩展报头中，扩展报头被置于IPv6报头和上层协议数据单元之间。一个IPv6报文可以包含0个、1个或多个扩展报头，仅当需要路由器或目的节点做某些特殊处理时，才由发送方添加一个或多个扩展头。与IPv4不同，IPv6扩展头长度任意，不受40字节限制，这样便于日后扩充新增选项，这一特征加上选项的处理方式使得IPv6选项能得以真正的利用。但是为了提高处理选项头和传输层协议的性能，扩展报头总是8字节长度的整数倍。当使用多个扩展报头时，前面报头的Next Header字段指明下一个扩展报头的类型，这样就形成了链状的报头列表。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/13.png"></p>
+<blockquote>
+<p>说明：</p>
+<ul>
+<li><p>路由设备转发时根据基本报头中Next Header值来决定是否要处理扩展头，并不是所有的扩展报头都需要被转发路由设备查看和处理的。</p>
+</li>
+<li><p>除了目的选项扩展报头可能在一个IPv6报文中出现一次或两次（一次在路由扩展报头之前，另一次在上层协议数据报文之前），其余扩展报头只能出现一次。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/14.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/15.png"></p>
+<blockquote>
+<ul>
+<li>IPv4地址分为：单播地址、组播地址、广播地址。而IPv6中没有广播地址，增加了任播地址。也就是说IPv6地址被分为：单播地址、组播地址、任播地址。<ul>
+<li>单播地址用于标识一个接口，发往该目的地址的报文会被送到被标识的接口；</li>
+<li>组播地址用于标识多个接口，发往该目的地址的报文会被送到被标识的所有接口；</li>
+<li>任播地址用于标识多个接口，发往该目的地址的报文会被送到被标识的所有接口中最近的一个接口上。实际上任播地址与单播地址使用同一个地址空间，也就是说，由路由器决定数据包是做任播转发还是单播转发。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/16.png"></p>
+<blockquote>
+<ul>
+<li>全球单播地址是带有全球单播前缀的IPv6地址，其作用类似于IPv4中的公网地址。这种类型的地址允许路由前缀的聚合，从而限制了全球路由表项的数量。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/17.png"></p>
+<blockquote>
+<ul>
+<li>链路本地地址是IPv6中的应用范围受限制的地址类型，只能在连接到同一本地链路的节点之间使用。它使用了特定的本地链路前缀FE80::/10（最高10位值为1111111010），同时将接口标识添加在后面作为地址的低64比特。</li>
+<li>当一个节点启动IPv6协议栈时，启动时节点的每个接口会自动配置一个链路本地地址（其固定的前缀+EUI-64规则形成的接口标识）。这种机制使得两个连接到同一链路的IPv6节点不需要做任何配置就可以通信。所以链路本地地址广泛应用于邻居发现，无状态地址配置等应用。</li>
+<li>以链路本地地址为源地址或目的地址的IPv6报文不会被路由设备转发到其他链路。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/18.png"></p>
+<blockquote>
+<ul>
+<li><p>唯一本地地址是另一种应用范围受限的地址，它仅能在一个站点内使用。由于本地站点地址的废除（RFC3879），唯一本地地址被用来代替本地站点地址（RFC4193）。</p>
+</li>
+<li><p>唯一本地地址的作用类似于IPv4中的私网地址，任何没有申请到提供商分配的全球单播地址的组织机构都可以使用唯一本地地址。唯一本地地址只能在本地网络内部被路由转发而不会在全球网络中被路由转发。</p>
+</li>
+<li><p>字段解释：</p>
+<ul>
+<li>Prefix：前缀；固定为FC00::/7。</li>
+<li>L：L标志位；值为1代表该地址为在本地网络范围内使用的地址；值为0被保留，用于以后扩展。</li>
+<li>Global ID：全球唯一前缀；通过伪随机方式产生（RFC4193）。</li>
+<li>Subnet ID：子网ID；划分子网使用。</li>
+<li>Interface ID：接口标识。</li>
+</ul>
+</li>
+<li><p>唯一本地地址具有如下特点：</p>
+<ul>
+<li>具有全球唯一的前缀（虽然随机方式产生，但是冲突概率很低）。</li>
+<li>可以进行网络之间的私有连接，而不必担心地址冲突等问题。</li>
+<li>具有知名前缀（FC00::/7），方便边缘路由器进行路由过滤。</li>
+<li>如果出现路由泄漏，该地址不会和其他地址冲突，不会造成Internet路由冲突。</li>
+<li>应用中，上层应用程序将这些地址看作全球单播地址对待。</li>
+<li>独立于互联网服务提供商ISP（Internet Service Provider）。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/19.png"></p>
+<blockquote>
+<ul>
+<li><p>未指定地址</p>
+<ul>
+<li>IPv6中的未指定地址即 0:0:0:0:0:0:0:0/128 或者::/128。该地址可以表示某个接口或者节点还没有IP地址，可以作为某些报文的源IP地址（例如在NS报文的重复地址检测中会出现）。源IP地址是::的报文不会被路由设备转发。</li>
+</ul>
+</li>
+<li><p>环回地址</p>
+<ul>
+<li>IPv6中的环回地址即 0:0:0:0:0:0:0:1/128 或者::1/128。环回与IPv4中的127.0.0.1作用相同，主要用于设备给自己发送报文。该地址通常用来作为一个虚接口的地址（如Loopback接口）。实际发送的数据包中不能使用环回地址作为源IP地址或者目的IP地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/20.png"></p>
+<blockquote>
+<ul>
+<li><p>对于IPv6 单播地址来说，如果地址的前三bit不是000，则接口标识必须为64位，如果地址的前三位是000，则没有此限制。</p>
+</li>
+<li><p>接口ID的长度为64bit，用于标识链路上的接口。在每条链路上，接口ID必须唯一。接口ID有许多用途，最常见的用于就是黏贴在链路本地地址前缀后面，形成接口的链路本地地址。或者在无状态自动配置中，黏贴在获取到的IPv6全局单播地址前缀后面，构成接口的全局单播地址。</p>
+</li>
+<li><p>IEEE EUI-64规范</p>
+<ul>
+<li>这种由MAC地址产生IPv6地址接口ID的方法可以减少配置的工作量，尤其是当采用无状态地址自动配置时（后面会介绍），只需要获取一个IPv6前缀就可以与接口ID形成IPv6地址。</li>
+<li>使用这种方式最大的缺点就是某些恶意者可以通过二层MAC推算出三层IPv6地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/21.png"></p>
+<blockquote>
+<ul>
+<li><p>假设一个接口的MAC地址如上图所示，那么采用EUI-64规范，接口可根据该MAC地址计算得到接口ID，由于MAC地址全局唯一，因此该接口ID也相应的具备全局唯一性。计算过程如下。</p>
+</li>
+<li><p>将48bit的MAC地址对半劈开，然后插入“FFFE”，再对从左数起的第7位，也就是U/L位取反，即可得到对应的接口ID。</p>
+</li>
+<li><p>在单播MAC地址中，第1个Byte的第7bit是U/L（Universal/Local，也称为G/L，其中G表示Global）位，用于表示MAC地址的唯一性。如果U/L=0，则该MAC地址是全局管理地址，是由拥有OUI的厂商所分配的MAC地址；如果U/L=1，则是本地管理地址，是网络管理员基于业务目的自定义的MAC地址。</p>
+</li>
+<li><p>而在在EUI-64接口ID中，第7bit的含义与MAC地址正好相反，0表示本地管理，1表示全球管理，所以使用EUI-64格式的接口ID，U/L位为1，则地址是全球唯一的，如果为0，则为本地唯一。这就是为什么要反转该位。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/22.png"></p>
+<blockquote>
+<ul>
+<li><p>IPv6的组播与IPv4相同，用来标识一组接口，一般这些接口属于不同的节点。一个节点可能属于0到多个组播组。发往组播地址的报文被组播地址标识的所有接口接收。</p>
+</li>
+<li><p>Flags 永久标志：</p>
+<ul>
+<li>0000：永久多播地址。</li>
+<li>0001：临时多播地址。</li>
+<li>（注：前3bits 保留为0）。</li>
+</ul>
+</li>
+<li><p>Scope 应用范围：</p>
+<ul>
+<li>0001：本地接口范围，单个接口范围有效，仅用于Loopback。</li>
+<li>0010：本地链路范围。</li>
+<li>0100：本地管理范围，管理员配置的。</li>
+<li>0101：本地站点范围。</li>
+<li>1000：本地组织范围，属于同一个组织的多个站点范围。</li>
+<li>1110：全局范围。</li>
+</ul>
+</li>
+<li><p>Group ID：</p>
+<ul>
+<li>组播组ID。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/23.png"></p>
+<blockquote>
+<ul>
+<li>类似于IPv4，IPv6同样有一些特殊的组播地址，这些地址由特别的含义，这里举几个例子（还有很多类似的特殊地址）：<ul>
+<li>FF01::1（节点本地范围组播地址）</li>
+<li>FF02::1（链路本地范围所有节点组播地址）</li>
+<li>FF01::2（节点本地范围所有路由器组播地址）</li>
+<li>FF02::2（链路本地范围所有路由器组播地址）</li>
+<li>FF05::2（站点本地范围所有路由器组播地址）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/24.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/25.png"></p>
+<blockquote>
+<ul>
+<li><p>当一个节点具有了单播或任播地址，就会对应生成一个与之相对应的被请求节点组播地址，并且加入这个组播组。一个单播地址或任播地址对应一个被请求节点组播地址。该地址主要用于地址解析、邻居发现机制和地址重复检测等功能。</p>
+</li>
+<li><p>被请求节点组播地址由固定前缀FF02::1:FF00:0/104和对应IPv6地址的最后24bit组成。被请求节点组播地址的有效范围为本地链路范围。</p>
+</li>
+<li><p>被请求节点组播地址的作用究竟是什么呢？举个非常简单的例子，回顾一下IPv4中的ARP，这个协议主要用于地址解析，当设备需要解析某个IP地址对应的MAC地址时，就会发送一个广播ARP Request帧，之所以要发送广播帧，是因为它要确保广播域内所有节点都能收到。然而除了目标节点之外，该帧对于其他节点而言是个困扰，因为它们不得不去解析这个帧（一直解析到ARP载荷），这个动作将会浪费设备的资源。</p>
+</li>
+<li><p>在IPv6中，ARP及广播都被取消，当设备需要请求某个IPv6地址对应的MAC地址时，设备依然需要发送请求报文，但是该报文是一个组播报文，其目的IPv6地址是目标IPv6单播地址对应的被请求节点组播地址，而目的MAC地址则是该组播地址对应的组播MAC地址。由于只有目标节点才会侦听这个被请求节点组播地址，因此当其他设备收到该帧时，这些设备可以通过目的MAC地址、在网卡层面就判断出不需要处理它并将帧丢弃。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/26.png"></p>
+<blockquote>
+<ul>
+<li>这是IPv6特有的地址类型，它用来标识一组网络接口（通常属于不同的节点）。目标地址是任播地址的数据包将发送给其中路由意义上最近的一个网络接口。适合于“One-to-One-of-Many”（一对组中的一个）的通讯场合。接收方只需要是一组接口中的一个即可，如移动用户上网就需要因地理位置的不同，而接入离用户最近的一个接收站，这样才可以使移动用户在地理位置上不受太多的限制。</li>
+<li>任播地址从单播地址空间中进行分配，使用单播地址的任何格式。因而，从语法上，任播地址与单播地址没有区别。被分配具有任播地址的节点必须得到明确的配置，从而知道它是一个任播地址。目前，任播地址仅被用做目标地址，且仅分配给路由器。</li>
+<li>在RFC3513中定义了子网路由器任播地址（Subnet-Router anycast Address），其接口ID为全0。</li>
+<li>发往该任播地址的报文会被发送到任播地址所代表子网（子网路由器任播地址的前缀）内的某一台路由器，该路由器是离得最“近”的一台。所谓最近一般是路由的概念。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/27.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/28.png"></p>
+<blockquote>
+<ul>
+<li>ICMPv6的协议类型号（即IPv6报文中的Next Header字段的值）为58。</li>
+<li>在IPv4中，Internet控制报文协议（ICMP）向源节点报告关于向目的地传输IP数据包过程中的错误和信息。它为诊断、信息和管理目的定义了一些消息，如：目的不可达、数据包超长、超时、回应请求和回应应答等。在IPv6中，ICMPv6除了提供ICMPv4常用的功能之外，还有其它的一些机制需要ICMPv6消息，诸如邻居发现、无状态地址配置（包括重复地址检测）、路径MTU发现等等。</li>
+<li>所以ICMPv6是一个非常重要的协议。它是理解IPv6中其它机制的基础。</li>
+<li>报文解释：<ul>
+<li>Type：表明消息的类型，0至127表示差错报文类型，128至255表示消息报文类型。</li>
+<li>Code：表示此消息类型细分的类型。</li>
+<li>Checksum：表示ICMPv6报文的校验和。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/29.png"></p>
+<blockquote>
+<ul>
+<li><p>目标不可达（Destination Unreachable）。</p>
+<ul>
+<li>当数据包无法被转发到目标节点或上层协议时，路由器或目标节点发送ICMPv6目标不可达差错报文。在目标不可达报文中，类型（Type）字段值为1，代码（Code）字段值为0-4，每一个代码值都定义了具体含义（RFC2463）：<ul>
+<li>0：没有到达目标的路由。</li>
+<li>1：与目标的通信被管理策略禁止。</li>
+<li>2：未指定。</li>
+<li>3：地址不可达。</li>
+<li>4：端口不可达。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>数据包超长（Packet Too Big）。</p>
+<ul>
+<li>如果由于出口链路的MTU小于IPv6数据包的长度而导致数据包无法转发，路由器就会发送数据包超长报文。该报文被用于IPv6路径MTU发现的处理 。数据包超长报文的类型字段值为2，代码字段值为0。</li>
+</ul>
+</li>
+<li><p>超时（Time Exceeded）。</p>
+<ul>
+<li>当路由器收到一个IPv6报头中的跳限制（Hop Limit）字段值为0的数据包时，会丢弃该数据包并向源发送ICMPv6超时报文。在超时报文中，类型字段的值为3，代码字段的值为0或1：<ul>
+<li>0：在传输中超越了跳限制。</li>
+<li>1：分片重组超时。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/31.png"></p>
+<blockquote>
+<p>1.路由器发现：该功能帮助设备发现链路上的路由器，并获得路由器通告的信息。</p>
+<p>2.无状态自动配置：无状态自动配置是IPv6的一个亮点功能，它使得IPv6主机能够非常便捷地连入到IPv6网络中，即插即用，无需手工配置繁冗的IPv6地址，无需部署应用服务器（例如DHCP服务器）为主机分发地址。无状态自动配置机制使用到了ICMPv6中的路由器请求报文（RS）及路由器通告报文（RA）。</p>
+<p>3.重复地址检测：重复地址检测是一个非常重要的机制，一个IPv6地址必须经历重复地址检测并通过检测之后才能够启用。重复地址检测用于发现链路上是否存在IPv6地址冲突。</p>
+<p>4.地址解析：在IPv6中，取消了IPv4中的ARP协议，使用NDP所定义的邻居请求报文（NS）及邻居通告报文（NA）来实现地址解析功能。</p>
+<p>5.邻居的状态跟踪：IPv6定义了节点之间邻居的状态机，同时还维护邻居IPv6地址与二层地址如MAC的映射关系，相应的表项存储于设备的IPv6邻居表中。</p>
+<p>6.前缀重编址：IPv6路由器能够通过ICMPv6的路由器通告报文（RA）向链路上通告IPv6前缀信息。通过这种方式，主机能够从RA中所包含的前缀信息自动构建自己的IPv6单播地址。当然这些自动获取的地址是有生存时间的。通过在RA中通告IPv6地址前缀，并且灵活地设定地址的生存时间，能够实现网络中IPv6新、老前缀的平滑过渡，而无需在主机终端上消耗大量的手工劳动重新配置地址。</p>
+<p>7.路由器重定向：路由器向一个IPv6节点发送ICMPv6的重定向消息，通知它在相同的本地链路上有一个更好的、到达目的地的下一跳。IPv6中的重定向功能与IPv4中的是一样的。</p>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/32.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/33.png"></p>
+<blockquote>
+<p>在IPv4中，可以通过ARP就可以由IP地址解析到链路层地址，ARP协议是工作在第二层。在IPv6中在邻居发现协议（RFC2461）中定义地址解析的，其中使用了ICMPv6的报文，在三层完成地址解析，主要带来以下几个好处：</p>
+<p>1.加强了介质独立性：这就意味着我们无需为每一个链路层定义一个新的地址解析协议，在每一个链路层都使用相同的地址解析协议；</p>
+<p>2.可以利用三层安全机制：ARP欺骗（如伪造ARP应答以盗窃数据流）是IPv4中的一个很大的安全问题，在第三层实现地址解析，可以利用三层标准的安全认证机制（例如IPSEC）解决这个问题；</p>
+<p>3.ARP请求报文使用广播，会泛滥到整个二层网络中每台主机是公认的一个IPv4性能问题。在第三层实现地址解析可以将地址解析请求仅仅发送到待解析地址所属的“Solicited-node”组播组即可。采用组播的传送方式，大大减轻了性能压力。</p>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/34.png"></p>
+<blockquote>
+<ul>
+<li><p>地址解析过程中使用了两种ICMPv6报文：邻居请求（Neighbor Solicitation）和邻居通告（Neighbor Advertisement）。</p>
+</li>
+<li><p>邻居请求 Neighbor Solicitation</p>
+<ul>
+<li>ICMP的Type为135，Code为0；</li>
+<li>Target Address是需要解析的IPv6地址，因此该处不准出现组播地址。</li>
+<li>邻居请求发送者的链路层地址会被放在Options字段中。</li>
+</ul>
+</li>
+<li><p>邻居通告 Neighbor Advertisement</p>
+<ul>
+<li>ICMP Type为136，Code为0；</li>
+<li>R标志（Router flag）表示发送者是否为路由器，如果1则表示是；</li>
+<li>S标志（Solicited flag）表示发送邻居通告是否是响应某个邻居请求，如果1则表示是；</li>
+<li>O标志（Overide flag）表示邻居通告中的消息是否覆盖已有的条目信息，如果1则表示是；</li>
+<li>Traget Address表示所携带的链路层地址对应的IPv6地址。</li>
+<li>被请求的链路层地址被放在Options字段中，其格式仍然采用TLV格式，具体可以参考RFC2463 。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/35.png"></p>
+<blockquote>
+<ul>
+<li>有了NS和NA两种报文，两台主机如何获取对方的链路层地址呢？</li>
+<li>在上图所示的场景中，PC1要请求PC2的2001::2这个地址对应的MAC地址，PC1将发送一个NS报文达到这个目的。这个NS报文的源地址是2001::1，目的地址则是2001::2对应的被请求节点组播地址。</li>
+<li>然后IPv6数据包又被封装上数据帧的头部，其中源MAC地址是PC1的MAC地址，目的MAC地址则是2001::2这个目标地址对应的被请求节点组播地址映射得到的MAC地址，这是一个组播MAC地址。</li>
+<li>这样就完成了一个双向交互链路层地址的过程。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/36.png"></p>
+<blockquote>
+<ul>
+<li><p>除R2外的其他节点也会收到这个数据帧，在读取数据帧头的时候发现目的MAC地址是一个组播MAC地址，而该组播MAC地址在本地并不侦听，因此在网卡层面就将数据帧丢弃而不再往报文里看了。</p>
+</li>
+<li><p>PC2收到这个数据帧后，由于本地网卡接收目的MAC地址为3333-FF00-0002的数据帧，因此在对数据帧做校验之后从帧头的类型字段得知里头是个IPv6报文，于是将帧头拆掉，把IPv6报文上送IPv6协议栈处理。IPv6协议栈从报文的IPv6头部中的目的IPv6地址得知这个数据包是发往一个被请求节点组播地址FF02::1:FF00:2，而本地网卡加入了这个组播组。接着，从IPv6包头的NextHeader字段得知IPv6包头后面封装着一个ICMPv6的报文，因此将IPv6包头拆除，将ICMPv6报文交给ICMPv6协议去处理。最后ICMPv6发现这是个NS报文，要请求自己2001::2对应的MAC地址，于是回送一个NA报文给PC1，在该报文中就包含着PC2的MAC地址。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/37.png"></p>
+<blockquote>
+<p>l在windows7操作系统里，可以使用netsh interface ipv6 show neighbors命令查看邻居缓存的内容。</p>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/38.png"></p>
+<blockquote>
+<ul>
+<li>前面简单地讲述了如何进行地址解析的，但是实际的通讯过程中不仅仅是地址解析这么简单，而是需要维护一张邻居表，每个邻居都有相应的状态，状态之间可以迁移。</li>
+<li>RFC2461中定义了5种状态：INCOMPLETE、REACHABLE、STALE、DELAY、PROBE。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/39.png"></p>
+<blockquote>
+<ul>
+<li>邻居状态的迁移是比较复杂的，此处不会做详细地介绍，下面以A、B两个节点之间相互通讯过程的A节点的邻居状态变化，假设A、B两个节点之前没有任何通讯：</li>
+</ul>
+<p>1.A先发送NS，并生成邻居缓存条目，状态为Incomplete；</p>
+<p>2.若B回复NA，则Incomplete-&gt;Reachable，否则10s后Incomplete-&gt;Empty，即删除条目；</p>
+<p>3.经过ReachableTime（默认30s），条目状态Reachable-&gt;Stale；</p>
+<p>4.或者在Reachable状态，收到B的非请求NA，且链路层地址不同，则马上-&gt;Stale；</p>
+<p>5.在Stale状态若A需要向B发送数据，则Stale-&gt;Delay，同时发送NS请求；</p>
+<p>6.在Delay_First_Probe_Time（默认5秒）后，Delay-&gt;Probe，其间若有NA应答，则Delay-&gt;Reachable；</p>
+<p>7.在Probe状态，每隔RetransTimer（默认1秒）发送单播NS，发送MAX_UNICAST_SOLICIT个后再等RestransTimer，有应答则-&gt;Reachable，否则进入Empty，即删除表项。</p>
+<ul>
+<li><p>从以上的机制可以看出IPv6的邻居关系优于IPv4的ARP，IPv6的邻居关系维护机制确保通讯发起之前邻居是可达的，而ARP本身是做不到的，仅仅通过老化机制来实现。</p>
+</li>
+<li><p>关于邻居状态的维护以及状态迁移可以参考RFC2461。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/40.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/41.png"></p>
+<blockquote>
+<ul>
+<li>在上图中，R2已是在线的设备，该设备已经使用了如图所示的地址，现在我们为R1新配置IPv6的地址2001::FFFF/64，观察一下会发生什么事情。R1的接口配置2001::FFFF/64地址后，该地址立即进入tentative状态，此时仍然是不可用的，除非该地址通过DAD检测。</li>
+</ul>
+<p>1.R1向链路上以组播的方式发送一个NS报文，该NS的源IPv6地址为“::”，目的IPv6地址为要进行DAD检测的2001::FFFF对应的被请求节点组播地址，也就是FF02::1:FF00:FFFF。这个NS里包含着要做DAD检测的目标地址2001::FFFF。</p>
+<p>2.链路上的节点都会收到这个组播的NS报文，没有配置2001::FFFF的节点接口由于没有加入该地址对应的被请求节点组播组，因此在收到这个NS的时候默默丢弃。而R2在收到这个NS后，由于它的接口配置了2001::FFFF地址，因此接口会加入组播组FF02::1:FF00:FFFF，而此刻所收到的报文又是以该地址为目的地址，因此它会解析该报文，它发现对方进行DAD的目标地址与自己本地接口地址相同，于是立即回送一个NA报文，该报文的目的地址是FF02::1，也就是所有节点组播地址，同时在报文内写入目标地址2001::FFFF，以及自己接口的MAC地址。</p>
+<p>3.当R1收到这个NA后，它就知道2001::FFFF在链路上已经有人在用了，因此将该地址标记为Duplicate（重复的），该地址将不能用于通信。</p>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/42.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/44.png"></p>
+<blockquote>
+<ul>
+<li><p>使用IPv6地址无状态自动配置后，设备的IPv6地址无需进行手工配置，即插即用，减轻网络管理的负担。</p>
+</li>
+<li><p>大致的工作过程如下：</p>
+<p>1.主机根据本地接口ID自动产生网卡的链路本地地址。</p>
+<p>2.主机对链路本地地址进行DAD检测， 如果该地址不存在冲突则可以启用。</p>
+<p>3.主机发送RS报文尝试在链路上发现IPv6路由器，该报文的源地址为主机的链路本地地址。</p>
+<p>4.路由器回复RA报文（携带IPv6前缀信息，路由器在未收到RS时也能够配置主动发出RA报文）。</p>
+<p>5.主机根据路由器回应的RA报文，获得IPv6地址前缀信息，使用该地址前缀，加上本地产生的接口ID，形成单播IPv6地址。</p>
+<p>6.主机对生成的IPv6地址进行DAD检测，如果没有检测到冲突，那么该地址才能够启用。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/45.png"></p>
+<blockquote>
+<ul>
+<li><p>路由器发现功能用来发现与本地链路相连的设备，并获取与地址自动配置相关的前缀和其他配置参数。</p>
+</li>
+<li><p>经过前面的介绍，我们已经知道IPv6地址支持无状态自动配置，即主机通过路由器发送的RA报文获取网络前缀信息，然后主机自己生成地址的接口标识部分，并自动配置IPv6地址。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/46.png"></p>
+<blockquote>
+<ul>
+<li>主机如何获知网络的前缀（实际上不仅仅前缀前缀信息，还有其它的信息）呢？主要通过两个途径：被动接收到网络上路由器通告（Router Advertisement），从通告中获得；主动发送路由器请求（Router Solicitation），路由器回应路由器通告后，主机从通告中获得。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/47.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/48.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/49.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/50.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/51.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/52.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/53.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/54.png"></p>
+<blockquote>
+<ul>
+<li>经常网关路由器发现报文从其它网关路由器转发更好，它就会发送重定向报文告知报文的发送者，让报文发送者选择另一个网关路由器。<ul>
+<li>报文格式中Type为137，Code为0；</li>
+<li>Target Address是更好的路径下一跳地址；</li>
+<li>Destination Address是需要重定向转发的报文的目的地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/55.png"></p>
+<blockquote>
+<ul>
+<li><p>下面是一个具体的例子，假设主机A想与主机B通讯，主机A的默认网关路由器是RTA，那么当A发送报文给B时报文会被送到RTA。</p>
+</li>
+<li><p>RTA接收到A发送的报文以后会发现实际上主机A直接发送给路由器RTB更好，它将发送一个ICMPv6重定向报文给主机A，其中Target Address为RTB，Destination Address为主机B。</p>
+</li>
+<li><p>主机A接收到了重定向报文之后，会在默认路由表中添加一个主机路由，以后发往主机B的报文就直接给RTB。</p>
+</li>
+<li><p>这就是重定向的一个简单过程，其中会有个问题：RTA如何知道去往主机B的路径通过RTB更好呢？其实这个很简单，因为RTA会发现报文进入的接口就是报文路由得出接口，也就是说发往主机B的路由实际上只是在RTA上转了一圈出来了，然后转发到RTB，据此，RTA能判断出直接给RTB是更好的路径。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/56.png"></p>
+<blockquote>
+<ul>
+<li><p>前面学习的关于IPv6报文转发相关知识的时候知道，IPv6报文在转发的过程中是不进行分片操作的，当然也不进行分片报文的整合工作。IPv6报文仅在源节点进行分片，在目的节点进行组装。那么这会产生一个问题，源节点将报文到底分成多大的呢？很简单，为了所有的报文都能在路径上畅通无阻，那么分片的报文大小不能超过路径上最小的MTU，也就是PMTU——路径MTU。</p>
+</li>
+<li><p>RFC1981中定义了PMTU发现的机制，它是通过ICMPv6的Packet Too Big报文来完成的。首先源节点假设PMTU就是其出接口的MTU，发出报文，当转发路径上存在一个小于当前假设的PMTU时，就会向源节点发送Packet Too Big报文，并且携带自己的MTU值，此后源节点将PMTU的假设值更改为新收到的MTU值。如此反复，直到报文到达目的地之后，源节点就能知道到达某个目的地的PMTU了。</p>
+</li>
+<li><p>假设源到目的要先后经过4条链路，链路地MTU分别是1500、1500、1400、1300，当源发送一个分片报文的时候，首先分成1500大小的片，当到达1400的出接口时，路由器就会返回Packet Too Big错误，同时携带1400的MTU值。源接收到之后就会重新分成1400大小的片，当到达1300的出接口时，同样返回Packet Too Big错误，携带1300的MTU值。之后源重新分成1300的报文，最终到达目的地，这样就找到了该路径的PMTU。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/57.png"></p>
+<blockquote>
+<ul>
+<li><p>值得注意的是，只有数据包超过路径上的最小MTU时，PMTU发现机制才有意义，因为如果报文很小，小于路径最小的MTU，就不可能产生Packet Too Big报文。</p>
+</li>
+<li><p>由于IPv6要求链路层所支持的最小MTU为1280，所以PMTU的值不会小于1280。而最大的PMTU一般由链路层决定，如果链路层是一个隧道，那么支持的PMTU可能很大。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/58.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/59.png"></p>
+<blockquote>
+<ul>
+<li><p>IPv6与IPv4共存技术：</p>
+<ul>
+<li>双协议栈：<ul>
+<li>IPv6节点同时支持IPv6和IPv4协议栈。</li>
+</ul>
+</li>
+<li>隧道：<ul>
+<li>IPv6报文作为IPv4的载荷，由IPv4 Internet中连接多个IPv6孤岛。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>IPv6与IPv4互通技术：</p>
+<ul>
+<li>提供IPv6与IPv4互相访问的技术。</li>
+<li>适用于IPv6 Internet与IPv4 Internet共存，而两者又有互相通讯的需求。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/60.png"></p>
+<blockquote>
+<ul>
+<li><p>双栈技术是IPv4向IPv6过渡的一种有效的技术。网络中的节点同时支持IPv4和IPv6协议栈，源节点根据目的节点的不同选用不同的协议栈，而网络设备根据报文的协议类型选择不同的协议栈进行处理和转发。双栈可以在一个单一的设备上实现，也可以是一个双栈骨干网。对于双栈骨干网，其中的所有设备必须同时支持IPv4/IPv6协议栈，连接双栈网络的接口必须同时配置IPv4地址和IPv6地址。</p>
+</li>
+<li><p>所谓的双栈就是主机或者网络设备同时支持IPv4及IPv6双协议栈，如果节点支持双栈，那么它能够同时使用V4和V6的协议栈、同时处理IPv4及IPv6的数据。在双栈设备上，上层应用会优先选择IPv6协议栈，而不是IPv4。 比如，一个同时支持v4和v6的应用请求通过DNS请求地址，会先请求AAAA记录，如果没有，则再请求A记录。双栈是V4、V6并存及IPv6过渡技术的基础。<br> 就拿上图来说，路由器就是一个双栈设备，默认情况下路由器本身就已经支持IPv4，接口上也配置了IPv4的地址，已经能够正常转发IPv4的报文，此刻在激活路由器的IPv6数据转发能力，再为接口分配IPv6的单播地址，那么这个接口又有了IPv6数据转发能力。当然，此时对于路由器而言，IPv4及IPv6协议栈互不干扰，独立工作。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/61.png"></p>
+<blockquote>
+<ul>
+<li><p>如果一个边界设备要与多个设备建立手动隧道，就需要在设备上配置多个隧道，配置比较麻烦。所以手动隧道通常用于两个边界路由器之间，为两个IPv6网络提供连接。</p>
+</li>
+<li><p>手动隧道优缺点</p>
+<ul>
+<li>优点：可以用于任何IPv6穿越IPv4的环境，通用性好。</li>
+<li>缺点：必须手工配置。</li>
+</ul>
+</li>
+<li><p>转发机制</p>
+<ul>
+<li>IPv6 over IPv4手动隧道转发机制为：当隧道边界设备的IPv6侧收到一个IPv6报文后， 根据IPv6报文的目的地址查找IPv6路由转发表，如果该报文是从此虚拟隧道接口转发出去，则根据隧道接口配置的隧道源端和目的端的IPv4地址进行封装。封装后的报文变成一个IPv4报文，交给IPv4协议栈处理。报文通过IPv4网络转发到隧道的终点。隧道终点收到一个隧道协议报文后，进行隧道解封装。并将解封装后的报文交给IPv6协议栈处理。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/62.png"></p>
+<blockquote>
+<ul>
+<li><p>IPv6 over IPv4 GRE隧道使用标准的GRE隧道技术提供了点到点连接服务，需要手工指定隧道的端点地址。GRE隧道本身并不限制被封装的协议和传输协议，一个GRE隧道中被封装的协议可以是协议中允许的任意协议（可以是IPv4、IPv6、OSI、MPLS等）。</p>
+</li>
+<li><p>IPv6 over IPv4 GRE隧道在边界路由器上的传输机制和IPv6 over IPv4手动隧道相同。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/63.png"></p>
+<blockquote>
+<ul>
+<li><p>6to4隧道也属于一种自动隧道，隧道也是使用内嵌在IPv6地址中的IPv4地址建立的。与IPv4兼容自动隧道不同，6to4自动隧道支持Router到Router、Host到Router、Router到Host、 Host到Host。</p>
+</li>
+<li><p>地址格式：</p>
+<ul>
+<li>FP：可聚合全球单播地址的格式前缀（Format Prefix），其值为001。</li>
+<li>TLA：顶级聚合标识符（Top Level Aggregator），有13个比特位，其二进制值为0 0000 0000 0010。</li>
+<li>SLA：站点级聚合标识符（Site Level Aggregator）。</li>
+</ul>
+</li>
+<li><p>6to4地址可以表示为2002::/16，而一个6to4网络可以表示为2002:IPv4地址::/48。6to4地址的网络前缀长度为64bit，其中前48bit（2002: a.b.c.d）被分配给路由器上的IPv4地址决定了，用户不能改变，而后16位（SLA）是由用户自己定义的。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/64.png"></p>
+<blockquote>
+<ul>
+<li>一个IPv4地址只能用于一个6to4隧道的源地址，如果一个边界路由器连接了多个6to4网络使用同样的IPv4地址做为隧道的源地址，则使用6to4地址中的SLA ID来区分，但他们共用一个隧道。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/65.png"></p>
+<blockquote>
+<ul>
+<li><p>普通IPv6网络需要与6to4网络通过IPv4网络互通，这可以通过6to4中继路由器方式实现。所谓6to4中继，就是通过6to4隧道转发的IPv6报文的目的地址不是6to4地址，但转发的下一跳是6to4地址，该下一跳为路由器我们称之为6to4中继。隧道的IPv4目的地址依然从下一跳的6to4地址中获得。</p>
+</li>
+<li><p>如果6to4网络2中的主机要与IPv6网络互通，在其边界路由器上配置路由指向的下一跳为6to4中继路由器的6to4地址，中继路由器的6to4地址是与中继路由器的6to4隧道的源地址相匹配的。6to4网络2中去往普通IPv6网络的报文都会按照路由表指示的下一跳发送到6to4中继路由器。6to4中继路由器再将此报文转发到纯IPv6网络中去。当报文返回时，6to4中继路由器根据返回报文的目的地址（为6to4地址）进行IPv4报文头封装，数据就能够顺利到达6to4网络中了。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/66.png"></p>
+<blockquote>
+<ul>
+<li><p>ISATAP（Intra-Site Automatic Tunnel Addressing Protocol）是另外一种自动隧道技术。ISATAP隧道同样使用了内嵌IPv4地址的特殊IPv6地址形式，只是和6to4不同的是，6to4是使用IPv4地址做为网络前缀，而ISATAP用IPv4地址做为接口标识。</p>
+</li>
+<li><p>地址描述</p>
+</li>
+<li><p>如果IPv4地址是全局唯一的，则u位为1，否则u位为0。g位是IEEE 群体/个体标志。由于ISATAP是通过接口标识来表现的，所以，ISATAP地址有全局单播地址、链路本地地址、ULA地址、组播地址等形式。ISATAP地址的前64位是通过向ISATAP路由器发送请求来得到的，它可以进行地址自动配置。在ISATAP隧道的两端设备之间可以运行ND协议。ISATAP隧道将IPv4网络看作一个非广播的点到多点的链路（NBMA）。</p>
+</li>
+<li><p>转发过程描述：</p>
+</li>
+<li><p>在IPv4网络内部有两个双栈主机PC2和PC3，它们分别有一个私网IPv4地址。要使其具有ISATAP功能，需要进行如下操作：</p>
+<ul>
+<li>首先配置ISATAP隧道接口，这时会根据IPv4地址生成ISATAP类型的接口ID。</li>
+<li>根据接口ID生成一个ISATAP链路本地IPv6地址，生成链路本地地址以后，主机就有了在本地链路上进行IPv6通信的能力。</li>
+<li>进行自动配置，主机获得IPv6全球单播地址、ULA地址等。</li>
+<li>当主机与其它IPv6主机进行通讯时，从隧道接口转发，将从报文的下一跳IPv6地址中取出IPv4地址作为IPv4封装的目的地址。如果目的主机在本站点内，则下一跳就是目的主机本身，如果目的主机不在本站点内，则下一跳为ISATAP路由器的地址。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/67.png"></p>
+<blockquote>
+<ul>
+<li>当IPv4网络的节点需要直接与IPv6网络的节点进行通信时，默认情况下当然是行不通的，因为两个协议栈无法兼容。但是借助一台设备，由该设备来实现IPv6与IPv4的互转，那么上述通信需求就可以实现了。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/68.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/69.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/70.png"></p>
+<blockquote>
+<ul>
+<li><p>设置对GRE报文头进行校验是一个可选的操作步骤。如果设置了对GRE报文头进行校验，则发送端根据GRE报文头和净荷信息计算校验和，然后将包含校验和的报文转发到对端。接收端收到报文后，计算接收报文的校验和，并将该校验和与报文中的校验和进行比较。如果结果一致，那么它将会继续处理此报文，否则将其丢弃。如果本端配置了校验和，但是对端没有配置校验和，那么本端不会对接收的报文进行校验和验证。</p>
+</li>
+<li><p>设置GRE报文头的关键字也是一个可选的操作步骤。如果设置了GRE报文头中的KEY字段，接收端将会检查接收的GRE报文头的关键字，如果与本端配置的关键字完全相同，表明验证成功，接受该报文，否则丢弃该报文。</p>
+</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/71.png"></p>
+<blockquote>
+<p>命令含义：</p>
+<ul>
+<li>interface tunnel命令用来创建一个Tunnel接口，并进入该Tunnel接口视图。</li>
+<li>tunnel-protocol gre指定Tunnel为手动隧道模式。</li>
+<li>source { ipv4-address | interface-type interface-number }指定Tunnel的源接口。</li>
+<li>destination { ipv4-address }指定Tunnel的目的接口。</li>
+<li>ipv6 address { ipv6-address prefix-length }设置Tunnel接口的IPv6地址。</li>
+</ul>
+</blockquote>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/72.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/73.png"></p>
+<p><img src="/2021/07/26/IE-IPv6%E5%9F%BA%E7%A1%80/74.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/20/IE-WAN%E6%8A%80%E6%9C%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3307,756 +4714,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IPadv-MPLSVPN原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T14:29:37+08:00">
-                2021-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•VPN（Virtual Private Network，虚拟专用网络）指的是在一个公共网络中实现虚拟的专用网络，从而使得用户能够基于该专用网络实现通信的技术。</p>
-<p>•MPLS VPN也是VPN技术中的一种。需要强调的是，本课程所介绍的MPLS VPN指的是BGP/MPLS IP VPN，这是一种被业界广泛使用的三层VPN。</p>
-<p>•本课程将介绍MPLS VPN的基本概念、工作过程以及典型配置方法。</p>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述MPLS VPN的模型</p>
-<p>▫描述MPLS VPN中的基本概念</p>
-<p>▫描述MPLS VPN路由传递和标签分发</p>
-<p>▫描述MPLS VPN数据转发流程</p>
-<p>▫执行MPLS VPN的基本配置</p>
-<h1 id="1-MPLS-VPN概述"><a href="#1-MPLS-VPN概述" class="headerlink" title="1.MPLS VPN概述"></a>1.MPLS VPN概述</h1><h2 id="MPLS-VPN定义"><a href="#MPLS-VPN定义" class="headerlink" title="MPLS VPN定义"></a>MPLS VPN定义</h2><p>•BGP/MPLS IP VPN网络一般由<strong>运营商</strong>搭建，<strong>VPN用户购买</strong>VPN服务来实现用户网络之间的路由传递、数据互通等。</p>
-<p>•MPLS VPN使用<strong>BGP</strong>在运营商骨干网（<strong>IP网络</strong>）上发布VPN路由，使用<strong>MPLS</strong>在运营商骨干网上转发VPN报文。BGP/MPLS IP VPN又被简称为MPLS VPN，是一种常见的L3VPN（Layer 3 VPN）技术。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<h2 id="MPLS-VPN网络架构"><a href="#MPLS-VPN网络架构" class="headerlink" title="MPLS VPN网络架构"></a>MPLS VPN网络架构</h2><p>•MPLS VPN网络架构由三部分组成：CE（Customer Edge）、PE（Provider Edge）和P（Provider），其中PE和P是运营商设备，CE是MPLS VPN用户设备。</p>
-<p>•站点（site）就是MPLS VPN的用户，由CE和其他用户设备构成。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<blockquote>
-<p>•CE：用户网络边缘设备，有接口直接与运营商网络相连。CE可以是路由器或交换机，也可以是一台主机。通常情况下，CE“感知”不到VPN的存在，也不需要支持MPLS。</p>
-<p>•PE：运营商边缘路由器，是运营商网络的边缘设备，与CE直接相连。在MPLS网络中，对VPN的所有处理都发生在PE上，对PE性能要求较高。</p>
-<p>•P：运营商网络中的骨干路由器，不与CE直接相连。P设备只需要具备基本MPLS转发能力，不维护VPN相关信息。</p>
-<p>•站点的含义可以从下述几个方面理解：</p>
-<ul>
-<li><p>站点是指相互之间具备IP连通性的一组IP系统，并且这组IP系统的IP连通性不需通过运营商网络实现。</p>
-</li>
-<li><p>站点的划分是根据设备的拓扑关系，而不是地理位置。如图所示，公司A的X省网络和公司A的Y省网络需要通过运营商的骨干网进行互联，所以它们被划分为两个站点。若在当前X省网络和Y省网络的CE之间增加一条物理专线，不需要通过运营商网络就可以互通，那么这两张网络就是一个站点。</p>
-</li>
-</ul>
-<p>•站点与VPN的关系：</p>
-<ul>
-<li><p>对于多个连接到同一服务提供商网络的站点，通过制定策略，可以将它们划分为不同的集合，只有属于相同集合的站点之间才能通过服务提供商网络互访，这种集合就是VPN。</p>
-</li>
-<li><p>一个Site中的设备可以属于多个VPN，换言之，一个Site可以属于多个VPN。</p>
-</li>
-</ul>
-<p>•注：也有可能出现站点为一台主机的情况，此时该主机就是CE设备。本课程仅讨论站点是一个或多个子网，用路由器或交换机作为CE的情况。</p>
-</blockquote>
-<h2 id="MPLS-VPN技术架构"><a href="#MPLS-VPN技术架构" class="headerlink" title="MPLS VPN技术架构"></a>MPLS VPN技术架构</h2><p>•MPLS VPN不是单一的一种VPN技术，是多种技术结合的综合解决方案，主要包含下列技术：</p>
-<p>​    ▫MP-BGP：负责在PE与PE之间传递站点内的路由信息。</p>
-<p>​    ▫LDP：负责PE与PE之间的隧道建立</p>
-<p>​    ▫VRF：负责PE的VPN用户管理。</p>
-<p>​    ▫静态路由、IGP、BGP：负责PE与CE之间的路由信息交换。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<blockquote>
-<p>•MP-BGP（MultiProtocol BGP）：拓展的BGP协议，可提供对多种地址族的支持，后续课程将会详细介绍。</p>
-</blockquote>
-<h2 id="为什么要选择MPLS-VPN"><a href="#为什么要选择MPLS-VPN" class="headerlink" title="为什么要选择MPLS VPN"></a>为什么要选择MPLS VPN</h2><p>•对VPN客户而言：</p>
-<ul>
-<li>“感知”不到VPN的存在，不需要部署和维护VPN，降低企业运维难度和成本。</li>
-<li>一般部署在运营商的MPLS VPN专网上，有一定的安全性保障。</li>
-</ul>
-<p>•对于运营商而言：</p>
-<ul>
-<li>MPLS在无连接的IP网络中增加了面向连接的控制平面，为IP网络增添了管理和运营的手段。</li>
-<li>支持地址空间重叠、支持重叠VPN、组网方式灵活、可扩展性好。</li>
-<li>能够方便地支持MPLS TE合理调控现有网络资源，最大限度的节省运营商成本。</li>
-</ul>
-<blockquote>
-<p>•MPLS TE（MPLS Traffic Engineering，MPLS流量工程）：基于一定约束条件LSP隧道，并将流量引入到这些隧道中进行转发，使网络流量按照指定的路径进行传输。可以在不进行硬件升级的情况下对现有网络资源进行合理调配和利用，并对网络流量提供带宽和QoS保证，最大限度的节省成本。</p>
-</blockquote>
-<h2 id="MPLS-VPN常见组网"><a href="#MPLS-VPN常见组网" class="headerlink" title="MPLS VPN常见组网"></a>MPLS VPN常见组网</h2><p>•根据VPN用户的需求不同，可采用以下几种常见的组网方案：</p>
-<ul>
-<li>Intranet：一个VPN中的所有用户形成闭合用户群，同一VPN站点之间可以互访，不同VPN站点间不能互访。</li>
-<li>Extranet：适用于一个VPN用户希望提供部分本VPN的站点资源给其他VPN的用户访问的场景。</li>
-<li>Hub&amp;Spoke：如果希望在VPN中设置中心访问控制设备，其它用户的互访都通过中心访问控制设备进行，可采用Hub&amp;Spoke组网方案。</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<blockquote>
-<p>•Intranet组网是最简单也是最典型的MPLS VPN组网方案，后续课程将基于该组网方案对MPLS VPN技术原理展开介绍。</p>
-</blockquote>
-<h1 id="2-MPLS-VPN路由交互"><a href="#2-MPLS-VPN路由交互" class="headerlink" title="2.MPLS VPN路由交互"></a>2.MPLS VPN路由交互</h1><h2 id="MPLS-VPN路由发布概述"><a href="#MPLS-VPN路由发布概述" class="headerlink" title="MPLS VPN路由发布概述"></a>MPLS VPN路由发布概述</h2><p>•若想实现同一个VPN的不同站点之间的通信，首先需要完成不同站点之间的路由交互。在基本MPLS VPN组网中，VPN路由信息的发布涉及CE和PE，P路由器只维护骨干网的路由，不需要了解任何VPN路由信息。VPN路由信息的发布过程包括三部分：</p>
-<p>​    ▫本地CE到入口PE</p>
-<p>​    ▫入口PE到出口PE</p>
-<p>​    ▫出口PE到远端CE</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<h2 id="CE与PE之间的路由信息交换"><a href="#CE与PE之间的路由信息交换" class="headerlink" title="CE与PE之间的路由信息交换"></a>CE与PE之间的路由信息交换</h2><p>•如图，客户X和客户Y属于不同的VPN，分别拥有两个站点，现需要实现站点间的路由信息交互。</p>
-<p>•CE与PE之间可以使用静态路由、OSPF、IS-IS或BGP交换路由信息。无论使用哪种路由协议，CE和PE之间交换的都是<strong>标准的IPv4</strong>路由。</p>
-<p>•本地CE到入口PE和出口PE到远端CE的路由信息交换原理完全相同。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<h2 id="入口PE到出口PE路由传递-1"><a href="#入口PE到出口PE路由传递-1" class="headerlink" title="入口PE到出口PE路由传递 (1)"></a>入口PE到出口PE路由传递 (1)</h2><p>PE在接收到CE传递来的路由之后，需要独立保存不同VPN的路由，且需要解决不同的客户使用重叠IP地址空间的问题。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<blockquote>
-<p>•VPN是一种私有网络，不同的VPN独立管理自己的地址范围，也称为地址空间（address space）。不同VPN的地址空间可能会在一定范围内重合，例如图中用户X和用户Y都使用192.168.1.0/24网段地址，这就发生了地址空间的重叠（address spaces overlapping）。以下两种情况允许VPN使用重叠的地址空间：</p>
-<ul>
-<li><p>两个VPN没有共同的站点；</p>
-</li>
-<li><p>两个VPN有共同的站点，但此共同站点中的设备不与两个VPN中使用重叠地址空间的设备互访。</p>
-</li>
-</ul>
-</blockquote>
-<h2 id="VRF"><a href="#VRF" class="headerlink" title="VRF"></a>VRF</h2><p>•VRF（Virtual Routing and Forwarding，虚拟路由转发），又称VPN实例，是MPLS VPN架构中的关键技术，每个VPN实例使用独立的路由转发表项，实现VPN之间的逻辑隔离。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<h2 id="RD"><a href="#RD" class="headerlink" title="RD"></a>RD</h2><p>•PE收到不同VPN的CE发来的IPv4地址前缀，本地根据VPN实例配置去区分这些地址前缀。但是VPN实例只是一个<strong>本地</strong>的概念，PE无法将VPN实例信息传递到对端PE，故有了RD（Route Distinguisher，路由标识符）。</p>
-<p>▫RD长8字节，用于区分使用相同地址空间的IPv4前缀。</p>
-<p>▫PE从CE接收到IPv4路由后，在IPv4前缀前加上RD，转换为<strong>全局唯一</strong>的<strong>VPN-IPv4</strong>路由。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<blockquote>
-<p>•配置RD时，只需要指定RD的Administrator子字段和Assigned Number子字段。</p>
-<p>•RD的配置格式有四种，常用的两种如下：</p>
-<p>​    ▫16bits自治系统号:32bits用户自定义数字（例如：100:1）。</p>
-<p>​    ▫32bits IPv4地址:16bits用户自定义数字（例如：172.1.1.1:1）。</p>
-<p>•RD的结构使得每个运营商可以独立地分配RD，但为了在某些应用场景下保证路由正常，必须保证RD全局唯一。</p>
-</blockquote>
-<h2 id="VPN-IPv4地址"><a href="#VPN-IPv4地址" class="headerlink" title="VPN-IPv4地址"></a>VPN-IPv4地址</h2><p>VPN-IPv4地址又被称为VPNv4地址：VPNv4地址共有12个字节，包括8字节的路由标识符RD（Route Distinguisher）和4字节的IPv4地址前缀。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<h2 id="入口PE到出口PE路由传递-2"><a href="#入口PE到出口PE路由传递-2" class="headerlink" title="入口PE到出口PE路由传递 (2)"></a>入口PE到出口PE路由传递 (2)</h2><p>•PE之间建立BGP邻居关系，并通过BGP进行路由传递。为什么采用BGP呢？</p>
-<p>▫BGP使用TCP作为其传输层协议，提高了协议的可靠性。可以跨路由器的两个PE设备之间直接交换路由。</p>
-<p>▫BGP拓展性强，为PE间传播VPN路由提供了便利。</p>
-<p>▫PE之间需要传送的路由条目可能较大，BGP只发送更新的路由，提高传递路由数量的同时不占用过多链路带宽。</p>
-<p>•传统的BGP-4<strong>不支持</strong>处理VPNv4路由。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<h2 id="MP-BGP"><a href="#MP-BGP" class="headerlink" title="MP-BGP"></a>MP-BGP</h2><p>•为了正确处理VPN路由，MPLS VPN使用RFC2858（Multiprotocol Extensions for BGP-4）中规定的MP-BGP，即BGP-4的多协议扩展。</p>
-<p>•MP-BGP采用地址族（Address Family）来区分不同的网络层协议，既可以支持传统的IPv4地址族，又可以支持其它地址族（比如VPN-IPv4地址族、IPv6地址族等）。</p>
-<p>•MP-BGP新增了两种路径属性：</p>
-<ul>
-<li><p>MP_REACH_NLRI：Multiprotocol Reachable NLRI，多协议可达NLRI。用于发布可达路由及下一跳信息。</p>
-</li>
-<li><p>MP_UNREACH_NLRI：Multiprotocol Unreachable NLRI，多协议不可达NLRI。用于撤销不可达路由。</p>
-</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<blockquote>
-<p>•NLRI：Network Layer Reachability Information，网络层可达信息。</p>
-<p>•关于地址族的一些取值请参考RFC3232（Assigned Numbers）。</p>
-<p>•MP_REACH_NLRI用于发布可达路由及下一跳信息。该属性由一个或多个三元组&lt;地址族信息、下一跳信息、网络可达性信息&gt;组成，格式如下：</p>
-<p>▫地址族信息（Address Family Information）域：由2字节的地址族标识AFI（Address Family Identifier）和1字节的子地址族标识SAFI（Subsequent Address Family Identifier）组成。</p>
-<p>▪AFI标识网络层协议，对应RFC3232的“Address Family Number”所定义的地址族值。例如IPv4的值是1，IPv6的值是2。</p>
-<p>▪SAFI表示NLRI的类型。AFI值为1，SAFI值为128表示NLRI中的地址为MPLS-labeled VPN-IPv4地址。</p>
-<ul>
-<li><p>下一跳信息（Next Hop Network Address Information）域：由一字节的下一跳网络地址长度和可变长度的下一跳网络地址组成。</p>
-</li>
-<li><p>网络层可达性信息（NLRI）域：由一个或多个三元组&lt;长度、标签、前缀&gt;组成，该部分内容将在后面的课程里详细介绍。</p>
-</li>
-</ul>
-<p>•MP_UNREACH_NLRI用于通知对等体删除不可达的路由。该属性的格式如下：</p>
-<ul>
-<li><p>地址族标识AFI：与MP_REACH_NLRI属性中的相同。</p>
-</li>
-<li><p>子地址族标识SAFI：与MP_REACH_NLRI属性中的相同，表示NLRI的类型。</p>
-</li>
-<li><p>撤销路由（Withdrawn Routes）：不可达路由列表，也是由一个或多个NLRI组成。BGP发言者可以通过在撤销路由域中携带与之前发布的可达路由中相同的NLRI来撤销路由。</p>
-</li>
-</ul>
-<p>•MP-BGP的报文类型、VPNv4路由发布策略仍与普通BGP相同。</p>
-</blockquote>
-<h2 id="入口PE到出口PE路由传递-3"><a href="#入口PE到出口PE路由传递-3" class="headerlink" title="入口PE到出口PE路由传递 (3)"></a>入口PE到出口PE路由传递 (3)</h2><p>•MP-BGP将VPNv4传递到远端PE之后，远端PE需要将VPNv4路由导入正确的VPN实例。</p>
-<p>•MPLS VPN使用32位的BGP扩展团体属性－VPN Target（也称为Route Target）来控制VPN路由信息的发布与接收。</p>
-<p>•本地PE在发布VPNv4路由前附上RT属性，对端RT在接到到VPNv4路由后根据RT将路由导入对应的VPN实例。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<h2 id="RT"><a href="#RT" class="headerlink" title="RT"></a>RT</h2><p>•在PE上，每一个VPN实例都会与<strong>一个或多个</strong>VPN Target属性绑定，有两类VPN Target属性：</p>
-<ul>
-<li><p>Export Target（ERT）：本地PE从直接相连站点学到IPv4路由后，转换为VPN IPv4路由，并为这些路由添加Export Target属性。Export Target属性作为BGP的扩展团体属性随路由发布。</p>
-</li>
-<li><p>Import Target（IRT）：PE收到其它PE发布的VPN-IPv4路由时，检查其Export Target属性。当此属性与PE上某个VPN实例的Import Target匹配时，PE就把路由加入到该VPN实例的路由表。</p>
-</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<blockquote>
-<p>•与RD相同，RT由Type、Administrator和Assigned Number三个字段构成，长度也是8字节。 </p>
-<p>•配置VPN-Target时，只需要指定VPN-Target的Administrator子字段和Assigned Number子字段。VPN-Target的配置格式与RD格式一致。</p>
-</blockquote>
-<h2 id="入口PE到出口PE路由传递-4"><a href="#入口PE到出口PE路由传递-4" class="headerlink" title="入口PE到出口PE路由传递 (4)"></a>入口PE到出口PE路由传递 (4)</h2><p>•PE根据VPNv4路由所携带的RT将路由导入正确的VPN实例之后，VPNv4路由的RD值剥除，将<strong>IPv4路由</strong>通告给相应的客户的CE设备。</p>
-<p>•站点B和站点D的CE设备就能学习到去往各自远端站点的路由。同理，通过一系列的操作，可以实现同一用户（同一VPN）不同站点之间的路由互通。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<h2 id="数据转发时遇到的问题"><a href="#数据转发时遇到的问题" class="headerlink" title="数据转发时遇到的问题"></a>数据转发时遇到的问题</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<h2 id="通过标签解决问题"><a href="#通过标签解决问题" class="headerlink" title="通过标签解决问题"></a>通过标签解决问题</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
-<h2 id="入口PE到出口PE路由传递-5"><a href="#入口PE到出口PE路由传递-5" class="headerlink" title="入口PE到出口PE路由传递 (5)"></a>入口PE到出口PE路由传递 (5)</h2><p>•PE和P设备之间运行LDP，交换公网标签，建立PE之间的LSP隧道（公网隧道）。</p>
-<p>•入口PE在通过MP-BGP传递VPNv4路由时，会携带私网标签，用于区分不同VPN的数据。</p>
-<p>•出口PE在接收到VPNv4路由后，需要执行私网路由交叉和隧道迭代来选择路由。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<blockquote>
-<p>•PE上分配私网标签的方法有如下两种：</p>
-<ul>
-<li>基于路由的MPLS标签分配：为VPN路由表的每一条路由分配一个标签（one label per route）。这种方式的缺点是：当路由数量比较多时，设备入标签映射表ILM（Incoming Label Map）需要维护的表项也会增多，从而提高了对设备容量的要求。</li>
-<li>基于VPN实例的MPLS标签分配：为整个VPN实例分配一个标签，该VPN实例里的所有路由都共享一个标签。使用这种分配方法的好处是节约了标签。</li>
-</ul>
-<p>•私网路由交叉：VPNv4路由与本地VPN实例的VPN-Target进行匹配的过程称为私网路由交叉。PE在收到VPNv4路由后，既不进行优选，也不检查隧道是否存在，直接将其与本地的VPN实例进行交叉。</p>
-<p>•隧道迭代：为了将私网流量通过公网传递到另一端，需要有一条公网隧道承载这个私网流量。因此私网路由交叉完成后，需要根据目的IPv4前缀进行路由迭代，即该IPv4路由的下一跳有对应的LSP存在；只有隧道迭代成功，该路由才被放入对应的VPN实例路由表。</p>
-</blockquote>
-<h2 id="MPLS-VPN中的路由交互全过程"><a href="#MPLS-VPN中的路由交互全过程" class="headerlink" title="MPLS VPN中的路由交互全过程"></a>MPLS VPN中的路由交互全过程</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>•在MPLS VPN中，PE与CE，PE与PE之间需要进行VPN路由信息的传递。</p>
-<ul>
-<li>PE与CE之间可以采用BGP、IGP以及静态路由方式交互<strong>IPv4</strong>路由信息。</li>
-<li>PE与PE之间通过MP-BGP交互<strong>VPNv4</strong>路由信息，包含<ul>
-<li>RD：与IPv4前缀组合组成VPNv4前缀。</li>
-<li>RT：用于控制PE之间路由信息的接收和发布。</li>
-<li>标签：数据转发时的内层（私网）标签，在PE上用来区分不同VPN的数据。</li>
-</ul>
-</li>
-</ul>
-<h1 id="3-MPLS-VPN报文转发"><a href="#3-MPLS-VPN报文转发" class="headerlink" title="3.MPLS VPN报文转发"></a>3.MPLS VPN报文转发</h1><h2 id="报文转发过程"><a href="#报文转发过程" class="headerlink" title="报文转发过程"></a>报文转发过程</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
-<h1 id="4-MPLS-VPN配置与实现"><a href="#4-MPLS-VPN配置与实现" class="headerlink" title="4.MPLS VPN配置与实现"></a>4.MPLS VPN配置与实现</h1><h2 id="配置命令-VPN实例配置"><a href="#配置命令-VPN实例配置" class="headerlink" title="配置命令 - VPN实例配置"></a>配置命令 - VPN实例配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
-<h2 id="配置命令-MP-BGP配置"><a href="#配置命令-MP-BGP配置" class="headerlink" title="配置命令 - MP-BGP配置"></a>配置命令 - MP-BGP配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
-<h2 id="配置命令-PE与CE间路由配置"><a href="#配置命令-PE与CE间路由配置" class="headerlink" title="配置命令 - PE与CE间路由配置"></a>配置命令 - PE与CE间路由配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
-<h2 id="MPLS-VPN配置示例-背景介绍"><a href="#MPLS-VPN配置示例-背景介绍" class="headerlink" title="MPLS VPN配置示例 - 背景介绍"></a>MPLS VPN配置示例 - 背景介绍</h2><p>•客户X及Y各自有2个站点，现需要通过MPLS VPN实现站点之间的互联，分别对应VPNX和VPNY；</p>
-<p>•互联接口、AS号及IP地址信息如图；</p>
-<p>•客户X站点与PE之间采用OSPF交互路由信息，客户Y站点与PE之间采用BGP交互路由信息。</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
-<h2 id="MPLS-VPN配置示例-配置思路"><a href="#MPLS-VPN配置示例-配置思路" class="headerlink" title="MPLS VPN配置示例 - 配置思路"></a>MPLS VPN配置示例 - 配置思路</h2><p>1.MPLS VPN骨干网配置</p>
-<p>​    1.1 IGP配置，实现骨干网的IP连通性。</p>
-<p>​    1.2 MPLS与MPLS LDP配置，建立MPLS LSP公网隧道，传输VPN数据。</p>
-<p>​    1.3 MP-BGP配置，建立后续传递VPNv4路由的MP-BGP对等体关系。</p>
-<p>2.VPN用户接入配置</p>
-<p>​    2.1 创建VPN实例并配置参数（RT、RD）</p>
-<p>​    2.2 将接口加入VPN实例</p>
-<p>​    2.3 配置PE与CE之间的路由交换</p>
-<h2 id="MPLS-VPN配置示例-数据规划"><a href="#MPLS-VPN配置示例-数据规划" class="headerlink" title="MPLS VPN配置示例 - 数据规划"></a>MPLS VPN配置示例 - 数据规划</h2><p>•MPLS骨干网采用单区域OSPF实现路由互通，所有PE和P互联接口均使能MPLS LDP功能。</p>
-<p>•PE上的VPN相关配置如表格：</p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
-<h2 id="MPLS-VPN骨干网配置"><a href="#MPLS-VPN骨干网配置" class="headerlink" title="MPLS VPN骨干网配置"></a>MPLS VPN骨干网配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/36.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/37.png"></p>
-<blockquote>
-<p>•缺省情况下，只有BGP-IPv4单播地址族的对等体是自动使能的。即在BGP视图下配置peer as-number命令后，系统会自动配置相应的peer enable命令。其他地址族视图下都必须手动使能。</p>
-</blockquote>
-<h2 id="MPLS-VPN骨干网配置-配置验证"><a href="#MPLS-VPN骨干网配置-配置验证" class="headerlink" title="MPLS VPN骨干网配置 - 配置验证"></a>MPLS VPN骨干网配置 - 配置验证</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/38.png"></p>
-<h2 id="VPN用户接入配置"><a href="#VPN用户接入配置" class="headerlink" title="VPN用户接入配置"></a>VPN用户接入配置</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/39.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/40.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/41.png"></p>
-<h2 id="配置验证"><a href="#配置验证" class="headerlink" title="配置验证"></a>配置验证</h2><p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/42.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/43.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSVPN%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/44.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选）MP-BGP在传递VPNv4路由时，携带哪种Route Target ？ （ ）</p>
-<p><strong>A. Export RT</strong></p>
-<p>B. Implied RT</p>
-<p>C. Import RT</p>
-<p>D. Extended RT</p>
-<p>2.（多选）基本MPLS VPN组网中，需要对VPN实例做哪些配置（ ）</p>
-<p><strong>A.Import RT</strong></p>
-<p><strong>B.Export RT</strong></p>
-<p><strong>C.配置RD</strong></p>
-<p><strong>D.配置与VPN实例绑定的接口</strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS VPN网络一般由运营商搭建，用于向不同的客户提供VPN服务，使得用户的路由和数据能够通过该网络进行传递，且不同的用户之间的路由和数据完全隔离，互不影响。</p>
-<p>•MPLS VPN控制层面：</p>
-<p>​    ▫通过VRF和RD隔离不同用户的私网路由信息并构建唯一的VPNv4路由</p>
-<p>​    ▫通过RT值控制VPNv4路由的发布和接收</p>
-<p>​    ▫通过MP-BGP传递VPNv4路由前缀、标签以及RT等信息</p>
-<p>​    ▫通过MPLS LDP构建公网标签转发路径</p>
-<p>•MPLS转发层面：通过内外两层标签进行数据转发，内层标签区分私网数据，外层标签穿通公网网络。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/mydog.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="zsy's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/" itemprop="url">IPadv-MPLSLDP原理与配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-23T13:37:44+08:00">
-                2021-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h1><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE.png"></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>•MPLS是一种根根据标签报文中携带的短而定长的标签来转发数据的技术。</p>
-<p>•MPLS的一个基本概念就是两台LSR必须对在它们之间转发的数据的标签使用上“达成共识”。LSR之间可以运行标签分发协议（Label Distribution Protocol，LDP）来告知其他LSR本设备上的标签绑定信息，从而实现标签报文的正确转发。</p>
-<p>•本课程将介绍LDP基本工作原理与特性，以及LDP的基本配置。</p>
-<blockquote>
-<p>•本课程的标签分发协议特指由RFC3036首次定义的标签分发协议，当前该标准已被RFC5036废弃。</p>
-<p>•除了LDP外，标签分发协议也可以指MP-BGP、RSVP等可执行标签分发的一类协议。</p>
-</blockquote>
-<h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>▫描述LDP的基本概念及工作机制</p>
-<p>▫描述MPLS标签分发控制模式、通告模式及保留模式</p>
-<p>▫实现LDP的基础配置</p>
-<h1 id="1-LDP基本概念"><a href="#1-LDP基本概念" class="headerlink" title="1.LDP基本概念"></a>1.LDP基本概念</h1><h2 id="LDP协议概述"><a href="#LDP协议概述" class="headerlink" title="LDP协议概述"></a>LDP协议概述</h2><p>•LDP是MPLS的一种控制协议，相当于传统网络中的信令协议，负责FEC的分类、标签的分配以及LSP的建立和维护等操作。LDP规定了标签分发过程中的各种消息以及相关处理过程。</p>
-<p>•LDP的工作过程主要分为两部分：</p>
-<p>​    1.LSR之间建立LDP会话。</p>
-<p>​    2.LSR之间基于LDP会话动态交换标签与FEC的映射信息，并根据标签信息建立LSP。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/1.png"></p>
-<h2 id="LDP会话、LDP邻接体、LDP对等体"><a href="#LDP会话、LDP邻接体、LDP对等体" class="headerlink" title="LDP会话、LDP邻接体、LDP对等体"></a>LDP会话、LDP邻接体、LDP对等体</h2><p>•LSR之间交互标签绑定消息之前必须建立LDP会话。LDP会话可以分为：</p>
-<p>​    ▫本地LDP会话（Local LDP Session）：建立会话的两个LSR之间是直连的；</p>
-<p>​    ▫远程LDP会话（Remote LDP Session）：建立会话的两个LSR之间可以是直连的，也可以是非直连的。</p>
-<p>•两台LSR之间交互Hello消息之后，即建立起邻接体（Adjacency）关系；</p>
-<p>•在建立邻接体关系的基础上，两台LSR之间交互LDP会话消息，建立起LDP会话，两台设备之间形成LDP对等体关系；</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/2.png"></p>
-<h2 id="LSR-ID与LDP-ID"><a href="#LSR-ID与LDP-ID" class="headerlink" title="LSR ID与LDP ID"></a>LSR ID与LDP ID</h2><p>•每一台运行了LDP的LSR除了必须配置LSR ID，还必须拥有LDP ID。</p>
-<ul>
-<li><p>LDP ID的长度为48bit，由32bit的LSR ID与16bit的标签空间标识符（Label Space ID）构成。</p>
-</li>
-<li><p>LDP ID以“LSR ID : 标签空间标识”的形式呈现。例如2.2.2.2:0。</p>
-</li>
-</ul>
-<p>•标签空间标识一般存在两种形态：</p>
-<ul>
-<li><p>值为0：表示基于设备（或基于平台）的标签空间；</p>
-</li>
-<li><p>值非0：表示基于接口的标签空间。</p>
-</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/3.png"></p>
-<blockquote>
-<p>•在本课程中，均使用基于设备（或基于平台）的标签空间。</p>
-</blockquote>
-<h2 id="LDP消息"><a href="#LDP消息" class="headerlink" title="LDP消息"></a>LDP消息</h2><p>运行LDP协议的LSR之间通过交换LDP消息来实现邻居发现、会话建立与维护以及标签管理等功能。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/4.png"></p>
-<blockquote>
-<p>•按照消息的功能，LDP消息一共可以分为四大类型：发现消息（Discovery Message），会话消息（Session Message），通告消息（Advertisement Message）和通知消息（Notification Message）。</p>
-<p>▫发现消息：用来宣告和维护网络中一个LSR的存在；用于通告和维护网络中LSR的存在，如Hello报文。</p>
-<p>▫会话消息：用于建立、维护和终止LDP对等体之间的会话，如Initialization报文、KeepAlive报文。</p>
-<p>▫通告消息：用来生成、改变和删除FEC的标签映射；</p>
-<p>▫通知消息：用来宣告告警和错误信息。</p>
-<p>•LDP消息承载在UDP或TCP之上，端口号均为646 。其中发现消息用来发现邻居，承载在UDP报文上。其他消息的传递要求可靠而有序，所以LDP使用TCP建立会话，会话、通告和通知消息都基于TCP传递。</p>
-</blockquote>
-<h2 id="LDP报文封装"><a href="#LDP报文封装" class="headerlink" title="LDP报文封装"></a>LDP报文封装</h2><p>•LDP协议报文包括了LDP头部和LDP消息两部分。</p>
-<p>​    ▫LDP头部中携带了LDP版本、报文长度等信息；</p>
-<p>​    ▫LDP消息中携带了消息类型、消息长度等信息。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/5.png"></p>
-<blockquote>
-<p>•LDP头部长度为10Byte，包括Version，PDU Length和LDP Identifier三部分。</p>
-<ul>
-<li>Version占用2Byte，表示LDP版本号，当前版本号为1。</li>
-<li>PDU Length占用2Byte，以字节为单位表示除了Version和PDU Length以外的其他部分的总长度。</li>
-<li>LDP Identifier，即LDP ID，长度6Byte，其中前4Byte用来唯一标识一个LSR，后2Byte用来表示LSR的标签空间。</li>
-</ul>
-<p>•LDP消息包含五个部分。</p>
-<ul>
-<li>U占用1个bit，为Unknown Message bit。当LSR收到一个无法识别的消息时，该消息的U=0时，LSR会返回给该消息的生成者一个通告，当U=1时，忽略该无法识别的消息，不发送通告给生成者。</li>
-<li>Message Length占用2个bytes，以字节为单位表示Message ID、Mandatory Parameters和Optional Parameters的总长度。</li>
-<li>Message ID占用32个bit，用来标识一个消息。</li>
-<li>Mandatory Parameters和Optional Parameters分别为可变长的该消息的必须的参数和可选的参数。</li>
-<li>Message Type表示具体的消息类型，目前LDP定义的常用的消息有Notification，Hello，Initialization，KeepAlive，Address，Address Withdraw，Label Mapping，Label Request，Label Abort Request，Label Withdraw，Label Release。</li>
-</ul>
-</blockquote>
-<h1 id="2-LDP工作原理"><a href="#2-LDP工作原理" class="headerlink" title="2.LDP工作原理"></a>2.LDP工作原理</h1><h2 id="LDP会话建立"><a href="#LDP会话建立" class="headerlink" title="LDP会话建立"></a>LDP会话建立</h2><h3 id="LDP会话状态机"><a href="#LDP会话状态机" class="headerlink" title="LDP会话状态机"></a>LDP会话状态机</h3><p>LDP使用5种状态描述LDP会话状态机。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/6.png"></p>
-<blockquote>
-<p>•LDP Session协商过程可以通过状态机来描述。如图所示，有5种状态。分别是Non-Existent，Initialized，OpenRec，OpenSent，Operational。</p>
-<p>▫Non-Existent状态：该状态为LDP Session最初的状态，在此状态双方发送HELLO消息，选举主动方，在收到TCP连接建立成功事件的触发后变为Initialized状态。</p>
-<p>▫Initialized状态：该状态下分为主动方和被动方两种情况，主动方将主动发送Initialization消息，转向OpenSent 状态，等待回应的Initialization消息；被动方在此状态等待主动方发给自己的Initialization消息，如果收到的Initialization消息的参数可以接受，则发送Initialization和KeepAlive转向OpenRec状态。主动方和被动方在此状态下收到任何非Initialization消息或等待超时时，都会转向Non-Existent状态。</p>
-<p>▫OpenSent 状态：此状态为主动方发送Initialization消息后的状态，在此状态等待被动方回答Initialization消息和KeepAlive消息，如果收到的Initialization消息中的参数可以接受则转向OpenRec状态，如果参数不能接受或Initialization消息超时则断开TCP连接转向Non-Existent状态。</p>
-<p>▫OpenRec状态：在此状态不管主动方还是被动方都是发出KeepAlive后的状态，在等待对方回应KeepAlive，只要收到KeepAlive消息就转向Operational状态；如果收到其它消息或KeepAlive超时则转向Non-Existent状态。</p>
-<p>▫Operational状态：该状态是LDP Session成功建立的标志。在此状态下可以发送和接收所有其它的LDP消息。在此状态如果KeepAlive超时或收到致命错误的Notification消息（Shutdown消息）或者自己主动发送Shutdown消息主动结束会话，都会转向Non-Existent状态。</p>
-<p>•LDP状态切换信息可以通过指令<strong>debug</strong> <strong>mpls</strong> <strong>ldp</strong> <strong>session</strong>看到。</p>
-</blockquote>
-<h3 id="LDP会话建立-发现阶段与TCP连接建立"><a href="#LDP会话建立-发现阶段与TCP连接建立" class="headerlink" title="LDP会话建立 - 发现阶段与TCP连接建立"></a>LDP会话建立 - 发现阶段与TCP连接建立</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/7.png"></p>
-<blockquote>
-<p>•除了基本发现机制外，可以通过拓展发现机制发现非直连的远端邻接体，该内容不属于课程的重点，详细内容可以查阅RFC5036相关内容。</p>
-<p>•LDP的传输地址用于与邻居建立TCP连接。</p>
-<ul>
-<li>两台LSR之间在建立LDP会话之前，需要先建立TCP连接，以便进行LDP协议报文的交换。</li>
-<li>设备的传输地址被包含在LDP Hello报文中，LSR通过Hello报文知晓邻居的传输地址。</li>
-<li>在使用Hello报文发现邻居并且知道了对方的传输地址后，邻居之间就会开始尝试TCP三次握手（基于传输地址），并且交互LDP的初始化报文、标签映射报文等，这些报文都使用双方的传输地址作为源、目的IP地址。</li>
-<li>LSR必须拥有到达邻居的传输地址的路由。</li>
-<li>缺省情况下，公网的LDP传输地址等于设备的LSR ID，私网的传输地址等于接口的主IP地址。 </li>
-<li>在接口视图下，使用<strong>mpls</strong> <strong>ldp</strong> <strong>transport-address</strong>命令，可以修改传输地址。</li>
-</ul>
-</blockquote>
-<h3 id="LDP会话建立-会话建立与保持"><a href="#LDP会话建立-会话建立与保持" class="headerlink" title="LDP会话建立 - 会话建立与保持"></a>LDP会话建立 - 会话建立与保持</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/8.png"></p>
-<h3 id="LDP邻居状态"><a href="#LDP邻居状态" class="headerlink" title="LDP邻居状态"></a>LDP邻居状态</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/9.png"></p>
-<h3 id="LDP会话状态"><a href="#LDP会话状态" class="headerlink" title="LDP会话状态"></a>LDP会话状态</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/10.png"></p>
-<blockquote>
-<p>•LDP会话的状态：</p>
-<p>▫NonExistent：表示LDP会话的最初状态。在此状态双方互相发送Hello消息，在收到TCP连接建立成功事件的触发后变为Initialized状态。 </p>
-<p>▫Initialized：表示LDP会话处于初始化状态。</p>
-<p>▫Open Sent：表示LDP会话进入初始化状态后，主动方给被动方发送了Initialized消息，并等待对方的回应。</p>
-<p>▫Open Recv：表示LDP会话进入初始化状态后，当双方都收到了对方发送的KeepAlive消息后，LDP会话进入Operational状态。 </p>
-<p>▫Operational：表示LDP会话建立成功。</p>
-</blockquote>
-<h2 id="LDP标签分发"><a href="#LDP标签分发" class="headerlink" title="LDP标签分发"></a>LDP标签分发</h2><h3 id="标签的发布和管理"><a href="#标签的发布和管理" class="headerlink" title="标签的发布和管理"></a>标签的发布和管理</h3><p>•在MPLS网络中，下游LSR决定标签和FEC的绑定关系，并将这种绑定关系发布给上游LSR。</p>
-<p>•LDP通过发送标签请求和标签映射消息，在LDP对等体之间通告FEC和标签的绑定关系来建立LSP</p>
-<p>•标签的发布和管理由标签发布方式、标签分配控制方式和标签保持方式来决定。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/11.png"></p>
-<h3 id="上游与下游"><a href="#上游与下游" class="headerlink" title="上游与下游"></a>上游与下游</h3><p>•MPLS根据数据的转发方向确定上、下游关系。标签报文从上游LSR发出，被下游LSR接收并处理。</p>
-<p>•如图所示，对于到达192.168.3.0/24的LSP而言，R3是R2的下游LSR，R1是R2的上游LSR。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/12.png"></p>
-<h3 id="标签发布方式-DU模式"><a href="#标签发布方式-DU模式" class="headerlink" title="标签发布方式 - DU模式"></a>标签发布方式 - DU模式</h3><p>•DU模式</p>
-<ul>
-<li><p>对于一个特定的FEC，LSR无需从上游获得标签请求消息即进行标签分配与分发。</p>
-</li>
-<li><p>LSR会主动将自己为FEC捆绑的标签通告给上游邻居，无需邻居先发起请求再通告。</p>
-</li>
-</ul>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/13.png"></p>
-<blockquote>
-<p>•标签分配：LSR从本地标签空间中取出一个标签与FEC绑定。</p>
-<p>•标签分发：LSR将标签与FEC的绑定关系通知给上游LSR。</p>
-<p>•标签发布方式为DU时，系统默认支持LDP为所有对等体分标签，即每个节点都可以向所有的对等体发布标签映射关系，不再区分上下游关系。因为在只给上游对等体分标签情况下，发送标签映射消息的时候，要根据路由信息对会话的上下游关系进行确认。</p>
-</blockquote>
-<h3 id="标签发布方式-DoD模式"><a href="#标签发布方式-DoD模式" class="headerlink" title="标签发布方式 - DoD模式"></a>标签发布方式 - DoD模式</h3><p>•DoD模式</p>
-<p>​    ▫对于一个特定的FEC，LSR获得标签请求消息之后才进行标签分配与分发。</p>
-<p>​    ▫一般情况下，对特定FEC的访问需求会触发标签请求消息。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/14.png"></p>
-<blockquote>
-<p>•只有上游邻居向自己请求标签映射时，LSR才会通告标签映射给该邻居</p>
-</blockquote>
-<h3 id="标签分配控制方式-独立模式"><a href="#标签分配控制方式-独立模式" class="headerlink" title="标签分配控制方式 - 独立模式"></a>标签分配控制方式 - 独立模式</h3><p>独立（Independent）模式</p>
-<p>▫本地LSR可以自主地分配一个标签绑定到某个FEC，并通告给上游LSR，而无需等待下游的标签。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/15.png"></p>
-<blockquote>
-<p>•标签分配控制方式需要与标签发布方式结合使用：</p>
-<ul>
-<li><p>在使用DU作为标签分发方式的情况下，如图所示，R2和R3对192.168.4.0/24这条FEC，可以在上游LSR无请求，且自身没有收到下游LSR的标签绑定信息的情况下，主动向上游LSR通告标签绑定信息。</p>
-</li>
-<li><p>采用DoD作为标签发布方式时，如图所示，R2和R3对192.168.4.0/24这条FEC，只要收到上游LSR的标签请求消息，可以在自身没有收到下游LSR的标签绑定信息的情况下，向上游LSR通告标签绑定信息。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="标签分配控制方式-有序模式"><a href="#标签分配控制方式-有序模式" class="headerlink" title="标签分配控制方式 - 有序模式"></a>标签分配控制方式 - 有序模式</h3><p>•有序（Ordered）模式</p>
-<p>▫对于LSR上某个FEC的标签映射，只有当该LSR已经具有此FEC下一跳的标签映射消息、或者该LSR就是此FEC的出节点时，该LSR才可以向上游发送此FEC的标签映射。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/16.png"></p>
-<blockquote>
-<p>•当标签控制方式为Ordered，只有当LSR收到特定FEC下一跳发送的特定FEC标签映射消息或者LSR是LSP的出口节点时，LSR才可以向上游发送标签映射消息。</p>
-<ul>
-<li><p>当标签分发方式为DU时，如图所示，对于192.168.4.0/24这条FEC，不论上游LSR是否有请求，必须收到下游LSR对此FEC的标签绑定信息才向上游LSR发布标签绑定信息，所以必须由Egress LSR，也就是R4作为LSP建立的“起点”。</p>
-</li>
-<li><p>当标签发布方式采用DoD时，如图所示，对于192.168.4.0/24这条FEC，只有收到上游LSR请求的请求，且自身已经收到下游LSR的标签绑定信息的情况下，才向上游LSR通告标签绑定信息。因此，必须由Ingress LSR（R1）发起请求，逐跳请求到Egress LSR（R4），最终由R4开始，向上游建立LSP。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="标签保留-自由模式"><a href="#标签保留-自由模式" class="headerlink" title="标签保留 - 自由模式"></a>标签保留 - 自由模式</h3><p>自由（Liberal）模式</p>
-<p>▫LSR收到的标签映射可能来自下一跳，也可能来自非下一跳。</p>
-<p>▫对于从邻居LSR收到的标签映射，无论邻居LSR是不是自己的下一跳都保留。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/17.png"></p>
-<blockquote>
-<p>•当基于IP网络部署MPLS时，LSR根据IP路由表判断接收到的标签映射是否来自下一跳。</p>
-<p>•Liberal方式的最大优点在于路由发生变化时能够快速建立新的LSP进行数据转发，因为Liberal方式保留了所有的标签。缺点是需要分发和维护不必要的标签映射。</p>
-<ul>
-<li><p>DU标签分发方式下，如果采用Liberal保持方式，则R3保留所有LDP邻居 R2和R5发来的关于192.168.1.0/24这个FEC的标签，无论该R2和R5是否是IP路由表中到达192.168.1.0/24的下一跳。</p>
-</li>
-<li><p>DoD标签分发方式下，如果采用Liberal保持方式， LSR会向所有LDP邻居请求标签。但通常来说，DoD分发方式都会和Conservative保持方式搭配使用。</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="标签保留-保守模式"><a href="#标签保留-保守模式" class="headerlink" title="标签保留 - 保守模式"></a>标签保留 - 保守模式</h3><p>•保守（Conservative）模式</p>
-<p>▫对于从邻居LSR收到的标签映射，只有当邻居LSR是自己的下一跳时才保留。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/18.png"></p>
-<blockquote>
-<p>•Conservative方式的优点在于只需保留和维护用于转发数据的标签，以达到节约标签的目的。</p>
-<ul>
-<li>当使用DU标签分发方式时，LSR可能从多个LDP邻居收到到同一网段的标签映射消息，如图中R3会分别从R2和R5收到网段192.168.1.0/24的标签映射消息。如果采用Conservative保持方式，则R3只保留下一跳R2发来的标签，丢弃非下一跳R5发来的标签。</li>
-<li>当使用DoD标签分发方式时， LSR根据路由信息只向它的下一跳请求标签。</li>
-</ul>
-<p>•当网络拓扑变化引起下一跳邻居改变时：</p>
-<ul>
-<li>使用自由标签保持方式，LSR可以直接利用原来非下一跳邻居发来的标签，迅速重建LSP，但需要更多的内存和标签空间。</li>
-<li>使用保守标签保持方式，LSR只保留来自下一跳邻居的标签，节省了内存和标签空间，但LSP的重建会比较慢。</li>
-<li>保守标签保持方式通常与DoD方式一起，用于标签空间有限的LSR。</li>
-</ul>
-</blockquote>
-<h3 id="PHP特性"><a href="#PHP特性" class="headerlink" title="PHP特性"></a>PHP特性</h3><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/19.png"></p>
-<p>•PHP（Penultimate Hop Popping，次末跳弹出），如果激活了PHP特性，那么egress节点在为本地路由分配标签的时候，会分配一个特殊标签—<strong>3</strong>，该标签被称为隐式空标签（Implicit NULL Label）。当LSR转发一个标签报文时，如果发现对应的出标签值为3，则LSR会将栈顶标签弹出，并将里面所封装的数据转发给下游LSR。</p>
-<blockquote>
-<p>•在标签发布时，R3为作为192.168.3.0/24这条FEC的Egress LSR。分配标签时，R3为该FEC分配了标签3，并将该标签绑定信息通告给R2。</p>
-<p>•在数据转发时，R2作为到达192.168.3.0的次末跳（倒数第二跳），发现出标签值为3，于是将标签头部弹出，将IP报文转发给R3，而R3则仅需执行一次查询操作（查询FIB表）即可获得相应的转发信息，转发效率得到了提升。</p>
-</blockquote>
-<h3 id="隐式空标签与显式空标签-1"><a href="#隐式空标签与显式空标签-1" class="headerlink" title="隐式空标签与显式空标签 (1)"></a>隐式空标签与显式空标签 (1)</h3><p>•缺省情况下，Egress节点向倒数第二跳分配隐式空标签（implicit-null），即特殊标签3。</p>
-<p>•但在部署QoS的场景下，标签被弹出后，其中的优先级也会一并丢失。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/20.png"></p>
-<h3 id="隐式空标签与显式空标签-2"><a href="#隐式空标签与显式空标签-2" class="headerlink" title="隐式空标签与显式空标签 (2)"></a>隐式空标签与显式空标签 (2)</h3><p>•显式空标签机制，Egress节点向倒数第二跳分配特殊标签0。</p>
-<p>•R3在转发标签报文时，若出标签封装为0，则不会将标签头部弹出，标签头部中的QoS信息得以保存。R4在收到带0标签的报文的时候，直接弹出标签，不用去查找ILM表项。</p>
-<p>•缺省情况下，Egress分配的是隐式空标签，通过label advertise explicit-null使能Egress节点向倒数第二跳分配显式空标签。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/21.png"></p>
-<blockquote>
-<p>•在MPLS视图下，执行命令<strong>label advertise</strong> { <strong>explicit-null</strong> | <strong>implicit-null</strong> | <strong>non-null</strong> }，配置向倒数第二跳分配的标签。</p>
-<p>•根据参数的不同，可以配置Egress向倒数第二跳分配不同的标签。</p>
-<p>▫缺省情况下，使用的是<strong>implicit-null</strong>，Egress向倒数第二跳节点分配隐式空标签，值为3。</p>
-<p>▫如果配置的是<strong>explicit-null</strong>，Egress节点向倒数第二跳分配显式空标签，值为0。当需要支持MPLS QoS属性时，可以选用<strong>explicit-null</strong>。</p>
-<p>▫如果配置的是<strong>non-null</strong>，Egress向倒数第二跳正常分配标签，即分配的标签值不小于16。</p>
-</blockquote>
-<h2 id="LDP工作过程详解"><a href="#LDP工作过程详解" class="headerlink" title="LDP工作过程详解"></a>LDP工作过程详解</h2><h3 id="组网介绍"><a href="#组网介绍" class="headerlink" title="组网介绍"></a>组网介绍</h3><p>•网络中已经部署OSPF路由协议且各设备之间能够正常学习到对方的路由信息。</p>
-<p>•已在各设备及相应接口上激活MPLS及LDP，且在相邻的设备之间已正常建立本地LDP会话。</p>
-<p>•所有LSR均采用DU + Independent +Liberal方式。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/22.png"></p>
-<blockquote>
-<p>•华为设备目前缺省模式为下游自主方式（DU）＋ 有序标签分配控制方式（Ordered）＋ 自由标签保持方式（Liberal）。</p>
-<p>•对于从R1进入，到达192.168.4.0/24的数据，R1为Ingress LSR，R4为Egress LSR。</p>
-</blockquote>
-<h3 id="标签分发-Egress-LSR"><a href="#标签分发-Egress-LSR" class="headerlink" title="标签分发 - Egress LSR"></a>标签分发 - Egress LSR</h3><p>•R4直连网段192.168.4.0/24，R4将主动为到达该网段的路由分配标签，如1041，并主动通过LDP协议报文将标签映射通告给LDP对等体R2和R3。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/23.png"></p>
-<blockquote>
-<p>•注：缺省情况下，根据32位的主机IP路由触发LDP建立LSP。可以通过手工配置触发非32位路由的LSP建立。</p>
-</blockquote>
-<h3 id="标签分发-Transit-LSR"><a href="#标签分发-Transit-LSR" class="headerlink" title="标签分发 - Transit LSR"></a>标签分发 - Transit LSR</h3><p>•以R2为例，在其路由表中，192.168.4.0/24路由的下一跳为R4，当它从R4收到关于192.168.4.0/24的标签映射通告时，由于该通告来自下游LDP邻居，因此这将触发它自己为该路由分配标签1021，并将标签映射通告给LDP邻居（如R1）。R3同理。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/24.png"></p>
-<h3 id="标签分发-Ingress-LSR"><a href="#标签分发-Ingress-LSR" class="headerlink" title="标签分发 - Ingress LSR"></a>标签分发 - Ingress LSR</h3><p>•R1收到LDP邻居R2及R3通告过来的关于192.168.4.0/24路由的标签映射后，将这两个标签都<strong>存储</strong>起来，但是由于在自己的路由表中，到达192.168.4.0/24的下一跳是R2，因此当前它只会<strong>使用</strong>R2所通告的标签1021。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/25.png"></p>
-<blockquote>
-<p>•注：当R2发生故障时，OSPF路由将会重新收敛，此时R1的路由表中192.168.4.0/24路由的下一跳将会切换至R3，此时R1将启用R3所通告的、关于192.168.4.0/24的标签。</p>
-</blockquote>
-<h3 id="标签转发-Ingress-LSR"><a href="#标签转发-Ingress-LSR" class="headerlink" title="标签转发 - Ingress LSR"></a>标签转发 - Ingress LSR</h3><p>R1作为Ingress LSR，需要对接收的IP报文执行Push操作压入标签，并进行标签转发。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/26.png"></p>
-<blockquote>
-<p>•当R1收到发往192.168.4.1的IP报文时，首先在其FIB表中查询该目的IP地址，它发现所匹配的表项的Tunnel ID为非0，因此继续在NHLFE中查询该Tunnel ID，然后意识到需要将对该IP报文压入标签并进行标签转发，出接口为GE0/0/0、下一跳为R2、出站标签为1021，于是为报文插入标签头部并转发出去。</p>
-</blockquote>
-<h3 id="标签转发-Transit-LSR"><a href="#标签转发-Transit-LSR" class="headerlink" title="标签转发 - Transit LSR"></a>标签转发 - Transit LSR</h3><p>•R2作为Transit LSR，需要对接收的IP报文执行Swap操作交换标签，并进行标签转发。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/27.png"></p>
-<blockquote>
-<p>•当R2收到携带1021标签的标签报文时，查询ILM，根据ILM对应到NHLFE中的表项。于是，R2对该标签报文通过swap操作将标签更换为1041，并从相应的接口转发出去。</p>
-</blockquote>
-<h3 id="标签转发-Egress-LSR"><a href="#标签转发-Egress-LSR" class="headerlink" title="标签转发 - Egress LSR"></a>标签转发 - Egress LSR</h3><p>R4作为Egress LSR，需要对接收的IP报文执行Pop操作交换标签，并进行IP转发。</p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/28.png"></p>
-<blockquote>
-<p>•当R4收到携带1041标签的标签报文时，查询ILM，根据ILM查询到操作为Pop。于是，R4对该标签报文通过Pop操作将最外层标签剥离，此时该报文已经变成了标准IP报文，R4将对该IP报文执行标准的IP转发流程。</p>
-<p>•R4在转发该报文时分别查询了LFIB和FIB表，作为最后Egress LSR，其存在转发效率提升的可能性，怎么做？</p>
-</blockquote>
-<h3 id="在MPLS中，运行LDP协议的LSR的操作小结"><a href="#在MPLS中，运行LDP协议的LSR的操作小结" class="headerlink" title="在MPLS中，运行LDP协议的LSR的操作小结"></a>在MPLS中，运行LDP协议的LSR的操作小结</h3><p>•LSR首先通过运行IGP协议（例如OSPF、IS-IS等）来构建路由表、FIB表；</p>
-<p>•LDP根据相应的模式，为路由表中的路由前缀（FEC）分配标签；</p>
-<p>•LDP根据相应的模式，将自己为路由前缀分配的标签，通过LDP标签映射报文通告给LDP邻居；</p>
-<p>•LSR将自己为路由前缀分配的标签，以及LDP邻居为该路由前缀通告的标签存储起来，并与出接口、下一跳地址等信息形成关联（标签转发表项）；</p>
-<p>•当LSR转发到达目的网络的标签报文时，所使用的出站标签总是下游LDP邻居所通告的标签，此处所指的下游邻居，是设备的路由表中到达该目的网络的下一跳设备。</p>
-<h1 id="3-LDP基础配置"><a href="#3-LDP基础配置" class="headerlink" title="3.LDP基础配置"></a>3.LDP基础配置</h1><h2 id="LDP基本配置命令-1"><a href="#LDP基本配置命令-1" class="headerlink" title="LDP基本配置命令 (1)"></a>LDP基本配置命令 (1)</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/29.png"></p>
-<h2 id="LDP基本配置命令-2"><a href="#LDP基本配置命令-2" class="headerlink" title="LDP基本配置命令 (2)"></a><strong>LDP基本配置命令 (2)</strong></h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/30.png"></p>
-<blockquote>
-<p>•BGP路由也可以触发LDP LSP的建立，但此部分内容不在本课程的讨论范围内。</p>
-</blockquote>
-<h2 id="LDP基本配置命令-3"><a href="#LDP基本配置命令-3" class="headerlink" title="LDP基本配置命令 (3)"></a>LDP基本配置命令 (3)</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/31.png"></p>
-<h2 id="配置案例"><a href="#配置案例" class="headerlink" title="配置案例"></a>配置案例</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/32.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/33.png"></p>
-<p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/34.png"></p>
-<h2 id="检查配置-查看LSP"><a href="#检查配置-查看LSP" class="headerlink" title="检查配置 - 查看LSP"></a>检查配置 - 查看LSP</h2><p><img src="/2021/06/23/IPadv-MPLSLDP%E5%8E%9F%E7%90%86%E4%B8%8E%E9%85%8D%E7%BD%AE/35.png"></p>
-<h1 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h1><p>1.（单选）以下哪条命令用于查看已经为特定FEC分配的标签？（    ）</p>
-<p>A、display mpls ldp</p>
-<p>B、display mpls ldp interface</p>
-<p><strong>C、display mpls lsp</strong></p>
-<p>D、display mpls ldp session</p>
-<p>2.（单选）华为设备默认的标签发布方式、标签分配控制方式和标签保持方式的组合是（   ）</p>
-<p>A、DU + Independent + Conservative</p>
-<p><strong>B、DU + Ordered+ Liberal</strong></p>
-<p>C、DoD + Independent+ Liberal</p>
-<p>D、DoD + Ordered + Conservative</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>•MPLS体系有多种标签分配协议，LDP标签分配协议是这些协议中使用较广的一种。</p>
-<p>•LDP是LSR之间协商标签含义的过程。LDP协议使用发现、会话、通告、通知四类报文进行会话的建立和标签的分发。</p>
-<p>•LDP通过标签发布方式、标签分配控制方式和标签保持方式来决定标签的发布和管理。华为数通产品默认的方式为：下游自主标签发布方式+有序标签分配控制方式+自由标签保持方式。</p>
-<p>•利用LDP可以实现将网络层的路由信息直接映射到标签信息，进而建立起标签交换路径（LSP）。LSR之间将依据本地转发表中对应于一个特定FEC的入标签、下一跳节点、出标签等信息连接在一起，从而形成跨越整个MPLS域的标签交换路径。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -4111,7 +4768,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -4124,7 +4781,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

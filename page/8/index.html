@@ -241,6 +241,536 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/" itemprop="url">网络服务和应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-28T18:52:35+08:00">
+                2021-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h2><h3 id="文件传输协议"><a href="#文件传输协议" class="headerlink" title="文件传输协议"></a>文件传输协议</h3><p>主机之间传输文件是IP网络的一个重要功能，如今人们可以方便地使用网页、邮箱进行文件传输。<br>然而在互联网早期，Web (World Wide Web，万维网）还未出现，操作系统使用命令行的时代，用户使用命令行工具进行文件传输。其中最通用的方式就是使用FTP(File Transfer Protocol，文件传输协议)以及TFTP ( Trivial File Transfer Protocol，简单文件传输协议)。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE.png"></p>
+<h3 id="FTP基本概念"><a href="#FTP基本概念" class="headerlink" title="FTP基本概念"></a>FTP基本概念</h3><p>FTP采用典型的C/S架构（即服务器端与客户端模型），客户端与服务器端建立TCP连接之后即可实现文件的上传、下载。<br>针对传输的文件类型不同，FTP可以采用不同的传输模式:</p>
+<ul>
+<li>ASCII模式</li>
+<li>Binary (二进制）模式</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/FTP%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.png"></p>
+<h3 id="FTP传输过程"><a href="#FTP传输过程" class="headerlink" title="FTP传输过程"></a>FTP传输过程</h3><h4 id="主动模式（PORT）"><a href="#主动模式（PORT）" class="headerlink" title="主动模式（PORT）"></a>主动模式（PORT）</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E4%B8%BB%E5%8A%A8%E6%A8%A1%E5%BC%8F.png"></p>
+<h4 id="被动模式（PASV）"><a href="#被动模式（PASV）" class="headerlink" title="被动模式（PASV）"></a>被动模式（PASV）</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E8%A2%AB%E5%8A%A8%E6%A8%A1%E5%BC%8F.png"></p>
+<h3 id="配置命令介绍"><a href="#配置命令介绍" class="headerlink" title="配置命令介绍"></a>配置命令介绍</h3><h4 id="设备作为服务器端"><a href="#设备作为服务器端" class="headerlink" title="设备作为服务器端"></a>设备作为服务器端</h4><p>用户通过FTP访问设备</p>
+<p>1．开启FTP服务器端功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]ftp [ ipv6 ] server enable</span><br></pre></td></tr></table></figure>
+<p>缺省情况下，设备的FTP服务器端功能是关闭的。<br>2.配置FTP本地用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]aaa</span><br><span class="line">[Huawei]local-user user-name password irreversible-cipher password[Huawei]local-user user-name privilege level level</span><br><span class="line">[Huawei]local-user user-name service-type ftp</span><br><span class="line">[Huawei]local-user user-name ftp-directory directory</span><br></pre></td></tr></table></figure>
+<p>必须将用户级别配置在3级或者3级以上，否则FTP连接将无法成功。</p>
+<h4 id="设备作为客户端"><a href="#设备作为客户端" class="headerlink" title="设备作为客户端"></a>设备作为客户端</h4><ol>
+<li>VRP作为FTP客户端访问FTP服务器端<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;FTP Client&gt;ftp 10.1.1.1</span><br><span class="line">Trying 10.1.1.1 ...</span><br><span class="line">Press CTRL+K to abortConnected to 10.1.1.1.220 FTP service ready.User(10.1.1.1:(none)):ftp</span><br><span class="line">331 Password required for ftp.Enter password: 输入的密码</span><br><span class="line">230 User logged in.</span><br></pre></td></tr></table></figure></li>
+<li>VRP作为FTP客户端的常用命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ascii   Set the file transfer type to ASCIl, and it is the default type</span><br><span class="line">binary   Set the file transfer type to support the binary image</span><br><span class="line">ls      List the contents of the current or remote directory</span><br><span class="line">passive    Set the toggle passive mode, the default is on</span><br><span class="line">get    Download the remote file to the local host</span><br><span class="line">put     Upload a local file to the remote host</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="配置示例"><a href="#配置示例" class="headerlink" title="配置示例"></a>配置示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B2.png"></p>
+<h3 id="TFTP基础"><a href="#TFTP基础" class="headerlink" title="TFTP基础"></a>TFTP基础</h3><p>相较于FTP，TFTP的设计就是以传输小文件为目标，协议实现就简单很多:</p>
+<ul>
+<li>使用UDP进行传输（端口号69 )</li>
+<li>无需认证</li>
+<li>只能直接向服务器端请求某个文件或者上传某个文件，无法查看服务器端的文件目录。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/TFPT.png"></p>
+<h3 id="TFTP传输示例"><a href="#TFTP传输示例" class="headerlink" title="TFTP传输示例"></a>TFTP传输示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/TFTP%E4%BC%A0%E8%BE%93%E7%A4%BA%E4%BE%8B.png"></p>
+<h3 id="TFPT配置命令"><a href="#TFPT配置命令" class="headerlink" title="TFPT配置命令"></a>TFPT配置命令</h3><p>1.VRP作为TFTP客户端下载文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; tftp TFTP_Server-lP-address get filenameTFTP</span><br></pre></td></tr></table></figure>
+<p>无需登录，直接输入服务器端IP地址以及操作命令即可。</p>
+<p>2.VRP作为TFTP客户端上传文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt; tftp TFTP_Server-lP-address put filename</span><br></pre></td></tr></table></figure>
+<p>TFTP无需登录，直接输入服务器端lP地址以及操作命令即可。<br>目前VRP设备只支持作为TFTP客户端。</p>
+<h2 id="Telnet"><a href="#Telnet" class="headerlink" title="Telnet"></a>Telnet</h2><h3 id="Telnet应用场景"><a href="#Telnet应用场景" class="headerlink" title="Telnet应用场景"></a>Telnet应用场景</h3><p>为方便通过命令行管理设备，可以使用Telnet协议对设备进行管理。</p>
+<p>Telnet协议与使用Console接口管理设备不同，无需专用线缆直连设备的Console接口，只要IP地址可达、能够和设备的TCP 23端口通信即可。</p>
+<p>支持通过Telnet协议进行管理的设备被称为Telnet服务器端，而对应的终端则被称为Telnet客户端。很多网络设备同时支持作为Telnet服务器端、Telnet客户端。<br><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF.png"></p>
+<h3 id="虚拟用户界面"><a href="#虚拟用户界面" class="headerlink" title="虚拟用户界面"></a>虚拟用户界面</h3><p>当用户使用Console接口、Telnet等方式登录设备的时候，系统会分配一个用户界面( user-interface )来管理、监控设备与用户间的当前会话，每个用户界面视图可以配置一系列参数用于指定用户的认证方式、登录后的权限级别，当用户登录设备后将会受这些参数限制。</p>
+<p>Telnet所对应的用户界面类型为VTY ( Virtual Type Terminal，虚拟类型终端）。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E8%99%9A%E6%8B%9F%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2.png"></p>
+<h3 id="配置命令"><a href="#配置命令" class="headerlink" title="配置命令"></a>配置命令</h3><p>1.开启Telnet服务器端功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] telnet server enable</span><br></pre></td></tr></table></figure>
+<p>使能设备的Telnet服务器端功能。缺省情况下，设备的Telnet服务器端功能处于去使能状态，undo telnet server enable即可重新关闭Telnet服务器端功能。<br>2.进入用户视图</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] user-interface vty first-ui-number [ last-ui-number ]</span><br></pre></td></tr></table></figure>
+<p>进入VTY用户界面视图。不同设备型号的VTY接口可能并不一致。<br>3.配置VTY用户界面支持的协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ui-vty0-4]] protocol inbound &#123; all &#x2F; telnet &#125;</span><br></pre></td></tr></table></figure>
+<p>缺省情况下，VTY用户界面支持的协议是SSH ( Secure Shell Protocol，安全外壳协议）和Telnet。<br>4．配置认证方式以及密码认证方式下的认证密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ui-vty0-4] authentication-mode &#123;aaa &#x2F; none | password&#125;[Huawei-ui-vtyO-4] set authentication password cipher</span><br></pre></td></tr></table></figure>
+<p>缺省情况下，无默认认证方式，需要进行手动配置。<br>不同VRP版本执行set authentication password cipher命令有差异:某些版本需要回车后输入密码，某些版本可直接在命令后输入密码。</p>
+<h3 id="配置示例-1"><a href="#配置示例-1" class="headerlink" title="配置示例"></a>配置示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B1.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B2.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/Telnet%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B3.png"></p>
+<h2 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h2><h3 id="手动配置网络参数的问题"><a href="#手动配置网络参数的问题" class="headerlink" title="手动配置网络参数的问题"></a>手动配置网络参数的问题</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%89%8B%E5%B7%A5%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%981.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%89%8B%E5%B7%A5%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%982.png"></p>
+<h3 id="DHCP基本概念"><a href="#DHCP基本概念" class="headerlink" title="DHCP基本概念"></a>DHCP基本概念</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>DHCP ： Dynamic Host Configuration Protocol，动态主机配置协议，是一个用于局域网的网络协议，位于OSI模型的应用层，使用UDP协议工作，主要有两个用途：</p>
+<ul>
+<li>用于内部网或网络服务供应商自动分配IP地址给用户</li>
+<li>用于内部网管理员对所有电脑作中央管理</li>
+</ul>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><p>动态分配IP地址，过程自动化，终端无需一一手工配置，配置信息统一管理（DNS,网关），IP地址有限、需要大量配置IP地址、经常移动终端。</p>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p>DHCP采用C/S构架，主机无需配置，从服务器端获取地址，可实现接入网络后即插即用。</p>
+<h4 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h4><p>DHCP用一台或一组DHCP服务器来管理网络参数的分配，这种方案具有容错性。甚至对于那些很少改变地址的服务器来说，DHCP仍然被建议用来设置它们的地址。如果服务器需要被重新分配地址（RFC 2071）的时候，就尽可能不去做更改。对于一些设备，如路由器和防火墙，则不应使用DHCP。把TFTP或SSH服务器放在同一台运行DHCP的机器上也是有用的，目的是为了集中管理。</p>
+<p>DHCP也可用于直接为服务器和桌面计算机分配地址，并且透过一个PPP代理，也可为拨接及宽带的主机，以及住宅NAT网关和路由器分配地址。DHCP一般不适用于使用在无边际路由器和DNS服务器上。</p>
+<h4 id="历史"><a href="#历史" class="headerlink" title="历史"></a>历史</h4><p>DHCP于1993年10月成为标准协议，其前身是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/BOOTP">BOOTP</a>协议。当前的DHCP定义可以在RFC 2131中找到，而基于IPv6的建议标（DHCPv6）可以在RFC 3315中找到。</p>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>动态主机设置协议（DHCP）是一种使网络管理员能够集中管理和自动分配IP网络地址的通信协议。在IP网络中，每个连接Internet的设备都需要分配唯一的IP地址。DHCP使网络管理员能从中心结点监控和分配IP地址。当某台计算机移到网络中的其它位置时，能自动收到新的IP地址。</p>
+<p>DHCP使用了租约的概念，或称为计算机IP地址的有效期。租用时间是不定的，主要取决于用户在某地连接Internet需要多久，这对于教育行业和其它用户频繁改变的环境是很实用的。透过较短的租期，DHCP能够在一个计算机比可用IP地址多的环境中动态地重新配置网络。DHCP支持为计算机分配静态地址，如需要永久性IP地址的Web服务器。</p>
+<p>DHCP和另一个网络IP管理协议BOOTP类似。当前两种配置管理协议都得到了普遍使用，其中DHCP更为先进。某些操作系统，如Windows NT/2000，都带有DHCP服务器。DHCP或BOOTP客户端是装在计算机中的一个程序，这样就可以对其进行配置操作。</p>
+<h4 id="分配IP地址方式"><a href="#分配IP地址方式" class="headerlink" title="分配IP地址方式"></a>分配IP地址方式</h4><p>（1）手工配置方式：通过网络管理员手工配置某台客户端特定的IP地址，当客户端请求分配时，DHCP服务器就将手动配置的IP地址分配给客户端。。</p>
+<p>（2）自动配置方式：当DHCP客户端第一次想服务端租用到第一个IP地址后，就将这个IP地址永久分配给客户端使用。</p>
+<p>（3）动态配置方式：服务器暂时分配一个IP地址给客户端，根据租约到期或者续约租期的方式来管理分配的IP地址。</p>
+<h3 id="DHCP优点"><a href="#DHCP优点" class="headerlink" title="DHCP优点"></a>DHCP优点</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DHCP%E4%BC%98%E7%82%B9.png"></p>
+<h3 id="DHCP工作原理"><a href="#DHCP工作原理" class="headerlink" title="DHCP工作原理"></a>DHCP工作原理</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DHCP%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86.png"></p>
+<h3 id="DHCP租期更新"><a href="#DHCP租期更新" class="headerlink" title="DHCP租期更新"></a>DHCP租期更新</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DHCP%E7%A7%9F%E6%9C%9F%E6%9B%B4%E6%96%B0.png"></p>
+<p>如果在50%租期时客户端未得到原服务器端的回应，则客户端在87.5%租期时会广播发送DHCP Request，任意一台DHCP服务器端都可回应，该过程称为重绑定。</p>
+<h3 id="DHCP配置命令"><a href="#DHCP配置命令" class="headerlink" title="DHCP配置命令"></a>DHCP配置命令</h3><p>1.开启DHCP功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei] dhcp enable</span><br></pre></td></tr></table></figure>
+<p>2.开启接口采用接口地址池的DHCP服务器端功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp select interface</span><br></pre></td></tr></table></figure>
+<p>3.指定接口地址池下的DNS服务器地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp server dns-list ip-address</span><br></pre></td></tr></table></figure>
+<p>4.配置接口地址池中不参与自动分配的IP地址范围</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp server excluded-ip-address start-ip-address [ end-ip-address ]</span><br></pre></td></tr></table></figure>
+<p>5.配置DHCP服务器接口地址池中IP地址的租用有效期限功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp server lease &#123; day day [ hour hour [ minute minute] ] | unlimited &#125;</span><br></pre></td></tr></table></figure>
+<p>缺省情况下，IP地址的租期为1天。<br>6.创建全局地址池</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]ip pool ip-pool-name</span><br></pre></td></tr></table></figure>
+<p>7.配置全局地址池可动态分配的IP地址范围</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]network ip-address [ mask &#123; mask | mask-length &#125; ]</span><br></pre></td></tr></table></figure>
+<p>8.配置DHCP客户端的网关地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]gateway-list ip-address</span><br></pre></td></tr></table></figure>
+<p>9.配置DHCP客户端使用的DNS服务器的IP地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]dns-list ip-address</span><br></pre></td></tr></table></figure>
+<p>10.配置IP地址租期</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2] lease &#123; day day [ hour hour [ minute minute ] ] | unlimited &#125;</span><br></pre></td></tr></table></figure>
+<p>11.使能接口的DHCP服务器功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-Gigabitthernet0&#x2F;0&#x2F;0]dhcp select global</span><br></pre></td></tr></table></figure>
+
+<p>12.被分配的IP地址与请求端的MAC地址绑定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ip-pool-2]static-bind ip-address 200.1.1.100 mac-address 0000-0000-0000</span><br></pre></td></tr></table></figure>
+
+<h3 id="DHCP配置示例"><a href="#DHCP配置示例" class="headerlink" title="DHCP配置示例"></a>DHCP配置示例</h3><h4 id="接口地址池配置"><a href="#接口地址池配置" class="headerlink" title="接口地址池配置"></a>接口地址池配置</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%8E%A5%E5%8F%A3%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E6%8E%A5%E5%8F%A3%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE1.png"></p>
+<h4 id="全局地址池配置"><a href="#全局地址池配置" class="headerlink" title="全局地址池配置"></a>全局地址池配置</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%85%A8%E5%B1%80%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE1.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%85%A8%E5%B1%80%E5%9C%B0%E5%9D%80%E6%B1%A0%E9%85%8D%E7%BD%AE2.png"></p>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><h3 id="使用浏览器访问网页"><a href="#使用浏览器访问网页" class="headerlink" title="使用浏览器访问网页"></a>使用浏览器访问网页</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/HTTP.png"></p>
+<p>当我们在浏览器中输入URL ( Uniform Resource Locator，统一资源定位符）时，浏览器就可以从某处获取内容，并将页面内容显示在浏览器中。</p>
+<p>HTTP ( Hypertext Transfer Protocol，超文本传输协议)∶客户端浏览器或其他程序与Web服务器之间的应用层通信协议。HTTP是典型的C/S构架应用，作为应用层协议使用TCP进行传输。</p>
+<h3 id="诞生背景"><a href="#诞生背景" class="headerlink" title="诞生背景"></a>诞生背景</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/HTTP%E8%AF%9E%E7%94%9F%E8%83%8C%E6%99%AF.png"></p>
+<p>在互联网早期，为了进行文档之间的共享，人们提出了WWW ( World Wide Web，万维网）。</p>
+<p>WWW由三部分组成∶在浏览器中显示文档内容的页面标记语言HTML ( Hypertext Markup Language，超文本标记语言）、在网络上传输文档的协议HTTP、在网络上表明文档位置的URL。</p>
+<p>WWW早期其实是浏览HTML的客户端应用程序的名称，现在则代表三项技术的合集也可以简称为Web。</p>
+<h3 id="传输示例"><a href="#传输示例" class="headerlink" title="传输示例"></a>传输示例</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E4%BC%A0%E8%BE%93%E7%A4%BA%E4%BE%8B1.png"></p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E4%BC%A0%E8%BE%93%E7%A4%BA%E4%BE%8B2.png"></p>
+<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><h3 id="DNS的诞生"><a href="#DNS的诞生" class="headerlink" title="DNS的诞生"></a>DNS的诞生</h3><p>当我们在浏览器中输入一个域名访问某个网站时，这个域名最终会被解析为一个IP地址，我们的浏览器实际是在和这个IP地址进行通信。</p>
+<p>负责将域名解析到IP地址的协议为DNS ( Domain Name System，域名解析系统）。</p>
+<p>网络中每个节点都有自己唯一的IP地址，通过IP地址可以实现节点之间的相互访问，但是如果和所有的节点进行通信都使用IP地址的方式，人们很难记住这么多IP地址，为此提出了DNS，将难以记忆的IP地址映射为字符类型的地址。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DNS%E7%9A%84%E8%AF%9E%E7%94%9F.png"></p>
+<h3 id="域名系统组成"><a href="#域名系统组成" class="headerlink" title="域名系统组成"></a>域名系统组成</h3><p>域名∶主机的字符标识方式。大部分情况下，我们访问网站时在浏览器内输入的URL就是该网站的域名。</p>
+<p>域名解析服务器（DNS Server )︰负责维护域名与IP地址对应关系的数据库，并对解析者的请求进行响应。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%9F%9F%E5%90%8D%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%84%E6%88%90.png"></p>
+<h3 id="域名的表示方法"><a href="#域名的表示方法" class="headerlink" title="域名的表示方法"></a>域名的表示方法</h3><p>域名的表示方法为:主机名.次顶级域名.顶级域名.根域，根域为 “.” ，一般最后的根域不表示。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/%E5%9F%9F%E5%90%8D%E7%9A%84%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95.png"></p>
+<h3 id="DNS查询方式"><a href="#DNS查询方式" class="headerlink" title="DNS查询方式"></a>DNS查询方式</h3><p>DNS是一个分布式系统，绝大多数的DNS服务器端的数据库不会拥有所有的域名记录，当客户端向一个DNS服务器端查询域名但该DNS服务器端上却没有该域名的记录时，此时会有两种继续查询的方式:</p>
+<ul>
+<li>递归查询:由DNS服务器向其他DNS服务器进行查询，将最终查询结果返回给DNS客户端</li>
+<li>迭代查询:DNS服务器告知DNS客户端其他DNS服务器地址，客户端自行向其他DNS服务器进行查询。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/DNS%E6%9F%A5%E8%AF%A2%E6%96%B9%E5%BC%8F.png"></p>
+<h2 id="NTP"><a href="#NTP" class="headerlink" title="NTP"></a>NTP</h2><h3 id="时间同步需求"><a href="#时间同步需求" class="headerlink" title="时间同步需求"></a>时间同步需求</h3><p>当今企业园区网络中很多场景都需要所有设备保持时钟一致:</p>
+<ul>
+<li>网络管理:对从不同路由器采集来的日志信息、调试信息进行分析时，需要以时间作为参照依据。</li>
+<li>计费系统:要求所有设备的时钟保持一致。</li>
+<li>多个系统协同处理同一个复杂事件:为保证正确的执行顺序，多个系统必须参考同一时钟。</li>
+<li>备份服务器和客户机之间进行增量备份:要求备份服务器和所有客户机之间的时钟同步。</li>
+<li>系统时间:某些应用程序需要知道用户登录系统的时间以及文件修改的时间。</li>
+</ul>
+<h3 id="NTP简介"><a href="#NTP简介" class="headerlink" title="NTP简介"></a>NTP简介</h3><p>如果采用管理员手工输入命令修改系统时间来进行时间同步，不但工作量巨大，而且也不能保证适中的精确性.为此可以使用NTP(Network Time Protocol)技术来同步设备的时钟。</p>
+<p>网络时间协议NTP( Network Time Protocol)是TCP/IP协议族里面的一个应用层协议。NTP用于在一系列分布式时间服务器与客户端之间同步时钟。NTP的实现基于IP和UDP。NTP报文通过UDP传输，端口号是123。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/NPT%E7%AE%80%E4%BB%8B.png"></p>
+<h3 id="NTP网络结构"><a href="#NTP网络结构" class="headerlink" title="NTP网络结构"></a>NTP网络结构</h3><p>主时间服务器:通过线缆或无线电直接同步到标准参考时钟，标准参考时钟通常是Radio Clock或卫星定位系统等。</p>
+<p>二级时间服务器:通过网络中的主时间服务器或者其他二级服务器取得同步。二级时间服务器通过NTP将时间信息传送到局域网内部的其它主机。</p>
+<p>层数（stratum )︰层数是对时钟同步情况的一个分级标准，代表了一个时钟的精确度，取值范围1~15，数值越小，精确度越高。1表示时钟精确度最高，15表示未同步。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E5%92%8C%E5%BA%94%E7%94%A8/NTP%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/mydog.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="zsy's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/" itemprop="url">网络参考模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-28T08:47:04+08:00">
+                2021-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="应用和数据"><a href="#应用和数据" class="headerlink" title="应用和数据"></a>应用和数据</h2><h3 id="故事的起源-应用"><a href="#故事的起源-应用" class="headerlink" title="故事的起源 - 应用"></a>故事的起源 - 应用</h3><p>应用的存在，是为了满足人们的各种需求，比如访问网页，在线游戏，在线视频等。伴随着应用会有信息的产生。比如文本，图片，视频等都是信息的不同呈现方式。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%BA%94%E7%94%A8.png" alt="应用"></p>
+<h3 id="应用的实现-数据"><a href="#应用的实现-数据" class="headerlink" title="应用的实现 - 数据"></a>应用的实现 - 数据</h3><p><strong>数据的产生</strong>：在计算机领域，数据是各种信息的载体。</p>
+<p><strong>数据传输</strong>：大部分应用程序所产生的数据需要在不同的设备之间传递。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%95%B0%E6%8D%AE.png" alt="数据"></p>
+<h2 id="网络参考模型与标准协议"><a href="#网络参考模型与标准协议" class="headerlink" title="网络参考模型与标准协议"></a>网络参考模型与标准协议</h2><h3 id="OSI参考模型"><a href="#OSI参考模型" class="headerlink" title="OSI参考模型"></a>OSI参考模型</h3><table>
+<thead>
+<tr>
+<th>层级</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7.应用层</td>
+<td>对应用程序提供接口。</td>
+</tr>
+<tr>
+<td>6.表示层</td>
+<td>进行数据格式的转换，以确保一个系统生成的应用层数据能够被另外一个系统的应用层所识别和理解。</td>
+</tr>
+<tr>
+<td>5.会话层</td>
+<td>在通信双方之间建立、管理和终止会话。</td>
+</tr>
+<tr>
+<td>4.传输层</td>
+<td>建立、维护和取消一次端到端的数据传输过程。控制传输节奏的快慢，调整数据的排序等等。</td>
+</tr>
+<tr>
+<td>3.网络层</td>
+<td>定义逻辑地址;实现数据从源到目的地的转发。</td>
+</tr>
+<tr>
+<td>2.数据链路层</td>
+<td>将分组数据封装成帧;在数据链路上实现数据的点到点、或点到多点方式的直接通信;差错检测。</td>
+</tr>
+<tr>
+<td>1.物理层</td>
+<td>在媒介上传输比特流;提供机械的和电气的规约。</td>
+</tr>
+</tbody></table>
+<h3 id="TCP-IP参考模型"><a href="#TCP-IP参考模型" class="headerlink" title="TCP/IP参考模型"></a>TCP/IP参考模型</h3><p>因为OSI协议栈比较复杂，且TCP和IP两大协议在业界被广泛使用，所以TCP/IP参考模型成为了互联网的主流参考模型。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCPIP.png" alt="TCP IP"></p>
+<h3 id="TCP-IP常见协议"><a href="#TCP-IP常见协议" class="headerlink" title="TCP/IP常见协议"></a>TCP/IP常见协议</h3><p>TCP/IP协议栈定义了一系列的标准协议。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCPIP%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE.png" alt="TCP IP常见协议"></p>
+<h3 id="常见协议标准化组织"><a href="#常见协议标准化组织" class="headerlink" title="常见协议标准化组织"></a>常见协议标准化组织</h3><h4 id="IETF"><a href="#IETF" class="headerlink" title="IETF"></a>IETF</h4><p>Internet Engineering Task Force，负责开发和推广互联网协议（特别是构成TCP/IP协议族的协议）的志愿组织，通过RFC发布新的或者取代老的协议标准。</p>
+<h4 id="IEEE"><a href="#IEEE" class="headerlink" title="IEEE"></a>IEEE</h4><p>Institute of Electrical and Electronics Engineers，IEEE制定了全世界电子、电气和计算机科学领域30%左右的标准，比较知名的有IEEE802.3(Ethernet)、IEEE802.11 (WIFI)等。</p>
+<h4 id="ISO"><a href="#ISO" class="headerlink" title="ISO"></a>ISO</h4><p>International Organization for Standardization，在制定计算机网络标准方面，ISO是起着重大作用的国际组织，如OSI模型，定义于ISO/IEC 7498-1。</p>
+<h2 id="TCP-IP对等模型5层"><a href="#TCP-IP对等模型5层" class="headerlink" title="TCP/IP对等模型5层"></a>TCP/IP对等模型5层</h2><h3 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h3><p>应用层为应用软件提供接口，使应用程序能够使用网络服务。应用层协议会指定使用相应的传输层协议，以及传输层所使用的端口等。</p>
+<p>应用层的PDU被称为Data（数据）。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%BA%94%E7%94%A8%E5%B1%82.png" alt="应用层"></p>
+<h4 id="常见的应用层协议-FTP"><a href="#常见的应用层协议-FTP" class="headerlink" title="常见的应用层协议 - FTP"></a>常见的应用层协议 - FTP</h4><p>FTP File Transfer Protocol<br>一个用于从一台主机传送文件到另一台主机的协议，用于文件的“下载”和“上传”，它采用C/S( Client/Server)结构。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/FTP.png" alt="应用层"></p>
+<h4 id="常见的应用层协议-Telnet"><a href="#常见的应用层协议-Telnet" class="headerlink" title="常见的应用层协议 - Telnet"></a>常见的应用层协议 - Telnet</h4><p>Telnet数据网络中提供远程登录服务的标准协议。<br>Telnet为用户提供了在本地计算机上完成远程设备工作的能力</p>
+<p>用户通过Telnet客户端程序连接到Telnet服务器。用户在Telnet客户端中输入命令这些命令会在服务器端运行，就像直接在服务端的控制台上输入一样。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/Telnet.png" alt="应用层"></p>
+<h4 id="常见的应用层协议-HTTP"><a href="#常见的应用层协议-HTTP" class="headerlink" title="常见的应用层协议 - HTTP"></a>常见的应用层协议 - HTTP</h4><p>HTTP HyperText Transfer Protocol<br>互联网上应用最为广泛的一种网络协议。设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/HTTP.png" alt="应用层"></p>
+<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><p>传输层协议接收来自应用层协议的数据，封装上相应的传输层头部，帮助其建立“端到端”( Port to Port)的连接。</p>
+<p>传输层的PDU被称为Segment（段）。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BC%A0%E8%BE%93%E5%B1%82.png" alt="传输层"></p>
+<h4 id="TCP和UDP报文格式"><a href="#TCP和UDP报文格式" class="headerlink" title="TCP和UDP报文格式"></a>TCP和UDP报文格式</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/TCP%E5%92%8CUDP%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F.png" alt="TCP和UDP报文格式"></p>
+<h4 id="TCP和UDP-端口号"><a href="#TCP和UDP-端口号" class="headerlink" title="TCP和UDP - 端口号"></a>TCP和UDP - 端口号</h4><p>客户端使用的源端口一般随机分配，目标端口则由服务器的应用指定;源端口号一般为系统中未使用的，且大于1023;<br>目的端口号为服务端开启的应用（服务）所侦听的端口，如HTTP缺省使用80。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%AB%AF%E5%8F%A3%E5%8F%B7.png" alt="端口号"></p>
+<h4 id="TCP的建立-三次握手"><a href="#TCP的建立-三次握手" class="headerlink" title="TCP的建立-三次握手"></a>TCP的建立-三次握手</h4><p>任何基于TCP的应用，在发送数据之前，都需要由TCP进行“三次握手”建立连接。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.png" alt="三次握手"></p>
+<h4 id="TCP的序列号与确认序列号"><a href="#TCP的序列号与确认序列号" class="headerlink" title="TCP的序列号与确认序列号"></a>TCP的序列号与确认序列号</h4><p>TCP使用序列号和确认序列号字段实现数据的可靠和有序传输。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B.png" alt="传输过程"></p>
+<h4 id="TCP的窗口滑动机制"><a href="#TCP的窗口滑动机制" class="headerlink" title="TCP的窗口滑动机制"></a>TCP的窗口滑动机制</h4><p>TCP通过滑动窗口机制来控制数据的传输速率。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3.png" alt="滑动窗口"></p>
+<h4 id="TCP的关闭-四次挥手"><a href="#TCP的关闭-四次挥手" class="headerlink" title="TCP的关闭-四次挥手"></a>TCP的关闭-四次挥手</h4><p>当数据传输完成，TCP需要通过“四次挥手”机制断开TCP连接，释放系统资源。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt="四次挥手"></p>
+<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><p>传输层负责建立主机之间进程与进程之间的连接，而网络层则负责数据从一台主机到另外一台主机之间的传递。</p>
+<p>网络层的PDU被称为Packet(包)。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%B1%82.png" alt="网络层"></p>
+<h4 id="数据包的封装过程"><a href="#数据包的封装过程" class="headerlink" title="数据包的封装过程"></a>数据包的封装过程</h4><p>将上层提交的数据加上网络层头部。</p>
+<h3 id><a href="#" class="headerlink" title></a></h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%8C%85%E5%B0%81%E8%A3%85%E8%BF%87%E7%A8%8B.png" alt="网络包封装过程"></p>
+<h4 id="基于网络层地址的报文转发过程"><a href="#基于网络层地址的报文转发过程" class="headerlink" title="基于网络层地址的报文转发过程"></a>基于网络层地址的报文转发过程</h4><ul>
+<li>源设备发出的报文会在其网络层头部携带该报文的源及目的设备的网络层地址;</li>
+<li>具备路由功能的网络设备（例如路由器等）会维护路由表（相当于它的地图) ;</li>
+<li>当这些网络设备收到报文时，会读取其网络层携带的目的地址，并在其路由表中查询该地址，找到匹配项后，按照该表项的指示转发数据。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%BD%91%E7%BB%9C%E5%B1%82%E8%BD%AC%E5%8F%91%E8%BF%87%E7%A8%8B.png" alt="网络层转发过程"></p>
+<blockquote>
+<p>Router1路由表中指导报文从G0/0/1转发出去，没有出接口为G0/0/0的路由</p>
+</blockquote>
+<h3 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h3><p>数据链路层位于网络层和物理层之间，负责<strong>段内通信</strong>，可以向网络层的IP、IPv6等协议提供服务。</p>
+<p>数据链路层的PDU被称为Frame (帧)。<br>以太网(Ethernet)是最常见的数据链路层协议。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82.png" alt="数据链路层"></p>
+<h4 id="以太网与MAC地址"><a href="#以太网与MAC地址" class="headerlink" title="以太网与MAC地址"></a>以太网与MAC地址</h4><h5 id="以太网定义"><a href="#以太网定义" class="headerlink" title="以太网定义"></a>以太网定义</h5><ul>
+<li>以太网是一种广播式数据链路层协议，支持多点接入。</li>
+<li>个人电脑的网络接口遵循的就是以太网标准。</li>
+<li>一般情况下，一个广播域对应着一个IP网段。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E4%BB%A5%E5%A4%AA%E7%BD%91.png" alt="以太网"></p>
+<h5 id="以太网MAC地址"><a href="#以太网MAC地址" class="headerlink" title="以太网MAC地址"></a>以太网MAC地址</h5><ul>
+<li>MAC (Media Access Control)地址在网络中唯一标识一个网卡，每个网卡都需要且会有唯一的一个MAC地址。</li>
+<li><strong>MAC用于在一个IP网段内，寻址找到具体的物理设备</strong>。</li>
+<li>工作在<strong>数据链路层的设备</strong>。例如以太网交换机，会维护一张MAC地址表，用于指导数据帧转发。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/MAC%E5%9C%B0%E5%9D%80.png" alt="MAC地址"></p>
+<h4 id="地址解析协议（ARP）"><a href="#地址解析协议（ARP）" class="headerlink" title="地址解析协议（ARP）"></a>地址解析协议（ARP）</h4><p>ARP （Address Resolution Protocol）地址解析协议</p>
+<p>根据已知的IP地址解析获得其对应的MAC地址。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP.png" alt="ARP"></p>
+<h5 id="ARP工作原理"><a href="#ARP工作原理" class="headerlink" title="ARP工作原理"></a>ARP工作原理</h5><p>工作过程分为5步，如下示例展示工作原理。</p>
+<h6 id="发送方查看自己ARP缓存表"><a href="#发送方查看自己ARP缓存表" class="headerlink" title="发送方查看自己ARP缓存表"></a>发送方查看自己ARP缓存表</h6><ul>
+<li>在发送数据前，设备会先查找ARP缓存表。</li>
+<li>如果缓存表中存在对方设备的MAC地址，则直接采用该MAC地址来封装帧，然后将帧发送出去。如果缓存表中不存在相应信息，则通过ARP来获取。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP1.png" alt="ARP"></p>
+<h6 id="发送方发送ARP请求"><a href="#发送方发送ARP请求" class="headerlink" title="发送方发送ARP请求"></a>发送方发送ARP请求</h6><ul>
+<li><p>主机1通过发送ARP Request报文来获取主机2的MAC地址。</p>
+</li>
+<li><p>由于不知道目的MAC地址，因此ARP Request报文内的目的端MAC地址为0。</p>
+</li>
+<li><p>ARP Request是广播数据帧，因此交换机收到后，会对该帧执行泛洪操作。</p>
+</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP2.png" alt="ARP"></p>
+<h6 id="接受方更新ARP缓存表"><a href="#接受方更新ARP缓存表" class="headerlink" title="接受方更新ARP缓存表"></a>接受方更新ARP缓存表</h6><ul>
+<li>所有的主机接收到该ARP Request报文后，都会检查它的目的端IP地址字段与自身的IP地址是否匹配</li>
+<li>主机2发现IP地址匹配，则会将ARP报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中。</li>
+<li>收到ARP Request报文的主机都会更新自己ARP缓存表，将发送来的IP地址和其对应MAC地址加入ARP缓存表中。</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP3.png" alt="ARP"></p>
+<h6 id="接收方接受ARP请求并且发送ARP响应"><a href="#接收方接受ARP请求并且发送ARP响应" class="headerlink" title="接收方接受ARP请求并且发送ARP响应"></a>接收方接受ARP请求并且发送ARP响应</h6><ul>
+<li><p>主机2通过发送ARP Reply报文来响应主机1的请求。</p>
+</li>
+<li><p>此时主机2已知主机1的MAC地址，因此ARP Reply是单播数据帧。</p>
+</li>
+<li><p>交换机收到该单播数据帧后，会对该帧执行转发操作。</p>
+</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP4.png" alt="ARP"></p>
+<h6 id="接收方接受ARP响应并更新ARP缓存表"><a href="#接收方接受ARP响应并更新ARP缓存表" class="headerlink" title="接收方接受ARP响应并更新ARP缓存表"></a>接收方接受ARP响应并更新ARP缓存表</h6><ul>
+<li>主机1收到ARP Reply以后，会检查ARP报文中目的端lP地址字段是否与自己的IP地址匹配。</li>
+<li>如果匹配，会将ARP报文中的发送端MAC地址和发送端IP地址信息记录到自己的ARP缓存表中</li>
+</ul>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/ARP5.png" alt="ARP"></p>
+<h3 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h3><p>数据到达物理层之后，物理层会根据物理介质的不同，将数字信号转换成光信号、电信号或者是电磁波信号。</p>
+<p>物理层的PDU被称为比特流(Bitstream ) 。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E7%89%A9%E7%90%86%E5%B1%82.png" alt="物理层"></p>
+<h4 id="常见的传输介质"><a href="#常见的传输介质" class="headerlink" title="常见的传输介质"></a>常见的传输介质</h4><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B8%B8%E8%A7%81%E7%9A%84%E4%BC%A0%E8%BE%93%E4%BB%8B%E8%B4%A8.png" alt="常见的传输介质"></p>
+<h2 id="数据的封装过程"><a href="#数据的封装过程" class="headerlink" title="数据的封装过程"></a>数据的封装过程</h2><h3 id="发送方数据封装"><a href="#发送方数据封装" class="headerlink" title="发送方数据封装"></a>发送方数据封装</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%851.png" alt="封装"></p>
+<h3 id="中间网络数据传输"><a href="#中间网络数据传输" class="headerlink" title="中间网络数据传输"></a>中间网络数据传输</h3><p>封装好的完整数据，将会在网络中被传递。</p>
+<p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%852.png" alt="封装"></p>
+<h3 id="接收方数据解封装"><a href="#接收方数据解封装" class="headerlink" title="接收方数据解封装"></a>接收方数据解封装</h3><p><img src="/2021/04/28/%E7%BD%91%E7%BB%9C%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B/%E5%B0%81%E8%A3%853.png" alt="封装"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/27/VRP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2720,7 +3250,7 @@ Group ID:组播组ID。
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">79</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2733,7 +3263,7 @@ Group ID:组播组ID。
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
